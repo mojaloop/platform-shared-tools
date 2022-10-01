@@ -1,0 +1,54 @@
+{
+  "name": "@mojaloop/platform-shared-tools",
+  "version": "0.0.1",
+  "description": "mojaloop platform shared tools",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/mojaloop/platform-shared-tools",
+  "private": true,
+  "bugs": {
+    "url": "https://github.com/mojaloop/platform-shared-tools/issues#readme"
+  },
+  "contributors": [
+    "Pedro Sousa Barreto <pedrosousabarreto@gmail.com>"
+  ],
+  "scripts": {
+    "start": "npm -ws run start",
+    "build": "npm -ws run build",
+    "watch": "npm -ws run watch",
+    "clean": "npm run clean:dist",
+    "clean:npm": "npm -ws run clean:npm",
+    "clean:dist": "npm -ws run clean",
+    "pretest": "echo 'FIX ME'",
+    "lint": "npm -ws run lint",
+    "lint:fix": "npm -ws run lint:fix",
+    "test": "npm run test:unit",
+    "test:unit": "npm -ws --if-present run test:unit",
+    "posttest": "npm run coverage:merge && npm run coverage:gen-report",
+    "coverage:merge": "nyc merge ./coverage/ ./coverage/coverage.json",
+    "coverage:gen-report": "nyc report --reporter=lcov --temp-dir=./coverage",
+    "test:integration": "jest",
+    "audit:resolve": "npm -ws run audit:resolve",
+    "audit:check": "npm -ws run audit:check",
+    "dep:check": "npm exec ncu -e 2 && npm -ws --parallel run dep:check",
+    "dep:update": "npm exec ncu -e 2 -u && npm -ws --parallel run dep:update",
+    "prepare": "husky install",
+    "publish:client-lib": "npm -w @mojaloop/security-bc-client-lib run pub",
+    "publish:public-types-lib": "npm -w @mojaloop/security-bc-public-types-lib run pub"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.3",
+    "@types/node": "^16.11.9",
+    "@typescript-eslint/eslint-plugin": "^5.22.0",
+    "@typescript-eslint/parser": "^5.22.0",
+    "eslint": "^8.14.0",
+    "husky": "^8.0.1",
+    "jest": "^27.3.1",
+    "npm-check-updates": "~16.3.3",
+    "nyc": "^15.1.0",
+    "ts-jest": "^27.0.7",
+    "typescript": "^4.6.4"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}
