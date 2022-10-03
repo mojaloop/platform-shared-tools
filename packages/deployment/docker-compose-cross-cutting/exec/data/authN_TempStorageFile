@@ -1,0 +1,18 @@
+{
+    "users": [
+        {
+            "username": "user",
+            "password": "superPass"
+        },
+        {
+            "username": "admin",
+            "password": "superMegaPass"
+        }
+    ],
+    "apps": [
+        {
+            "client_id": "security-bc-ui",
+            "client_secret": null
+        }
+    ]
+}

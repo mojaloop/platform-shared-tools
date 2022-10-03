@@ -125,4 +125,5 @@ devspace*
 !.yarn/sdks
 !.yarn/versions
 
-!/packages/deployment/docker-compose/exec/
+!/packages/deployment/docker-compose-infra/exec/
+!/packages/deployment/docker-compose-cross-cutting/exec/

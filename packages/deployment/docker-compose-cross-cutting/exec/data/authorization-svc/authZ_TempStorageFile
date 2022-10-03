@@ -1,0 +1,82 @@
+{
+    "appPrivileges": [
+        {
+            "boundedContextName": "participants-bc",
+            "applicationName": "participants-svc",
+            "applicationVersion": "0.0.3",
+            "privileges": [
+                {
+                    "id": "VIEW_PARTICIPANT",
+                    "labelName": "View Participant",
+                    "description": "Allows retrieving the list of participants and individual participant records"
+                },
+                {
+                    "id": "CREATE_PARTICIPANT",
+                    "labelName": "Create Participant",
+                    "description": "Allows the creation of a participant record in the system "
+                },
+                {
+                    "id": "APPROVE_PARTICIPANT",
+                    "labelName": "Approve Participant",
+                    "description": "Allows the approval of an unapproved participant"
+                },
+                {
+                    "id": "ENABLE_PARTICIPANT",
+                    "labelName": "Enable Participant",
+                    "description": "Allows the enabling of a disabled participant"
+                },
+                {
+                    "id": "DISABLE_PARTICIPANT",
+                    "labelName": "Disable Participant",
+                    "description": "Allows the disabling of an enabled participant"
+                },
+                {
+                    "id": "MANAGE_ENDPOINTS",
+                    "labelName": "Manage Participant Endpoints",
+                    "description": "Allows adding and changing participant's endpoint records"
+                },
+                {
+                    "id": "MANAGE_ACCOUNTS",
+                    "labelName": "Manage Participant Accounts",
+                    "description": "Allows adding and changing participant's accounts records"
+                }
+            ]
+        },
+        {
+            "boundedContextName": "test-bc",
+            "applicationName": "test-app1",
+            "applicationVersion": "0.0.1",
+            "privileges": [
+                {
+                    "id": "test_create",
+                    "labelName": "test create",
+                    "description": "desc"
+                },
+                {
+                    "id": "test_delete",
+                    "labelName": "test delete",
+                    "description": "desc"
+                }
+            ]
+        }
+    ],
+    "platformRoles": [
+        {
+            "isApplicationRole": false,
+            "isExternal": false,
+            "externalId": null,
+            "labelName": "platform-admin",
+            "description": "descr",
+            "id": "7ac09a26-10d3-40b0-bfee-2c13d3249954",
+            "privileges": [
+                "VIEW_PARTICIPANT",
+                "CREATE_PARTICIPANT",
+                "APPROVE_PARTICIPANT",
+                "ENABLE_PARTICIPANT",
+                "DISABLE_PARTICIPANT",
+                "MANAGE_ENDPOINTS",
+                "MANAGE_ACCOUNTS"
+            ]
+        }
+    ]
+}
