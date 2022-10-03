@@ -7,6 +7,8 @@ services:
       - authentication-svc_data:/app/data
     environment:
       - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
     ports:
       - 3201:3201
 
@@ -16,8 +18,21 @@ services:
       - authorization-svc_data:/app/data
     environment:
       - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
     ports:
       - 3202:3202
+
+  platform-configuration-svc:
+    image: mojaloop/platform-configuration-bc-configuration-svc:0.0.1
+    volumes:
+      - platform-configuration-svc_data:/app/data
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+    ports:
+      - 3100:3100
 
 
 volumes:
@@ -33,4 +48,10 @@ volumes:
       o: bind
       type: none
       device: ./data/authorization-svc
+  platform-configuration-svc_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./data/platform-configuration-svc
 

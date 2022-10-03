@@ -21,12 +21,23 @@ cd exec
 mkdir {data}
 ```
 
-3. Copy the `.env.sample` to the exec dir:
+
+3. Create the following directories as children of the newly created `data` directory:
+
+* authentication-svc
+* authorization-svc
+* platform-configuration
+
+```shell
+mkdir {data/authentication-svc,data/authorization-svc,data/platform-configuration-svc}
+```
+
+4. Copy the `.env.sample` to the exec dir:
 ```shell
 cp ../.env.sample ./.env
 ```
 
-4. Review the contents of the `.env` file
+5. Review the contents of the `.env` file
 
 
 # Start Cross-Cutting Concern Service Containers
