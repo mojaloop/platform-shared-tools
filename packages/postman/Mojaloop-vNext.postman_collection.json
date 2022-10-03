@@ -1,0 +1,753 @@
+{
+	"info": {
+		"_postman_id": "0d5e9f31-f9f8-41fc-9ab2-569435b01d81",
+		"name": "Mojaloop-vNext",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "PlatformConfiguration BC",
+			"item": [
+				{
+					"name": "Global - bootstrap global configsets",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"environmentName\": \"dev\",\n    \"schemaVersion\": \"0.0.1\",\n    \"parameters\": [\n        {\n            \"name\": \"globalParam1\",\n            \"type\": \"BOOL\",\n            \"defaultValue\": true,\n            \"description\": \"description global bool param 1 - v2\"\n            \n        },\n        {\n            \"name\": \"global stringParam1\",\n            \"type\": \"STRING\",\n            \"defaultValue\": \"default val\",\n            \"description\": \"description global string param 1 - v2\"\n        }\n        \n    ],\n    \"featureFlags\": [\n        {\n            \"name\": \"globalFeatureFlag1\",\n            \"defaultValue\": false,\n            \"description\": \"description global feature flag 1 - v2\"\n        }\n    ],\n    \"secrets\": [\n        {\n            \"name\": \"globalSecret1\",\n            \"defaultValue\": \"password\",\n            \"description\": \"description global secret 1 - v2\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3100/globalConfigSets/bootstrap",
+							"host": [
+								"localhost"
+							],
+							"port": "3100",
+							"path": [
+								"globalConfigSets",
+								"bootstrap"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Global - get global configset",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3100/globalConfigSets/dev",
+							"host": [
+								"localhost"
+							],
+							"port": "3100",
+							"path": [
+								"globalConfigSets",
+								"dev"
+							],
+							"query": [
+								{
+									"key": "version",
+									"value": "0.0.1",
+									"disabled": true
+								},
+								{
+									"key": "latest",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Global - patch global configset param",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"schemaVersion\": \"0.0.1\",\n    \"newValues\":[{\n         \"type\": \"parameter\",\n        \"name\": \"global stringParam1\",\n        \"value\":\"new value2\"\n    }]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3100/globalConfigSets/dev/setvalues",
+							"host": [
+								"localhost"
+							],
+							"port": "3100",
+							"path": [
+								"globalConfigSets",
+								"dev",
+								"setvalues"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "App - bootstrap app configsets",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"environmentName\": \"dev\",\n    \"boundedContextName\": \"test-bc\",\n    \"applicationName\": \"app1\",\n    \"applicationVersion\": \"0.1.2\",\n    \"schemaVersion\": \"0.1.1\",\n    \"parameters\": [\n        {\n            \"name\": \"boolParam1\",\n            \"type\": \"BOOL\",\n            \"defaultValue\": true,\n            \"description\": \"description bool param 1 - v2\"\n            \n        },\n        {\n            \"name\": \"stringParam1\",\n            \"type\": \"STRING\",\n            \"defaultValue\": \"default val\",\n            \"description\": \"description string param 1 - v2\"\n        },\n        {\n            \"name\": \"intParam1\",\n            \"type\": \"INT_NUMBER\",\n            \"defaultValue\": 5,\n            \"description\": \"description int number param 1 - v2\"\n        },\n        {\n            \"name\": \"floatParam1\",\n            \"type\": \"FLOAT_NUMBER\",\n            \"defaultValue\": 3.1415,\n            \"description\": \"description float number param 1 - v2\"\n        }\n    ],\n    \"featureFlags\": [\n        {\n            \"name\": \"featureFlag1\",\n            \"defaultValue\": false,\n            \"description\": \"description feature flag 1 - v2\"\n        }\n    ],\n    \"secrets\": [\n        {\n            \"name\": \"secret1\",\n            \"defaultValue\": \"password\",\n            \"description\": \"description secret 1 - v2\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3100/appConfigSets/bootstrap",
+							"host": [
+								"localhost"
+							],
+							"port": "3100",
+							"path": [
+								"appConfigSets",
+								"bootstrap"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "App - get app configset",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3100/appConfigSets/dev",
+							"host": [
+								"localhost"
+							],
+							"port": "3100",
+							"path": [
+								"appConfigSets",
+								"dev"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "App - patch app configset param",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"applicationVersion\": \"0.0.1\",\n    \"schemaVersion\": \"0.0.1\",\n    \"newValues\":[{\n        \"type\": \"parameter\",\n        \"name\": \"service-http-port\",\n        \"value\":4001\n    }]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3100/appConfigSets/dev/typescript-bc-template/example-svc/setvalues",
+							"host": [
+								"localhost"
+							],
+							"port": "3100",
+							"path": [
+								"appConfigSets",
+								"dev",
+								"typescript-bc-template",
+								"example-svc",
+								"setvalues"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Security BC",
+			"item": [
+				{
+					"name": "Auth N",
+					"item": [
+						{
+							"name": "get keys",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "superPass",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "user",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "",
+										"type": "default",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "localhost:3201/.well-known/jwks.json",
+									"host": [
+										"localhost"
+									],
+									"port": "3201",
+									"path": [
+										".well-known",
+										"jwks.json"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "login/token",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "",
+										"type": "default",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "default"
+										},
+										{
+											"key": "client_id",
+											"value": "security-bc-ui",
+											"type": "default"
+										},
+										{
+											"key": "client_secret",
+											"value": "",
+											"type": "default"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "default"
+										},
+										{
+											"key": "password",
+											"value": "superMegaPass",
+											"type": "default"
+										},
+										{
+											"key": "audience",
+											"value": "mojaloop.vnext",
+											"type": "default",
+											"disabled": true
+										},
+										{
+											"key": "scope",
+											"value": "my_scope",
+											"type": "default",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:3201/token",
+									"host": [
+										"localhost"
+									],
+									"port": "3201",
+									"path": [
+										"token"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Auth Z",
+					"item": [
+						{
+							"name": "bootstrap appPrivileges",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"environmentName\": \"dev\",\n    \"boundedContextName\": \"test-bc\",\n    \"applicationName\": \"app1\",\n    \"applicationVersion\": \"0.1.2\",\n    \"privileges\": [\n        {\n            \"id\": \"approve-transfer\",\n            \"labelName\": \"Approve transfer\",\n            \"description\": \"Users with this priviledge can approve transfers\"\n            \n        }, {\n            \"id\": \"create-users\",\n            \"labelName\": \"Create users\",\n            \"description\": \"Users with this priviledge can create new users on the system\"\n            \n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:3000/bootstrap",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"bootstrap"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all app privileges",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3202/appPrivileges",
+									"host": [
+										"localhost"
+									],
+									"port": "3202",
+									"path": [
+										"appPrivileges"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create platform role",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"isApplicationRole\": false,\n    \"isExternal\": false,\n    \"externalId\": null,\n    \"labelName\": \"platform-admin\",\n    \"description\": \"descr\"\n\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:3202/platformRoles",
+									"host": [
+										"localhost"
+									],
+									"port": "3202",
+									"path": [
+										"platformRoles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get per app roles and privs associations",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:3202/appRoles?bcName=participants-bc&appName=participants-svc",
+									"host": [
+										"localhost"
+									],
+									"port": "3202",
+									"path": [
+										"appRoles"
+									],
+									"query": [
+										{
+											"key": "bcName",
+											"value": "participants-bc"
+										},
+										{
+											"key": "appName",
+											"value": "participants-svc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all platform roles",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:3202/platformRoles",
+									"host": [
+										"localhost"
+									],
+									"port": "3202",
+									"path": [
+										"platformRoles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "associate pivileges to platform role",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\n \"VIEW_PARTICIPANT\",\n \"CREATE_PARTICIPANT\",\n \"APPROVE_PARTICIPANT\",\n \"ENABLE_PARTICIPANT\",\n \"DISABLE_PARTICIPANT\",\n \"MANAGE_ENDPOINTS\",\n \"MANAGE_ACCOUNTS\"\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:3202/platformRoles/fc3455e0-469f-4221-8cd0-5bae2deb99f1/associatePrivileges",
+									"host": [
+										"localhost"
+									],
+									"port": "3202",
+									"path": [
+										"platformRoles",
+										"fc3455e0-469f-4221-8cd0-5bae2deb99f1",
+										"associatePrivileges"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Participants BC",
+			"item": [
+				{
+					"name": "Create participant",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{$randomUUID}}\",\n  \"name\": \"Best Bank\",\n  \n  \"description\": \"Best Bank in the neighbourhood\",\n  \"createdDate\": \"{{$timestamp}}\",\n  \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3010/participants",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3010",
+							"path": [
+								"participants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve participant",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3010/participants/sally/approve",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3010",
+							"path": [
+								"participants",
+								"sally",
+								"approve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Disable participant",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3010/participants/sally/disable",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3010",
+							"path": [
+								"participants",
+								"sally",
+								"disable"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Enable participant",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3010/participants/sally/enable",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3010",
+							"path": [
+								"participants",
+								"sally",
+								"enable"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get participant",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3010/participants/sally",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3010",
+							"path": [
+								"participants",
+								"sally"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all participants",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InNSMHVoT2hpM05VbmJlMTF5SDZtOUZtcFpNN2JiRVl2czdpbGNfanN1MHMifQ.eyJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzZWN1cml0eS1iYy11aSIsInJvbGVzIjpbIjA5ZTE1YzQ3LTE4ZDItNGZlNC1iODU0LTc4OWM1MWZkNmNmYyJdLCJpYXQiOjE2NTg3ODk3MzMsImV4cCI6MTY1ODc5MzMzMywiYXVkIjoibW9qYWxvb3Audm5leHQuZGVmYXVsdF9hdWRpZW5jZSIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzIwMS8iLCJzdWIiOiJ1c2VyOjpvcF9sZXZlbF8yIiwianRpIjoiMzc1NWNiOWEtMzA2YS00ZmZhLTllMGMtM2QyMzNlYTIyODEyIn0.bfExIKBsCLA3Mz9QdIeqobDL-A3FlEUuspdNRDXeDfMNhqaNzDfIQhJE1uI0keVvLJKXEAxafPWIE1xOejiHG6_DoIfBlnmyMcGeDHM7ydJqi6X7LAbIaqsGeBIKvwVdwUm3P8TapS963ZGOTnx3N6fbDe9GrAmzVsAHU5dxfuviGXkPptIFsI6Qc-lduFGazB44I4vJXGsDRBYa9yKvzEibPmAb8_-WMlBF8njLvByTWxaCpnFwUCpwCmM_9ybq3hHFCiNZZedy2kawKGtFf5oFtACG4P14kX3LNX-17uvbtJLcgj7GRXiC6SCUJrpqb-2GlwVbHkjOWUjnZmSfKw",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3010/participants/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3010",
+							"path": [
+								"participants",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get participant accounts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InFmWFRRWHhXTHBuZTFaX0VQUkpwbXMtUWc3OXpEVUQzYXNwSmJ1VzM1eE0ifQ.eyJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzZWN1cml0eS1iYy11aSIsInJvbGVzIjpbIjdhYzA5YTI2LTEwZDMtNDBiMC1iZmVlLTJjMTNkMzI0OTk1NCJdLCJpYXQiOjE2NjQ4MzUxMDUsImV4cCI6MTY2NDgzODcwNSwiYXVkIjoibW9qYWxvb3Audm5leHQuZGVmYXVsdF9hdWRpZW5jZSIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzIwMS8iLCJzdWIiOiJ1c2VyOjp1c2VyIiwianRpIjoiNTEzOThjZTgtOTllMi00MjBmLTg1MDYtZmQzZTY3N2I5ODRhIn0.fK9ha24xr9C_mRQ9O-IMlfYSmuhEt19Wo115j1y9xb2iuxryIqF4RKHeWDRgRgOzs33oHKuoDiXHrRbaDDsNGeSSq2uB1x9UpN8Lg3oKAcPOPCkvN7dhdcG7aC6R8___kCDgIibBTI09ZY5Gm2Up9qSufTzYhkwqv69-fbafAw4ZIzWnitHahVwS-rwq1e7wh68iBlaO7fs5PxbYq3Xiwv9WEQZHz_tGpBB_fks7hW9DgTqp5oVNCCuzVQQfTHVHc1l_oFexCjjU14fsF20kku-P8ZsiswrvpNra_K59W_VkaNmwtyOlNJtaHWvWujpcTJRJ8j_lXe3knztjUl5RuA",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3010/participants/8a911728-487b-413b-8bdc-ce4147567387/accounts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3010",
+							"path": [
+								"participants",
+								"8a911728-487b-413b-8bdc-ce4147567387",
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create participant account",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InFmWFRRWHhXTHBuZTFaX0VQUkpwbXMtUWc3OXpEVUQzYXNwSmJ1VzM1eE0ifQ.eyJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzZWN1cml0eS1iYy11aSIsInJvbGVzIjpbIjdhYzA5YTI2LTEwZDMtNDBiMC1iZmVlLTJjMTNkMzI0OTk1NCJdLCJpYXQiOjE2NjQ4MzUxMDUsImV4cCI6MTY2NDgzODcwNSwiYXVkIjoibW9qYWxvb3Audm5leHQuZGVmYXVsdF9hdWRpZW5jZSIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzIwMS8iLCJzdWIiOiJ1c2VyOjp1c2VyIiwianRpIjoiNTEzOThjZTgtOTllMi00MjBmLTg1MDYtZmQzZTY3N2I5ODRhIn0.fK9ha24xr9C_mRQ9O-IMlfYSmuhEt19Wo115j1y9xb2iuxryIqF4RKHeWDRgRgOzs33oHKuoDiXHrRbaDDsNGeSSq2uB1x9UpN8Lg3oKAcPOPCkvN7dhdcG7aC6R8___kCDgIibBTI09ZY5Gm2Up9qSufTzYhkwqv69-fbafAw4ZIzWnitHahVwS-rwq1e7wh68iBlaO7fs5PxbYq3Xiwv9WEQZHz_tGpBB_fks7hW9DgTqp5oVNCCuzVQQfTHVHc1l_oFexCjjU14fsF20kku-P8ZsiswrvpNra_K59W_VkaNmwtyOlNJtaHWvWujpcTJRJ8j_lXe3knztjUl5RuA",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"POSITION\",\n    \"currencyCode\": \"EUR\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3010/participants/8a911728-487b-413b-8bdc-ce4147567387/account",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3010",
+							"path": [
+								"participants",
+								"8a911728-487b-413b-8bdc-ce4147567387",
+								"account"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
