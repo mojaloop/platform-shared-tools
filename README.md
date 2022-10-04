@@ -3,45 +3,31 @@
 **EXPERIMENTAL** vNext Platform Shared Lib Bounded Context Mono Repository
 
 
-## Modules
+## Deployment Tools
 
-### Authentication service [link](modules/authentication-svc/README.md)
+### Docker-compose files for local infrastructure
+[Here](packages/deployment/docker-compose-infra/README.md) you can find the instructions to bring up and down all required infrastructure components using docker-compose commands. This works in a local or remote machine.
 
-### Authentication client lib [link](modules/authentication-svc/README.md)
+Includes:
+* Kafka and a kafka web console
+* ElasticSearch and Kibana web console
+* MongoDB and a MongoDB web console
 
 
-## Usage
+### Docker-compose files for Cross-cutting Concerns
+[Here](packages/deployment/docker-compose-cross-cutting/README.md) you can find the instructions to bring up and down all vNext Cross-Cutting concerns using docker-compose commands. This works in a local or remote machine.
 
-### Install Node version
+Includes:
+* Security - Authentication Service
+* Security - Authorization Service
+* Platform Configuration Service
+* Logging Service (sinks to ElasticSearch) - WIP
+* Auditing Service (sinks to ElasticSearch) - WIP
 
-More information on how to install NVM: https://github.com/nvm-sh/nvm
 
-```bash
-nvm install
-nvm use
-```
+## Pre built requests and tester tools
 
-### Install Dependencies
+### Postman collection 
+[Here](packages/postman) you can find a complete Postman collection, in a json file, ready to be imported to Postman.
 
-```bash
-npm install
-```
-
-## Build
-
-```bash
-npm run build
-```
-
-## Unit Tests
-
-```bash
-npm run test:unit
-```
-
-## Integration Tests
-
-```bash
-npm run test:integration
-```
 

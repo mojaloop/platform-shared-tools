@@ -34,6 +34,16 @@ services:
     ports:
       - 3100:3100
 
+  platform-configuration-svc:
+    image: mojaloop/platform-configuration-bc-configuration-svc:0.0.1
+    volumes:
+      - platform-configuration-svc_data:/app/data
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+    ports:
+      - 3100:3100
 
 volumes:
   authentication-svc_data:

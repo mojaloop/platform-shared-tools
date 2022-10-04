@@ -92,11 +92,11 @@ Execute this in the directory containing the files `es_mappings_logging.json` an
 
 ```shell
 # Create the logging index 
-curl -i --insecure -X PUT "https://localhost:9200/mjl-logging/" -u "elastic" -H "Content-Type: application/json" --data-binary "@es_mappings_logging.json"
+curl -i --insecure -X PUT "https://localhost:9200/ml-logging/" -u "elastic" -H "Content-Type: application/json" --data-binary "@es_mappings_logging.json"
 ```
 ```shell
 # Create the auditing index
-curl -i --insecure -X PUT "https://localhost:9200/mjl-auditing/" -u "elastic" -H "Content-Type: application/json" --data-binary "@es_mappings_auditing.json"
+curl -i --insecure -X PUT "https://localhost:9200/ml-auditing/" -u "elastic" -H "Content-Type: application/json" --data-binary "@es_mappings_auditing.json"
 ```
 
 **NOTE:** The master/source for the mappings files is the respective repositories: [logging-bc](https://github.com/mojaloop/logging-bc/blob/main/docker-compose/es_mappings.json) and [auditing-bc](https://github.com/mojaloop/auditing-bc/blob/main/docker-compose/es_mappings.json).  
