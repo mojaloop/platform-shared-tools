@@ -26,10 +26,12 @@ mkdir {data}
 
 * authentication-svc
 * authorization-svc
-* platform-configuration
+* platform-configuration-svc
+* auditing-svc
+* logging-svc
 
 ```shell
-mkdir {data/authentication-svc,data/authorization-svc,data/platform-configuration-svc}
+mkdir {data/authentication-svc,data/authorization-svc,data/platform-configuration-svc,data/auditing-svc,data/logging-svc}
 ```
 
 4. Copy the `.env.sample` to the exec dir:
