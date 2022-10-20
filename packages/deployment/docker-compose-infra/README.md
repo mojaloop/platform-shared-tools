@@ -18,9 +18,10 @@ cd exec
 * `esdata01`
 * `kibanadata`
 * `logs`
+* `tigerbeetle_data`
 
 ```shell
-mkdir {certs,esdata01,kibanadata,logs}
+mkdir {certs,esdata01,kibanadata,logs,tigerbeetle_data}
 ```
 
 3. Copy the `.env.sample` to the exec dir:
@@ -33,6 +34,13 @@ cp ../.env.sample ./.env
 5. Ensure `vm.max_map_count` is set to at least `262144`: Example to apply property on live system:
 ```shell
 sysctl -w vm.max_map_count=262144 # might require sudo
+```
+
+
+6. Initialise TigerBeetle data
+```shell
+docker run -v $(pwd)/tigerbeetle_data:/data ghcr.io/tigerbeetledb/tigerbeetle \
+  format --cluster=0 --replica=0 /data/0_0.tigerbeetle
 ```
 
 # Start Infrastructure Containers

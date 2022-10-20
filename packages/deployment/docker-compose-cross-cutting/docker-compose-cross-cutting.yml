@@ -3,6 +3,7 @@ version: "3.8"
 services:
   authentication-svc:
     image: mojaloop/security-bc-authentication-svc:latest
+    restart: unless-stopped
     volumes:
       - authentication-svc_data:/app/data
     environment:
@@ -14,6 +15,7 @@ services:
 
   authorization-svc:
     image: mojaloop/security-bc-authorization-svc:latest
+    restart: unless-stopped
     volumes:
       - authorization-svc_data:/app/data
     environment:
@@ -25,6 +27,7 @@ services:
 
   platform-configuration-svc:
     image: mojaloop/platform-configuration-bc-configuration-svc:latest
+    restart: unless-stopped
     volumes:
       - platform-configuration-svc_data:/app/data
     environment:
@@ -36,6 +39,7 @@ services:
 
   auditing-svc:
     image: mojaloop/auditing-bc-auditing-svc:latest
+    restart: unless-stopped
     volumes:
       - auditing-svc_data:/app/data
     environment:
@@ -49,6 +53,7 @@ services:
 
   logging-svc:
     image: mojaloop/logging-bc-logging-svc:latest
+    restart: unless-stopped
     volumes:
       - logging-svc_data:/app/data
     environment:

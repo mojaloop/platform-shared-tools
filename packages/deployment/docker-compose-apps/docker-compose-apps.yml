@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  participants-svc:
+    image: mojaloop/participants-bc-participants-svc:latest
+    volumes:
+      - participants-svc_data:/app/data
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - MONGO_URL=${MONGO_URL}
+      - CONFIG_SVC_BASEURL=${CONFIG_SVC_BASEURL}
+      - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+      - TIGERBEETLE_CLUSTER_ID=${TIGERBEETLE_CLUSTER_ID}
+      - TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES=${TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES}
+    ports:
+      - 3010:3010
+
+#
+#  docker run -ti --rm --network ml_vnext_default \
+#  --name mojaloop_participants-bc-participants-svc \
+#  -e CONFIG_SVC_BASEURL=http://platform-configuration-svc:3100 \
+#  -e AUTH_Z_SVC_BASEURL=http://authorization-svc:3202 -e AUTH_N_SVC_BASEURL=http://authentication-svc:3201  \
+#  -e TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES="tigerbeetle:3000" \
+#  -e KAFKA_URL=kafka:19092 \
+#  -e MONGO_URL=mongodb://root:mongoDbPas42@mongo:27017 \
+#  -v $(pwd)/packages/participants-svc/dist/tmp_key_file:/app/data/audit_private_key.pem \
+#  mojaloop/participants-bc-participants-svc:latest
+
+volumes:
+  participants-svc_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./data/participants-svc
