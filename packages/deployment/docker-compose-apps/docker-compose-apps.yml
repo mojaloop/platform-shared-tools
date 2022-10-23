@@ -18,6 +18,53 @@ services:
     ports:
       - 3010:3010
 
+  ttk_1:
+    image: mojaloop/ml-testing-toolkit:v15.0.0
+#    extra_hosts:
+#      - "scheme-adapter:192.168.1.94"
+    ports:
+      - "4040:4040"
+      - "5050:5050"
+    command:
+      - sh
+      - -c
+      - "npm start"
+  ttk-ui_1:
+    image: mojaloop/ml-testing-toolkit-ui:v15.0.0
+    ports:
+      - "6060:6060"
+    volumes:
+      - ttk1_ui_data:/usr/share/nginx/html
+    environment:
+      - API_BASE_URL=http://localhost:5050
+      - AUTH_ENABLED=FALSE
+    command:
+      - sh
+      - /usr/share/nginx/start.sh
+
+  ttk_2:
+    image: mojaloop/ml-testing-toolkit:v15.0.0
+#    extra_hosts:
+#      - "scheme-adapter:192.168.1.94"
+    ports:
+      - "4041:4040"
+      - "5051:5050"
+    command:
+      - sh
+      - -c
+      - "npm start"
+  ttk-ui_2:
+    image: mojaloop/ml-testing-toolkit-ui:v15.0.0
+    ports:
+      - "6061:6060"
+    volumes:
+      - ttk2_ui_data:/usr/share/nginx/html
+    environment:
+      - API_BASE_URL=http://localhost:5051
+      - AUTH_ENABLED=FALSE
+    command:
+      - sh
+      - /usr/share/nginx/start.sh
 #
 #  docker run -ti --rm --network ml_vnext_default \
 #  --name mojaloop_participants-bc-participants-svc \
@@ -36,3 +83,15 @@ volumes:
       o: bind
       type: none
       device: ./data/participants-svc
+  ttk1_ui_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./data/ttk1_ui_data
+  ttk2_ui_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./data/ttk2_ui_data
