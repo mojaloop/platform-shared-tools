@@ -10,6 +10,7 @@ services:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
       - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - TOKEN_LIFE_SECS=${TOKEN_LIFE_SECS}
     ports:
       - 3201:3201
 
