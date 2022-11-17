@@ -82,16 +82,16 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: ./data/participants-svc
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/participants-svc
   ttk1_ui_data:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: ./data/ttk1_ui_data
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/ttk1_ui_data
   ttk2_ui_data:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: ./data/ttk2_ui_data
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/ttk2_ui_data
