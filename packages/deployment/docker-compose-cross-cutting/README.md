@@ -39,7 +39,8 @@ mkdir {data/authentication-svc,data/authorization-svc,data/platform-configuratio
 cp ../.env.sample ./.env
 ```
 
-5. Review the contents of the `.env` file
+5. Review the contents of the `.env` file. **If using MacOS update the ROOT_VOLUME_DEVICE_PATH to reflect the absolute path**
+
 
 
 # Start Cross-Cutting Concern Service Containers

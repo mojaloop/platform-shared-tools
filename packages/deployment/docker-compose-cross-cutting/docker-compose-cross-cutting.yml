@@ -71,28 +71,28 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: ./data/authentication-svc
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/authentication-svc
   authorization-svc_data:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: ./data/authorization-svc
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/authorization-svc
   platform-configuration-svc_data:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: ./data/platform-configuration-svc
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/platform-configuration-svc
   auditing-svc_data:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: ./data/auditing-svc
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/auditing-svc
   logging-svc_data:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: ./data/logging-svc
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/logging-svc

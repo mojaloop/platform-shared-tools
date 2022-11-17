@@ -4,7 +4,7 @@ services:
   setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ES_STACK_VERSION}
     volumes:
-      - certs:/usr/share/elasticsearch/config/certs
+      - ${ROOT_VOLUME_DEVICE_PATH}/certs:/usr/share/elasticsearch/config/certs
     user: "0"
     command: >
       bash -c '
@@ -60,8 +60,8 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ES_STACK_VERSION}
     restart: unless-stopped
     volumes:
-      - certs:/usr/share/elasticsearch/config/certs
-      - esdata01:/usr/share/elasticsearch/data
+      - ${ROOT_VOLUME_DEVICE_PATH}/certs:/usr/share/elasticsearch/config/certs
+      - ${ROOT_VOLUME_DEVICE_PATH}/esdata01:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
     environment:
@@ -104,8 +104,8 @@ services:
     image: docker.elastic.co/kibana/kibana:${ES_STACK_VERSION}
     restart: unless-stopped
     volumes:
-      - certs:/usr/share/kibana/config/certs
-      - kibanadata:/usr/share/kibana/data
+      - ${ROOT_VOLUME_DEVICE_PATH}/certs:/usr/share/kibana/config/certs
+      - ${ROOT_VOLUME_DEVICE_PATH}/kibanadata:/usr/share/kibana/data
     ports:
       - ${ES_KIBANA_PORT}:5601
     environment:
@@ -221,7 +221,7 @@ services:
     cap_add:
       - IPC_LOCK
     volumes:
-      - tigerbeetle_data:/data
+      - ${ROOT_VOLUME_DEVICE_PATH}/tigerbeetle_data:/data
     ports:
       - 3000:3000
 
@@ -231,22 +231,22 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: ./certs
+      device: ${ROOT_VOLUME_DEVICE_PATH}/certs
   esdata01:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: ./esdata01
+      device: ${ROOT_VOLUME_DEVICE_PATH}/esdata01
   kibanadata:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: ./kibanadata
+      device: ${ROOT_VOLUME_DEVICE_PATH}/kibanadata
   tigerbeetle_data:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: ./tigerbeetle_data
+      device: ${ROOT_VOLUME_DEVICE_PATH}/tigerbeetle_data

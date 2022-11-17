@@ -29,7 +29,8 @@ mkdir {certs,esdata01,kibanadata,logs,tigerbeetle_data}
 cp ../.env.sample ./.env
 ```
 
-4. Review the contents of the `.env` file
+4. Review the contents of the `.env` file. **If using MacOS update the ROOT_VOLUME_DEVICE_PATH to reflect the absolute path**
+
 
 5. Ensure `vm.max_map_count` is set to at least `262144`: Example to apply property on live system:
 ```shell
