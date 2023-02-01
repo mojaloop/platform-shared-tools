@@ -1,0 +1,91 @@
+<h3>Platform Configuration - Global Configurations</h3>
+
+
+<h4>Global configuration stats</h4>
+<ul>
+  <li><strong>{{(globalConfigStatus|async)?.distinctVersionCount}}</strong> schema versions registered</li>
+  <li>Latest schema version is: <strong>v{{(globalConfigStatus|async)?.latestSchemaVersion}}</strong></li>
+  <li>Current iteration number is: <strong>#{{(globalConfigStatus|async)?.currentIteration}}</strong></li>
+</ul>
+
+<h4>Global Configurations</h4>
+
+<h4>Parameters</h4>
+<div>
+  <table class="table">
+    <thead class="thead-light">
+    <tr>
+      <th scope="col">Schema/Iteration</th>
+      <th scope="col">Param Name</th>
+      <th scope="col">Type</th>
+      <th scope="col">Default Value</th>
+      <th scope="col">Current Value</th>
+      <th scope="col">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of (params | async)">
+      <td><span class="badge badge-secondary">#{{item.iterationNumber}} @ v{{item.schemaVersion}}</span></td>
+      <td>{{item.name}}</td>
+      <td>{{item.type}}</td>
+      <td>{{item.defaultValue}}</td>
+      <td>{{item.currentValue}}</td>
+      <td>{{item.description}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<h4>Feature Flags</h4>
+<div>
+  <table class="table">
+    <thead class="thead-light">
+    <tr>
+      <th scope="col">Schema/Iteration</th>
+      <th scope="col">Flag Name</th>
+
+      <th scope="col">Default Value</th>
+      <th scope="col">Current Value</th>
+      <th scope="col">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let flag of (featureFlags | async)">
+      <td><span class="badge badge-secondary">#{{flag.iterationNumber}} @ v{{flag.schemaVersion}}</span></td>
+      <td>{{flag.name}}</td>
+
+      <td>{{flag.defaultValue}}</td>
+      <td>{{flag.currentValue}}</td>
+      <td>{{flag.description}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+
+<h4>Secrets</h4>
+<div>
+  <table class="table">
+    <thead class="thead-light">
+    <tr>
+      <th scope="col">Schema/Iteration</th>
+      <th scope="col">Secret Name</th>
+
+      <th scope="col">Current Value</th>
+      <th scope="col">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let secret of (secrets | async)">
+      <td><span class="badge badge-secondary">#{{secret.iterationNumber}} @ v{{secret.schemaVersion}}</span></td>
+      <td>{{secret.name}}</td>
+
+      <td>****</td>
+      <td>{{secret.description}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

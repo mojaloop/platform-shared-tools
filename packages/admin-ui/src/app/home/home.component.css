@@ -1,0 +1,9 @@
+:host{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    margin-top: -6rem;
+}
+
+

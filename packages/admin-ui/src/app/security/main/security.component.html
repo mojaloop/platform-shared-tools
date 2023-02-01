@@ -1,0 +1,40 @@
+<h3>Application Privileges</h3>
+<table class="table">
+  <thead class="thead-light">
+  <tr>
+    <th scope="col">BC</th>
+    <th scope="col">App</th>
+    <th scope="col">Label</th>
+    <th scope="col">Description</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let item of (privileges | async)">
+    <td> {{item.boundedContextName}}</td>
+    <td> {{item.applicationName}} <span class="badge badge-secondary">{{item.applicationVersion}}</span></td>
+    <th scope="row"><a routerLink="/payers/{{item.id}}">{{item.labelName}}</a></th>
+    <td> {{item.description}}</td>
+  </tr>
+  </tbody>
+</table>
+
+
+<h3>Platform Roles</h3>
+<table class="table">
+  <thead class="thead-light">
+  <tr>
+    <th scope="col">Role Id</th>
+    <th scope="col">Type</th>
+
+    <th scope="col">Description</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let item of (roles | async)">
+    <th scope="row"><a routerLink="/platformRole/{{item.id}}">{{item.labelName}}</a></th>
+    <td *ngIf="item.isApplicationRole"> Application Role</td>
+    <td *ngIf="!item.isApplicationRole"> User Role</td>
+    <td> {{item.description}}</td>
+  </tr>
+  </tbody>
+</table>

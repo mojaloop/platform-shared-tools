@@ -1,0 +1,14 @@
+/* AccountLookupComponent's private CSS styles */
+form {
+    justify-content: flex-start;
+    flex-flow: row wrap;
+}
+  
+
+form > button {
+    flex-basis: 100%
+}
+
+form > label,input,select {
+    flex-grow: 1;
+}

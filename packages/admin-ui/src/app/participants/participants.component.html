@@ -1,0 +1,31 @@
+<h3>Participants</h3>
+
+<div>
+  <table class="table">
+    <thead class="thead-light">
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">State</th>
+      <th scope="col"># Accounts</th>
+      <th scope="col">Created</th>
+      <th scope="col">Last action</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of (participants | async)">
+      <td><a routerLink="/participants/{{item.id}}">{{item.name}}</a></td>
+<!--      <td>{{item.isActive ? "Active" : "Inactive"}} / {{item.approved ? "Approved" : "Not Approved" }}</td>-->
+      <td>{{item.approved ? "Approved" : "Not Approved" }}</td>
+      <td>{{item.participantAccounts.length}}</td>
+      <td class="text-secondary">By <span class="text-dark">{{item.createdBy}}</span> at <span class="text-dark">{{item.createdDate | date: "short"}}</span></td>
+      <td class="text-secondary"><span class="text-dark">{{item.changeLog[0].changeType}}</span> at <span class="text-dark">{{item.changeLog[0].timestamp | date: "short"}}</span></td>
+
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div>
+  <button class="btn btn-primary" routerLink="/participants/new">Create Participant</button>
+</div>

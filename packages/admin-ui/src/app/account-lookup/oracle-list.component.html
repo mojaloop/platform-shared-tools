@@ -1,0 +1,46 @@
+<h3>Oracles</h3>
+
+
+<ng-container *ngIf="(registeredOracles | async)?.length==0 else listOracles">
+  <div class="alert alert-warning" role="alert">
+    No Oracles registered, please register one.
+  </div>
+</ng-container>
+
+<ng-template #listOracles>
+<div>
+  <table class="table">
+    <thead class="thead-light">
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Type</th>
+      <th scope="col">PartyType</th>
+      <th scope="col">PartySubType</th>
+      <th scope="col" style="width: 90px;">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of (registeredOracles | async)">
+      <td><a routerLink="/account-lookup/oracles/{{item.id}}">{{item.name}}</a></td>
+      <td>{{item.type}}</td>
+      <td>{{item.partyType}}</td>
+      <td>{{item.partySubType || "N/A" }} </td>
+      <td (click)="false;$event.stopPropagation()">
+        <div class="btn-group btn-group-sm" role="group" aria-label="">
+
+          <button type="button" class="btn btn-danger" placement="top" container="body" ngbTooltip="Remove Oracle" (click)="removeOracle(item.id)">
+          <span class="bi bi-trash"></span>
+          </button>
+          <button type="button" class="btn btn-info" placement="top" container="body" ngbTooltip="Health Check" (click)="healthCheck(item.id)">
+          <span class="bi bi-eye"></span>
+          </button>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</ng-template>
+<div>
+  <button class="btn btn-primary" routerLink="/account-lookup-oracles/new">Register New Oracle</button>
+</div>

@@ -1,0 +1,61 @@
+<div class="col-md-3">
+  <h1 class="mb-3">Oracle detail</h1>
+</div>
+
+<form>
+  <div class="form-group col-md-3">
+    <label for="inputName">Name</label>
+    <input
+      type="text"
+      class="form-control"
+      value="{{ (oracle | async)?.name }}"
+      readonly
+    />
+  </div>
+
+  <div class="form-group col-md-3">
+    <label for="inputType">Type</label>
+    <input
+      type="text"
+      class="form-control"
+      value="{{ (oracle | async)?.type }}"
+      readonly
+    />
+  </div>
+
+  <div class="form-group col-md-6">
+    <label for="inputPartyType">Party Type</label>
+    <input
+      type="text"
+      class="form-control"
+      value="{{ (oracle | async)?.partyType }}"
+      readonly
+    />
+  </div>
+
+  <div class="form-group col-md-6">
+    <label for="inputPartySubType">Party Sub Type</label>
+    <input
+      type="text"
+      class="form-control"
+      value="{{ (oracle | async)?.partySubType }}"
+      readonly
+    />
+  </div>
+
+  <div class="form-group col-md-6">
+    <label for="inputEndpoint">Oracle endpoint</label>
+    <input
+      type="text"
+      class="form-control"
+      value="{{ (oracle | async)?.endpoint }}"
+      readonly
+    />
+  </div>
+
+  <div class="form-row d-flex mb-3">
+    <div class="ml-auto p-2">
+      <button class="btn btn-primary" (click)="back()">Back</button>
+    </div>
+  </div>
+</form>

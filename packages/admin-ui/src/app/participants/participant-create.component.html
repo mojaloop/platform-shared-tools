@@ -1,0 +1,38 @@
+<h3>Onboard a new Participant</h3>
+<form [formGroup]="form" (ngSubmit)="saveParticipant()">
+
+  <div class="form-row"> <!--form-row-->
+
+    <div class="form-group col-md-4">
+      <label for="id">Participant Id: </label>
+      <input id="id" formControlName="id" type="text" class="form-control"
+             [ngClass]="{'is-valid': form.controls['id'].touched && form.controls['id'].valid,
+              'is-invalid': (submitted || form.controls['id'].touched) && form.controls['id'].invalid}">
+    </div>
+
+    <!--name-->
+    <div class="form-group col-md-8">
+      <label for="name">Name: </label>
+      <input class="form-control" id="name" formControlName="name" type="text"
+             [ngClass]="{'is-valid': form.controls['name'].touched && form.controls['name'].valid,
+              'is-invalid': (submitted || form.controls['name'].touched) && form.controls['name'].invalid}">
+    </div>
+
+    <!--description-->
+    <div class="form-group col-md-12">
+      <label for="description">Description: </label>
+      <input class="form-control" id="description" formControlName="description" type="text"
+             [ngClass]="{'is-valid': form.controls['description'].touched && form.controls['description'].valid,
+             'is-invalid': (submitted || form.controls['description'].touched) && form.controls['description'].invalid}">
+    </div>
+  </div> <!--form-row-->
+
+  <div class="form-row d-flex mb-3">
+    <div class="p-2">
+      <button type="submit" class="btn btn-primary" [disabled]="!form.valid">Create Participant</button>
+    </div>
+    <div class="ml-auto p-2">
+      <button class="btn btn-danger" (click)="cancel()">Cancel</button>
+    </div>
+  </div>
+</form>

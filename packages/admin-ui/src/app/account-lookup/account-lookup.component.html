@@ -1,0 +1,131 @@
+<h3>Account-Lookup</h3>
+
+<hr>
+<h4>Test associate</h4>
+<form class="form-inline" [formGroup]="formAssociateParticipant" (ngSubmit)="associateParticipant()">
+
+  <label class="my-1 mr-2" for="participantId">Participant Id</label>
+  <select class="custom-select my-1 mr-sm-4" id="participantId" formControlName="participantId">
+    <option *ngFor="let item of (participants | async)"  value="{{item.id}}">{{item.name}}</option>
+  </select>
+
+  <label class="my-1 mr-2" for="partyType">Party Type</label>
+  <select class="custom-select my-1 mr-sm-4" id="partyType" formControlName="partyType">
+    <option *ngFor="let partyType of partyTypeList"  value="{{partyType}}">{{partyType}}</option>
+  </select>
+
+  <label class="my-1 mr-2" for="currencyCode">Currency</label>
+  <select class="custom-select my-1 mr-sm-4" id="currencyCode" formControlName="currencyCode">
+    <option *ngFor="let currencyCode of currencyList"  value="{{currencyCode}}">{{currencyCode}}</option>
+  </select>
+
+  <label class="sr-only" for="partyId">Party Id</label>
+  <input type="text" class="form-control mr-sm-2 pr-0 my-1" id="partyId" formControlName="partyId" placeholder="Party ID"
+    [ngClass]="{'is-valid': formAssociateParticipant.controls['partyId'].touched && formAssociateParticipant.controls['partyId'].valid,
+    'is-invalid': (submittedAssociateParticipant || formAssociateParticipant.controls['partyId'].touched) && formAssociateParticipant.controls['partyId'].invalid}">
+
+  <label class="sr-only" for="partySubType">Party SubType</label>
+  <input type="text" class="form-control mr-sm-2 pr-0 my-1" id="partySubType" formControlName="partySubType" placeholder="Party SubType"
+    [ngClass]="{'is-valid': formAssociateParticipant.controls['partySubType'].touched && formAssociateParticipant.controls['partySubType'].valid,
+    'is-invalid': (submittedAssociateParticipant || formAssociateParticipant.controls['partySubType'].touched) && formAssociateParticipant.controls['partySubType'].invalid}">
+
+  <button type="submit" class="btn btn-primary my-2" [disabled]="!formAssociateParticipant.valid">Associate Participant</button>
+</form>
+
+<hr>
+<h4>Test remove association</h4>
+<form class="form-inline" [formGroup]="formDisassociateParticipant" (ngSubmit)="disassociateParticipant()">
+
+  <label class="my-1 mr-2" for="participantId">Participant Id</label>
+  <select class="custom-select my-1 mr-sm-4" id="participantId" formControlName="participantId">
+    <option *ngFor="let item of (participants | async)"  value="{{item.id}}">{{item.name}}</option>
+  </select>
+
+  <label class="my-1 mr-2" for="partyType">Party Type</label>
+  <select class="custom-select my-1 mr-sm-4" id="partyType" formControlName="partyType">
+    <option *ngFor="let partyType of partyTypeList"  value="{{partyType}}">{{partyType}}</option>
+  </select>
+
+  <label class="my-1 mr-2" for="currencyCode">Currency</label>
+  <select class="custom-select my-1 mr-sm-4" id="currencyCode" formControlName="currencyCode">
+    <option *ngFor="let currencyCode of currencyList"  value="{{currencyCode}}">{{currencyCode}}</option>
+  </select>
+
+  <label class="sr-only" for="partyId">Party Id</label>
+  <input type="text" class="form-control mr-sm-2 pr-0 my-1" id="partyId" formControlName="partyId" placeholder="Party ID"
+    [ngClass]="{'is-valid': formDisassociateParticipant.controls['partyId'].touched && formDisassociateParticipant.controls['partyId'].valid,
+    'is-invalid': (submittedAssociateParticipant || formDisassociateParticipant.controls['partyId'].touched) && formDisassociateParticipant.controls['partyId'].invalid}">
+
+  <label class="sr-only" for="partySubType">Party SubType</label>
+  <input type="text" class="form-control mr-sm-2 pr-0 my-1" id="partySubType" formControlName="partySubType" placeholder="Party SubType"
+    [ngClass]="{'is-valid': formDisassociateParticipant.controls['partySubType'].touched && formDisassociateParticipant.controls['partySubType'].valid,
+    'is-invalid': (submittedAssociateParticipant || formDisassociateParticipant.controls['partySubType'].touched) && formDisassociateParticipant.controls['partySubType'].invalid}">
+
+  <button type="submit" class="btn btn-primary my-2" [disabled]="!formDisassociateParticipant.valid">Disassociate Participant</button>
+</form>
+
+
+<hr>
+<h4>Test get participant</h4>
+<form class="form-inline" [formGroup]="formGetParticipant" (ngSubmit)="getParticipant()">
+
+  <label class="my-1 mr-2" for="participantId">Participant Id</label>
+  <select class="custom-select my-1 mr-sm-4" id="participantId" formControlName="participantId">
+    <option *ngFor="let item of (participants | async)"  value="{{item.id}}">{{item.name}}</option>
+  </select>
+
+  <label class="my-1 mr-2" for="partyType">Party Type</label>
+  <select class="custom-select my-1 mr-sm-4" id="partyType" formControlName="partyType">
+    <option *ngFor="let partyType of partyTypeList"  value="{{partyType}}">{{partyType}}</option>
+  </select>
+
+  <label class="my-1 mr-2" for="currencyCode">Currency</label>
+  <select class="custom-select my-1 mr-sm-4" id="currencyCode" formControlName="currencyCode">
+    <option *ngFor="let currencyCode of currencyList"  value="{{currencyCode}}">{{currencyCode}}</option>
+  </select>
+
+  <label class="sr-only" for="partyId">Party Id</label>
+  <input type="text" class="form-control mr-sm-2 pr-0 my-1" id="partyId" formControlName="partyId" placeholder="Party ID" 
+    [ngClass]="{'is-valid': formGetParticipant.controls['partyId'].touched && formGetParticipant.controls['partyId'].valid,
+    'is-invalid': (submittedAssociateParticipant || formGetParticipant.controls['partyId'].touched) && formGetParticipant.controls['partyId'].invalid}">
+
+  <label class="sr-only" for="partySubType">Party SubType</label>
+  <input type="text" class="form-control mr-sm-2 pr-0 my-1" id="partySubType" formControlName="partySubType" placeholder="Party SubType"
+    [ngClass]="{'is-valid': formGetParticipant.controls['partySubType'].touched && formGetParticipant.controls['partySubType'].valid,
+    'is-invalid': (submittedAssociateParticipant || formGetParticipant.controls['partySubType'].touched) && formGetParticipant.controls['partySubType'].invalid}">
+
+  <button type="submit" class="btn btn-primary my-2" [disabled]="!formGetParticipant.valid">Get Participant</button>
+</form>
+
+<hr>
+<h4>Test get party</h4>
+<form class="form-inline" [formGroup]="formGetParty" (ngSubmit)="getParty()">
+
+  <label class="my-1 mr-2" for="participantId">Participant Id</label>
+  <select class="custom-select my-1 mr-sm-4" id="participantId" formControlName="participantId">
+    <option *ngFor="let item of (participants | async)"  value="{{item.id}}">{{item.name}}</option>
+  </select>
+
+  <label class="my-1 mr-2" for="partyType">Party Type</label>
+  <select class="custom-select my-1 mr-sm-4" id="partyType" formControlName="partyType">
+    <option *ngFor="let partyType of partyTypeList"  value="{{partyType}}">{{partyType}}</option>
+  </select>
+
+  <label class="my-1 mr-2" for="currencyCode">Currency</label>
+  <select class="custom-select my-1 mr-sm-4" id="currencyCode" formControlName="currencyCode">
+    <option *ngFor="let currencyCode of currencyList"  value="{{currencyCode}}">{{currencyCode}}</option>
+  </select>
+
+  <label class="sr-only" for="partyId">Name</label>
+  <input type="text" class="form-control mr-sm-2 pr-0 my-1" id="partyId" formControlName="partyId" placeholder="Party ID" 
+    [ngClass]="{'is-valid': formGetParty.controls['partyId'].touched && formGetParty.controls['partyId'].valid,
+    'is-invalid': (submittedAssociateParticipant || formGetParty.controls['partyId'].touched) && formGetParty.controls['partyId'].invalid}">
+
+  <label class="sr-only" for="partySubType">Party SubType</label>
+  <input type="text" class="form-control mr-sm-2 pr-0 my-1" id="partySubType" formControlName="partySubType" placeholder="Party SubType"
+    [ngClass]="{'is-valid': formGetParty.controls['partySubType'].touched && formGetParty.controls['partySubType'].valid,
+    'is-invalid': (submittedAssociateParticipant || formGetParty.controls['partySubType'].touched) && formGetParty.controls['partySubType'].invalid}">
+
+
+  <button type="submit" class="btn btn-primary my-2" [disabled]="!formGetParty.valid">Get Party</button>
+</form>

@@ -1,0 +1,29 @@
+<div class="jumbotron">
+  <div class="d-flex justify-content-center">
+    <img src="/assets/mojaloop-foundation-orange-300x95.png"/>
+  </div>
+
+  <div class="row align-items-center" style="margin-bottom: 25px"></div>
+
+  <div class="d-flex justify-content-center">
+    <h1 class="display-4">Welcome!</h1>
+  </div>
+  <div class="d-flex justify-content-center">
+    <p class="lead">This is Mojaloop's Future Administrative UI.</p>
+  </div>
+  <hr class="my-4 row align-items-center">
+  <div class="d-flex justify-content-center">
+    <p> In this web application, you will be able to manage all aspects of Mojaloop's vNext Platform</p>
+  </div>
+
+  <ng-container *ngIf="!(isLoggedIn | async)">
+    <div class="d-flex justify-content-center">
+      <p> Please login to see more</p>
+    </div>
+    <div class="d-flex justify-content-center">
+      <button class="btn btn-primary" routerLink="/login">Login</button>
+    </div>
+  </ng-container>
+
+
+</div>

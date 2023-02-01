@@ -1,0 +1,45 @@
+<h2>Username: {{(username| async)}}</h2>
+&nbsp;
+<h3>Roles</h3>
+<table class="table">
+  <thead class="thead-light">
+  <tr>
+    <th scope="col">Name</th>
+    <th scope="col">Description</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let item of (roles | async)">
+    <th scope="row"><a routerLink="/platformRole/{{item.id}}">{{item.labelName}}</a></th>
+    <td> {{item.description}}</td>
+  </tr>
+  </tbody>
+</table>
+
+<h3>Privileges</h3>
+<table class="table">
+  <thead class="thead-light">
+  <tr>
+    <th scope="col">Name</th>
+    <th scope="col">Description</th>
+    <th scope="col">Owner</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let item of (privs | async)">
+    <th >{{item.labelName}} <span class="badge badge-secondary">{{item.fromRoleLabel}}</span></th>
+    <td> {{item.description}}</td>
+    <td> {{item.ownerBc}} / {{item.ownerApp}} <span class="badge badge-secondary">{{item.ownerAppVersion}}</span></td>
+  </tr>
+  </tbody>
+</table>
+
+<hr/>
+
+<h3>JWT Token Source</h3>
+<pre><code>{{(decodedToken | async) | json }}</code></pre>
+
+<h3>Access Token  <small><a (click)="copyAccessTokenToClipboard()" ngbTooltip="Copy to clipboard"><i class="bi bi-clipboard-plus"></i></a></small></h3>
+<pre style="white-space: pre-wrap; word-break: break-all;">
+  {{(accessToken | async) }}
+</pre>
