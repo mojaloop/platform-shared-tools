@@ -1,0 +1,23 @@
+<h3>Transfers</h3>
+
+<div>
+  <table class="table">
+    <thead class="thead-light">
+    <tr>
+      <th scope="col">Quote ID</th>
+      <th scope="col">Payee FSP</th>
+      <th scope="col">Payer FSP</th>
+      <th scope="col">Transfer State</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of (transfers | async)">
+      <td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
+      <td>{{item.payeeFsp}}</td>
+      <td>{{item.payerFsp}}</td>
+      <td>{{item.transferState}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

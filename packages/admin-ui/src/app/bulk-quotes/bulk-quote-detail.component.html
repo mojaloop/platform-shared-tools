@@ -1,0 +1,140 @@
+<div class="row">
+    <div class="col-md-8 align-self-center">
+      <h2>Bulk Quote Details</h2>
+    </div>
+  
+    <div class="col-md-4 align-self-center">
+      <small><strong>ID: </strong> {{(bulkQuote | async)?.bulkQuoteId}}
+        <a (click)="copyQuoteIdToClipboard()"
+           ngbTooltip="Copy ID to clipboard"><i class="bi bi-clipboard-plus"></i></a></small>
+    </div>
+  </div>
+  <hr>
+  
+  <div class="row">
+    <div class="col-6"> <!-- left col with form -->
+  
+      <div class="mb-2">
+        <label class="col-form-label text-secondary">Payer Type</label>
+        <div>{{(bulkQuote | async)?.payer?.partyIdInfo?.partyIdType}}</div>
+      </div>
+  
+      <div class="mb-2">
+        <label class="col-form-label text-secondary">Payer Identifier</label>
+        <div>{{(bulkQuote | async)?.payer?.partyIdInfo?.partyIdentifier}}</div>
+      </div>
+
+      <div class="mb-2">
+        <label class="col-form-label text-secondary">Payer Sub Type</label>
+        <div>{{(bulkQuote | async)?.payer?.partyIdInfo?.fspId ? (bulkQuote | async)?.payer?.partyIdInfo?.partySubIdOrType : "None" }}</div>
+      </div>
+
+      <div class="mb-2">
+        <label class="col-form-label text-secondary">Payer Fsp Identifier</label>
+        <div>{{(bulkQuote | async)?.payer?.partyIdInfo?.fspId ? (bulkQuote | async)?.payer?.partyIdInfo?.fspId : "None" }}</div>
+      </div>
+  
+      <div class="mb-2">
+        <label class="col-form-label text-secondary">Status</label>
+        <div [ngClass]="(bulkQuote | async)?.status==='ACCEPTED'?'text-success':'text-danger'">{{(bulkQuote | async)?.status}}</div>
+      </div>
+  
+    </div> <!-- left col with form -->
+  
+    <div class="col-3"> <!-- right col with action buttons -->
+      
+      <div class="mb-2">
+        <label class="col-form-label text-secondary">Total Quotes</label>
+        <div>{{(bulkQuote | async)?.individualQuotes?.length}}</div>
+      </div>
+  
+      <div class="mb-2">
+        <label class="col-form-label text-secondary">Total Quotes Not Processed</label>
+        <div>{{(bulkQuote | async)?.quotesNotProcessedIds?.length}}</div>
+      </div>
+
+      <div class="mb-2">
+        <label class="col-form-label text-secondary">Location</label>
+        <div>{{(bulkQuote | async)?.geoCode?.latitude}} {{(bulkQuote | async)?.geoCode?.longitude}}</div>
+      </div>
+  
+    </div> <!-- right col with action buttons -->
+  
+    <div class="col-3"> <!-- right col with action buttons -->
+      <ng-container >
+        <a href="/bulk-quotes/new">
+          <button class="btn btn-primary btn-block" disabled>
+            Create Bulk Quote
+          </button>
+        </a>
+      </ng-container>
+  
+      <ng-container>
+        <a href="/bulk-quotes">
+          <button class="btn btn-secondary btn-block mt-1">
+            Back to list
+          </button>
+        </a>
+      </ng-container>
+    </div> <!-- right col with action buttons -->
+  </div>
+  
+  
+  <ul ngbNav #nav="ngbNav" class="mt-4 nav-tabs" (navChange)="tabChange($event)">
+    <li ngbNavItem="individualQuotes">  <!-- individualQuotes -->
+      <a ngbNavLink>Individual Quotes</a>
+      <ng-template ngbNavContent>
+        <h4 class="mt-3">List of all the individual quotes</h4>
+        <table class="table table-hover mt-3">
+          <thead class="thead-light">
+          <tr>
+            <th scope="col">FSP Type</th>
+            <th scope="col">Party Type</th>
+            <th scope="col">Party Identifier</th>
+            <th scope="col">Party SubType</th>
+            <th scope="col">fspId</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of allQuotes">
+              <td><a routerLink="/quotes/{{item.quoteId}}">{{item.quoteId}}</a></td>
+              <td>{{item?.payer?.partyIdInfo?.partyIdType}}</td>
+              <td>{{item?.payer?.partyIdInfo?.partyIdentifier}}</td>
+              <td>{{item?.payer?.partyIdInfo?.partySubIdOrType}}</td>
+              <td>{{item?.payer?.partyIdInfo?.fspId}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-template>
+    </li><!-- individualQuotes -->
+  
+    <li ngbNavItem="quotesNotProcessed">  <!-- quotesNotProcessed -->
+        <a ngbNavLink>Individual Quotes Not Processed</a>
+        <ng-template ngbNavContent>
+          <h4 class="mt-3">List of quotes that were not able to process</h4>
+          <table class="table table-hover mt-3">
+            <thead class="thead-light">
+            <tr>
+              <th scope="col">FSP Type</th>
+              <th scope="col">Party Type</th>
+              <th scope="col">Party Identifier</th>
+              <th scope="col">Party SubType</th>
+              <th scope="col">fspId</th>
+            </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of quotesNotProcessed">
+                <td><a routerLink="/quotes/{{item.quoteId}}">{{item.quoteId}}</a></td>
+                <td>{{item?.payer?.partyIdInfo?.partyIdType}}</td>
+                <td>{{item?.payer?.partyIdInfo?.partyIdentifier}}</td>
+                <td>{{item?.payer?.partyIdInfo?.partySubIdOrType}}</td>
+                <td>{{item?.payer?.partyIdInfo?.fspId}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </ng-template>
+      </li><!-- quotesNotProcessed -->
+  </ul>
+  
+  <div class="mt-6" [ngbNavOutlet]="nav"></div>
+  
