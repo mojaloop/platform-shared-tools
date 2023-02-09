@@ -16,13 +16,13 @@
   <div class="col-12 text-right">
     <div class="row d-flex justify-content-end"> <!-- right col with action buttons -->
       <div class="col-3 text-right">
-        <ng-container >
+        <!-- <ng-container >
           <a href="/transfers/new">
             <button class="btn btn-primary btn-block" disabled>
               Create Transfer
             </button>
           </a>
-        </ng-container>
+        </ng-container> -->
         
         <ng-container>
           <a href="/transfers">
@@ -49,7 +49,7 @@
 
     <div class="mb-2">
       <label class="col-form-label text-secondary">Status</label>
-      <div [ngClass]="(transfer | async)?.transferState==='ACCEPTED'?'text-success':'text-danger'">{{(transfer | async)?.transferState}}</div>
+      <div [ngClass]="(transfer | async)?.transferState==='COMMITTED'?'text-success':'text-danger'">{{(transfer | async)?.transferState}}</div>
     </div>
 
   </div> <!-- left col with form -->
