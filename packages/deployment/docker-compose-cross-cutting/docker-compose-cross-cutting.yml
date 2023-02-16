@@ -11,8 +11,10 @@ services:
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
       - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
       - TOKEN_LIFE_SECS=${TOKEN_LIFE_SECS}
+      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
     ports:
       - 3201:3201
+    restart: unless-stopped
 
   authorization-svc:
     image: mojaloop/security-bc-authorization-svc:latest
@@ -23,8 +25,10 @@ services:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
       - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
     ports:
       - 3202:3202
+    restart: unless-stopped
 
   platform-configuration-svc:
     image: mojaloop/platform-configuration-bc-configuration-svc:latest
@@ -37,6 +41,7 @@ services:
       - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
     ports:
       - 3100:3100
+    restart: unless-stopped
 
   auditing-svc:
     image: mojaloop/auditing-bc-auditing-svc:latest
@@ -51,6 +56,7 @@ services:
       - ELASTICSEARCH_AUDITS_INDEX=${ELASTICSEARCH_AUDITS_INDEX}
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME}
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
+    restart: unless-stopped
 
   logging-svc:
     image: mojaloop/logging-bc-logging-svc:latest
@@ -64,6 +70,7 @@ services:
       - ELASTICSEARCH_AUDITS_INDEX=${ELASTICSEARCH_AUDITS_INDEX}
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME}
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
+    restart: unless-stopped
 
 volumes:
   authentication-svc_data:

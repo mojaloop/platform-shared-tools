@@ -10,18 +10,64 @@ services:
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
       - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
       - MONGO_URL=${MONGO_URL}
-      - CONFIG_SVC_BASEURL=${CONFIG_SVC_BASEURL}
+      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
       - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
       - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
       - TIGERBEETLE_CLUSTER_ID=${TIGERBEETLE_CLUSTER_ID}
       - TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES=${TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES}
+      - ACCOUNTS_BALANCES_COA_SVC_URL=${ACCOUNTS_BALANCES_COA_SVC_URL}
     ports:
       - 3010:3010
+    restart: unless-stopped
+
+  accounts_and_balances_builtin-ledger-grpc-svc:
+    image: mojaloop/accounts-and-balances-bc-builtin-ledger-grpc-svc:latest
+    volumes:
+      - aandb_builtin-ledger-grpc-svc_data:/app/data
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - MONGO_URL=${MONGO_URL}
+      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
+      - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+      - TIGERBEETLE_CLUSTER_ID=${TIGERBEETLE_CLUSTER_ID}
+      - TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES=${TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES}
+    healthcheck:
+      test: nc -z localhost 3350 || exit -1
+      start_period: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    ports:
+      - 3350:3350
+    restart: unless-stopped
+
+  accounts_and_balances_coa-grpc-svc:
+    image: mojaloop/accounts-and-balances-bc-coa-grpc-svc:latest
+    depends_on:
+      accounts_and_balances_builtin-ledger-grpc-svc:
+        condition: service_healthy
+    volumes:
+      - aandb_coa-grpc-svc_data:/app/data
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - MONGO_URL=${MONGO_URL}
+      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
+      - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+      - TIGERBEETLE_CLUSTER_ID=${TIGERBEETLE_CLUSTER_ID}
+      - TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES=${TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES}
+      - BUILTIN_LEDGER_SVC_URL=${BUILTIN_LEDGER_SVC_URL}
+    ports:
+      - 3300:3300
+    restart: unless-stopped
 
   ttk_1:
     image: mojaloop/ml-testing-toolkit:v15.0.0
-#    extra_hosts:
-#      - "scheme-adapter:192.168.1.94"
     ports:
       - "4040:4040"
       - "5050:5050"
@@ -44,8 +90,6 @@ services:
 
   ttk_2:
     image: mojaloop/ml-testing-toolkit:v15.0.0
-#    extra_hosts:
-#      - "scheme-adapter:192.168.1.94"
     ports:
       - "4041:4040"
       - "5051:5050"
@@ -65,16 +109,6 @@ services:
     command:
       - sh
       - /usr/share/nginx/start.sh
-#
-#  docker run -ti --rm --network ml_vnext_default \
-#  --name mojaloop_participants-bc-participants-svc \
-#  -e CONFIG_SVC_BASEURL=http://platform-configuration-svc:3100 \
-#  -e AUTH_Z_SVC_BASEURL=http://authorization-svc:3202 -e AUTH_N_SVC_BASEURL=http://authentication-svc:3201  \
-#  -e TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES="tigerbeetle:3000" \
-#  -e KAFKA_URL=kafka:19092 \
-#  -e MONGO_URL=mongodb://root:mongoDbPas42@mongo:27017 \
-#  -v $(pwd)/packages/participants-svc/dist/tmp_key_file:/app/data/audit_private_key.pem \
-#  mojaloop/participants-bc-participants-svc:latest
 
 volumes:
   participants-svc_data:
@@ -83,6 +117,18 @@ volumes:
       o: bind
       type: none
       device: ${ROOT_VOLUME_DEVICE_PATH}/data/participants-svc
+  aandb_builtin-ledger-grpc-svc_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/aandb_builtin-ledger-grpc-svc
+  aandb_coa-grpc-svc_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/aandb_coa-grpc-svc
   ttk1_ui_data:
     driver: local
     driver_opts:

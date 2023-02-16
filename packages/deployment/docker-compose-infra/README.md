@@ -43,6 +43,12 @@ sysctl -w vm.max_map_count=262144 # might require sudo
 docker run -v $(pwd)/tigerbeetle_data:/data ghcr.io/tigerbeetledb/tigerbeetle \
   format --cluster=0 --replica=0 /data/0_0.tigerbeetle
 ```
+Note: on macOS, you might have to add `--cap-add IPC_LOCK, see this [page](https://github.com/tigerbeetledb/tigerbeetle#with-docker) on the official TigerBeetle repo for more info.
+
+```shell
+docker run --cap-add IPC_LOCK -v $(pwd)/tigerbeetle_data:/data ghcr.io/tigerbeetledb/tigerbeetle \
+  format --cluster=0 --replica=0 /data/0_0.tigerbeetle
+```
 
 # Start Infrastructure Containers
 
@@ -114,7 +120,7 @@ curl -i --insecure -X PUT "https://localhost:9200/ml-auditing/" -u "elastic" -H 
 https://www.elastic.co/guide/en/elasticsearch/reference/8.1/explicit-mapping.html
 https://www.elastic.co/guide/en/elasticsearch/reference/8.1/mapping-types.html
 
-## Setup Kibana Dashboards Setup
+## Setup Kibana Dashboards
 
 Once the mappings are installed, it is time to import the prebuilt Kibana objects for the _DataView_ and the _search_. 
 

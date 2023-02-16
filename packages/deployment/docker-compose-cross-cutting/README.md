@@ -31,7 +31,7 @@ mkdir {data}
 * logging-svc
 
 ```shell
-mkdir {data/authentication-svc,data/authorization-svc,data/platform-configuration-svc,data/auditing-svc,data/logging-svc}
+mkdir {data/authentication-svc,data/authorization-svc,data/platform-configuration-svc,data/auditing-svc,data/logging-svc,data/aandb_coa-grpc-svc,data/aandb_builtin-ledger-grpc-svc}
 ```
 
 4. Copy the `.env.sample` to the exec dir:
