@@ -76,7 +76,7 @@ export class ParticipantsService {
         },
         error => {
           if (error && error.status===403) {
-            console.warn("Access forbidden received on getAllParticipants");
+            console.warn("UnauthorizedError received on getAllParticipants");
             subscriber.error(new UnauthorizedError(error.error?.msg));
           } else {
             console.error(error);
@@ -100,7 +100,7 @@ export class ParticipantsService {
         },
         error => {
           if (error && error.status===403) {
-            console.warn("Access forbidden received on getParticipant");
+            console.warn("UnauthorizedError received on getParticipant");
             subscriber.error(new UnauthorizedError(error.error?.msg));
           } else {
             console.error(error);
@@ -124,7 +124,7 @@ export class ParticipantsService {
         },
         error => {
           if (error && error.status===403) {
-            console.warn("Access forbidden received on createParticipant");
+            console.warn("UnauthorizedError received on createParticipant");
             subscriber.error(new UnauthorizedError(error.error?.msg));
           } else {
             console.error(error);
@@ -148,7 +148,7 @@ export class ParticipantsService {
         },
         error => {
           if (error && error.status===403) {
-            console.warn("Access forbidden received on approveParticipant");
+            console.warn("UnauthorizedError received on approveParticipant");
             subscriber.error(new UnauthorizedError(error.error?.msg));
           } else {
             console.error(error);
@@ -171,7 +171,7 @@ export class ParticipantsService {
         },
         error => {
           if (error && error.status===403) {
-            console.warn(`Access forbidden received on ${enable ? "enable":"disable"} participant`);
+            console.warn(`UnauthorizedError received on ${enable ? "enable":"disable"} participant`);
             subscriber.error(new UnauthorizedError(error.error?.msg));
           } else {
             console.error(error);
@@ -202,7 +202,7 @@ export class ParticipantsService {
         },
         error => {
           if (error && error.status===403) {
-            console.warn("Access forbidden received on getParticipantAccounts");
+            console.warn("UnauthorizedError received on getParticipantAccounts");
             subscriber.error(new UnauthorizedError(error.error?.msg));
           } else {
             console.error(error);
@@ -224,8 +224,8 @@ export class ParticipantsService {
           return subscriber.complete();
         },
         error => {
-          if (error && error.status===403) {
-            console.warn("Access forbidden received on createAccount");
+          if (error && error.status===401) {
+            console.warn("UnauthorizedError received on createAccount");
             subscriber.error(new UnauthorizedError(error.error?.msg));
           } else {
             console.error(error);
@@ -247,8 +247,8 @@ export class ParticipantsService {
           return subscriber.complete();
         },
         error => {
-          if (error && error.status===403) {
-            console.warn("Access forbidden received on createFundsMovement");
+          if (error && error.status===401) {
+            console.warn("UnauthorizedError received on createFundsMovement");
             subscriber.error(new UnauthorizedError(error.error?.msg));
           } else {
             console.error(error);
@@ -270,8 +270,8 @@ export class ParticipantsService {
           return subscriber.complete();
         },
         error => {
-          if (error && error.status===403) {
-            console.warn("Access forbidden received on approveFundsMovement");
+          if (error && error.status===401) {
+            console.warn("UnauthorizedError received on approveFundsMovement");
             subscriber.error(new UnauthorizedError(error.error?.msg));
           } else {
             console.error(error);
@@ -294,8 +294,8 @@ export class ParticipantsService {
           return subscriber.complete();
         },
         error => {
-          if (error && error.status===403) {
-            console.warn("Access forbidden received on createEndpoint");
+          if (error && error.status===401) {
+            console.warn("UnauthorizedError received on createEndpoint");
             subscriber.error(new UnauthorizedError(error.error?.msg));
           } else {
             console.error(error);
@@ -317,8 +317,8 @@ export class ParticipantsService {
           return subscriber.complete();
         },
         error => {
-          if (error && error.status===403) {
-            console.warn("Access forbidden received on changeEndpoint");
+          if (error && error.status===401) {
+            console.warn("UnauthorizedError received on changeEndpoint");
             subscriber.error(new UnauthorizedError(error.error?.msg));
           } else {
             console.error(error);
@@ -340,8 +340,8 @@ export class ParticipantsService {
           return subscriber.complete();
         },
         error => {
-          if (error && error.status===403) {
-            console.warn("Access forbidden received on removeEndpoint");
+          if (error && error.status===401) {
+            console.warn("UnauthorizedError received on removeEndpoint");
             subscriber.error(new UnauthorizedError(error.error?.msg));
           } else {
             console.error(error);
@@ -371,8 +371,8 @@ export class ParticipantsService {
           return subscriber.complete();
         },
         error => {
-          if (error && error.status===403) {
-            console.warn("Access forbidden received on simulateTransfer");
+          if (error && error.status===401) {
+            console.warn("UnauthorizedError received on simulateTransfer");
             subscriber.error(new UnauthorizedError(error.error?.msg));
           } else {
             console.error(error);
