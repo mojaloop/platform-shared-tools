@@ -1,0 +1,135 @@
+<h3>Request a new Quote</h3>
+<form [formGroup]="form" (ngSubmit)="saveBulkQuote()">
+
+  <div class="form-row"> <!--form-row-->
+
+    <!--quoteId-->
+    <div class="form-group col-md-12">
+      <label for="quoteId">Quote Id:</label>
+      <input id="quoteId" formControlName="quoteId" type="text" class="form-control"
+             [ngClass]="{'is-valid': form.controls['quoteId'].touched && form.controls['quoteId'].valid,
+              'is-invalid': (submitted || form.controls['quoteId'].touched) && form.controls['quoteId'].invalid}">
+    </div>
+
+    <!--bulkQuoteId-->
+    <div class="form-group col-md-12">
+      <label for="bulkQuoteId">Bulk Quote Id:</label>
+      <input id="bulkQuoteId" class="form-control" formControlName="bulkQuoteId" type="text">
+    </div>
+
+    <!--transactionId-->
+    <div class="form-group col-md-12">
+      <label for="transactionId">Transaction Id:</label>
+      <input id="transactionId" class="form-control" formControlName="transactionId" type="text">
+    </div>
+
+    <!--payee-->
+    <div class="form-group col-md-12 border-bottom">
+      <h4>Payee Information</h4>
+    </div>
+    <div class="form-group col-md-3">
+      <label for="payeePartyIdType">Party Type:</label>
+      <input class="form-control" id="payeePartyIdType" formControlName="payeePartyIdType" type="text"
+             [ngClass]="{'is-valid': form.controls['payeePartyIdType'].touched && form.controls['payeePartyIdType'].valid,
+             'is-invalid': (submitted || form.controls['payeePartyIdType'].touched) && form.controls['payeePartyIdType'].invalid}">
+    </div>
+    <div class="form-group col-md-3">
+      <label for="payeePartyIdentifier">Party Identifier:</label>
+      <input class="form-control" id="payeePartyIdentifier" formControlName="payeePartyIdentifier" type="text"
+             [ngClass]="{'is-valid': form.controls['payeePartyIdentifier'].touched && form.controls['payeePartyIdentifier'].valid,
+             'is-invalid': (submitted || form.controls['payeePartyIdentifier'].touched) && form.controls['payeePartyIdentifier'].invalid}">
+    </div>
+    <div class="form-group col-md-3">
+      <label for="payeePartySubIdOrType">Party Identifier:</label>
+      <input class="form-control" id="payeePartySubIdOrType" formControlName="payeePartySubIdOrType" type="text"
+             [ngClass]="{'is-valid': form.controls['payeePartySubIdOrType'].touched && form.controls['payeePartySubIdOrType'].valid,
+             'is-invalid': (submitted || form.controls['payeePartySubIdOrType'].touched) && form.controls['payeePartySubIdOrType'].invalid}">
+    </div>
+    <div class="form-group col-md-3">
+      <label for="payeeFspId">FSP Identifier:</label>
+      <input class="form-control" id="payeeFspId" formControlName="payeeFspId" type="text">
+    </div>
+
+    <!--payer-->
+    <div class="form-group col-md-12 border-bottom">
+      <h4>Payer Information</h4>
+    </div>
+    <div class="form-group col-md-3">
+      <label for="payerPartyIdType">Party Type:</label>
+      <input class="form-control" id="payerPartyIdType" formControlName="payerPartyIdType" type="text"
+             [ngClass]="{'is-valid': form.controls['payerPartyIdType'].touched && form.controls['payerPartyIdType'].valid,
+             'is-invalid': (submitted || form.controls['payerPartyIdType'].touched) && form.controls['payerPartyIdType'].invalid}">
+    </div>
+    <div class="form-group col-md-3">
+      <label for="payerPartyIdentifier">Party Identifier:</label>
+      <input class="form-control" id="payerPartyIdentifier" formControlName="payerPartyIdentifier" type="text"
+             [ngClass]="{'is-valid': form.controls['payerPartyIdentifier'].touched && form.controls['payerPartyIdentifier'].valid,
+             'is-invalid': (submitted || form.controls['payerPartyIdentifier'].touched) && form.controls['payerPartyIdentifier'].invalid}">
+    </div>
+    <div class="form-group col-md-3">
+      <label for="payerPartySubIdOrType">Party Identifier:</label>
+      <input class="form-control" id="payerPartySubIdOrType" formControlName="payerPartySubIdOrType" type="text"
+             [ngClass]="{'is-valid': form.controls['payerPartySubIdOrType'].touched && form.controls['payerPartySubIdOrType'].valid,
+             'is-invalid': (submitted || form.controls['payerPartySubIdOrType'].touched) && form.controls['payerPartySubIdOrType'].invalid}">
+    </div>
+    <div class="form-group col-md-3">
+      <label for="payerFspId">FSP Identifier:</label>
+      <input class="form-control" id="payerFspId" formControlName="payerFspId" type="text">
+    </div>
+
+    <!--amount-->
+    <div class="form-group col-md-12 border-bottom">
+      <h4>Amount Information:</h4>
+    </div>
+    <div class="form-group col-md-4">
+      <label for="amountType">Amount Type:</label>
+      <input class="form-control" id="amountType" formControlName="amountType" type="text"
+              [ngClass]="{'is-valid': form.controls['amountType'].touched && form.controls['amountType'].valid,
+              'is-invalid': (submitted || form.controls['amountType'].touched) && form.controls['amountType'].invalid}">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="currency">Currency:</label>
+      <input class="form-control" id="currency" formControlName="currency" type="text"
+              [ngClass]="{'is-valid': form.controls['currency'].touched && form.controls['currency'].valid,
+              'is-invalid': (submitted || form.controls['currency'].touched) && form.controls['currency'].invalid}">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="amount">Amount:</label>
+      <input class="form-control" id="amount" formControlName="amount" type="text"
+              [ngClass]="{'is-valid': form.controls['amount'].touched && form.controls['amount'].valid,
+              'is-invalid': (submitted || form.controls['amount'].touched) && form.controls['amount'].invalid}">
+    </div>
+
+    <!--transaction-->
+    <div class="form-group col-md-12 border-bottom">
+      <h4>Transaction Information:</h4>
+    </div>
+    <div class="form-group col-md-4">
+      <label for="scenario">Scenario:</label>
+      <input class="form-control" id="scenario" formControlName="scenario" type="text"
+             [ngClass]="{'is-valid': form.controls['scenario'].touched && form.controls['scenario'].valid,
+             'is-invalid': (submitted || form.controls['scenario'].touched) && form.controls['scenario'].invalid}">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="initiator">Initiator:</label>
+      <input class="form-control" id="initiator" formControlName="initiator" type="text"
+             [ngClass]="{'is-valid': form.controls['initiator'].touched && form.controls['initiator'].valid,
+             'is-invalid': (submitted || form.controls['initiator'].touched) && form.controls['initiator'].invalid}">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="initiatorType">Initiator Type:</label>
+      <input class="form-control" id="initiatorType" formControlName="initiatorType" type="text"
+             [ngClass]="{'is-valid': form.controls['initiatorType'].touched && form.controls['initiatorType'].valid,
+             'is-invalid': (submitted || form.controls['initiatorType'].touched) && form.controls['initiatorType'].invalid}">
+    </div>
+  </div> <!--form-row-->
+
+  <div class="form-row d-flex mb-3">
+    <div class="p-2">
+      <button type="submit" class="btn btn-primary" [disabled]="!form.valid">Create Quote</button>
+    </div>
+    <div class="ml-auto p-2">
+      <button class="btn btn-danger" (click)="cancel()">Cancel</button>
+    </div>
+  </div>
+</form>

@@ -52,6 +52,33 @@
       "^/_interop": ""
     },
     "logLevel": "debug"
+  },
+  "/_quotes": {
+    "target": "http://localhost:3033/",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/_quotes": ""
+    },
+    "logLevel": "debug"
+  },
+  "/_bulk-quotes": {
+    "target": "http://localhost:3033/",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/_bulk-quotes": ""
+    },
+    "logLevel": "debug"
+  },
+  "/_transfers": {
+    "target": "http://localhost:3030/",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/_transfers": ""
+    },
+    "logLevel": "debug"
   }
 }
 

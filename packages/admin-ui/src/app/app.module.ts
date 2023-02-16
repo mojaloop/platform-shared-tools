@@ -32,6 +32,14 @@ import {AccountLookupOracleCreateComponent} from "src/app/account-lookup/oracle-
 import {AccountLookupOracleListComponent} from "src/app/account-lookup/oracle-list.component";
 import {LoginComponent} from "src/app/login/login.component";
 import {TestsComponent} from "src/app/tests/tests.component";
+import { QuotesComponent } from './quotes/quotes.component';
+import { QuoteDetailComponent } from './quotes/quote-detail.component';
+import { QuoteCreateComponent } from './quotes/quote-create.component';
+import { BulkQuotesComponent } from './bulk-quotes/bulk-quotes.component';
+import { BulkQuoteDetailComponent } from './bulk-quotes/bulk-quote-detail.component';
+import { BulkQuoteCreateComponent } from './bulk-quotes/bulk-quote-create.component';
+import { TransfersComponent } from './transfers/transfers.component';
+import { TransferDetailComponent } from './transfers/transfer-detail.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +60,15 @@ import {TestsComponent} from "src/app/tests/tests.component";
     AccountLookupComponent,
     AccountLookupOracleListComponent,
     AccountLookupOracleDetailComponent,
-    AccountLookupOracleCreateComponent
+    AccountLookupOracleCreateComponent,
+    QuotesComponent,
+    QuoteDetailComponent,
+    QuoteCreateComponent,
+    BulkQuotesComponent,
+    BulkQuoteDetailComponent,
+    BulkQuoteCreateComponent,
+    TransfersComponent,
+    TransferDetailComponent,
   ],
   imports: [
     BrowserModule,

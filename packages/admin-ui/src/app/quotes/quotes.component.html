@@ -1,0 +1,29 @@
+<h3>Quotes</h3>
+
+<div>
+  <table class="table">
+    <thead class="thead-light">
+    <tr>
+      <th scope="col">Quote ID</th>
+      <th scope="col">BulkQuote ID</th>
+      <th scope="col">Transaction ID</th>
+      <th scope="col">Amount Type</th>
+      <th scope="col">Transaction Type</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of (quotes | async)">
+      <td><a routerLink="/quotes/{{item.quoteId}}">{{item.quoteId}}</a></td>
+      <td>{{item.bulkQuoteId ? item.bulkQuoteId : "None" }}</td>
+      <td>{{item.transactionId}}</td>
+      <td>{{item.amountType}}</td>
+      <td>{{item.transactionType.scenario}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div>
+  <button class="btn btn-primary" routerLink="/quotes/new">Create Quote</button>
+</div>

@@ -1,0 +1,76 @@
+<div class="row">
+  <div class="col-md-8 align-self-center">
+    <h2>Transfer Details</h2>
+  </div>
+
+  <div class="col-md-4 align-self-center">
+    <small><strong>ID: </strong> {{(transfer | async)?.transferId}}
+      <a (click)="copyTransferIdToClipboard()"
+         ngbTooltip="Copy ID to clipboard"><i class="bi bi-clipboard-plus"></i></a></small>
+  </div>
+</div>
+<hr>
+
+  <div class="row">
+      
+  <div class="col-12 text-right">
+    <div class="row d-flex justify-content-end"> <!-- right col with action buttons -->
+      <div class="col-3 text-right">
+        <!-- <ng-container >
+          <a href="/transfers/new">
+            <button class="btn btn-primary btn-block" disabled>
+              Create Transfer
+            </button>
+          </a>
+        </ng-container> -->
+        
+        <ng-container>
+          <a href="/transfers">
+            <button class="btn btn-secondary btn-block mt-1">
+              Back to list
+            </button>
+          </a>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6"> <!-- left col with form -->
+
+    <div class="mb-2">
+      <label class="col-form-label text-secondary">Payee FSP</label>
+      <div>{{(transfer | async)?.payeeFsp}}</div>
+    </div>
+
+    <div class="mb-2">
+      <label class="col-form-label text-secondary">Payer FSP</label>
+      <div>{{(transfer | async)?.payerFsp}}</div>
+    </div>
+
+    <div class="mb-2">
+      <label class="col-form-label text-secondary">Status</label>
+      <div [ngClass]="(transfer | async)?.transferState==='COMMITTED'?'text-success':'text-danger'">{{(transfer | async)?.transferState}}</div>
+    </div>
+
+  </div> <!-- left col with form -->
+
+  <div class="col-6"> <!-- right col with action buttons -->
+
+
+    <div class="mb-2">
+      <label class="col-form-label text-secondary">Amount</label>
+      <div class="text-break">{{(transfer | async)?.amount?.amount}} {{(transfer | async)?.amount?.currency}}</div>
+    </div>
+
+    <div class="mb-2">
+      <label class="col-form-label text-secondary">Condition</label>
+      <div class="text-break">{{(transfer | async)?.condition}}</div>
+    </div>
+    
+    <div class="mb-2">
+      <label class="col-form-label text-secondary">Expiration</label>
+      <div class="text-break">{{(transfer | async)?.expiration}}</div>
+    </div>
+
+  </div> <!-- right col with action buttons -->
+</div>

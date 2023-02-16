@@ -36,6 +36,8 @@
  
  import {SettingsService} from "./settings.service";
  import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
+import { Quote } from "./quote_types";
+import { BulkQuote } from "./bulk_quote_types";
 //  import {} from "./interop_types";
  
  const SVC_BASEURL = "/_interop";
@@ -139,5 +141,51 @@
     });
   }
 
+  // Quotes
+  createQuoteRequest(quote: Quote):Observable<any>{
+    const URL = `${SVC_BASEURL}/quotes`;
+
+    return new Observable<any>(subscriber => {
+      const body = { ...quote };
+
+      this._http.post<any>(URL, body).subscribe(
+        (result: any) => {
+          console.log(`GET quote response: ${result}`);
+
+          subscriber.next(result);
+          return subscriber.complete();
+        },
+        error => {
+          console.error(error);
+          subscriber.error(error);
+
+          return subscriber.complete();
+        }
+      );
+    });
+  }
+
+  createBulkQuoteRequest(bulkQuote: BulkQuote):Observable<any>{
+    const URL = `${SVC_BASEURL}/bulkQuotes`;
+
+    return new Observable<any>(subscriber => {
+      const body = { ...bulkQuote };
+
+      this._http.post<any>(URL, body).subscribe(
+        (result: any) => {
+          console.log(`GET bulk quote response: ${result}`);
+
+          subscriber.next(result);
+          return subscriber.complete();
+        },
+        error => {
+          console.error(error);
+          subscriber.error(error);
+
+          return subscriber.complete();
+        }
+      );
+    });
+  }
  }
  
