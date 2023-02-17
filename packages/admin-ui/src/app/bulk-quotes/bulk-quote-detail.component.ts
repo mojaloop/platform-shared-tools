@@ -53,7 +53,7 @@ export class BulkQuoteDetailComponent implements OnInit {
     this.allQuotes = this.quotes.value.filter(item => {
       return item.bulkQuoteId === this._bulkQuoteId
     })
-    this.quotesNotProcessed = this.quotes.value.filter(item => this.bulkQuote.value?.quotesNotProcessedIds.includes(item.bulkQuoteId))
+    this.quotesNotProcessed = this.quotes.value.filter(item => this.bulkQuote.value?.quotesNotProcessedIds.includes(item.quoteId))
   }
 
   private async _fetchQuote(id: string):Promise<void> {

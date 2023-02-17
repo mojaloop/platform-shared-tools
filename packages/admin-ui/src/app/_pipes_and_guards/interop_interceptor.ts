@@ -24,10 +24,10 @@ export class InteropInterceptor implements HttpInterceptor {
 
   addFSPIOPHeaders(request: HttpRequest<any>) {
     return request.clone({
-        setHeaders: {
-          "accept": "application/vnd.interoperability.parties+json;version=1.0",
-          "content-type": "application/vnd.interoperability.parties+json,version=1.0",
-        }
-    })
+      setHeaders: {
+        "accept": `application/vnd.interoperability.${request.url.split('/')[2]}+json;version=1.1`,
+        "content-type": `application/vnd.interoperability.${request.url.split('/')[2]}+json;version=1.1`,
+      }
+  })
   }
 }

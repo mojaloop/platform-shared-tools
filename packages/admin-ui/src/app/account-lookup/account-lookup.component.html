@@ -27,7 +27,8 @@
   <label class="sr-only" for="partySubType">Party SubType</label>
   <input type="text" class="form-control mr-sm-2 pr-0 my-1" id="partySubType" formControlName="partySubType" placeholder="Party SubType"
     [ngClass]="{'is-valid': formAssociateParticipant.controls['partySubType'].touched && formAssociateParticipant.controls['partySubType'].valid,
-    'is-invalid': (submittedAssociateParticipant || formAssociateParticipant.controls['partySubType'].touched) && formAssociateParticipant.controls['partySubType'].invalid}">
+    'is-invalid': (submittedAssociateParticipant || formAssociateParticipant.controls['partySubType'].touched) && formAssociateParticipant.controls['partySubType'].invalid}"
+    [ngStyle]="{'max-width': '200px'}">
 
   <button type="submit" class="btn btn-primary my-2" [disabled]="!formAssociateParticipant.valid">Associate Participant</button>
 </form>
@@ -59,7 +60,8 @@
   <label class="sr-only" for="partySubType">Party SubType</label>
   <input type="text" class="form-control mr-sm-2 pr-0 my-1" id="partySubType" formControlName="partySubType" placeholder="Party SubType"
     [ngClass]="{'is-valid': formDisassociateParticipant.controls['partySubType'].touched && formDisassociateParticipant.controls['partySubType'].valid,
-    'is-invalid': (submittedAssociateParticipant || formDisassociateParticipant.controls['partySubType'].touched) && formDisassociateParticipant.controls['partySubType'].invalid}">
+    'is-invalid': (submittedAssociateParticipant || formDisassociateParticipant.controls['partySubType'].touched) && formDisassociateParticipant.controls['partySubType'].invalid}"
+    [ngStyle]="{'max-width': '200px'}">
 
   <button type="submit" class="btn btn-primary my-2" [disabled]="!formDisassociateParticipant.valid">Disassociate Participant</button>
 </form>
@@ -92,7 +94,8 @@
   <label class="sr-only" for="partySubType">Party SubType</label>
   <input type="text" class="form-control mr-sm-2 pr-0 my-1" id="partySubType" formControlName="partySubType" placeholder="Party SubType"
     [ngClass]="{'is-valid': formGetParticipant.controls['partySubType'].touched && formGetParticipant.controls['partySubType'].valid,
-    'is-invalid': (submittedAssociateParticipant || formGetParticipant.controls['partySubType'].touched) && formGetParticipant.controls['partySubType'].invalid}">
+    'is-invalid': (submittedAssociateParticipant || formGetParticipant.controls['partySubType'].touched) && formGetParticipant.controls['partySubType'].invalid}"
+    [ngStyle]="{'max-width': '200px'}">
 
   <button type="submit" class="btn btn-primary my-2" [disabled]="!formGetParticipant.valid">Get Participant</button>
 </form>
@@ -124,7 +127,8 @@
   <label class="sr-only" for="partySubType">Party SubType</label>
   <input type="text" class="form-control mr-sm-2 pr-0 my-1" id="partySubType" formControlName="partySubType" placeholder="Party SubType"
     [ngClass]="{'is-valid': formGetParty.controls['partySubType'].touched && formGetParty.controls['partySubType'].valid,
-    'is-invalid': (submittedAssociateParticipant || formGetParty.controls['partySubType'].touched) && formGetParty.controls['partySubType'].invalid}">
+    'is-invalid': (submittedAssociateParticipant || formGetParty.controls['partySubType'].touched) && formGetParty.controls['partySubType'].invalid}"
+    [ngStyle]="{'max-width': '200px'}">
 
 
   <button type="submit" class="btn btn-primary my-2" [disabled]="!formGetParty.valid">Get Party</button>
