@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   authentication-svc:
-    image: mojaloop/security-bc-authentication-svc:0.1.3
+    image: mojaloop/security-bc-authentication-svc:0.1.4
     restart: unless-stopped
     volumes:
       - authentication-svc_data:/app/data
@@ -19,7 +19,7 @@ services:
     restart: unless-stopped
 
   authorization-svc:
-    image: mojaloop/security-bc-authorization-svc:0.1.3
+    image: mojaloop/security-bc-authorization-svc:0.1.4
     restart: unless-stopped
     volumes:
       - authorization-svc_data:/app/data
