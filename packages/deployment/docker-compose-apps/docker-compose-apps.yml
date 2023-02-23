@@ -76,7 +76,7 @@ services:
     restart: unless-stopped
 
   participants-svc:
-    image: mojaloop/participants-bc-participants-svc:0.1.2
+    image: mojaloop/participants-bc-participants-svc:0.1.3
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -97,6 +97,37 @@ services:
       - ACCOUNTS_BALANCES_COA_SVC_URL=${ACCOUNTS_BALANCES_COA_SVC_URL}
     ports:
       - 3010:3010
+    restart: unless-stopped
+
+  account-lookup-http-oracle-svc:
+    image: mojaloop/account-lookup-bc-http-oracle-svc:0.1.1
+    volumes:
+      - account-lookup-http-oracle-svc_data:/app/data
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+    ports:
+      - 3031:3031
+    restart: unless-stopped
+
+  account-lookup-svc:
+    image: mojaloop/account-lookup-bc-account-lookup-svc:0.1.1
+    volumes:
+      - account-lookup-svc_data:/app/data
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - MONGO_URL=${MONGO_URL}
+      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
+      - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+      - AUTH_N_TOKEN_ISSUER_NAME=${AUTH_N_TOKEN_ISSUER_NAME}
+      - AUTH_N_TOKEN_AUDIENCE=${AUTH_N_TOKEN_AUDIENCE}
+      - PARTICIPANTS_SVC_URL=${PARTICIPANTS_SVC_URL}
+    ports:
+      - 3030:3030
     restart: unless-stopped
 
   ttk_1:
@@ -150,6 +181,18 @@ volumes:
       o: bind
       type: none
       device: ${ROOT_VOLUME_DEVICE_PATH}/data/participants-svc
+  account-lookup-svc_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/account-lookup-svc
+  account-lookup-http-oracle-svc_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/account-lookup-http-oracle-svc
   fspiop-api-svc_data:
     driver: local
     driver_opts:

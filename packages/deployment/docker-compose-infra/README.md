@@ -1,5 +1,7 @@
 # Platform Tools - Docker Compose for Infrastructure Services
 
+Note: for Windows specific tips see this [readme](README_WIN.md)
+
 # Setup Infrastructure Containers 
 
 To startup Kafka, MongoDB, Elasticsearch and Kibana, follow the steps below:
@@ -19,9 +21,10 @@ cd exec
 * `kibanadata`
 * `logs`
 * `tigerbeetle_data`
+* `mongodb_data`
 
 ```shell
-mkdir {certs,esdata01,kibanadata,logs,tigerbeetle_data}
+mkdir {certs,esdata01,kibanadata,logs,tigerbeetle_data,mongodb_data}
 ```
 
 3. Copy the `.env.sample` to the exec dir:

@@ -59,7 +59,7 @@ services:
         condition: service_healthy
     image: docker.elastic.co/elasticsearch/elasticsearch:${ES_STACK_VERSION}
     restart: unless-stopped
-    volumes:
+    volumes: 
       - certs_vol:/usr/share/elasticsearch/config/certs
       - esdata01_vol:/usr/share/elasticsearch/data
     ports:
@@ -155,6 +155,7 @@ services:
       KAFKA_JMX_HOSTNAME: ${DOCKER_HOST_IP:-127.0.0.1}
       KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
       KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
+      KAFKA_NUM_PARTITIONS: 4
     healthcheck:
       test: nc -z localhost 9092 || exit -1
       start_period: 30s
@@ -178,6 +179,8 @@ services:
   mongo:
     image: mongo
     restart: unless-stopped
+    volumes:
+      - mongodb_data_vol:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
@@ -249,3 +252,9 @@ volumes:
       o: bind
       type: none
       device: ${ROOT_VOLUME_DEVICE_PATH}/tigerbeetle_data
+  mongodb_data_vol:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${ROOT_VOLUME_DEVICE_PATH}/mongodb_data
