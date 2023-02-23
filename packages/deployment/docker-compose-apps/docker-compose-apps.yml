@@ -20,7 +20,7 @@ services:
       - 4000:4000
 
   accounts_and_balances_builtin-ledger-grpc-svc:
-    image: mojaloop/accounts-and-balances-bc-builtin-ledger-grpc-svc:0.1.4
+    image: mojaloop/accounts-and-balances-bc-builtin-ledger-grpc-svc:0.1.5
     volumes:
       - aandb_builtin-ledger-grpc-svc_data:/app/data
     environment:
@@ -46,7 +46,7 @@ services:
     restart: unless-stopped
 
   accounts_and_balances_coa-grpc-svc:
-    image: mojaloop/accounts-and-balances-bc-coa-grpc-svc:0.1.4
+    image: mojaloop/accounts-and-balances-bc-coa-grpc-svc:0.1.6
     depends_on:
       accounts_and_balances_builtin-ledger-grpc-svc:
         condition: service_healthy
