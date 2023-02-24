@@ -29,13 +29,14 @@ mkdir {data}
 * aandb_coa-grpc-svc
 * account-lookup-http-oracle-svc
 * account-lookup-svc
+* quoting-svc
 * fspiop-api-svc
 * participants-svc
 * ttk1_ui_data
 * ttk2_ui_data
 
 ```shell
-mkdir {data/aandb_builtin-ledger-grpc-svc,data/aandb_coa-grpc-svc,data/fspiop-api-svc,data/account-lookup-svc,data/account-lookup-http-oracle-svc,data/participants-svc,data/ttk1_ui_data,data/ttk2_ui_data}
+mkdir {data/aandb_builtin-ledger-grpc-svc,data/aandb_coa-grpc-svc,data/fspiop-api-svc,data/account-lookup-svc,data/account-lookup-http-oracle-svc,data/participants-svc,data/quoting-svc,data/ttk1_ui_data,data/ttk2_ui_data}
 ```
 
 4. Copy the `.env.sample` to the exec dir:

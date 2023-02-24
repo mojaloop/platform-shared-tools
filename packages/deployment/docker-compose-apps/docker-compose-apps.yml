@@ -130,6 +130,25 @@ services:
       - 3030:3030
     restart: unless-stopped
 
+  quoting-svc:
+    image: mojaloop/quoting-bc-quoting-svc:0.1.0
+    volumes:
+      - quoting-svc_data:/app/data
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - MONGO_URL=${MONGO_URL}
+      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
+      - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+      - AUTH_N_TOKEN_ISSUER_NAME=${AUTH_N_TOKEN_ISSUER_NAME}
+      - AUTH_N_TOKEN_AUDIENCE=${AUTH_N_TOKEN_AUDIENCE}
+      - PARTICIPANTS_SVC_URL=${PARTICIPANTS_SVC_URL}
+    ports:
+      - 3033:3033
+    restart: unless-stopped
+
   ttk_1:
     image: mojaloop/ml-testing-toolkit:v15.0.0
     ports:
@@ -193,6 +212,12 @@ volumes:
       o: bind
       type: none
       device: ${ROOT_VOLUME_DEVICE_PATH}/data/account-lookup-http-oracle-svc
+  quoting-svc_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/quoting-svc
   fspiop-api-svc_data:
     driver: local
     driver_opts:
