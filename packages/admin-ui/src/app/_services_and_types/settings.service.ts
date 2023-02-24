@@ -1,4 +1,5 @@
-import {Injectable, isDevMode} from '@angular/core';
+import {Injectable} from '@angular/core';
+import {environment} from '../../environments/environment';
 
 const USERNAME_KEYNAME = "username";
 const ACCESSTOKEN_KEYNAME = "accessToken";
@@ -18,7 +19,7 @@ export class SettingsService {
   constructor() {
     this.accessToken = localStorage.getItem(ACCESSTOKEN_KEYNAME);
     this.username = localStorage.getItem(USERNAME_KEYNAME);
-    this._isDevMode = isDevMode();
+    this._isDevMode = !environment.production;
   }
 
   get isDevMode(): boolean {
