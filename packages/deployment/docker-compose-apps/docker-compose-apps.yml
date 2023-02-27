@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   fspiop-api-svc:
-    image: mojaloop/interop-api-bc-fspiop-api-svc:0.1.1
+    image: mojaloop/interop-api-bc-fspiop-api-svc:0.1.2
     volumes:
       - fspiop-api-svc_data:/app/data
     environment:
@@ -154,8 +154,12 @@ services:
     ports:
       - 4200:4200
 
+
+  # blue
   ttk_1:
     image: mojaloop/ml-testing-toolkit:v15.0.0
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
     ports:
       - "4040:4040"
       - "5050:5050"
@@ -176,8 +180,11 @@ services:
       - sh
       - /usr/share/nginx/start.sh
 
+  # green
   ttk_2:
     image: mojaloop/ml-testing-toolkit:v15.0.0
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
     ports:
       - "4041:4040"
       - "5051:5050"

@@ -8,7 +8,8 @@
     "build": "NODE_OPTIONS=--openssl-legacy-provider ng build --configuration development",
     "build:prod": "NODE_OPTIONS=--openssl-legacy-provider ng build",
     "watch": "NODE_OPTIONS=--openssl-legacy-provider ng build --watch --configuration development",
-    "test": "NODE_OPTIONS=--openssl-legacy-provider ng test"
+    "test": "NODE_OPTIONS=--openssl-legacy-provider ng test",
+  	"docker:build": "docker build -f Dockerfile -t mojaloop/vnext-admin-ui-svc:0.1.0 . ## NOTE: UPDATE THE VERSION"
   },
   "private": true,
   "dependencies": {

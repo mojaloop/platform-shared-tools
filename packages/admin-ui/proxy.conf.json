@@ -72,7 +72,7 @@
     "logLevel": "debug"
   },
   "/_transfers": {
-    "target": "http://localhost:3030/",
+    "target": "http://localhost:3500/",
     "secure": true,
     "changeOrigin": true,
     "pathRewrite": {
