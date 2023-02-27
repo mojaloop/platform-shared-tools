@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   fspiop-api-svc:
-    image: mojaloop/interop-api-bc-fspiop-api-svc:0.1.2
+    image: mojaloop/interop-api-bc-fspiop-api-svc:0.1.3
     volumes:
       - fspiop-api-svc_data:/app/data
     environment:
@@ -76,7 +76,7 @@ services:
     restart: unless-stopped
 
   participants-svc:
-    image: mojaloop/participants-bc-participants-svc:0.1.3
+    image: mojaloop/participants-bc-participants-svc:0.1.4
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -95,24 +95,42 @@ services:
       - TIGERBEETLE_CLUSTER_ID=${TIGERBEETLE_CLUSTER_ID}
       - TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES=${TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES}
       - ACCOUNTS_BALANCES_COA_SVC_URL=${ACCOUNTS_BALANCES_COA_SVC_URL}
+    healthcheck:
+      test: nc -z localhost 3010 || exit -1
+      start_period: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
     ports:
       - 3010:3010
     restart: unless-stopped
 
   account-lookup-http-oracle-svc:
     image: mojaloop/account-lookup-bc-http-oracle-svc:0.1.1
+    depends_on:
+      participants-svc:
+        condition: service_healthy
     volumes:
       - account-lookup-http-oracle-svc_data:/app/data
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
       - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+    healthcheck:
+      test: nc -z localhost 3031 || exit -1
+      start_period: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
     ports:
       - 3031:3031
     restart: unless-stopped
 
   account-lookup-svc:
     image: mojaloop/account-lookup-bc-account-lookup-svc:0.1.1
+    depends_on:
+      account-lookup-http-oracle-svc:
+        condition: service_healthy
     volumes:
       - account-lookup-svc_data:/app/data
     environment:
@@ -132,6 +150,9 @@ services:
 
   quoting-svc:
     image: mojaloop/quoting-bc-quoting-svc:0.1.0
+    depends_on:
+      participants-svc:
+        condition: service_healthy
     volumes:
       - quoting-svc_data:/app/data
     environment:
@@ -149,8 +170,85 @@ services:
       - 3033:3033
     restart: unless-stopped
 
+  transfers-api-svc:
+    image: mojaloop/transfers-bc-transfers-api-svc:0.1.0
+    depends_on:
+      accounts_and_balances_coa-grpc-svc:
+        condition: service_healthy
+      participants-svc:
+        condition: service_healthy
+    volumes:
+      - transfers-api-svc_data:/app/data
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - MONGO_URL=${MONGO_URL}
+      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
+      - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+      - AUTH_N_TOKEN_ISSUER_NAME=${AUTH_N_TOKEN_ISSUER_NAME}
+      - AUTH_N_TOKEN_AUDIENCE=${AUTH_N_TOKEN_AUDIENCE}
+      - PARTICIPANTS_SVC_URL=${PARTICIPANTS_SVC_URL}
+    healthcheck:
+      test: nc -z localhost 3500 || exit -1
+      start_period: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    ports:
+      - 3500:3500
+    restart: unless-stopped
+
+  transfers-event-handler-svc:
+    image: mojaloop/transfers-bc-event-handler-svc:0.1.0
+    depends_on:
+      accounts_and_balances_coa-grpc-svc:
+        condition: service_healthy
+      participants-svc:
+        condition: service_healthy
+    volumes:
+      - transfers-event-handler-svc_data:/app/data
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
+      - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+      - AUTH_N_TOKEN_ISSUER_NAME=${AUTH_N_TOKEN_ISSUER_NAME}
+      - AUTH_N_TOKEN_AUDIENCE=${AUTH_N_TOKEN_AUDIENCE}
+      - PARTICIPANTS_SVC_URL=${PARTICIPANTS_SVC_URL}
+    restart: unless-stopped
+
+  transfers-command-handler-svc:
+    image: mojaloop/transfers-bc-command-handler-svc:0.1.1
+    depends_on:
+      accounts_and_balances_coa-grpc-svc:
+        condition: service_healthy
+      participants-svc:
+        condition: service_healthy
+    volumes:
+      - transfers-command-handler-svc_data:/app/data
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - MONGO_URL=${MONGO_URL}
+      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
+      - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+      - AUTH_N_TOKEN_ISSUER_NAME=${AUTH_N_TOKEN_ISSUER_NAME}
+      - AUTH_N_TOKEN_AUDIENCE=${AUTH_N_TOKEN_AUDIENCE}
+      - PARTICIPANTS_SVC_URL=${PARTICIPANTS_SVC_URL}
+      - ACCOUNTS_BALANCES_COA_SVC_URL=${ACCOUNTS_BALANCES_COA_SVC_URL}
+    restart: unless-stopped
+
   admin-ui:
-    image: mojaloop/vnext-admin-ui-svc:0.1.0
+    image: mojaloop/vnext-admin-ui-svc:0.1.1
+    depends_on:
+      transfers-api-svc:
+        condition: service_healthy
     ports:
       - 4200:4200
 
@@ -248,6 +346,24 @@ volumes:
       o: bind
       type: none
       device: ${ROOT_VOLUME_DEVICE_PATH}/data/aandb_coa-grpc-svc
+  transfers-api-svc_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/transfers-api-svc
+  transfers-event-handler-svc_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/transfers-event-handler-svc
+  transfers-command-handler-svc_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/transfers-command-handler-svc
   ttk1_ui_data:
     driver: local
     driver_opts:
