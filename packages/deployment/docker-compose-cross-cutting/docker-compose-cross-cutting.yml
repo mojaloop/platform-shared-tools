@@ -33,7 +33,7 @@ services:
     restart: unless-stopped
 
   platform-configuration-svc:
-    image: mojaloop/platform-configuration-bc-configuration-svc:latest
+    image: mojaloop/platform-configuration-bc-configuration-svc:0.1.0
     restart: unless-stopped
     volumes:
       - platform-configuration-svc_data:/app/data

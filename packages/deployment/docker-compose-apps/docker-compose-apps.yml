@@ -245,7 +245,7 @@ services:
     restart: unless-stopped
 
   admin-ui:
-    image: mojaloop/vnext-admin-ui-svc:0.1.1
+    image: mojaloop/vnext-admin-ui-svc:0.1.2
     depends_on:
       transfers-api-svc:
         condition: service_healthy
