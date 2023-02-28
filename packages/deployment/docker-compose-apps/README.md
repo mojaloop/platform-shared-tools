@@ -45,6 +45,11 @@ data/quoting-svc,data/transfers-api-svc,data/transfers-event-handler-svc,\
 data/transfers-command-handler-svc,data/ttk1_ui_data,data/ttk2_ui_data}
 ```
 
+Note: For Mac users you might have to grant full access to these directories, to do that execute in the exec directory:
+```shell
+sudo chmod -R 777 data
+```
+
 4. Copy the `.env.sample` to the exec dir:
 
 ```shell

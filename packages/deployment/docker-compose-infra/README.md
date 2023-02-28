@@ -27,6 +27,11 @@ cd exec
 mkdir {certs,esdata01,kibanadata,logs,tigerbeetle_data,mongodb_data}
 ```
 
+Note: For Mac users you might have to grant full access to these directories, to do that execute in the exec directory:
+```shell
+sudo chmod -R 777 .
+```
+
 3. Copy the `.env.sample` to the exec dir:
 ```shell
 cp ../.env.sample ./.env

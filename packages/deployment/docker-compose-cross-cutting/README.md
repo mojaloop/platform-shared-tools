@@ -31,7 +31,12 @@ mkdir {data}
 * logging-svc
 
 ```shell
-mkdir {data/authentication-svc,data/authorization-svc,data/platform-configuration-svc,data/auditing-svc,data/logging-svc,data/aandb_coa-grpc-svc,data/aandb_builtin-ledger-grpc-svc}
+mkdir {data/authentication-svc,data/authorization-svc,data/platform-configuration-svc,data/auditing-svc,data/logging-svc}
+```
+
+Note: For Mac users you might have to grant full access to these directories, to do that execute in the exec directory:
+```shell
+sudo chmod -R 777 data
 ```
 
 4. Copy the `.env.sample` to the exec dir:
