@@ -117,8 +117,59 @@ export class QuoteCreateComponent implements OnInit {
 
   }
 
+  applyQuoteExample() {
+    const exampleQuote = {
+      quoteId: "8243fdba-5dea-3abd-a210-3780e7f2f1f4",
+      transactionId: "9f5d9784-3a57-5865-9aa0-7dde7791548a",
+      payer: {
+          partyIdInfo: {
+              partyIdType: "MSISDN",
+              partyIdentifier: "123",
+              partySubIdOrType: null,
+              fspId: "Bluebank"
+          }
+      },
+      payee: {
+          partyIdInfo: {
+              partyIdType: "MSISDN",
+              partyIdentifier: "456",
+              partySubIdOrType: null,
+              fspId: "Greenbank"
+          }
+      },
+      amountType: "SEND",
+      amount: {
+          currency: "EUR",
+          amount: "1"
+      },
+      transactionType: {
+          scenario: "DEPOSIT",
+          initiator: "PAYER",
+          initiatorType: "BUSINESS"
+      }
+  }
+
+    this.form.controls["quoteId"].setValue(exampleQuote.quoteId);
+    this.form.controls["transactionId"].setValue(exampleQuote.transactionId);
+    this.form.controls["payeePartyIdType"].setValue(exampleQuote.payee.partyIdInfo.partyIdType);
+    this.form.controls["payeePartyIdentifier"].setValue(exampleQuote.payee.partyIdInfo.partyIdentifier);
+    this.form.controls["payeePartySubIdOrType"].setValue(exampleQuote.payee.partyIdInfo.partySubIdOrType);
+    this.form.controls["payeeFspId"].setValue(exampleQuote.payee.partyIdInfo.fspId);
+    this.form.controls["payerPartyIdType"].setValue(exampleQuote.payer.partyIdInfo.partyIdType);
+    this.form.controls["payerPartyIdentifier"].setValue(exampleQuote.payer.partyIdInfo.partyIdentifier);
+    this.form.controls["payerPartySubIdOrType"].setValue(exampleQuote.payer.partyIdInfo.partySubIdOrType);
+    this.form.controls["payerFspId"].setValue(exampleQuote.payer.partyIdInfo.fspId);
+    this.form.controls["amountType"].setValue(exampleQuote.amountType);
+    this.form.controls["currency"].setValue(exampleQuote.amount.currency);
+    this.form.controls["amount"].setValue(exampleQuote.amount.amount);
+    this.form.controls["scenario"].setValue(exampleQuote.transactionType.scenario);
+    this.form.controls["initiator"].setValue(exampleQuote.transactionType.initiator);
+    this.form.controls["initiatorType"].setValue(exampleQuote.transactionType.initiatorType);
+  }
+
   cancel(){
     this.activeQuote = null;
     history.back();
   }
+  
 }

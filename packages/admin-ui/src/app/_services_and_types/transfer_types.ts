@@ -49,4 +49,9 @@ export declare type Transfer = {
     }[]
   } | null;
   transferState?: string;
+  currency: string;
+  payeeFspId?: string;
+  payerFspId?: string;
+  currencyCode?: string;
+  completedTimestamp?: string;
 }

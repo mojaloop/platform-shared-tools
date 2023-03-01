@@ -40,6 +40,8 @@ import { BulkQuoteDetailComponent } from './bulk-quotes/bulk-quote-detail.compon
 import { BulkQuoteCreateComponent } from './bulk-quotes/bulk-quote-create.component';
 import { TransfersComponent } from './transfers/transfers.component';
 import { TransferDetailComponent } from './transfers/transfer-detail.component';
+import { TransferCreateComponent } from './transfers/transfer-create.component';
+import { AccountLookupAssociationsListComponent } from './account-lookup/associations-list.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +63,7 @@ import { TransferDetailComponent } from './transfers/transfer-detail.component';
     AccountLookupOracleListComponent,
     AccountLookupOracleDetailComponent,
     AccountLookupOracleCreateComponent,
+    AccountLookupAssociationsListComponent,
     QuotesComponent,
     QuoteDetailComponent,
     QuoteCreateComponent,
@@ -69,6 +72,7 @@ import { TransferDetailComponent } from './transfers/transfer-detail.component';
     BulkQuoteCreateComponent,
     TransfersComponent,
     TransferDetailComponent,
+    TransferCreateComponent
   ],
   imports: [
     BrowserModule,

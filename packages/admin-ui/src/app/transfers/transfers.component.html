@@ -4,7 +4,7 @@
   <table class="table">
     <thead class="thead-light">
     <tr>
-      <th scope="col">Quote ID</th>
+      <th scope="col">Transfer ID</th>
       <th scope="col">Payee FSP</th>
       <th scope="col">Payer FSP</th>
       <th scope="col">Transfer State</th>
@@ -14,10 +14,14 @@
     <tbody>
     <tr *ngFor="let item of (transfers | async)">
       <td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
-      <td>{{item.payeeFsp}}</td>
-      <td>{{item.payerFsp}}</td>
+      <td>{{item.payeeFspId}}</td>
+      <td>{{item.payerFspId}}</td>
       <td>{{item.transferState}}</td>
     </tr>
     </tbody>
   </table>
+</div>
+
+<div>
+  <button class="btn btn-primary" routerLink="/transfers/new">Create Transfer</button>
 </div>

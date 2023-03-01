@@ -38,6 +38,7 @@
  import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
 import { Quote } from "./quote_types";
 import { BulkQuote } from "./bulk_quote_types";
+import { Transfer } from "./transfer_types";
 //  import {} from "./interop_types";
  
  const SVC_BASEURL = "/_interop";
@@ -47,149 +48,179 @@ import { BulkQuote } from "./bulk_quote_types";
  })
  export class InteropService {
  
-   constructor(private _settings: SettingsService, private _http: HttpClient, private _authentication: AuthenticationService) {}
- 
-   associateParticipant(participantId: string, partyType: string, partyId: string, partySubType: string, currencyCode: string):Observable<any>{
-    const URL = partySubType ? `${SVC_BASEURL}/parties/${partyType}/${partyId}/${partySubType}?currency=${currencyCode}` : `${SVC_BASEURL}/parties/${partyType}/${partyId}?currency=${currencyCode}`;
+	constructor(private _settings: SettingsService, private _http: HttpClient, private _authentication: AuthenticationService) {}
 
-    return new Observable<any>(subscriber => {
-      const headers = new HttpHeaders().set('fspiop-source', participantId)
-                                       .set('fspiop-date', new Date().toISOString());
+	associateParticipant(participantId: string, partyType: string, partyId: string, partySubType: string, currencyCode: string):Observable<any>{
+		const URL = partySubType ? `${SVC_BASEURL}/parties/${partyType}/${partyId}/${partySubType}?currency=${currencyCode}` : `${SVC_BASEURL}/parties/${partyType}/${partyId}?currency=${currencyCode}`;
 
-      this._http.post<any>(URL, {}, { headers }).subscribe(
-        (result: any) => {
-          console.log(`POST associate response: ${result}`);
+		return new Observable<any>(subscriber => {
+			const headers = new HttpHeaders().set('fspiop-source', participantId)
+											.set('fspiop-date', new Date().toISOString());
 
-          subscriber.next(result);
-          return subscriber.complete();
-        },
-        error => {
-          console.error(error);
-          subscriber.error(error);
+			this._http.post<any>(URL, {}, { headers }).subscribe(
+			(result: any) => {
+				console.log(`POST associate response: ${result}`);
 
-          return subscriber.complete();
-        }
-      );
-    });
-  }
+				subscriber.next(result);
+				return subscriber.complete();
+			},
+			error => {
+				console.error(error);
+				subscriber.error(error);
 
-  disassociateParticipant(participantId: string,partyType: string, partyId: string, partySubType: string, currencyCode: string):Observable<any>{
-    const URL = partySubType ? `${SVC_BASEURL}/parties/${partyType}/${partyId}/${partySubType}?currency=${currencyCode}` : `${SVC_BASEURL}/parties/${partyType}/${partyId}?currency=${currencyCode}`;
+				return subscriber.complete();
+			}
+			);
+		});
+	}
 
-    return new Observable<any>(subscriber => {
-      const headers = new HttpHeaders().set('fspiop-source', participantId)
-                                       .set('fspiop-date', new Date().toISOString());
+	disassociateParticipant(participantId: string,partyType: string, partyId: string, partySubType: string, currencyCode: string):Observable<any>{
+		const URL = partySubType ? `${SVC_BASEURL}/parties/${partyType}/${partyId}/${partySubType}?currency=${currencyCode}` : `${SVC_BASEURL}/parties/${partyType}/${partyId}?currency=${currencyCode}`;
 
-      this._http.delete<any>(URL, { headers }).subscribe(
-        (result: any) => {
-          console.log(`DELETE disassociate response: ${result}`);
+		return new Observable<any>(subscriber => {
+			const headers = new HttpHeaders().set('fspiop-source', participantId)
+											.set('fspiop-date', new Date().toISOString());
 
-          subscriber.next(result);
-          return subscriber.complete();
-        },
-        error => {
-          console.error(error);
-          subscriber.error(error);
+			this._http.delete<any>(URL, { headers }).subscribe(
+			(result: any) => {
+				console.log(`DELETE disassociate response: ${result}`);
 
-          return subscriber.complete();
-        }
-      );
-    });
-  }
+				subscriber.next(result);
+				return subscriber.complete();
+			},
+			error => {
+				console.error(error);
+				subscriber.error(error);
 
-   getParticipant(participantId: string,partyType: string, partyId: string, partySubType: string, currencyCode: string):Observable<any>{
-    const URL = partySubType ? `${SVC_BASEURL}/participants/${partyType}/${partyId}/${partySubType}?currency=${currencyCode}` : `${SVC_BASEURL}/participants/${partyType}/${partyId}?currency=${currencyCode}`;
+				return subscriber.complete();
+			}
+			);
+		});
+	}
 
-    return new Observable<any>(subscriber => {
-      const headers = new HttpHeaders().set('fspiop-source', participantId)
-                                       .set('fspiop-date', new Date().toISOString());
-       
-      this._http.get<any>(URL, { headers }).subscribe(
-        (result: any) => {
-          console.log(`GET participant response: ${result}`);
+	getParticipant(participantId: string,partyType: string, partyId: string, partySubType: string, currencyCode: string):Observable<any>{
+		const URL = partySubType ? `${SVC_BASEURL}/participants/${partyType}/${partyId}/${partySubType}?currency=${currencyCode}` : `${SVC_BASEURL}/participants/${partyType}/${partyId}?currency=${currencyCode}`;
 
-          subscriber.next(result);
-          return subscriber.complete();
-        },
-        error => {
-          console.error(error);
-          subscriber.error(error);
+		return new Observable<any>(subscriber => {
+			const headers = new HttpHeaders().set('fspiop-source', participantId)
+											.set('fspiop-date', new Date().toISOString());
+			
+			this._http.get<any>(URL, { headers }).subscribe(
+			(result: any) => {
+				console.log(`GET participant response: ${result}`);
 
-          return subscriber.complete();
-        }
-      );
-    });
-  }
+				subscriber.next(result);
+				return subscriber.complete();
+			},
+			error => {
+				console.error(error);
+				subscriber.error(error);
 
-  getParty(participantId: string, partyType: string, partyId: string, partySubType: string, currencyCode: string):Observable<any>{
-    const URL = partySubType ? `${SVC_BASEURL}/parties/${partyType}/${partyId}/${partySubType}?currency=${currencyCode}` : `${SVC_BASEURL}/parties/${partyType}/${partyId}?currency=${currencyCode}`;
+				return subscriber.complete();
+			}
+			);
+		});
+	}
 
-    return new Observable<any>(subscriber => {
-      const headers = new HttpHeaders().set('fspiop-source', participantId)
-                                       .set('fspiop-date', new Date().toISOString());
+	getParty(participantId: string, partyType: string, partyId: string, partySubType: string, currencyCode: string):Observable<any>{
+		const URL = partySubType ? `${SVC_BASEURL}/parties/${partyType}/${partyId}/${partySubType}?currency=${currencyCode}` : `${SVC_BASEURL}/parties/${partyType}/${partyId}?currency=${currencyCode}`;
 
-      this._http.get<any>(URL, { headers }).subscribe(
-        (result: any) => {
-          console.log(`GET party response: ${result}`);
+		return new Observable<any>(subscriber => {
+			const headers = new HttpHeaders().set('fspiop-source', participantId)
+											.set('fspiop-date', new Date().toISOString());
 
-          subscriber.next(result);
-          return subscriber.complete();
-        },
-        error => {
-          console.error(error);
-          subscriber.error(error);
+			this._http.get<any>(URL, { headers }).subscribe(
+			(result: any) => {
+				console.log(`GET party response: ${result}`);
 
-          return subscriber.complete();
-        }
-      );
-    });
-  }
+				subscriber.next(result);
+				return subscriber.complete();
+			},
+			error => {
+				console.error(error);
+				subscriber.error(error);
 
-  // Quotes
-  createQuoteRequest(quote: Quote):Observable<any>{
-    const URL = `${SVC_BASEURL}/quotes`;
+				return subscriber.complete();
+			}
+			);
+		});
+	}
 
-    return new Observable<any>(subscriber => {
-      const body = { ...quote };
+	// Quotes
+	createQuoteRequest(quote: Quote):Observable<any>{
+		const URL = `${SVC_BASEURL}/quotes`;
 
-      this._http.post<any>(URL, body).subscribe(
-        (result: any) => {
-          console.log(`GET quote response: ${result}`);
+		return new Observable<any>(subscriber => {
+			const headers = new HttpHeaders().set('fspiop-source', quote?.payer?.partyIdInfo.fspId as string)
+											 .set('fspiop-date', new Date().toISOString());
 
-          subscriber.next(result);
-          return subscriber.complete();
-        },
-        error => {
-          console.error(error);
-          subscriber.error(error);
+			const body = { ...quote };
 
-          return subscriber.complete();
-        }
-      );
-    });
-  }
+			this._http.post<any>(URL, body, { headers }).subscribe(
+			(result: any) => {
+				console.log(`GET quote response: ${result}`);
 
-  createBulkQuoteRequest(bulkQuote: BulkQuote):Observable<any>{
-    const URL = `${SVC_BASEURL}/bulkQuotes`;
+				subscriber.next(result);
+				return subscriber.complete();
+			},
+			error => {
+				console.error(error);
+				subscriber.error(error);
 
-    return new Observable<any>(subscriber => {
-      const body = { ...bulkQuote };
+				return subscriber.complete();
+			}
+			);
+		});
+	}
 
-      this._http.post<any>(URL, body).subscribe(
-        (result: any) => {
-          console.log(`GET bulk quote response: ${result}`);
+	createBulkQuoteRequest(bulkQuote: BulkQuote):Observable<any>{
+		const URL = `${SVC_BASEURL}/bulkQuotes`;
 
-          subscriber.next(result);
-          return subscriber.complete();
-        },
-        error => {
-          console.error(error);
-          subscriber.error(error);
+		return new Observable<any>(subscriber => {
+			const body = { ...bulkQuote };
 
-          return subscriber.complete();
-        }
-      );
-    });
-  }
- }
+			this._http.post<any>(URL, body).subscribe(
+			(result: any) => {
+				console.log(`GET bulk quote response: ${result}`);
+
+				subscriber.next(result);
+				return subscriber.complete();
+			},
+			error => {
+				console.error(error);
+				subscriber.error(error);
+
+				return subscriber.complete();
+			}
+			);
+		});
+	}
+
+	createTransferRequest(transfer: Transfer):Observable<any>{
+		const URL = `${SVC_BASEURL}/transfers`;
+
+		const headers = new HttpHeaders().set('fspiop-source', transfer.payerFsp)
+										 .set('fspiop-date', new Date().toISOString());
+
+		return new Observable<any>(subscriber => {
+			const body = { ...transfer };
+
+			this._http.post<any>(URL, body, { headers }).subscribe(
+			(result: any) => {
+				console.log(`GET transfer response: ${result}`);
+
+				subscriber.next(result);
+				return subscriber.complete();
+			},
+			error => {
+				console.error(error);
+				subscriber.error(error);
+
+				return subscriber.complete();
+			}
+			);
+		});
+	}
+
+}
  

@@ -1,0 +1,36 @@
+<h3>Associations</h3>
+
+<ng-container *ngIf="(registeredAssociations | async)?.length==0 else listOracles">
+  <div class="alert alert-warning" role="alert">
+    No Associations found, please add one.
+  </div>
+</ng-container>
+
+<ng-template #listOracles>
+    <div>
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">FspId</th>
+                    <th scope="col">PartyId</th>
+                    <th scope="col">PartyType</th>
+                    <th scope="col">PartySubType</th>
+                    <th scope="col">Currency</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of (registeredAssociations | async)">
+                    <td>{{item.fspId}}</td>
+                    <td>{{item.partyId}}</td>
+                    <td>{{item.partyType}}</td>
+                    <td>{{item.partySubId || "N/A" }} </td>
+                    <td>{{item.currency}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</ng-template>
+
+<div>
+  <button class="btn btn-primary" routerLink="/account-lookup">Register New Association</button>
+</div>

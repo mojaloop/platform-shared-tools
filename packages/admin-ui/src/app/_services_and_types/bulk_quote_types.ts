@@ -30,15 +30,8 @@
 
 "use strict"
 
-
-/** Quotes **/
-
-
-export declare type QuoteType = "HUB" | "DFSP";
-
-/** Quotes **/
+/** BulkQuotes **/
 export declare type BulkQuote = {
-
   bulkQuoteId: string;
   payer:  {
       partyIdInfo: {
@@ -57,7 +50,7 @@ export declare type BulkQuote = {
           } | null,
           dateOfBirth: string | null
       } | null
-  };
+  } | null;
   geoCode?: {
       latitude: string;
       longitude: string;

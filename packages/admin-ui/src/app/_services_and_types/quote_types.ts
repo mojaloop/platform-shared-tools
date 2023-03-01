@@ -42,7 +42,7 @@ export declare type Quote = {
   bulkQuoteId: string;
   transactionId: string;
   transactionRequestId: string | null;
-  payee:  {
+  payee: {
       partyIdInfo: {
           partyIdType: string;
           partyIdentifier: string;
@@ -59,7 +59,7 @@ export declare type Quote = {
           } | null,
           dateOfBirth: string | null
       } | null
-  };
+  } | null;
   payer:  {
       partyIdInfo: {
           partyIdType: string;
@@ -77,12 +77,12 @@ export declare type Quote = {
           } | null,
           dateOfBirth: string | null
       } | null
-  };
+  } | null;
   amountType: "SEND" | "RECEIVE";
   amount: {
       currency: string;
       amount: string;
-  };
+  } | null;
   transactionType: {
       scenario: string
       subScenario?: string | null
@@ -93,7 +93,7 @@ export declare type Quote = {
           refundReason: string | null
       } | null,
       balanceOfPayments?: string | null
-  };
+  } | null;
   fees?: {
       currency: string;
       amount: string;
@@ -121,9 +121,6 @@ export declare type Quote = {
     amount: string;
   };
 
-
-  //remove_
-
   payeePartyIdType: string;
   payeePartyIdentifier: string;
   payeeFspId: string;
@@ -134,65 +131,5 @@ export declare type Quote = {
   scenario: string;
   initiator: string;
   initiatorType: string;
-}
-
-export declare type QuoteFundsMovementDirection = "FUNDS_DEPOSIT" | "FUNDS_WITHDRAWAL";
-
-export declare type QuoteFundsMovement = {
-  id: string;
-  createdBy: string;
-  createdDate: number;
-  approved: boolean;
-  approvedBy: string | null;
-  approvedDate: number | null;
-
-  direction: QuoteFundsMovementDirection;
-  currencyCode: string;
-  amount: string;
-
-  transferId: string | null;
-  extReference: string | null;
-  note: string | null;
-}
-
-
-export declare type QuoteAllowedSourceIps = {
-  id: string;                                             // uuid of the source IP
-  cidr:string;                                            // proper cidr format
-  // ANY to only use the cidr, allow traffic from any ports, SPECIFIC to use ports array, RANGE to use portRange
-  portMode: "ANY" | "SPECIFIC" | "RANGE";
-  ports?: number[];                                       // using a single or multiple ports
-  portRange?:{ rangeFirst: number, rangeLast: number;};   // port range
-}
-
-export declare type QuoteEndpointType = "FSPIOP" | "ISO20022";
-export declare type QuoteEndpointProtocol = "HTTPs/REST";
-
-export declare type QuoteEndpoint = {
-  id: string;                                             // uuid of the endpoint
-  type: QuoteEndpointType;                            // "FSPIOP" | "ISO20022"
-  protocol: QuoteEndpointProtocol;                                 // for now only "HTTPs/REST";
-  value: string;                                          // URL format for urls, ex: https://example.com:8080/fspcallbacks/, or simply 192.168.1.1:3000
-}
-
-export declare type QuoteAccount = {
-  id: string;                                             // uuid of the account (from the external accounts and balances system)
-  type: string;
-  //isActive: boolean                                     //TODO do we need this?
-  currencyCode: string;                                   //TODO move
-  debitBalance?: string;                                  // output only, we don't store this here
-  creditBalance?: string;                                 // output only, we don't store this here
-}
-
-export declare type QuoteChangeType =
-  "CREATE" | "APPROVE" | "ENABLE" | "DISABLE"
-  | "ADDACCOUNT" | "REMOVEACCOUNT"
-  | "ADDENDPOINT" | "REMOVEENDPOINT" | "EDITENDPOINT"
-  | "ADDSOURCEIP" | "REMOVESOURCEIP" | "EDITSOURCEIP";
-
-export declare type QuoteActivityLogEntry = {
-  changeType: QuoteChangeType;
-  user: string;
-  timestamp: number;
-  notes: string | null;
+  ilpPacket: string;
 }

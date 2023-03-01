@@ -20,6 +20,7 @@ import {AccountLookupComponent} from "src/app/account-lookup/account-lookup.comp
 import {AccountLookupOracleListComponent} from "src/app/account-lookup/oracle-list.component";
 import { AccountLookupOracleCreateComponent } from './account-lookup/oracle-create.component';
 import { AccountLookupOracleDetailComponent } from './account-lookup/oracle-detail.component';
+import {AccountLookupAssociationsListComponent} from "src/app/account-lookup/associations-list.component";
 import {LoginComponent} from "src/app/login/login.component";
 import {TestsComponent} from "src/app/tests/tests.component";
 import {QuotesComponent} from "src/app/quotes/quotes.component";
@@ -30,6 +31,7 @@ import {BulkQuoteDetailComponent} from "src/app/bulk-quotes/bulk-quote-detail.co
 import { BulkQuoteCreateComponent } from './bulk-quotes/bulk-quote-create.component';
 import { TransfersComponent } from './transfers/transfers.component';
 import { TransferDetailComponent } from './transfers/transfer-detail.component';
+import { TransferCreateComponent } from './transfers/transfer-create.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "/home", pathMatch: "full" },
@@ -47,6 +49,7 @@ const routes: Routes = [
   { path: "account-lookup-oracles", component: AccountLookupOracleListComponent, canActivate: [CanLoadIsLoggedIn]},
   { path: "account-lookup-oracles/new", component: AccountLookupOracleCreateComponent, canActivate: [CanLoadIsLoggedIn]},
   { path: "account-lookup/oracles/:id", component: AccountLookupOracleDetailComponent, canActivate: [CanLoadIsLoggedIn]},
+  { path: "account-lookup-associations", component: AccountLookupAssociationsListComponent, canActivate: [CanLoadIsLoggedIn]},
   { path: "quotes", component: QuotesComponent, canActivate: [CanLoadIsLoggedIn]},
   { path: "quotes/new", component: QuoteCreateComponent, canActivate: [CanLoadIsLoggedIn]},
   { path: "quotes/:id", component: QuoteDetailComponent, canActivate: [CanLoadIsLoggedIn]},
@@ -54,6 +57,7 @@ const routes: Routes = [
   { path: "bulk-quotes/new", component: BulkQuoteCreateComponent, canActivate: [CanLoadIsLoggedIn]},
   { path: "bulk-quotes/:id", component: BulkQuoteDetailComponent, canActivate: [CanLoadIsLoggedIn]},
   { path: "transfers", component: TransfersComponent, canActivate: [CanLoadIsLoggedIn]},
+  { path: "transfers/new", component: TransferCreateComponent, canActivate: [CanLoadIsLoggedIn]},
   { path: "transfers/:id", component: TransferDetailComponent, canActivate: [CanLoadIsLoggedIn]},
   { path: "account-lookup/oracles/:id", component: QuoteDetailComponent, canActivate: [CanLoadIsLoggedIn]},
   { path: "platform-configuration-global", component: PlatformConfigurationGlobalComponent, canActivate: [CanLoadIsLoggedIn]},

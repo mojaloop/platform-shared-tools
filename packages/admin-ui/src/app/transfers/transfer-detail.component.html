@@ -16,13 +16,13 @@
   <div class="col-12 text-right">
     <div class="row d-flex justify-content-end"> <!-- right col with action buttons -->
       <div class="col-3 text-right">
-        <!-- <ng-container >
+        <ng-container >
           <a href="/transfers/new">
-            <button class="btn btn-primary btn-block" disabled>
+            <button class="btn btn-primary btn-block">
               Create Transfer
             </button>
           </a>
-        </ng-container> -->
+        </ng-container>
         
         <ng-container>
           <a href="/transfers">
@@ -39,12 +39,12 @@
 
     <div class="mb-2">
       <label class="col-form-label text-secondary">Payee FSP</label>
-      <div>{{(transfer | async)?.payeeFsp}}</div>
+      <div>{{(transfer | async)?.payeeFspId}}</div>
     </div>
 
     <div class="mb-2">
       <label class="col-form-label text-secondary">Payer FSP</label>
-      <div>{{(transfer | async)?.payerFsp}}</div>
+      <div>{{(transfer | async)?.payerFspId}}</div>
     </div>
 
     <div class="mb-2">
@@ -59,7 +59,7 @@
 
     <div class="mb-2">
       <label class="col-form-label text-secondary">Amount</label>
-      <div class="text-break">{{(transfer | async)?.amount?.amount}} {{(transfer | async)?.amount?.currency}}</div>
+      <div class="text-break">{{(transfer | async)?.amount}} {{(transfer | async)?.currencyCode}}</div>
     </div>
 
     <div class="mb-2">
@@ -69,7 +69,7 @@
     
     <div class="mb-2">
       <label class="col-form-label text-secondary">Expiration</label>
-      <div class="text-break">{{(transfer | async)?.expiration}}</div>
+      <div class="text-break">{{(transfer | async)?.completedTimestamp}}</div>
     </div>
 
   </div> <!-- right col with action buttons -->

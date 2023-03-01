@@ -38,7 +38,7 @@ import * as uuid from "uuid";
 import {SettingsService} from "./settings.service";
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
 import {UnauthorizedError} from "./errors";
-import {Oracle, OracleType} from "./account-lookup_types";
+import {Association, Oracle, OracleType} from "./account-lookup_types";
 
 const SVC_BASEURL = "/_account-lookup";
 
@@ -170,6 +170,30 @@ export class AccountLookupService {
         error => {
           if (error && error.status===403) {
             console.warn("Access forbidden received on healthCheck");
+            subscriber.error(new UnauthorizedError(error.error?.msg));
+          } else {
+            console.error(error);
+            subscriber.error(error);
+          }
+
+          return subscriber.complete();
+        }
+      );
+    });
+  }
+
+  getRegisteredAssociations():Observable<Association[]>{
+    return new Observable<Association[]>(subscriber => {
+      this._http.get<Association[]>(SVC_BASEURL + "/admin/oracles/builtin-associations/").subscribe(
+        (result: Association[]) => {
+          console.log(`got response: ${result}`);
+
+          subscriber.next(result);
+          return subscriber.complete();
+        },
+        error => {
+          if (error && error.status===403) {
+            console.warn("Access forbidden received on getRegisteredOracleAssociations");
             subscriber.error(new UnauthorizedError(error.error?.msg));
           } else {
             console.error(error);

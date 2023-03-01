@@ -40,3 +40,14 @@ export type Oracle = {
   partySubType?: string | null;
   endpoint: string;
 }
+
+export type Association = {
+  partyId: string,
+  fspId: string,
+  partyType: string,
+  partySubId: string | null,
+  currency: string
+}
+
+
+

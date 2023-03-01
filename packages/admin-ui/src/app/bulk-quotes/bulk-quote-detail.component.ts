@@ -1,16 +1,10 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {MessageService} from "src/app/_services_and_types/message.service";
-import * as uuid from "uuid";
-import {
-  Quote,
-  QuoteAccount, QuoteFundsMovement,
-  QuoteFundsMovementDirection
-} from "src/app/_services_and_types/quote_types";
+import { Quote } from "src/app/_services_and_types/quote_types";
 import {QuotesService} from "src/app/_services_and_types/quotes.service";
 import {BehaviorSubject, Subscription} from "rxjs";
-import {installTempPackage} from "@angular/cli/utilities/install-package";
-import {ModalDismissReasons, NgbModal, NgbModalRef, NgbNav} from "@ng-bootstrap/ng-bootstrap";
+import {NgbModal, NgbNav} from "@ng-bootstrap/ng-bootstrap";
 import { BulkQuote } from '../_services_and_types/bulk_quote_types';
 import { BulkQuotesService } from '../_services_and_types/bulk-quotes.service';
 
