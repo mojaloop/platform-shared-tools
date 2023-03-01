@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {environment} from '../../environments/environment';
+import packageJson from '../../../package.json';
 
 const USERNAME_KEYNAME = "username";
 const ACCESSTOKEN_KEYNAME = "accessToken";
@@ -24,6 +25,10 @@ export class SettingsService {
 
   get isDevMode(): boolean {
     return this._isDevMode;
+  }
+
+  getVersion():string{
+	  return packageJson.version;
   }
 
   get envName(): string{

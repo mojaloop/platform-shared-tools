@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {BehaviorSubject, Subscription} from "rxjs";
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
 import {MessageService} from "src/app/_services_and_types/message.service";
+import {SettingsService} from "src/app/_services_and_types/settings.service";
 
 @Component({
   selector: 'app-home',
@@ -12,8 +13,12 @@ export class HomeComponent implements OnInit,OnDestroy {
   isLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   isLoggedInSubs?:Subscription;
 
-  constructor(private _authentication:AuthenticationService, private _messageService: MessageService) {
+  constructor(private _authentication:AuthenticationService, private _messageService: MessageService, private _settings:SettingsService) {
 
+  }
+
+  getVersion():string{
+	  return this._settings.getVersion();
   }
 
   ngOnInit(): void {
