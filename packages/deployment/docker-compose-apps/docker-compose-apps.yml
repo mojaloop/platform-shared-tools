@@ -149,7 +149,7 @@ services:
     restart: unless-stopped
 
   quoting-svc:
-    image: mojaloop/quoting-bc-quoting-svc:0.1.0
+    image: mojaloop/quoting-bc-quoting-svc:0.1.1
     depends_on:
       participants-svc:
         condition: service_healthy
