@@ -5,6 +5,10 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Quote} from "src/app/_services_and_types/quote_types";
 import {QuotesService} from "src/app/_services_and_types/quotes.service";
 import { InteropService } from '../_services_and_types/interop-service';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { UnauthorizedError } from '../_services_and_types/errors';
+import { Participant } from '../_services_and_types/participant_types';
+import { ParticipantsService } from '../_services_and_types/participants.service';
 
 const removeEmpty = (obj: any) => {
   Object.entries(obj).forEach(([key, val])  =>
@@ -23,11 +27,33 @@ export class QuoteCreateComponent implements OnInit {
   public isNewQuote:boolean = false;
   public submitted : boolean = false;
 
-  public activeQuote: Quote|null = null
+  public activeQuote: Quote|null = null;
+  partyIdTypeList = ["MSISDN", "PERSONAL_ID", "BUSINESS", "DEVICE", "ACCOUNT_ID", "IBAN","ALIAS"];
+  amountTypeList = ["SEND", "RECEIVE"];
+  currencyCodeList = ["EUR", "USD", "TZS"];
+  scenarioList = ["DEPOSIT", "WITHDRAWAL", "REFUND"]
+  initiatorList = ["PAYER", "PAYEE"]
+  initiatorTypeList = ["CONSUMER", "AGENT", "BUSINESS"]
 
-  constructor(private _route: ActivatedRoute, private _quotesSvc:QuotesService, private _interopSvc:InteropService, private _messageService: MessageService) { }
+  participants: BehaviorSubject<Participant[]> = new BehaviorSubject<Participant[]>([]);
+  participantsSubs?:Subscription;
+  
+  constructor(private _route: ActivatedRoute, private _quotesSvc:QuotesService, private _interopSvc:InteropService, private _participantsSvc:ParticipantsService, private _messageService: MessageService) { }
 
   async ngOnInit():Promise<void> {
+    this.participantsSubs = this._participantsSvc.getAllParticipants().subscribe((list) => {
+      console.log("TransferCreateComponent ngOnInit - got getAllParticipants");
+
+      this.form.controls["payeeFspId"].setValue(list[0].id);
+      this.form.controls["payerFspId"].setValue(list[0].id);
+
+      this.participants.next(list);
+    }, error => {
+      if(error && error instanceof UnauthorizedError){
+        this._messageService.addError(error.message);
+      }
+    });
+
     this._initForm();
 
     this.isNewQuote = true;
@@ -45,24 +71,24 @@ export class QuoteCreateComponent implements OnInit {
       "quoteId": new FormControl(this.activeQuote?.quoteId, Validators.required),
       "bulkQuoteId": new FormControl(this.activeQuote?.bulkQuoteId),
       "transactionId": new FormControl(this.activeQuote?.transactionId, Validators.required),
-      "payeePartyIdType": new FormControl(this.activeQuote?.payeePartyIdType, Validators.required),
+      "payeePartyIdType": new FormControl(this.partyIdTypeList[0], Validators.required),
       "payeePartyIdentifier": new FormControl(this.activeQuote?.payeePartyIdentifier, Validators.required),
       "payeePartySubIdOrType": new FormControl(this.activeQuote?.payerPartyIdentifier),
       "payeeFspId": new FormControl(this.activeQuote?.payeeFspId),
-      "payerPartyIdType": new FormControl(this.activeQuote?.payerPartyIdType, Validators.required),
+      "payerPartyIdType": new FormControl(this.partyIdTypeList[0], Validators.required),
       "payerPartyIdentifier": new FormControl(this.activeQuote?.payerPartyIdentifier, Validators.required),
       "payerPartySubIdOrType": new FormControl(this.activeQuote?.payerPartyIdentifier),
       "payerFspId": new FormControl(this.activeQuote?.payerFspId),
-      "amountType": new FormControl(this.activeQuote?.amountType, Validators.required),
-      "currency": new FormControl(this.activeQuote?.currency, Validators.required),
+      "amountType": new FormControl(this.amountTypeList[0], Validators.required),
+      "currency": new FormControl(this.currencyCodeList[0], Validators.required),
       "amount": new FormControl(this.activeQuote?.amount, Validators.required),
-      "scenario": new FormControl(this.activeQuote?.scenario, Validators.required),
-      "initiator": new FormControl(this.activeQuote?.initiator, Validators.required),
-      "initiatorType": new FormControl(this.activeQuote?.initiatorType, Validators.required),
+      "scenario": new FormControl(this.scenarioList[0], Validators.required),
+      "initiator": new FormControl(this.initiatorList[0], Validators.required),
+      "initiatorType": new FormControl(this.initiatorTypeList[0], Validators.required),
     });
   }
 
-  async saveQuote(){
+  async saveQuote() {
     if(!this.activeQuote) throw new Error("invalid activeQuote");
 
     this.submitted = true;

@@ -9,6 +9,8 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { UnauthorizedError } from '../_services_and_types/errors';
 import { Quote } from "src/app/_services_and_types/quote_types";
 import { QuotesService } from '../_services_and_types/quotes.service';
+import { Participant } from '../_services_and_types/participant_types';
+import { ParticipantsService } from '../_services_and_types/participants.service';
 
 const removeEmpty = (obj: any) => {
   Object.entries(obj).forEach(([key, val])  =>
@@ -30,10 +32,15 @@ export class TransferCreateComponent implements OnInit {
   public activeTransfer: Transfer | null = null
   public selectedQuoteId: string | null = null;
 
+  currencyCodeList = ["EUR", "USD", "TZS"];
+
   quotes: BehaviorSubject<Quote[]> = new BehaviorSubject<Quote[]>([]);
   quotesSubs?:Subscription;
   
-  constructor(private _route: ActivatedRoute, private _transfersSvc:TransfersService, private _interopSvc:InteropService, private _quotesSvc:QuotesService, private _messageService: MessageService) { }
+  participants: BehaviorSubject<Participant[]> = new BehaviorSubject<Participant[]>([]);
+  participantsSubs?:Subscription;
+  
+  constructor(private _route: ActivatedRoute, private _transfersSvc:TransfersService, private _interopSvc:InteropService, private _quotesSvc:QuotesService, private _participantsSvc:ParticipantsService, private _messageService: MessageService) { }
 
   async ngOnInit():Promise<void> {
     console.log("TransfersCreateComponent ngOnInit");
@@ -43,6 +50,19 @@ export class TransferCreateComponent implements OnInit {
 
       this.form.controls["selectedQuoteId"].setValue(list[0].quoteId);
       this.quotes.next(list);
+    }, error => {
+      if(error && error instanceof UnauthorizedError){
+        this._messageService.addError(error.message);
+      }
+    });
+
+    this.participantsSubs = this._participantsSvc.getAllParticipants().subscribe((list) => {
+      console.log("TransferCreateComponent ngOnInit - got getAllParticipants");
+    
+      this.form.controls["payeeFsp"].setValue(list[0].id);
+      this.form.controls["payerFsp"].setValue(list[0].id);
+      
+      this.participants.next(list);
     }, error => {
       if(error && error instanceof UnauthorizedError){
         this._messageService.addError(error.message);
@@ -67,7 +87,7 @@ export class TransferCreateComponent implements OnInit {
       "transferId": new FormControl(this.activeTransfer?.transferId),
       "payeeFsp": new FormControl(this.activeTransfer?.payeeFsp),
       "payerFsp": new FormControl(this.activeTransfer?.payerFsp),
-      "currency": new FormControl(this.activeTransfer?.currency, Validators.required),
+      "currency": new FormControl(this.currencyCodeList[0], Validators.required),
       "amount": new FormControl(this.activeTransfer?.amount, Validators.required),
       "ilpPacket": new FormControl(this.activeTransfer?.ilpPacket, Validators.required),
       "condition": new FormControl(this.activeTransfer?.condition, Validators.required),
