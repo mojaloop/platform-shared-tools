@@ -3,7 +3,7 @@
   "version": "0.1.3",
   "scripts": {
     "ng": "NODE_OPTIONS=--openssl-legacy-provider ng",
-    "start": "ng serve --proxy-config proxy.conf.json --no-live-reload",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider ng serve --proxy-config proxy.conf.json --no-live-reload",
     "start:prod": "NODE_OPTIONS=--openssl-legacy-provider ng serve -c production --no-live-reload",
     "build": "NODE_OPTIONS=--openssl-legacy-provider ng build --configuration development",
     "build:prod": "NODE_OPTIONS=--openssl-legacy-provider ng build",
