@@ -42,6 +42,7 @@ import { TransfersComponent } from './transfers/transfers.component';
 import { TransferDetailComponent } from './transfers/transfer-detail.component';
 import { TransferCreateComponent } from './transfers/transfer-create.component';
 import { AccountLookupAssociationsListComponent } from './account-lookup/associations-list.component';
+import { SettlementsComponent } from './settlements/settlements.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { AccountLookupAssociationsListComponent } from './account-lookup/associa
     BulkQuoteCreateComponent,
     TransfersComponent,
     TransferDetailComponent,
-    TransferCreateComponent
+    TransferCreateComponent,
+    SettlementsComponent
   ],
   imports: [
     BrowserModule,

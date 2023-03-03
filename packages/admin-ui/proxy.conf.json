@@ -79,6 +79,15 @@
       "^/_transfers": ""
     },
     "logLevel": "debug"
+  },
+  "/_settlements": {
+    "target": "http://localhost:3600/",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/_settlements": ""
+    },
+    "logLevel": "debug"
   }
 }
 
