@@ -42,7 +42,8 @@ mkdir {data}
 mkdir {data/aandb_builtin-ledger-grpc-svc,data/aandb_coa-grpc-svc,data/fspiop-api-svc,\
 data/account-lookup-svc,data/account-lookup-http-oracle-svc,data/participants-svc,\
 data/quoting-svc,data/transfers-api-svc,data/transfers-event-handler-svc,\
-data/transfers-command-handler-svc,data/ttk1_ui_data,data/ttk2_ui_data}
+data/transfers-command-handler-svc,data/settlements-api-svc,data/settlements-event-handler-svc,\
+data/settlements-command-handler-svc,data/ttk1_ui_data,data/ttk2_ui_data}
 ```
 
 Note: For Mac users you might have to grant full access to these directories, to do that execute in the exec directory:

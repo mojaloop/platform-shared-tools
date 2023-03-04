@@ -170,8 +170,10 @@ services:
       - 3033:3033
     restart: unless-stopped
 
+# transfers
+
   transfers-api-svc:
-    image: mojaloop/transfers-bc-transfers-api-svc:0.1.0
+    image: mojaloop/transfers-bc-transfers-api-svc:0.1.2
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -201,7 +203,7 @@ services:
     restart: unless-stopped
 
   transfers-event-handler-svc:
-    image: mojaloop/transfers-bc-event-handler-svc:0.1.0
+    image: mojaloop/transfers-bc-event-handler-svc:0.1.2
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -222,7 +224,7 @@ services:
     restart: unless-stopped
 
   transfers-command-handler-svc:
-    image: mojaloop/transfers-bc-command-handler-svc:0.1.1
+    image: mojaloop/transfers-bc-command-handler-svc:0.1.2
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -243,6 +245,87 @@ services:
       - PARTICIPANTS_SVC_URL=${PARTICIPANTS_SVC_URL}
       - ACCOUNTS_BALANCES_COA_SVC_URL=${ACCOUNTS_BALANCES_COA_SVC_URL}
     restart: unless-stopped
+
+# settlements
+
+  settlements-api-svc:
+    image: mojaloop/settlements-bc-settlements-api-svc:0.1.0
+    depends_on:
+      accounts_and_balances_coa-grpc-svc:
+        condition: service_healthy
+      participants-svc:
+        condition: service_healthy
+    volumes:
+      - settlements-api-svc_data:/app/data
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - MONGO_URL=${MONGO_URL}
+      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
+      - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+      - AUTH_N_TOKEN_ISSUER_NAME=${AUTH_N_TOKEN_ISSUER_NAME}
+      - AUTH_N_TOKEN_AUDIENCE=${AUTH_N_TOKEN_AUDIENCE}
+      - PARTICIPANTS_SVC_URL=${PARTICIPANTS_SVC_URL}
+      - ACCOUNTS_BALANCES_COA_SVC_URL=${ACCOUNTS_BALANCES_COA_SVC_URL}
+    healthcheck:
+      test: nc -z localhost 3500 || exit -1
+      start_period: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    ports:
+      - 3600:3600
+    restart: unless-stopped
+
+  settlements-event-handler-svc:
+    image: mojaloop/settlements-bc-event-handler-svc:0.1.0
+    depends_on:
+      accounts_and_balances_coa-grpc-svc:
+        condition: service_healthy
+      participants-svc:
+        condition: service_healthy
+    volumes:
+      - settlements-event-handler-svc_data:/app/data
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
+      - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+      - AUTH_N_TOKEN_ISSUER_NAME=${AUTH_N_TOKEN_ISSUER_NAME}
+      - AUTH_N_TOKEN_AUDIENCE=${AUTH_N_TOKEN_AUDIENCE}
+      - PARTICIPANTS_SVC_URL=${PARTICIPANTS_SVC_URL}
+    restart: unless-stopped
+
+  settlements-command-handler-svc:
+    image: mojaloop/settlements-bc-command-handler-svc:0.1.0
+    depends_on:
+      accounts_and_balances_coa-grpc-svc:
+        condition: service_healthy
+      participants-svc:
+        condition: service_healthy
+    volumes:
+      - settlements-command-handler-svc_data:/app/data
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - MONGO_URL=${MONGO_URL}
+      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
+      - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+      - AUTH_N_TOKEN_ISSUER_NAME=${AUTH_N_TOKEN_ISSUER_NAME}
+      - AUTH_N_TOKEN_AUDIENCE=${AUTH_N_TOKEN_AUDIENCE}
+      - PARTICIPANTS_SVC_URL=${PARTICIPANTS_SVC_URL}
+      - ACCOUNTS_BALANCES_COA_SVC_URL=${ACCOUNTS_BALANCES_COA_SVC_URL}
+    restart: unless-stopped
+
+
+
+
 
   admin-ui:
     image: mojaloop/vnext-admin-ui-svc:0.1.3
@@ -364,6 +447,24 @@ volumes:
       o: bind
       type: none
       device: ${ROOT_VOLUME_DEVICE_PATH}/data/transfers-command-handler-svc
+  settlements-api-svc_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/settlements-api-svc
+  settlements-event-handler-svc_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/settlements-event-handler-svc
+  settlements-command-handler-svc_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/settlements-command-handler-svc
   ttk1_ui_data:
     driver: local
     driver_opts:
