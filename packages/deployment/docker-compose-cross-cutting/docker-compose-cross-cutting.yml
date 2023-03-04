@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
 
   authentication-svc:
-    image: mojaloop/security-bc-authentication-svc:0.1.7
+    image: mojaloop/security-bc-authentication-svc:0.1.8
     depends_on:
       platform-configuration-svc:
         condition: service_healthy
@@ -41,7 +41,7 @@ services:
     restart: unless-stopped
 
   authorization-svc:
-    image: mojaloop/security-bc-authorization-svc:0.1.7
+    image: mojaloop/security-bc-authorization-svc:0.1.8
     depends_on:
       platform-configuration-svc:
         condition: service_healthy
