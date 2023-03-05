@@ -1,22 +1,23 @@
-<ng-container *ngIf="(quotes | async)?.length==0 else listOracles">
-  <div class="alert alert-warning" role="alert">
-    No Quotes found, please create a one.
-  </div>
-</ng-container>
 
-<ng-template #listOracles>
-  <h3>Apply existing Quote values</h3>
-  <label class="my-1 mr-2" for="quoteId">Quote Id</label>
-  <select class="custom-select my-1 mr-sm-4" id="selectedQuoteId" formControlName="selectedQuoteId">
-    <option *ngFor="let item of (quotes | async)"  value="{{item.quoteId}}">{{item.quoteId}}</option>
-  </select>
-  <div class="ml-auto p-2">
-    <button class="btn btn-primary" (click)="applyQuote()">Apply</button>
-  </div>
-
-</ng-template>
 
 <form [formGroup]="form" (ngSubmit)="saveTransfer()">
+  <ng-container *ngIf="(quotes | async)?.length==0 else listQuotes">
+    <div class="alert alert-warning" role="alert">
+      No Quotes found, please create a one.
+    </div>
+  </ng-container>
+  
+  <ng-template #listQuotes>
+    <h3>Apply existing Quote values</h3>
+    <label class="my-1 mr-2" for="quoteId">Quote Id</label>
+    <select class="custom-select my-1 mr-sm-4" id="selectedQuoteId" formControlName="selectedQuoteId">
+      <option *ngFor="let item of (quotes | async)"  value="{{item.quoteId}}">{{item.quoteId}}</option>
+    </select>
+    <div class="ml-auto p-2">
+      <button class="btn btn-primary" type="button" (click)="applyQuote()">Apply</button>
+    </div>
+  
+  </ng-template>
 
   <div class="form-row mt-4"> <!--form-row-->
 

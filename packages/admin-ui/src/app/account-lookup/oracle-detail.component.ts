@@ -4,7 +4,8 @@ import {Oracle} from "src/app/_services_and_types/account-lookup_types";
 import {AccountLookupService} from "src/app/_services_and_types/account-lookup.service";
 import {FormGroup} from "@angular/forms";
 import { BehaviorSubject } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UnauthorizedError } from '../_services_and_types/errors';
 
 
 @Component({
@@ -22,11 +23,11 @@ export class AccountLookupOracleDetailComponent implements OnInit {
   registerError: string = "";
   registerSuccess!: boolean;
 
-  constructor(private _route: ActivatedRoute, private _alSvc:AccountLookupService, private _messageService: MessageService) { }
+  constructor(private _activatedRoute: ActivatedRoute, private _router: Router, private _accountLookUpService:AccountLookupService, private _messageService: MessageService) { }
 
   async ngOnInit(): Promise<void> {
-    console.log(this._route.snapshot.routeConfig?.path);
-    this._oracleId = this._route.snapshot.paramMap.get('id');
+    console.log(this._activatedRoute.snapshot.routeConfig?.path);
+    this._oracleId = this._activatedRoute.snapshot.paramMap.get('id');
 
     if (!this._oracleId) {
       throw new Error("invalid oracle id");
@@ -37,7 +38,7 @@ export class AccountLookupOracleDetailComponent implements OnInit {
 
   private async _fetchOracle(id: string):Promise<void> {
     return new Promise(resolve => {
-      this._alSvc.getRegisteredOracleById(id).subscribe(oracle => {
+      this._accountLookUpService.getRegisteredOracleById(id).subscribe(oracle => {
         this.oracle.next(oracle);
         resolve();
       });
@@ -47,5 +48,42 @@ export class AccountLookupOracleDetailComponent implements OnInit {
 
   back(){
     history.back();
+  }
+
+  async copyOracleIdToClipboard(){
+    await navigator.clipboard.writeText(this.oracle.value!.id || "");
+  }
+
+  healthCheck(oracle:any){
+    const oracleId = oracle.value.id;
+
+    this._accountLookUpService.healthCheck(oracleId).subscribe((result) => {
+      this._messageService.addSuccess("Health check successful");
+    }
+    , error => {
+      if (error && error instanceof UnauthorizedError) {
+        this._messageService.addError(error.message);
+      }
+      this._messageService.addError("Health check failed");
+    });
+  }
+
+  removeOracle(oracle:any){
+    const oracleId = oracle.value.id;
+
+    if (!confirm("Are you sure you want to remove this oracle?")) return;
+
+    this._accountLookUpService.deleteOracle(oracleId).subscribe(() => {
+      this._router.navigateByUrl('/account-lookup-oracles')
+      
+      this._messageService.addSuccess("Oracle removed");
+    }, error => {
+      if (error) {
+        this._messageService.addError(error.message);
+      }
+      else{
+        this._messageService.addError("Error deleting oracle");
+      }
+    });
   }
 }
