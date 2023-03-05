@@ -63,6 +63,9 @@ export class SettlementsService {
 					if (error && error.status===403) {
 						console.warn("Access forbidden received on getBatchesByCriteria");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else if (error && error.status===404) {
+						subscriber.next([]);
+						return subscriber.complete();
 					} else {
 						console.error(error);
 						subscriber.error(error.error?.msg);
@@ -88,7 +91,10 @@ export class SettlementsService {
 					if (error && error.status===403) {
 						console.warn("Access forbidden received on getTransfersByBatchName");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
-					} else {
+					} else if (error && error.status===404) {
+						subscriber.next([]);
+						return subscriber.complete();
+					}else{
 						console.error(error);
 						subscriber.error(error.error?.msg);
 					}
@@ -113,6 +119,9 @@ export class SettlementsService {
 					if (error && error.status===403) {
 						console.warn("Access forbidden received on getTransfersByBatchName");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else if (error && error.status===404) {
+						subscriber.next([]);
+						return subscriber.complete();
 					} else {
 						console.error(error);
 						subscriber.error(error.error?.msg);

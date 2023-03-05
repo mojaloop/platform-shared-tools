@@ -1,0 +1,114 @@
+<h3>Settlements</h3>
+
+
+<h3>Batches</h3>
+<!--filter-->
+
+<div>
+	<table class="table">
+		<tr class="form-row">
+			<div class="form-group col-md-3">
+				<label for="criteriaSettlementModel">Model:</label>
+				<select class="form-control" id="criteriaSettlementModel">
+					<option value="DEFAULT">DEFAULT</option>
+				</select>
+			</div>
+
+
+			<div class="form-group col-md-2">
+				<label for="criteriaCurrencyCode">Currency:</label>
+				<select class="form-control" id="criteriaCurrencyCode">
+					<option value="USD">USD</option>
+					<option value="EUR">EUR</option>
+				</select>
+			</div>
+
+			<div class="form-group col-md-3">
+				<label for="criteriaFromDate">Start:</label>
+				<input class="form-control" type="datetime-local" id="criteriaFromDate"
+					   [ngModel]="criteriaFromDate" step=300 >
+			</div>
+
+
+			<div class="form-group col-md-3">
+				<label for="criteriaToDate">End:</label>
+				<input class="form-control" type="datetime-local" id="criteriaToDate"
+					   [ngModel]="criteriaToDate" step=300>
+			</div>
+
+			<div class="form-group col-md-1">
+				<label for="filterBtn">&nbsp;</label>
+					<button type="submit" class="form-control btn btn-primary" id="filterBtn" (click)="applyCriteria()">Search</button>
+
+			</div>
+		</tr>
+	</table>
+</div>
+
+
+<div>
+	<table class="table">
+		<thead class="thead-light">
+		<tr>
+			<th scope="col">Batch ID</th>
+			<th scope="col">Model</th>
+			<th scope="col">Currency</th>
+			<th scope="col">Created</th>
+			<th scope="col">Seq#</th>
+			<th scope="col">Name</th>
+			<th scope="col">Closed?</th>
+
+		</tr>
+		</thead>
+		<tbody>
+		<ng-container *ngIf="(batches | async)?.length==0">
+			<tr class="" >
+				<td colspan="6">No batches found, please try again with different criteria</td>
+			</tr>
+		</ng-container>
+		<tr *ngFor="let item of (batches | async)">
+<!--			<td><a routerLink="/settlements/batches{{item.id}}">{{item.id}}</a></td>-->
+			<td><a (click)="selectBatch(item.id);">{{item.id}}</a></td>
+			<td>{{item.settlementModel}}</td>
+			<td>{{item.currencyCode}}</td>
+			<td>{{item.timestamp | date: 'medium'}}</td>
+			<td>{{item.batchSequence}}</td>
+			<td>{{item.batchName}}</td>
+			<td>{{item.isClosed}}</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+
+
+<h3>Transfers</h3>
+
+<div>
+	<table class="table">
+		<thead class="thead-light">
+		<tr>
+			<th scope="col">Id</th>
+			<th scope="col">Date</th>
+			<th scope="col">PayerFspId</th>
+			<th scope="col">PayeeFspId</th>
+			<th scope="col">Amount</th>
+
+		</tr>
+		</thead>
+		<tbody>
+		<ng-container *ngIf="(batchTransfers | async)?.length==0">
+			<tr class="">
+				<td colspan="6">Please select a batch to see its transfers</td>
+			</tr>
+		</ng-container>
+		<tr *ngFor="let item of (batchTransfers | async)">
+			<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
+			<td>{{item.transferTimestamp | date: 'medium'}}</td>
+			<td>{{item.payerFspId}}</td>
+			<td>{{item.payeeFspId}}</td>
+			<td>{{item.amount}} <span class="badge badge-secondary">{{item.currencyCode}}</span></td>
+
+		</tr>
+		</tbody>
+	</table>
+</div>

@@ -12,9 +12,9 @@
 <hr>
 
   <div class="row">
-      
+<!--
   <div class="col-12 text-right">
-    <div class="row d-flex justify-content-end"> <!-- right col with action buttons -->
+    <div class="row d-flex justify-content-end"> &lt;!&ndash; right col with action buttons &ndash;&gt;
       <div class="col-3 text-right">
         <ng-container >
           <a href="/transfers/new">
@@ -23,7 +23,7 @@
             </button>
           </a>
         </ng-container>
-        
+
         <ng-container>
           <a href="/transfers">
             <button class="btn btn-secondary btn-block mt-1">
@@ -33,7 +33,7 @@
         </ng-container>
       </div>
     </div>
-  </div>
+  </div>-->
 
   <div class="col-6"> <!-- left col with form -->
 
@@ -66,7 +66,7 @@
       <label class="col-form-label text-secondary">Condition</label>
       <div class="text-break">{{(transfer | async)?.condition}}</div>
     </div>
-    
+
     <div class="mb-2">
       <label class="col-form-label text-secondary">Expiration</label>
       <div class="text-break">{{(transfer | async)?.completedTimestamp}}</div>
