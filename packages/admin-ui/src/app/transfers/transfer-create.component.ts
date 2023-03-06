@@ -73,15 +73,12 @@ export class TransferCreateComponent implements OnInit {
 		});
 
 		this._initForm();
-
 		this.isNewTransfer = true;
 		this.newTransfer();
 	}
 
-
 	newTransfer() {
 		this.activeTransfer = this._transfersSvc.createEmptyTransfer();
-		// this._updateFormWithActiveTransfer();
 	}
 
 	private _initForm() {

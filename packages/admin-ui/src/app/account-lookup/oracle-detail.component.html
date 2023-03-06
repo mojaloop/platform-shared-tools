@@ -1,61 +1,77 @@
-<div class="col-md-3">
-  <h1 class="mb-3">Oracle detail</h1>
+<div class="row">
+  <div class="col-md-8 align-self-center">
+    <h2>Oracle Details</h2>
+  </div>
+
+  <div class="col-md-4 align-self-center">
+    <small><strong>ID: </strong> {{(oracle | async)?.id}}
+      <a (click)="copyOracleIdToClipboard()"
+         ngbTooltip="Copy ID to clipboard"><i class="bi bi-clipboard-plus"></i></a></small>
+  </div>
 </div>
+<hr>
 
-<form>
-  <div class="form-group col-md-3">
-    <label for="inputName">Name</label>
-    <input
-      type="text"
-      class="form-control"
-      value="{{ (oracle | async)?.name }}"
-      readonly
-    />
-  </div>
+<div class="row">
+  <div class="col-6"> <!-- left col with form -->
 
-  <div class="form-group col-md-3">
-    <label for="inputType">Type</label>
-    <input
-      type="text"
-      class="form-control"
-      value="{{ (oracle | async)?.type }}"
-      readonly
-    />
-  </div>
-
-  <div class="form-group col-md-6">
-    <label for="inputPartyType">Party Type</label>
-    <input
-      type="text"
-      class="form-control"
-      value="{{ (oracle | async)?.partyType }}"
-      readonly
-    />
-  </div>
-
-  <div class="form-group col-md-6">
-    <label for="inputPartySubType">Party Sub Type</label>
-    <input
-      type="text"
-      class="form-control"
-      value="{{ (oracle | async)?.partySubType }}"
-      readonly
-    />
-  </div>
-
-  <div class="form-group col-md-6">
-    <label for="inputEndpoint">Oracle endpoint</label>
-    <input
-      type="text"
-      class="form-control"
-      value="{{ (oracle | async)?.endpoint }}"
-      readonly
-    />
-  </div>
-
-  <div class="form-row d-flex mb-3">
-    <div class="ml-auto p-2">
-      <button class="btn btn-primary" (click)="back()">Back</button>
+    <div class="mb-2">
+      <label class="col-form-label text-secondary">Name</label>
+      <div>{{(oracle | async)?.name ? (oracle | async)?.name : "N/A" }}</div>
     </div>
-  </div>
-</form>
+
+    <div class="mb-2">
+      <label class="col-form-label text-secondary">Type</label>
+      <div>{{(oracle | async)?.type}}</div>
+    </div>
+
+    <div class="mb-2">
+      <label class="col-form-label text-secondary">Party Type</label>
+      <div>{{(oracle | async)?.partyType}}</div>
+    </div>
+
+  </div> <!-- left col with form -->
+
+  <div class="col-3"> <!-- right col with action buttons -->
+    
+    <div class="mb-2">
+      <label class="col-form-label text-secondary">Party Sub Type</label>
+      <div>{{(oracle | async)?.partySubType ? (oracle | async)?.partySubType : "N/A" }}</div>
+    </div>
+
+    <div class="mb-2">
+      <label class="col-form-label text-secondary">Endpoint</label>
+      <div>{{(oracle | async)?.endpoint ? (oracle | async)?.endpoint : "N/A" }}</div>
+    </div>
+
+    <div class="mb-2">
+      <label class="col-form-label text-secondary">Endpoint</label>
+      <div>
+        <button type="button" class="btn btn-danger" placement="top" container="body" ngbTooltip="Remove Oracle" (click)="removeOracle(oracle)">
+        <span class="bi bi-trash"></span>
+        </button>
+        <button type="button" class="btn btn-info" placement="top" container="body" ngbTooltip="Health Check" (click)="healthCheck(oracle)">
+        <span class="bi bi-eye"></span>
+        </button>
+      </div>
+    </div>
+
+  </div> <!-- right col with action buttons -->
+
+  <div class="col-3"> <!-- right col with action buttons -->
+    <ng-container >
+      <a href="/account-lookup-oracles/new">
+        <button class="btn btn-primary btn-block">
+          Create Oracle
+        </button>
+      </a>
+    </ng-container>
+
+    <ng-container>
+      <a href="/account-lookup-oracles">
+        <button class="btn btn-secondary btn-block mt-1">
+          Back to list
+        </button>
+      </a>
+    </ng-container>
+  </div> <!-- right col with action buttons -->
+</div>
