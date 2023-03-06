@@ -76,8 +76,8 @@
 		<button class="btn btn-primary btn-block" *ngIf="(matrix | async)?.state !== 'CLOSED'" (click)="refresh()">Refresh</button>
 		<ng-container *ngIf="(matrix | async)?.state === 'IDLE'">
 			<button class="btn btn-success btn-block" (click)="recalculate(false)">Recalculate</button>
-			<button class="btn btn-success btn-block" (click)="recalculate(true)">Recalculate with new Batches</button>
-			<button class="btn btn-warning btn-block" (click)="close()">Close / Execute</button>
+<!--			<button class="btn btn-success btn-block" (click)="recalculate(true)">Recalculate with new Batches</button>-->
+			<button class="btn btn-warning btn-block" (click)="close()">Settle</button>
 		</ng-container>
 
 <!--		<ng-container *ngIf="(matrix | async)?.state !== 'IDLE'">
