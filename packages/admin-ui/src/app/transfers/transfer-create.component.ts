@@ -135,7 +135,11 @@ export class TransferCreateComponent implements OnInit {
 	}
 
 	applyQuote() {
-		const selectedQuote = this.quotes.value.find(quote => quote.quoteId===this.form.controls["selectedQuoteId"].value);
+		const elem = document.getElementById("selectedQuoteId") as HTMLSelectElement;
+		if(!elem) throw new Error("Could not find selectedQuoteId select html element");
+
+		const quoteId:string = elem.value;
+		const selectedQuote = this.quotes.value.find(quote => quote.quoteId===quoteId);
 
 		this.form.controls["transferId"].setValue(selectedQuote?.transactionId);
 		this.form.controls["payeeFsp"].setValue(selectedQuote?.payee?.partyIdInfo.fspId);

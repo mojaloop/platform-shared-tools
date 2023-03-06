@@ -18,7 +18,7 @@ import {
 import {ParticipantCreateComponent} from "src/app/participants/participant-create.component";
 import {AccountLookupComponent} from "src/app/account-lookup/account-lookup.component";
 import {AccountLookupOracleListComponent} from "src/app/account-lookup/oracle-list.component";
-import {SettlementsComponent} from "src/app/settlements/settlements.component";
+import {SettlementsBatchesComponent} from "src/app/settlements/settlements.batches.component";
 import {AccountLookupOracleCreateComponent} from './account-lookup/oracle-create.component';
 import {AccountLookupOracleDetailComponent} from './account-lookup/oracle-detail.component';
 import {AccountLookupAssociationsListComponent} from "src/app/account-lookup/associations-list.component";
@@ -33,6 +33,8 @@ import {BulkQuoteCreateComponent} from './bulk-quotes/bulk-quote-create.componen
 import {TransfersComponent} from './transfers/transfers.component';
 import {TransferDetailComponent} from './transfers/transfer-detail.component';
 import {TransferCreateComponent} from './transfers/transfer-create.component';
+import {SettlementsMatrixDetailComponent} from "src/app/settlements/settlements.matrix-detail.component";
+import {SettlementsMatricesComponent} from "src/app/settlements/settlements.matrices.component";
 
 const routes: Routes = [
 	{path: "", redirectTo: "/home", pathMatch: "full"},
@@ -64,7 +66,9 @@ const routes: Routes = [
 	{path: "platform-configuration-global", component: PlatformConfigurationGlobalComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "platform-configuration-app", component: PlatformConfigurationAppComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "platform-configuration", component: PlatformConfigurationComponent, canActivate: [CanLoadIsLoggedIn]},
-	{path: "settlements", component: SettlementsComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "settlements/matrix/:id", component: SettlementsMatrixDetailComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "settlements/matrix", component: SettlementsMatricesComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "settlements/batches", component: SettlementsBatchesComponent, canActivate: [CanLoadIsLoggedIn]},
 ];
 
 

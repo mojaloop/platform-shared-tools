@@ -297,7 +297,7 @@ export class ParticipantDetailComponent implements OnInit {
       if (!accounts)
         return;
 
-      console.log(accounts);
+      //console.log(accounts);
       this.participant.value!.participantAccounts = accounts;
       this.participant.next(this.participant.value);
     });

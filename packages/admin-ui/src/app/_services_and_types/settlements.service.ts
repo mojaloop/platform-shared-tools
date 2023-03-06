@@ -36,8 +36,13 @@ import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
-import {ISettlementBatch, ISettlementBatchTransfer} from "src/app/_services_and_types/settlements_types";
+import {
+	ISettlementBatch,
+	ISettlementBatchTransfer,
+	ISettlementMatrix
+} from "src/app/_services_and_types/settlements_types";
 import {Transfer} from "src/app/_services_and_types/transfer_types";
+import {Participant} from "src/app/_services_and_types/participant_types";
 
 const SVC_BASEURL = "/_settlements";
 
@@ -132,4 +137,149 @@ export class SettlementsService {
 			);
 		});
 	}
+
+	getMatrix(matrixId:string):Observable<ISettlementMatrix|null>{
+		return new Observable<ISettlementMatrix | null>(subscriber => {
+			const url = `${SVC_BASEURL}/matrix/${matrixId}`;
+			this._http.get<ISettlementMatrix>(url).subscribe(
+				(result: ISettlementMatrix) => {
+					console.log(`got response: ${result}`);
+
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status===403) {
+						console.warn("Access forbidden received on getMatrix");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else if (error && error.status===404) {
+						subscriber.next(null);
+						return subscriber.complete();
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+	getMatrices(state?:string):Observable<ISettlementMatrix[]>{
+		return new Observable<ISettlementMatrix[]>(subscriber => {
+			let url = `${SVC_BASEURL}/matrix`;
+			if(state)
+				url += `?state=${state.toUpperCase()}`;
+
+			this._http.get<ISettlementMatrix[]>(url).subscribe(
+				(result: ISettlementMatrix[]) => {
+					console.log(`got response: ${result}`);
+
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status===403) {
+						console.warn("Access forbidden received on getMatrices");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else if (error && error.status===404) {
+						subscriber.next([]);
+						return subscriber.complete();
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+	createMatrix(matrixId:string, settlementModel: string, currencyCode: string, fromDate: number, toDate: number):Observable<string>{
+		return new Observable<string>(subscriber => {
+			const createMatrixCmdPayload ={
+				matrixId: matrixId,
+				settlementModel: settlementModel,
+				currencyCode: currencyCode,
+				fromDate: fromDate,
+				toDate: toDate
+			}
+
+			this._http.post<{ id: string }>(SVC_BASEURL + "/matrix/", createMatrixCmdPayload).subscribe(
+				(resp: { id: string }) => {
+					console.log(`got response - matrixId: ${resp.id}`);
+
+					subscriber.next(resp.id);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status===403) {
+						console.warn("UnauthorizedError received on createMatrix");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+	recalculateMatrix(matrixId:string, includeNewBatches:boolean = true):Observable<string>{
+		return new Observable<string>(subscriber => {
+			const recalculateMatrixCmdPayload = {
+				includeNewBatches: includeNewBatches
+			};
+
+			const url = `${SVC_BASEURL}/matrix/${matrixId}/recalculate`;
+
+			this._http.post<{ id: string }>(url, recalculateMatrixCmdPayload).subscribe(
+				(resp: { id: string }) => {
+					console.log(`got response - matrixId: ${resp.id}`);
+
+					subscriber.next(resp.id);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status===403) {
+						console.warn("UnauthorizedError received on recalculateMatrix");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+	closeMatrix(matrixId:string, includeNewBatches:boolean = true):Observable<string>{
+		return new Observable<string>(subscriber => {
+			const url = `${SVC_BASEURL}/matrix/${matrixId}/close`;
+
+			this._http.post<{ id: string }>(url, {}).subscribe(
+				(resp: { id: string }) => {
+					console.log(`got response - matrixId: ${resp.id}`);
+
+					subscriber.next(resp.id);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status===403) {
+						console.warn("UnauthorizedError received on closeMatrix");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
 }

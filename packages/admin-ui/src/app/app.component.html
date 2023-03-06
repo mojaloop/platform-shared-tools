@@ -27,10 +27,10 @@
           </li>
 
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink_als" role="button" routerLinkActive="active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink_quotes" role="button" routerLinkActive="active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Quotes
             </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink_als">
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink_quotes">
               <a class="dropdown-item" routerLinkActive="active" routerLink="/quotes">Quotes</a>
               <a class="dropdown-item" routerLinkActive="active" routerLink="/bulk-quotes">Bulk Quotes</a>
             </div>
@@ -49,7 +49,18 @@
             </div>
           </li>-->
 
-		  <a class="nav-item nav-link" routerLinkActive="active" routerLink="/settlements/">Settlements</a>
+
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkSettlements"
+				   role="button" routerLinkActive="active" [routerLinkActiveOptions]="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Settlements
+				</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkSettlements">
+					<a class="dropdown-item" routerLinkActive="active" routerLink="/settlements/batches">Batches</a>
+					<a class="dropdown-item" routerLinkActive="active" routerLink="/settlements/matrix">Matrices</a>
+				</div>
+			</li>
+
 
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" routerLinkActive="active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -1,13 +1,11 @@
-<h3>Settlements</h3>
-
-
 <h3>Batches</h3>
-<!--filter-->
 
+<!--filter-->
 <div>
+	<form >
 	<table class="table">
 		<tr class="form-row">
-			<div class="form-group col-md-3">
+			<div class="form-group col-md-2">
 				<label for="criteriaSettlementModel">Model:</label>
 				<select class="form-control" id="criteriaSettlementModel">
 					<option value="DEFAULT">DEFAULT</option>
@@ -15,7 +13,7 @@
 			</div>
 
 
-			<div class="form-group col-md-2">
+			<div class="form-group col-md-1">
 				<label for="criteriaCurrencyCode">Currency:</label>
 				<select class="form-control" id="criteriaCurrencyCode">
 					<option value="USD">USD</option>
@@ -26,23 +24,37 @@
 			<div class="form-group col-md-3">
 				<label for="criteriaFromDate">Start:</label>
 				<input class="form-control" type="datetime-local" id="criteriaFromDate"
-					   [ngModel]="criteriaFromDate" step=300 >
+					   [ngModel]="criteriaFromDate" step=300
+					   [ngModelOptions]="{standalone: true}">
 			</div>
 
 
 			<div class="form-group col-md-3">
 				<label for="criteriaToDate">End:</label>
 				<input class="form-control" type="datetime-local" id="criteriaToDate"
-					   [ngModel]="criteriaToDate" step=300>
+					   [ngModel]="criteriaToDate" step=300
+					   [ngModelOptions]="{standalone: true}">
 			</div>
+<!--
+
+			<div class="form-group col-md-1">
+				<label for="criteriaIncludeClosed">Include closed:</label>
+				<input class="form-control" type="checkbox" id="criteriaIncludeClosed">
+			</div>
+-->
 
 			<div class="form-group col-md-1">
 				<label for="filterBtn">&nbsp;</label>
 					<button type="submit" class="form-control btn btn-primary" id="filterBtn" (click)="applyCriteria()">Search</button>
-
+			</div>
+			<div class="form-group col-md-2">
+				<label for="filterBtn">&nbsp;</label>
+				<button type="button" class="form-control btn btn-success" id="createMatrixBtn"
+						(click)="createMatrix()" ngbTooltip="Create Settlement Matrix using the selected criteria">Create Matrix</button>
 			</div>
 		</tr>
 	</table>
+	</form>
 </div>
 
 
@@ -68,7 +80,7 @@
 		</ng-container>
 		<tr *ngFor="let item of (batches | async)">
 <!--			<td><a routerLink="/settlements/batches{{item.id}}">{{item.id}}</a></td>-->
-			<td><a (click)="selectBatch(item.id);">{{item.id}}</a></td>
+			<td><a (click)="selectBatch(item.id);" class="link">{{item.id}}</a></td>
 			<td>{{item.settlementModel}}</td>
 			<td>{{item.currencyCode}}</td>
 			<td>{{item.timestamp | date: 'medium'}}</td>
@@ -92,7 +104,7 @@
 			<th scope="col">PayerFspId</th>
 			<th scope="col">PayeeFspId</th>
 			<th scope="col">Amount</th>
-
+			<th scope="col">Currency</th>
 		</tr>
 		</thead>
 		<tbody>
@@ -106,7 +118,8 @@
 			<td>{{item.transferTimestamp | date: 'medium'}}</td>
 			<td>{{item.payerFspId}}</td>
 			<td>{{item.payeeFspId}}</td>
-			<td>{{item.amount}} <span class="badge badge-secondary">{{item.currencyCode}}</span></td>
+			<td>{{item.amount}}</td>
+			<td>{{item.currencyCode}}</td>
 
 		</tr>
 		</tbody>
