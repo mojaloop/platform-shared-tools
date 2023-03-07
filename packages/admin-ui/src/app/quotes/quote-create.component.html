@@ -9,7 +9,7 @@
   <div class="form-row"> <!--form-row-->
 
     <!--quoteId-->
-    <div class="form-group col-md-12">
+    <div class="form-group col-md-6">
       <label for="quoteId">Quote Id:</label>
       <input id="quoteId" formControlName="quoteId" type="text" class="form-control"
              [ngClass]="{'is-valid': form.controls['quoteId'].touched && form.controls['quoteId'].valid,
@@ -23,10 +23,39 @@
     </div> -->
 
     <!--transactionId-->
-    <div class="form-group col-md-12">
+    <div class="form-group col-md-6">
       <label for="transactionId">Transaction Id:</label>
       <input id="transactionId" class="form-control" formControlName="transactionId" type="text">
     </div>
+
+	  <!--payer-->
+	  <div class="form-group col-md-12 border-bottom">
+		  <h4>Payer Information</h4>
+	  </div>
+	  <div class="form-group col-md-3">
+		  <label for="payerPartyIdType">Party Type:</label>
+		  <select id="payerPartyIdType" class="form-control" formControlName="payerPartyIdType">
+			  <option *ngFor="let payerPartyIdType of partyIdTypeList"  value="{{payerPartyIdType}}">{{payerPartyIdType}}</option>
+		  </select>
+	  </div>
+	  <div class="form-group col-md-3">
+		  <label for="payerPartyIdentifier">Party Identifier:</label>
+		  <input class="form-control" id="payerPartyIdentifier" formControlName="payerPartyIdentifier" type="text"
+				 [ngClass]="{'is-valid': form.controls['payerPartyIdentifier'].touched && form.controls['payerPartyIdentifier'].valid,
+             'is-invalid': (submitted || form.controls['payerPartyIdentifier'].touched) && form.controls['payerPartyIdentifier'].invalid}">
+	  </div>
+	  <div class="form-group col-md-3">
+		  <label for="payerPartySubIdOrType">Party SubIdentifier:</label>
+		  <input class="form-control" id="payerPartySubIdOrType" formControlName="payerPartySubIdOrType" type="text"
+				 [ngClass]="{'is-valid': form.controls['payerPartySubIdOrType'].touched && form.controls['payerPartySubIdOrType'].valid,
+             'is-invalid': (submitted || form.controls['payerPartySubIdOrType'].touched) && form.controls['payerPartySubIdOrType'].invalid}">
+	  </div>
+	  <div class="form-group col-md-3">
+		  <label for="payerFspId">FSP Identifier:</label>
+		  <select id="payerFspId" class="form-control" formControlName="payerFspId">
+			  <option *ngFor="let participant of (participants | async)"  value="{{participant.id}}">{{participant.name}}</option>
+		  </select>
+	  </div>
 
     <!--payee-->
     <div class="form-group col-md-12 border-bottom">
@@ -57,34 +86,7 @@
       </select>
     </div>
 
-    <!--payer-->
-    <div class="form-group col-md-12 border-bottom">
-      <h4>Payer Information</h4>
-    </div>
-    <div class="form-group col-md-3">
-      <label for="payerPartyIdType">Party Type:</label>
-      <select id="payerPartyIdType" class="form-control" formControlName="payerPartyIdType">
-        <option *ngFor="let payerPartyIdType of partyIdTypeList"  value="{{payerPartyIdType}}">{{payerPartyIdType}}</option>
-      </select>
-    </div>
-    <div class="form-group col-md-3">
-      <label for="payerPartyIdentifier">Party Identifier:</label>
-      <input class="form-control" id="payerPartyIdentifier" formControlName="payerPartyIdentifier" type="text"
-             [ngClass]="{'is-valid': form.controls['payerPartyIdentifier'].touched && form.controls['payerPartyIdentifier'].valid,
-             'is-invalid': (submitted || form.controls['payerPartyIdentifier'].touched) && form.controls['payerPartyIdentifier'].invalid}">
-    </div>
-    <div class="form-group col-md-3">
-      <label for="payerPartySubIdOrType">Party SubIdentifier:</label>
-      <input class="form-control" id="payerPartySubIdOrType" formControlName="payerPartySubIdOrType" type="text"
-             [ngClass]="{'is-valid': form.controls['payerPartySubIdOrType'].touched && form.controls['payerPartySubIdOrType'].valid,
-             'is-invalid': (submitted || form.controls['payerPartySubIdOrType'].touched) && form.controls['payerPartySubIdOrType'].invalid}">
-    </div>
-    <div class="form-group col-md-3">
-      <label for="payerFspId">FSP Identifier:</label>
-      <select id="payerFspId" class="form-control" formControlName="payerFspId">
-        <option *ngFor="let participant of (participants | async)"  value="{{participant.id}}">{{participant.name}}</option>
-      </select>
-    </div>
+
 
     <!--amount-->
     <div class="form-group col-md-12 border-bottom">

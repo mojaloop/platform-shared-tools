@@ -13,12 +13,13 @@ const SVC_BASEURL = "/_quotes";
   providedIn: "root",
 })
 export class QuotesService {
-  public hubId = "hub";
 
   constructor(private _settings: SettingsService, private _http: HttpClient, private _authentication: AuthenticationService) {}
 
   createEmptyQuote(): Quote {
 	return {
+	  requesterFspId: "",
+	  destinationFspId: "",
       quoteId: "",
       bulkQuoteId: "",
       transactionId: "",
@@ -34,9 +35,9 @@ export class QuotesService {
       scenario: "",
       initiator: "",
       initiatorType: "",
-	  transactionRequestId: "", 
-	  payee: null, 
-	  payer: null, 
+	  transactionRequestId: "",
+	  payee: null,
+	  payer: null,
 	  transactionType: null,
 	  ilpPacket: "",
 	  extensionList: null

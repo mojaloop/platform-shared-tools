@@ -1,134 +1,143 @@
 <div class="row">
-  <div class="col-md-8 align-self-center">
-    <h2>Quote Details</h2>
-  </div>
+	<div class="col-md-8 align-self-center">
+		<h2>Quote Details</h2>
+	</div>
 
-  <div class="col-md-4 align-self-center">
-    <small><strong>ID: </strong> {{(quote | async)?.quoteId}}
-      <a (click)="copyQuoteIdToClipboard()"
-         ngbTooltip="Copy ID to clipboard"><i class="bi bi-clipboard-plus"></i></a></small>
-  </div>
+	<div class="col-md-4 align-self-center">
+		<small><strong>ID: </strong> {{(quote | async)?.quoteId}}
+			<a (click)="copyQuoteIdToClipboard()"
+			   ngbTooltip="Copy ID to clipboard"><i class="bi bi-clipboard-plus"></i></a></small>
+	</div>
 </div>
 <hr>
 
 <div class="row">
-  <div class="col-6"> <!-- left col with form -->
+	<div class="col-4"> <!-- column 1 -->
+		<div class="mb-2">
+			<label class="col-form-label text-secondary">Bulk Quote Id</label>
+			<div>{{(quote | async)?.bulkQuoteId ? (quote | async)?.bulkQuoteId:"None" }}</div>
+		</div>
 
-    <div class="mb-2">
-      <label class="col-form-label text-secondary">Bulk Quote Id</label>
-      <div>{{(quote | async)?.bulkQuoteId ? (quote | async)?.bulkQuoteId : "None" }}</div>
-    </div>
+		<div class="mb-2">
+			<label class="col-form-label text-secondary">Transaction Id</label>
+			<div>{{(quote | async)?.transactionId}}</div>
+		</div>
 
-    <div class="mb-2">
-      <label class="col-form-label text-secondary">Transaction Id</label>
-      <div>{{(quote | async)?.transactionId}}</div>
-    </div>
+		<div class="mb-2">
+			<label class="col-form-label text-secondary">Requester FspId</label>
+			<div><a href="/participants/{{(quote | async)?.requesterFspId}}">{{(quote | async)?.requesterFspId}}</a></div>
+		</div>
 
-    <div class="mb-2">
-      <label class="col-form-label text-secondary">Status</label>
-      <div [ngClass]="(quote | async)?.status==='ACCEPTED'?'text-success':'text-danger'">{{(quote | async)?.status}}</div>
-    </div>
+		<div class="mb-2">
+			<label class="col-form-label text-secondary">Destination FspId</label>
+			<div><a href="/participants/{{(quote | async)?.destinationFspId}}">{{(quote | async)?.destinationFspId}}</a></div>
+			<div></div>
+		</div>
 
-  </div> <!-- left col with form -->
+		<div class="mb-2">
+			<label class="col-form-label text-secondary">Amount Type</label>
+			<div class="">{{(quote | async)?.amountType}}</div>
+		</div>
+	</div> <!-- column 1 -->
 
-  <div class="col-3"> <!-- right col with action buttons -->
-    
-    <div class="mb-2">
-      <label class="col-form-label text-secondary">Currency</label>
-      <div>{{(quote | async)?.amount?.currency}}</div>
-    </div>
+	<div class="col-4"> <!-- column 2 -->
+		<div class="mb-2">
+			<label class="col-form-label text-secondary">Status</label>
+			<div
+				[ngClass]="(quote | async)?.status==='ACCEPTED'?'text-success':'text-danger'">{{(quote | async)?.status}}</div>
+		</div>
 
-    <div class="mb-2">
-      <label class="col-form-label text-secondary">Amount</label>
-      <div>{{(quote | async)?.amount?.amount}}</div>
-    </div>
+		<div class="mb-2">
+			<label class="col-form-label text-secondary">Amount</label>
+			<div>{{(quote | async)?.amount?.amount}} {{(quote | async)?.amount?.currency}}</div>
+		</div>
 
-    <div class="mb-2">
-      <label class="col-form-label text-secondary">Amount Type</label>
-      <div class="text-danger">{{(quote | async)?.amountType}}</div>
-    </div>
+		<div class="mb-2">
+			<label class="col-form-label text-secondary">Payee FSP Commission</label>
+			<div>{{(quote | async)?.payeeFspCommission?.amount}} {{(quote | async)?.payeeFspCommission?.currency}}</div>
+		</div>
 
-  </div> <!-- right col with action buttons -->
+		<div class="mb-2">
+			<label class="col-form-label text-secondary">Payee FSP Fee</label>
+			<div>{{(quote | async)?.payeeFspFee?.amount}} {{(quote | async)?.payeeFspFee?.currency}}</div>
+		</div>
 
-  <div class="col-3"> <!-- right col with action buttons -->
-    <ng-container >
-      <a href="/quotes/new">
-        <button class="btn btn-primary btn-block">
-          Create Quote
-        </button>
-      </a>
-    </ng-container>
+	</div> <!-- column 2 -->
 
-    <ng-container>
-      <a href="/quotes">
-        <button class="btn btn-secondary btn-block mt-1">
-          Back to list
-        </button>
-      </a>
-    </ng-container>
-  </div> <!-- right col with action buttons -->
+	<div class="col-3"> <!-- column 3 - buttons -->
+		    <ng-container >
+		      <a href="/transfers/new?quoteId={{(quote | async)?.quoteId}}">
+		        <button class="btn btn-primary btn-block">
+		          Create Transfer
+		        </button>
+		      </a>
+		    </ng-container>
+	</div>  <!-- column 3 - buttons -->
 </div>
 
 
 <ul ngbNav #nav="ngbNav" class="mt-4 nav-tabs" (navChange)="tabChange($event)">
-  <li ngbNavItem="fsp">  <!-- fsp -->
-    <a ngbNavLink>FSPs</a>
-    <ng-template ngbNavContent>
-      <h4 class="mt-3">List of payers and payees involved in the quote</h4>
-      <table class="table table-hover mt-3">
-        <thead class="thead-light">
-        <tr>
-          <th scope="col">FSP Type</th>
-          <th scope="col">Party Type</th>
-          <th scope="col">Party Identifier</th>
-          <th scope="col">Party SubType</th>
-          <th scope="col">fspId</th>
-        </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Payer</td>
-            <td>{{(quote | async)?.payer?.partyIdInfo?.partyIdType}}</td>
-            <td>{{(quote | async)?.payer?.partyIdInfo?.partyIdentifier}}</td>
-            <td>{{(quote | async)?.payer?.partyIdInfo?.partySubIdOrType}}</td>
-            <td>{{(quote | async)?.payer?.partyIdInfo?.fspId}}</td>
-          </tr>
-          <tr>
-            <td>Payee</td>
-            <td>{{(quote | async)?.payee?.partyIdInfo?.partyIdType}}</td>
-            <td>{{(quote | async)?.payee?.partyIdInfo?.partyIdentifier}}</td>
-            <td>{{(quote | async)?.payee?.partyIdInfo?.partySubIdOrType}}</td>
-            <td>{{(quote | async)?.payee?.partyIdInfo?.fspId}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </ng-template>
-  </li><!-- fsp -->
+	<li ngbNavItem="fsp">  <!-- fsp -->
+		<a ngbNavLink>Parties</a>
+		<ng-template ngbNavContent>
+			<h4 class="mt-3">List of parties involved in the quote</h4>
+			<table class="table table-hover mt-3">
+				<thead class="thead-light">
+				<tr>
+					<th scope="col">FSP Type</th>
+					<th scope="col">Party Type</th>
+					<th scope="col">Party Identifier</th>
+					<th scope="col">Party SubType</th>
+					<th scope="col">fspId</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>Payer</td>
+					<td>{{(quote | async)?.payer?.partyIdInfo?.partyIdType}}</td>
+					<td>{{(quote | async)?.payer?.partyIdInfo?.partyIdentifier}}</td>
+					<td>{{(quote | async)?.payer?.partyIdInfo?.partySubIdOrType}}</td>
+					<td>{{(quote | async)?.payer?.partyIdInfo?.fspId}}</td>
+				</tr>
+				<tr>
+					<td>Payee</td>
+					<td>{{(quote | async)?.payee?.partyIdInfo?.partyIdType}}</td>
+					<td>{{(quote | async)?.payee?.partyIdInfo?.partyIdentifier}}</td>
+					<td>{{(quote | async)?.payee?.partyIdInfo?.partySubIdOrType}}</td>
+					<td>{{(quote | async)?.payee?.partyIdInfo?.fspId}}</td>
+				</tr>
+				</tbody>
+			</table>
+		</ng-template>
+	</li><!-- fsp -->
+	<li ngbNavItem="ilp">  <!-- interledger -->
+		<a ngbNavLink>ILP</a>
+		<ng-template ngbNavContent>
+			<h4 class="mt-3">Interledger protocol</h4>
 
-  <li ngbNavItem="otherInfo">  <!-- otherInfo -->
-    <a ngbNavLink>Other Info</a>
-    <ng-template ngbNavContent>
-      <h4 class="mt-3">Other info</h4>
-      <table class="table table-hover mt-3">
-        <thead class="thead-light">
-        <tr>
-          <th scope="col">Payee FSP Commission</th>
-          <th scope="col">Payee FSP Fee</th>
-          <th scope="col">Condition</th>
-          <th scope="col">Expiration</th>
-        </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{{(quote | async)?.payeeFspCommission?.amount}} {{(quote | async)?.payeeFspCommission?.currency}}</td>
-            <td>{{(quote | async)?.payeeFspFee?.amount}} {{(quote | async)?.payeeFspFee?.currency}}</td>
-            <td>{{(quote | async)?.condition}}</td>
-            <td>{{(quote | async)?.expiration}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </ng-template>
-  </li><!-- otherInfo -->
+
+			<div class="row">
+				<div class="col-12">
+					<div class="mb-2">
+						<label class="col-form-label text-secondary">Condition</label>
+						<div>{{(quote | async)?.condition}}</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-12">
+					<div class="mb-2">
+						<label class="col-form-label text-secondary">ILP Packet</label>
+						<div style="max-width: 300px;" class="text-wrap">
+							{{(quote | async)?.ilpPacket}}
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+		</ng-template>
+	</li><!-- interledger -->
 </ul>
 
 <div class="mt-6" [ngbNavOutlet]="nav"></div>

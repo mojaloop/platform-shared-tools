@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {MessageService} from "src/app/_services_and_types/message.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Quote} from "src/app/_services_and_types/quote_types";
@@ -9,6 +9,7 @@ import {BehaviorSubject, Subscription} from 'rxjs';
 import {UnauthorizedError} from '../_services_and_types/errors';
 import {Participant} from '../_services_and_types/participant_types';
 import {ParticipantsService} from '../_services_and_types/participants.service';
+import * as uuid from "uuid";
 
 const removeEmpty = (obj: any) => {
 	Object.entries(obj).forEach(([key, val]) =>
@@ -38,7 +39,7 @@ export class QuoteCreateComponent implements OnInit {
 	participants: BehaviorSubject<Participant[]> = new BehaviorSubject<Participant[]>([]);
 	participantsSubs?: Subscription;
 
-	constructor(private _route: ActivatedRoute, private _quotesSvc: QuotesService, private _interopSvc: InteropService, private _participantsSvc: ParticipantsService, private _messageService: MessageService) {
+	constructor(private _router: Router, private _route: ActivatedRoute, private _quotesSvc: QuotesService, private _interopSvc: InteropService, private _participantsSvc: ParticipantsService, private _messageService: MessageService) {
 	}
 
 	async ngOnInit(): Promise<void> {
@@ -140,7 +141,9 @@ export class QuoteCreateComponent implements OnInit {
 				throw new Error("error saving Quote");
 
 			this._messageService.addSuccess("Quote Created");
-			history.back();
+			setTimeout(()=>{
+				this._router.navigateByUrl(`/quotes/${this.activeQuote!.quoteId}?live`);
+			}, 250);
 		});
 
 
@@ -148,14 +151,14 @@ export class QuoteCreateComponent implements OnInit {
 
 	applyQuoteExample() {
 		const exampleQuote = {
-			quoteId: "8243fdba-5dea-3abd-a210-3780e7f2f1f4",
-			transactionId: "9f5d9784-3a57-5865-9aa0-7dde7791548a",
+			quoteId: uuid.v4(),
+			transactionId: uuid.v4(),
 			payer: {
 				partyIdInfo: {
 					partyIdType: "MSISDN",
 					partyIdentifier: "123",
 					partySubIdOrType: null,
-					fspId: "Bluebank"
+					fspId: "greenbank"
 				}
 			},
 			payee: {
@@ -163,13 +166,13 @@ export class QuoteCreateComponent implements OnInit {
 					partyIdType: "MSISDN",
 					partyIdentifier: "456",
 					partySubIdOrType: null,
-					fspId: "Greenbank"
+					fspId: "bluebank"
 				}
 			},
 			amountType: "SEND",
 			amount: {
 				currency: "EUR",
-				amount: "1"
+				amount: "10"
 			},
 			transactionType: {
 				scenario: "DEPOSIT",

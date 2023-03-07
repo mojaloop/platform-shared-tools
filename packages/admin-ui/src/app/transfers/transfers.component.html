@@ -1,27 +1,85 @@
 <h3>Transfers</h3>
 
-<div>
-  <table class="table">
-    <thead class="thead-light">
-    <tr>
-      <th scope="col">Transfer ID</th>
-      <th scope="col">Payee FSP</th>
-      <th scope="col">Payer FSP</th>
-      <th scope="col">Transfer State</th>
 
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let item of (transfers | async)">
-      <td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
-      <td>{{item.payeeFspId}}</td>
-      <td>{{item.payerFspId}}</td>
-      <td>{{item.transferState}}</td>
-    </tr>
-    </tbody>
-  </table>
+<!--filter-->
+<div>
+	<form >
+		<table class="table">
+			<tr class="form-row">
+				<div class="form-group col-md-2">
+					<label for="filterState">State:</label>
+					<select class="form-control" id="filterState">
+						<option value="ALL">All</option>
+						<option value="RECEIVED">Received</option>
+						<option value="RESERVED">Reserved</option>
+						<option value="REJECTED">Rejected</option>
+						<option value="COMMITTED">Committed</option>
+						<option value="EXPIRED">Expired</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-1">
+					<label for="filterCurrency">Currency:</label>
+					<select class="form-control" id="filterCurrency">
+						<option value="ALL">All</option>
+						<option value="USD">USD</option>
+						<option value="EUR">EUR</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterStartDate">Start date:</label>
+					<input class="form-control" type="datetime-local" id="filterStartDate" step=300>
+				</div>
+
+
+				<div class="form-group col-md-3">
+					<label for="filterEndDate">End date:</label>
+					<input class="form-control" type="datetime-local" id="filterEndDate" step=300>
+				</div>
+
+				<div class="form-group col-md-2">
+					<label for="filterId">Id</label>
+					<input class="form-control" type="text" id="filterId">
+				</div>
+
+				<div class="form-group col-md-1">
+					<label for="filterBtn">&nbsp;</label>
+					<button type="submit" class="form-control btn btn-primary" id="filterBtn" (click)="search()">Search</button>
+				</div>
+			</tr>
+		</table>
+	</form>
+</div>
+
+
+<div>
+	<table class="table">
+		<thead class="thead-light">
+		<tr>
+			<th scope="col">Transfer ID</th>
+			<th scope="col">Timestamp</th>
+			<th scope="col">Payer FSP</th>
+			<th scope="col">Payee FSP</th>
+			<th scope="col">Transfer State</th>
+			<th scope="col">Amount</th>
+			<th scope="col">Currency</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr *ngFor="let item of (transfers | async)">
+			<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
+			<td >{{item.updatedAt | date: 'medium'}}</td>
+			<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
+			<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
+			<td>{{item.transferState}}</td>
+			<td>{{item.amount}}</td>
+			<td>{{item.currencyCode}}</td>
+		</tr>
+		</tbody>
+	</table>
 </div>
 
 <div>
-  <button class="btn btn-primary" routerLink="/transfers/new">Create Transfer</button>
+	<button class="btn btn-primary" routerLink="/transfers/new">Create Transfer</button>
 </div>

@@ -38,6 +38,8 @@ export declare type QuoteType = "HUB" | "DFSP";
 
 /** Quotes **/
 export declare type Quote = {
+  requesterFspId:string;
+  destinationFspId:string;
   quoteId: string;
   bulkQuoteId: string;
   transactionId: string;
@@ -55,7 +57,7 @@ export declare type Quote = {
           complexName: {
               firstName: string | null;
               middleName: string | null;
-              lastName: string | null;              
+              lastName: string | null;
           } | null,
           dateOfBirth: string | null
       } | null
@@ -73,7 +75,7 @@ export declare type Quote = {
           complexName: {
               firstName: string | null;
               middleName: string | null;
-              lastName: string | null;              
+              lastName: string | null;
           } | null,
           dateOfBirth: string | null
       } | null

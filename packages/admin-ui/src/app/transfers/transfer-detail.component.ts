@@ -26,18 +26,11 @@ export class TransferDetailComponent implements OnInit {
       throw new Error("invalid transfer id");
     }
 
-    this._fetchTransfer(this._transferId);
+	  this._transfersSvc.getTransfer(this._transferId).subscribe(transfer => {
+		  this.transfer.next(transfer);
+	  });
   }
 
-  private async _fetchTransfer(id: string):Promise<void> {
-    return new Promise(resolve => {
-      this._transfersSvc.getTransfer(id).subscribe(transfer => {
-        this.transfer.next(transfer);
-        resolve();
-      });
-    });
-
-  }
 
   tabChange(e: any) {
     console.log(`Tab changed to ${e.nextId}`);

@@ -13,6 +13,8 @@ import {NgbModal, NgbNav} from "@ng-bootstrap/ng-bootstrap";
 })
 export class QuoteDetailComponent implements OnInit {
   private _quoteId: string | null = null;
+  private _live: boolean = false;
+  private _reloadRequested: boolean = false;
   public quote: BehaviorSubject<Quote | null> = new BehaviorSubject<Quote | null>(null);
 
   @ViewChild("nav") // Get a reference to the ngbNav
@@ -24,11 +26,8 @@ export class QuoteDetailComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     console.log(this._route.snapshot.routeConfig?.path);
-    if(this._route.snapshot.routeConfig?.path === this._quotesSvc.hubId){
-      this._quoteId = this._quotesSvc.hubId;
-    }else{
-      this._quoteId = this._route.snapshot.paramMap.get('id');
-    }
+	this._quoteId = this._route.snapshot.paramMap.get('id');
+    this._live = this._route.snapshot.queryParamMap.has('live');
 
     if (!this._quoteId) {
       throw new Error("invalid quote id");
@@ -38,14 +37,22 @@ export class QuoteDetailComponent implements OnInit {
   }
 
   private async _fetchQuote(id: string):Promise<void> {
-    return new Promise(resolve => {
-      this._quotesSvc.getQuote(id).subscribe(quote => {
-        this.quote.next(quote);
-        resolve();
-      });
-    });
+	  this._quotesSvc.getQuote(id).subscribe(quote => {
+		this.quote.next(quote);
 
+		if(this._live && !(quote?.status === "REJECTED" ||  quote?.status === "ACCEPTED")){
+			this._reloadRequested = true;
+			setTimeout(()=>{
+				this._fetchQuote(id);
+			}, 500);
+
+		}else if(this._live && this._reloadRequested){
+			this._messageService.addSuccess("Quote reloaded");
+		}
+	  });
   }
+
+
 
   tabChange(e: any) {
     console.log(`Tab changed to ${e.nextId}`);
