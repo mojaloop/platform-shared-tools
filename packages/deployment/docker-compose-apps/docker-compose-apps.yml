@@ -270,7 +270,7 @@ services:
       - PARTICIPANTS_SVC_URL=${PARTICIPANTS_SVC_URL}
       - ACCOUNTS_BALANCES_COA_SVC_URL=${ACCOUNTS_BALANCES_COA_SVC_URL}
     healthcheck:
-      test: nc -z localhost 3500 || exit -1
+      test: nc -z localhost 3600 || exit -1
       start_period: 30s
       interval: 10s
       timeout: 10s
@@ -328,7 +328,7 @@ services:
 
 
   admin-ui:
-    image: mojaloop/vnext-admin-ui-svc:0.1.5
+    image: mojaloop/vnext-admin-ui-svc:0.1.6
     depends_on:
       transfers-api-svc:
         condition: service_healthy

@@ -1,5 +1,12 @@
-<h3>Oracles</h3>
 
+<div class="row mb-2">
+	<div class="col">
+		<h3>Oracles</h3>
+	</div>
+	<div class="col text-right">
+		<button class="btn btn-primary" routerLink="/account-lookup-oracles/new">Register New Oracle</button>
+	</div>
+</div>
 
 <ng-container *ngIf="(registeredOracles | async)?.length==0 else listOracles">
   <div class="alert alert-warning" role="alert">
@@ -41,6 +48,3 @@
   </table>
 </div>
 </ng-template>
-<div>
-  <button class="btn btn-primary" routerLink="/account-lookup-oracles/new">Register New Oracle</button>
-</div>

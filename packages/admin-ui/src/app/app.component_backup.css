@@ -1,0 +1,22 @@
+
+.top-bar-space {
+    margin-top: 6rem;
+}
+
+.notifications {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 1rem;
+    margin-right: 1rem;
+}
+
+.dropdown-menu[aria-labelledby="navbarDropdownMenuLink_account"].show{
+    position: fixed;
+    top: 48px;
+    left: calc(100% - 11rem);
+}
+
+.ngb-toasts {
+    margin-top: 4.5rem;
+}

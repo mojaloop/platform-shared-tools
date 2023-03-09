@@ -1,0 +1,109 @@
+<nav class="navbar navbar-expand-lg navbar navbar-expand-lg navbar-dark bg-primary fixed-top bg-primary fixed-top" >
+  <a class="navbar-brand" routerLink="/home">
+    <strong>{{title}}</strong>
+  </a>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+          aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarNav">
+      <ng-container *ngIf="(isLoggedIn | async); else notLoggedIn" >
+        <ul class="navbar-nav ml-auto">
+          <a class="nav-item nav-link" routerLinkActive="active" routerLink="/hub">Hub</a>
+          <a class="nav-item nav-link" routerLinkActive="active" routerLink="/participants/">Participants</a>
+
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink_als" role="button" routerLinkActive="active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Account Lookup
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink_als">
+              <a class="dropdown-item" routerLinkActive="active" routerLink="/account-lookup">Test Calls</a>
+              <a class="dropdown-item" routerLinkActive="active" routerLink="/account-lookup-oracles">Oracles</a>
+              <a class="dropdown-item" routerLinkActive="active" routerLink="/account-lookup-associations">Associations</a>
+            </div>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink_quotes" role="button" routerLinkActive="active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Quotes
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink_quotes">
+              <a class="dropdown-item" routerLinkActive="active" routerLink="/quotes">Quotes</a>
+              <a class="dropdown-item" routerLinkActive="active" routerLink="/bulk-quotes">Bulk Quotes</a>
+            </div>
+          </li>
+
+
+			<a class="nav-item nav-link" routerLinkActive="active" routerLink="/transfers">Transfers</a>
+
+<!--          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink_als" role="button" routerLinkActive="active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Transfers
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink_als">
+              <a class="dropdown-item" routerLinkActive="active" routerLink="/transfers">Transfers</a>
+              &lt;!&ndash; <a class="dropdown-item" routerLinkActive="active" routerLink="/bulk-transfers">Bulk Transfers</a> &ndash;&gt;
+            </div>
+          </li>-->
+
+
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkSettlements"
+				   role="button" routerLinkActive="active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Settlements
+				</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkSettlements">
+					<a class="dropdown-item" routerLinkActive="active" routerLink="/settlements/batches">Batches</a>
+					<a class="dropdown-item" routerLinkActive="active" routerLink="/settlements/matrix">Matrices</a>
+				</div>
+			</li>
+
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" routerLinkActive="active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Configurations
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" routerLinkActive="active" routerLink="/platform-configuration">Main</a>
+              <a class="dropdown-item" routerLinkActive="active" routerLink="/platform-configuration-global">Global Configurations</a>
+              <a class="dropdown-item" routerLinkActive="active" routerLink="/platform-configuration-app">Application Configurations</a>
+            </div>
+          </li>
+
+          <a class="nav-item nav-link" routerLinkActive="active" routerLink="/security">Security</a>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink_account" role="button" routerLinkActive="active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            ({{(username|async)}})
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink_account">
+            <a class="dropdown-item" routerLinkActive="active" routerLink="/myaccount"><i class="bi bi-person-circle"></i>&nbsp; My Account</a>
+            <a class="dropdown-item" href="#" (click)="logout()"><i class="bi bi-box-arrow-right"></i>&nbsp; Log out</a>
+          </div>
+        </li>
+      </ul>
+      </ng-container>
+
+      <ng-template #notLoggedIn>
+        <ul class="navbar-nav ml-auto navbar-right">
+          <button class="btn btn-outline-light my-2 my-sm-0" routerLink="/login">Login</button>
+        </ul>
+      </ng-template>
+  </div>
+</nav>
+
+
+<div class="container top-bar-space">
+<!--  <app-messages class="notifications"></app-messages>-->
+  <app-messages class="ngb-toasts" aria-atomic="true" aria-live="polite"></app-messages>
+<!--  <app-toasts aria-live="polite" aria-atomic="true"></app-toasts>-->
+  <router-outlet></router-outlet>
+
+
+</div>
+
+
+

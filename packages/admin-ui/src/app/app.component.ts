@@ -2,6 +2,7 @@ import {Component, isDevMode, OnDestroy, OnInit} from '@angular/core';
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
 import {BehaviorSubject, Observable, Subscription} from "rxjs";
 import {Router} from "@angular/router";
+import {SettingsService} from "src/app/_services_and_types/settings.service";
 
 
 @Component({
@@ -20,7 +21,7 @@ export class AppComponent implements OnInit,OnDestroy {
   navbarOpen = false;
 
 
-  constructor(private _authentication:AuthenticationService, private _router: Router) {
+  constructor(private _authentication:AuthenticationService, private _router: Router, private _settings:SettingsService) {
     console.log("AppComponent on ctor");
 
     this.isLoggedInSubs = _authentication.LoggedInObs.subscribe(value => {
@@ -31,6 +32,9 @@ export class AppComponent implements OnInit,OnDestroy {
       this.username.next(value);
     });
   }
+	getVersion():string{
+		return this._settings.getVersion();
+	}
 
   ngOnInit(): void {
     console.log("AppComponent ngOnInit");
