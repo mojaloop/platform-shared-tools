@@ -52,12 +52,18 @@
 				<div class="text-break">{{item.condition}}</div>
 			</div>
 
+			<div class="mb-2">
+				<label class="col-form-label text-secondary">Settled</label>
+				<div class="text-break" *ngIf="!(settlementTransfer | async)?.settled">No</div>
+				<div class="text-break" *ngIf="(settlementTransfer | async)?.settled">Yes<!-- - <a routerLink="/settlements/matrix/{{(settlementTransfer | async)?.matrixId}}">Matrix</a>--></div>
+			</div>
+
 
 		</div> <!-- col 2 -->
 
 		<div class="col-3"> <!-- column 3 - buttons -->
 			<ng-container >
-				<a href="/transfers/new?quoteId=">
+				<a href="/settlements/transfers?transferId={{item.transferId}}">
 					<button class="btn btn-primary btn-block">
 						Search in Settlements
 					</button>

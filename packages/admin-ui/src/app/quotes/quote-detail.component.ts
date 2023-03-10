@@ -17,6 +17,8 @@ export class QuoteDetailComponent implements OnInit {
   private _reloadRequested: boolean = false;
   public quote: BehaviorSubject<Quote | null> = new BehaviorSubject<Quote | null>(null);
 
+  private _reloadCount = 0;
+
   @ViewChild("nav") // Get a reference to the ngbNav
   navBar!:NgbNav;
 
@@ -40,11 +42,16 @@ export class QuoteDetailComponent implements OnInit {
 	  this._quotesSvc.getQuote(id).subscribe(quote => {
 		this.quote.next(quote);
 
-		if(this._live && !(quote?.status === "REJECTED" ||  quote?.status === "ACCEPTED")){
+		if(this._live && !quote ||	 !(quote?.status === "REJECTED" ||  quote?.status === "ACCEPTED")){
+
+			if(this._reloadCount > 30)  return;
+
+			this._reloadCount++;
 			this._reloadRequested = true;
 			setTimeout(()=>{
+				this._reloadCount++;
 				this._fetchQuote(id);
-			}, 500);
+			}, 1000);
 
 		}else if(this._live && this._reloadRequested){
 			this._messageService.addSuccess("Quote reloaded");

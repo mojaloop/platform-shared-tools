@@ -14,7 +14,7 @@
 
 
 <div class="row">
-	<div class="col-8"> <!-- left col with form -->
+	<div class="col-10"> <!-- left col with form -->
 		<div class="row">
 			<div class="col-4">
 				<div class="mb-2">
@@ -49,21 +49,33 @@
 					<div>{{(matrix | async)?.dateTo | date: 'medium'}}</div>
 				</div>
 			</div>
+			<div class="col-4">
+				<div class="mb-2">
+					<label class="col-form-label text-secondary">Total Debit Balance</label>
+					<div>{{(matrix | async)?.totalDebitBalance}}</div>
+				</div>
+			</div>
 		</div>
 
 		<div class="row">
 			<div class="col-4">
 				<div class="mb-2">
-					<label class="col-form-label text-secondary">Creation</label>
-					<div>Created by TODO
-						at {{((matrix | async)?.createdAt) | date: 'medium'}}</div>
+					<label class="col-form-label text-secondary">Last Updated</label>
+					<div>{{((matrix | async)?.updatedAt) | date: 'medium'}}</div>
 				</div>
 			</div>
+
 			<div class="col-4">
 				<div class="mb-2">
-					<label class="col-form-label text-secondary">Updated</label>
-					<div>Updated by TODO
-						at {{((matrix | async)?.updatedAt) | date: 'medium'}}</div>
+					<label class="col-form-label text-secondary">Total Transfers Count</label>
+					<div>{{(matrix | async)?.totalTransferCount}}</div>
+				</div>
+			</div>
+
+			<div class="col-4">
+				<div class="mb-2">
+					<label class="col-form-label text-secondary">Total Credit Balance</label>
+					<div>{{(matrix | async)?.totalCreditBalance}}</div>
 				</div>
 			</div>
 		</div>
@@ -72,7 +84,7 @@
 
 	</div> <!-- left col with form -->
 
-	<div class="col-4"> <!-- right col with action buttons -->
+	<div class="col-2"> <!-- right col with action buttons -->
 		<button class="btn btn-primary btn-block" *ngIf="(matrix | async)?.state !== 'CLOSED'" (click)="refresh()">Refresh</button>
 		<ng-container *ngIf="(matrix | async)?.state === 'IDLE'">
 			<button class="btn btn-success btn-block" (click)="recalculate(false)">Recalculate</button>
@@ -151,9 +163,38 @@
 			</table>
 		</ng-template>
 	</li> <!-- Per participant totals -->
+
+	<li ngbNavItem="transfers" > <!-- transfers -->
+		<a ngbNavLink>Transfers</a>
+		<ng-template ngbNavContent>
+			<h4 class="mt-3">Transfers</h4>
+			<table class="table table-hover mt-3">
+				<thead class="thead-light">
+				<tr>
+					<th scope="col">Transfer Id</th>
+					<th scope="col">Payer Id</th>
+					<th scope="col">Payee Id</th>
+					<th scope="col">Amount</th>
+					<th scope="col">Timestamp</th>
+					<th scope="col">Batch Id</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr *ngFor="let item of (transfers | async)">
+					<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
+					<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
+					<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
+					<td>{{item.amount}} ({{item.currencyCode}})</td>
+					<td>{{item.transferTimestamp | date:'medium'}}</td>
+					<td>{{item.batchId}}</td>
+				</tr>
+				</tbody>
+			</table>
+		</ng-template>
+	</li> <!-- Per participant totals -->
 </ul>
 
 
 <div class="mt-6" [ngbNavOutlet]="nav"></div>
 
-<pre>{{matrix | async | json}}</pre>
+<!--<pre>{{matrix | async | json}}</pre>-->

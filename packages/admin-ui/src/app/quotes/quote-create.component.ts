@@ -143,7 +143,7 @@ export class QuoteCreateComponent implements OnInit {
 			this._messageService.addSuccess("Quote Created");
 			setTimeout(()=>{
 				this._router.navigateByUrl(`/quotes/${this.activeQuote!.quoteId}?live`);
-			}, 250);
+			}, 500);
 		});
 
 

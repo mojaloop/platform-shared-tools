@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   fspiop-api-svc:
-    image: mojaloop/interop-api-bc-fspiop-api-svc:0.1.4
+    image: mojaloop/interop-apis-bc-fspiop-api-svc:0.1.6
     volumes:
       - fspiop-api-svc_data:/app/data
     environment:
@@ -224,7 +224,7 @@ services:
     restart: unless-stopped
 
   transfers-command-handler-svc:
-    image: mojaloop/transfers-bc-command-handler-svc:0.1.3
+    image: mojaloop/transfers-bc-command-handler-svc:0.1.4
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -249,7 +249,7 @@ services:
 # settlements
 
   settlements-api-svc:
-    image: mojaloop/settlements-bc-settlements-api-svc:0.1.1
+    image: mojaloop/settlements-bc-settlements-api-svc:0.1.2
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -301,7 +301,7 @@ services:
     restart: unless-stopped
 
   settlements-command-handler-svc:
-    image: mojaloop/settlements-bc-command-handler-svc:0.1.1
+    image: mojaloop/settlements-bc-command-handler-svc:0.1.2
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -328,7 +328,7 @@ services:
 
 
   admin-ui:
-    image: mojaloop/vnext-admin-ui-svc:0.1.6
+    image: mojaloop/vnext-admin-ui-svc:0.1.7
     depends_on:
       transfers-api-svc:
         condition: service_healthy

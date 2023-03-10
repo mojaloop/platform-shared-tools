@@ -32,7 +32,7 @@
   </div> <!-- left col with form -->
 
   <div class="col-3"> <!-- right col with action buttons -->
-    
+
     <div class="mb-2">
       <label class="col-form-label text-secondary">Party Sub Type</label>
       <div>{{(oracle | async)?.partySubType ? (oracle | async)?.partySubType : "N/A" }}</div>
@@ -43,35 +43,16 @@
       <div>{{(oracle | async)?.endpoint ? (oracle | async)?.endpoint : "N/A" }}</div>
     </div>
 
-    <div class="mb-2">
-      <label class="col-form-label text-secondary">Endpoint</label>
-      <div>
-        <button type="button" class="btn btn-danger" placement="top" container="body" ngbTooltip="Remove Oracle" (click)="removeOracle(oracle)">
-        <span class="bi bi-trash"></span>
-        </button>
-        <button type="button" class="btn btn-info" placement="top" container="body" ngbTooltip="Health Check" (click)="healthCheck(oracle)">
-        <span class="bi bi-eye"></span>
-        </button>
-      </div>
-    </div>
-
   </div> <!-- right col with action buttons -->
 
   <div class="col-3"> <!-- right col with action buttons -->
     <ng-container >
-      <a href="/account-lookup-oracles/new">
-        <button class="btn btn-primary btn-block">
-          Create Oracle
+
+        <button class="btn btn-primary btn-block" (click)="healthCheck(oracle)">
+          Health Check
         </button>
-      </a>
+
     </ng-container>
 
-    <ng-container>
-      <a href="/account-lookup-oracles">
-        <button class="btn btn-secondary btn-block mt-1">
-          Back to list
-        </button>
-      </a>
-    </ng-container>
   </div> <!-- right col with action buttons -->
 </div>

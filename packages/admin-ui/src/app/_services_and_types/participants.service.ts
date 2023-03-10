@@ -273,7 +273,10 @@ export class ParticipantsService {
           if (error && error.status===401) {
             console.warn("UnauthorizedError received on approveFundsMovement");
             subscriber.error(new UnauthorizedError(error.error?.msg));
-          } else {
+          } if (error && error.status===403) {
+				console.warn("Forbidden received on approveFundsMovement");
+				subscriber.error(new Error(error.error?.msg));
+			}else {
             console.error(error);
             subscriber.error(error.error?.msg);
           }

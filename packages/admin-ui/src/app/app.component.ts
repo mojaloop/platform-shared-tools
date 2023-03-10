@@ -52,6 +52,7 @@ export class AppComponent implements OnInit,OnDestroy {
 
   logout(){
     this._authentication.logout();
-    this._router.navigateByUrl("/home");
+    // this._router.navigateByUrl("/home");
+	location.reload();
   }
 }

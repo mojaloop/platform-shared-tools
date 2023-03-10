@@ -110,6 +110,64 @@ export class SettlementsService {
 		});
 	}
 
+	getTransfersByMatrixId(matrixId: string): Observable<ISettlementBatchTransfer[]> {
+		return new Observable<ISettlementBatchTransfer[]>(subscriber => {
+			const url = `${SVC_BASEURL}/transfers?matrixId=${matrixId}`;
+			this._http.get<ISettlementBatchTransfer[]>(url).subscribe(
+				(result: ISettlementBatchTransfer[]) => {
+					console.log(`got response: ${result}`);
+
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status===403) {
+						console.warn("Access forbidden received on getTransfersByMatrixId");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else if (error && error.status===404) {
+						subscriber.next([]);
+						return subscriber.complete();
+					}else{
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+
+	getTransfersByTransferId(transferId: string): Observable<ISettlementBatchTransfer|null> {
+		return new Observable<ISettlementBatchTransfer|null>(subscriber => {
+			const url = `${SVC_BASEURL}/transfers?transferId=${transferId}`;
+			this._http.get<ISettlementBatchTransfer|null>(url).subscribe(
+				(result: ISettlementBatchTransfer|null) => {
+					console.log(`got response: ${result}`);
+
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status===403) {
+						console.warn("Access forbidden received on getTransfersByTransferId");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else if (error && error.status===404) {
+						subscriber.next(null);
+						return subscriber.complete();
+					}else{
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+
 	getTransfersByBatchName(batchName:string):Observable<ISettlementBatchTransfer[]>{
 		return new Observable<ISettlementBatchTransfer[]>(subscriber => {
 			const url = `${SVC_BASEURL}/transfers?batchName=${batchName}`;
@@ -128,6 +186,35 @@ export class SettlementsService {
 						subscriber.next([]);
 						return subscriber.complete();
 					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+
+	getAllTransfers(): Observable<ISettlementBatchTransfer[]> {
+		return new Observable<ISettlementBatchTransfer[]>(subscriber => {
+			const url = `${SVC_BASEURL}/transfers`;
+			this._http.get<ISettlementBatchTransfer[]>(url).subscribe(
+				(result: ISettlementBatchTransfer[]) => {
+					console.log(`got response: ${result}`);
+
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status===403) {
+						console.warn("Access forbidden received on getAllTransfers");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else if (error && error.status===404) {
+						subscriber.next([]);
+						return subscriber.complete();
+					}else{
 						console.error(error);
 						subscriber.error(error.error?.msg);
 					}

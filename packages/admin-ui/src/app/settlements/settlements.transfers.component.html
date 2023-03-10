@@ -1,0 +1,34 @@
+<h3>Settlement Transfers</h3>
+
+<div>
+	<table class="table">
+		<thead class="thead-light">
+		<tr>
+			<th scope="col">Transfer Id</th>
+			<th scope="col">Payer Id</th>
+			<th scope="col">Payee Id</th>
+			<th scope="col">Amount</th>
+			<th scope="col">Timestamp</th>
+			<th scope="col">Batch Id</th>
+			<th scope="col">Settled</th>
+		</tr>
+		</thead>
+		<tbody>
+		<ng-container *ngIf="(transfers | async)?.length==0">
+			<tr class="">
+				<td colspan="6">No transfers found</td>
+			</tr>
+		</ng-container>
+		<tr *ngFor="let item of (transfers | async)">
+			<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
+			<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
+			<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
+			<td>{{item.amount}} ({{item.currencyCode}})</td>
+			<td>{{item.transferTimestamp | date:'medium'}}</td>
+			<td>{{item.batchId}}</td>
+			<td *ngIf="!item.settled">(Not yet settled)</td>
+			<td *ngIf="item.settled"><a routerLink="/settlements/matrix/{{item.matrixId}}">Matrix</a></td>
+		</tr>
+		</tbody>
+	</table>
+</div>

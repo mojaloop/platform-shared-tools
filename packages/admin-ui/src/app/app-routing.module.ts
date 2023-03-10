@@ -35,6 +35,7 @@ import {TransferDetailComponent} from './transfers/transfer-detail.component';
 import {TransferCreateComponent} from './transfers/transfer-create.component';
 import {SettlementsMatrixDetailComponent} from "src/app/settlements/settlements.matrix-detail.component";
 import {SettlementsMatricesComponent} from "src/app/settlements/settlements.matrices.component";
+import {SettlementsTransfersComponent} from "src/app/settlements/settlements.transfers.component";
 
 const routes: Routes = [
 	{path: "", redirectTo: "/home", pathMatch: "full"},
@@ -69,6 +70,7 @@ const routes: Routes = [
 	{path: "settlements/matrix/:id", component: SettlementsMatrixDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/matrix", component: SettlementsMatricesComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/batches", component: SettlementsBatchesComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "settlements/transfers", component: SettlementsTransfersComponent, canActivate: [CanLoadIsLoggedIn]},
 ];
 
 

@@ -21,6 +21,8 @@ export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 	matrix: BehaviorSubject<ISettlementMatrix | null> = new BehaviorSubject<ISettlementMatrix|null>(null);
 	matrixSubs?: Subscription;
 
+	transfers: BehaviorSubject<ISettlementBatchTransfer[]> = new BehaviorSubject<ISettlementBatchTransfer[]>([]);
+
 	constructor(private _route: ActivatedRoute, private _settlementsService: SettlementsService, private _messageService: MessageService) {
 
 	}
@@ -41,7 +43,15 @@ export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 		return new Promise(resolve => {
 			this._settlementsService.getMatrix(id).subscribe(matrix => {
 				this.matrix.next(matrix);
-				resolve();
+
+				if(!matrix){
+					resolve();
+					return;
+				}
+				this._settlementsService.getTransfersByMatrixId(matrix.id).subscribe(transfers => {
+					this.transfers.next(transfers)
+				});
+
 			});
 		});
 

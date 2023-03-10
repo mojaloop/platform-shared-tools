@@ -45,6 +45,7 @@ import { AccountLookupAssociationsListComponent } from './account-lookup/associa
 import { SettlementsBatchesComponent } from 'src/app/settlements/settlements.batches.component';
 import {SettlementsMatrixDetailComponent} from "src/app/settlements/settlements.matrix-detail.component";
 import { SettlementsMatricesComponent } from './settlements/settlements.matrices.component';
+import {SettlementsTransfersComponent} from "src/app/settlements/settlements.transfers.component";
 
 @NgModule({
   declarations: [
@@ -78,7 +79,8 @@ import { SettlementsMatricesComponent } from './settlements/settlements.matrices
     TransferCreateComponent,
     SettlementsBatchesComponent,
 	SettlementsMatrixDetailComponent,
-    SettlementsMatricesComponent
+    SettlementsMatricesComponent,
+	SettlementsTransfersComponent
   ],
   imports: [
     BrowserModule,
