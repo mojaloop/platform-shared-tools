@@ -2,7 +2,18 @@ version: "3.8"
 
 services:
   fspiop-api-svc:
-    image: mojaloop/interop-apis-bc-fspiop-api-svc:0.1.6
+    image: mojaloop/interop-apis-bc-fspiop-api-svc:0.1.7
+    depends_on:
+      settlements-api-svc:
+        condition: service_healthy
+      participants-svc:
+        condition: service_healthy
+      account-lookup-svc:
+        condition: service_healthy
+      quoting-svc:
+        condition: service_healthy
+      transfers-api-svc:
+        condition: service_healthy
     volumes:
       - fspiop-api-svc_data:/app/data
     environment:
@@ -20,7 +31,7 @@ services:
       - 4000:4000
 
   accounts_and_balances_builtin-ledger-grpc-svc:
-    image: mojaloop/accounts-and-balances-bc-builtin-ledger-grpc-svc:0.1.7
+    image: mojaloop/accounts-and-balances-bc-builtin-ledger-grpc-svc:0.1.8
     volumes:
       - aandb_builtin-ledger-grpc-svc_data:/app/data
     environment:
@@ -46,7 +57,7 @@ services:
     restart: unless-stopped
 
   accounts_and_balances_coa-grpc-svc:
-    image: mojaloop/accounts-and-balances-bc-coa-grpc-svc:0.1.7
+    image: mojaloop/accounts-and-balances-bc-coa-grpc-svc:0.1.8
     depends_on:
       accounts_and_balances_builtin-ledger-grpc-svc:
         condition: service_healthy
@@ -74,6 +85,8 @@ services:
     ports:
       - 3300:3300
     restart: unless-stopped
+
+# participants
 
   participants-svc:
     image: mojaloop/participants-bc-participants-svc:0.1.4
@@ -104,6 +117,8 @@ services:
     ports:
       - 3010:3010
     restart: unless-stopped
+
+#account lookup
 
   account-lookup-http-oracle-svc:
     image: mojaloop/account-lookup-bc-http-oracle-svc:0.1.1
@@ -144,9 +159,17 @@ services:
       - AUTH_N_TOKEN_ISSUER_NAME=${AUTH_N_TOKEN_ISSUER_NAME}
       - AUTH_N_TOKEN_AUDIENCE=${AUTH_N_TOKEN_AUDIENCE}
       - PARTICIPANTS_SVC_URL=${PARTICIPANTS_SVC_URL}
+    healthcheck:
+      test: nc -z localhost 3030 || exit -1
+      start_period: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
     ports:
       - 3030:3030
     restart: unless-stopped
+
+# quoting
 
   quoting-svc:
     image: mojaloop/quoting-bc-quoting-svc:0.1.1
@@ -166,6 +189,12 @@ services:
       - AUTH_N_TOKEN_ISSUER_NAME=${AUTH_N_TOKEN_ISSUER_NAME}
       - AUTH_N_TOKEN_AUDIENCE=${AUTH_N_TOKEN_AUDIENCE}
       - PARTICIPANTS_SVC_URL=${PARTICIPANTS_SVC_URL}
+    healthcheck:
+      test: nc -z localhost 3033 || exit -1
+      start_period: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
     ports:
       - 3033:3033
     restart: unless-stopped
@@ -467,6 +496,18 @@ volumes:
       o: bind
       type: none
       device: ${ROOT_VOLUME_DEVICE_PATH}/data/settlements-command-handler-svc
+  ttk1_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/ttk1_data
+  ttk2_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${ROOT_VOLUME_DEVICE_PATH}/data/ttk2_data
   ttk1_ui_data:
     driver: local
     driver_opts:

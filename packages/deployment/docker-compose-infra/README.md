@@ -49,7 +49,7 @@ sysctl -w vm.max_map_count=262144 # might require sudo
 6. Initialise TigerBeetle data
 ```shell
 docker run -v $(pwd)/tigerbeetle_data:/data ghcr.io/tigerbeetledb/tigerbeetle \
-  format --cluster=0 --replica=0 /data/0_0.tigerbeetle
+  format --cluster=0 --replica=0 --replica-count=1 /data/0_0.tigerbeetle
 ```
 Note: on macOS, you might have to add `--cap-add IPC_LOCK, see this [page](https://github.com/tigerbeetledb/tigerbeetle#with-docker) on the official TigerBeetle repo for more info.
 
@@ -60,19 +60,25 @@ docker run --cap-add IPC_LOCK -v $(pwd)/tigerbeetle_data:/data ghcr.io/tigerbeet
 
 # Start Infrastructure Containers
 
-Start the docker containers using docker-compose up (in the exec dir)
+Start the docker containers using docker compose up (in the exec dir)
 ```shell
+docker compose -f ../docker-compose-infra.yml --env-file ./.env up -d
+# OR for older versions of docker
 docker-compose -f ../docker-compose-infra.yml --env-file ./.env up -d
 ```
 
 
 To view the logs of the infrastructure containers, run:
 ```shell
+docker compose -f ../docker-compose-infra.yml --env-file ./.env logs -f
+# OR for older versions of docker
 docker-compose -f ../docker-compose-infra.yml --env-file ./.env logs -f
 ```
 
 To stop the infrastructure containers, run:
 ```shell
+docker compose -f ../docker-compose-infra.yml --env-file ./.env stop
+# OR for older versions of docker
 docker-compose -f ../docker-compose-infra.yml --env-file ./.env stop
 ```
 

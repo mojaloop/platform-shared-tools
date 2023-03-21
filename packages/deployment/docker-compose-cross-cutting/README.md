@@ -50,19 +50,25 @@ cp ../.env.sample ./.env
 
 # Start Cross-Cutting Concern Service Containers
 
-Start the docker containers using docker-compose up (in the exec dir)
+Start the docker containers using docker compose up (in the exec dir)
 ```shell
+docker compose -f ../docker-compose-cross-cutting.yml --env-file ./.env up -d
+# OR for older versions of docker
 docker-compose -f ../docker-compose-cross-cutting.yml --env-file ./.env up -d
 ```
 
 
 To view the logs of the infrastructure containers, run:
 ```shell
+docker compose -f ../docker-compose-cross-cutting.yml --env-file ./.env logs -f
+# OR for older versions of docker
 docker-compose -f ../docker-compose-cross-cutting.yml --env-file ./.env logs -f
 ```
 
 To stop the infrastructure containers, run:
 ```shell
+docker-compose -f ../docker-compose-cross-cutting.yml --env-file ./.env stop
+# OR for older versions of docker
 docker-compose -f ../docker-compose-cross-cutting.yml --env-file ./.env stop
 ```
 
