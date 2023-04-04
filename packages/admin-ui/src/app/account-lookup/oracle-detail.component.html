@@ -24,28 +24,23 @@
       <div>{{(oracle | async)?.type}}</div>
     </div>
 
-    <div class="mb-2">
-      <label class="col-form-label text-secondary">Party Type</label>
-      <div>{{(oracle | async)?.partyType}}</div>
-    </div>
-
   </div> <!-- left col with form -->
 
-  <div class="col-3"> <!-- right col with action buttons -->
-
-    <div class="mb-2">
-      <label class="col-form-label text-secondary">Party Sub Type</label>
-      <div>{{(oracle | async)?.partySubType ? (oracle | async)?.partySubType : "N/A" }}</div>
-    </div>
+  <div class="col-6"> <!-- right col with action buttons -->
 
     <div class="mb-2">
       <label class="col-form-label text-secondary">Endpoint</label>
       <div>{{(oracle | async)?.endpoint ? (oracle | async)?.endpoint : "N/A" }}</div>
     </div>
 
+    <div class="mb-2">
+      <label class="col-form-label text-secondary">Party Type</label>
+      <div>{{(oracle | async)?.partyType}}</div>
+    </div>
+
   </div> <!-- right col with action buttons -->
 
-  <div class="col-3"> <!-- right col with action buttons -->
+  <div class="col-3 mt-4">
     <ng-container >
 
         <button class="btn btn-primary btn-block" (click)="healthCheck(oracle)">

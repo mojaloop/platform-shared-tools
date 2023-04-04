@@ -33,7 +33,6 @@ export class AccountLookupOracleCreateComponent implements OnInit {
       ]),
       type: new FormControl(this.oracle.type, Validators.required),
       partyType: new FormControl(this.oracle.partyType, Validators.required),
-      partySubType: new FormControl(this.oracle.partySubType),
       endpoint: new FormControl(this.oracle.endpoint),
     });
   }

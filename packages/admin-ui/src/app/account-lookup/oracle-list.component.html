@@ -22,7 +22,6 @@
       <th scope="col">Name</th>
       <th scope="col">Type</th>
       <th scope="col">PartyType</th>
-      <th scope="col">PartySubType</th>
       <th scope="col" style="width: 90px;">Actions</th>
     </tr>
     </thead>
@@ -31,7 +30,6 @@
       <td><a routerLink="/account-lookup/oracles/{{item.id}}">{{item.name}}</a></td>
       <td>{{item.type}}</td>
       <td>{{item.partyType}}</td>
-      <td>{{item.partySubType || "N/A" }} </td>
       <td (click)="false;$event.stopPropagation()">
         <div class="btn-group btn-group-sm" role="group" aria-label="">
 
