@@ -5,8 +5,8 @@ import packageJson from '../../../package.json';
 const USERNAME_KEYNAME = "username";
 const ACCESSTOKEN_KEYNAME = "accessToken";
 
-const DEVELOPMENT_ENV_NAME = "Development";
-const PRODUCTION_ENV_NAME = "Production";
+const DEVELOPMENT_ENV_NAME = "dev";
+const PRODUCTION_ENV_NAME = "prod";
 
 @Injectable({
   providedIn: 'root',
