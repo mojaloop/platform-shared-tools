@@ -32,8 +32,13 @@ export class AppComponent implements OnInit,OnDestroy {
       this.username.next(value);
     });
   }
+
 	getVersion():string{
 		return this._settings.getVersion();
+	}
+
+  getEnvName():string{
+		return this._settings.envName;
 	}
 
   ngOnInit(): void {
