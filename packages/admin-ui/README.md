@@ -28,3 +28,22 @@ npm start
 ### Open the application in the browser
 
 At this time a browser can be pointed to http://localhost:4200/ to start the application.
+
+
+### Login
+
+To login use this credentials:
+***user***: user
+***password***: superPass
+
+or
+
+***user***: admin
+***password***: superMegaPass
+
+
+### Issues starting
+
+ - opensslErrorStack (Only for node 18 and above versions) :
+    - WINDOWS : On the terminal enter : ```export export NODE_OPTIONS=--openssl-legacy-provider```
+    - UNIX : On the terminal : ```unset NODE_OPTIONS```
