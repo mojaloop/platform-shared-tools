@@ -39,7 +39,7 @@ export interface ISettlementBatch {
 	currencyCode: string;
 	batchName: string; // FX.XOF:RWF.2021.08.23.00.00 (minus seq)
 	batchSequence: number; // 1 (seq only)
-	isClosed: boolean;
+	state: "OPEN" | "DISPUTED" | "SETTLED" | "CLOSED";
 
 	accounts: ISettlementBatchAccount[];
 }
@@ -68,6 +68,7 @@ export interface ISettlementBatchTransfer {
 }
 
 
+
 export interface ISettlementMatrix {
 	id: string;
 	createdAt: number;
@@ -82,12 +83,12 @@ export interface ISettlementMatrix {
 	batches: ISettlementMatrixBatch[];
 	participantBalances: ISettlementMatrixParticipantBalance[];
 
-	state: "IDLE" | "CALCULATING" | "CLOSING" | "CLOSED";
+	state: "IDLE" | "BUSY" | "DISPUTED" | "CLOSED" | "SETTLED";
+	type: "STATIC" | "DYNAMIC";
 
 	generationDurationSecs: number | null;
 	totalDebitBalance: string;
 	totalCreditBalance: string;
-	totalTransferCount: number;
 }
 
 export interface ISettlementMatrixParticipantBalance {
@@ -104,7 +105,7 @@ export interface ISettlementMatrixBatch {
 	batchCreditBalance: string;
 	batchTransferCount: number;
 
-	isClosed: boolean;
+	state: "OPEN" | "DISPUTED" | "SETTLED" | "CLOSED";
 	//batchWasClosedBeforeExec: boolean;
 
 	// not persisted - only populated on output - for api responses

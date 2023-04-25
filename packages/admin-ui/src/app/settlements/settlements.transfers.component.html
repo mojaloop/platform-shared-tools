@@ -25,7 +25,7 @@
 			<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
 			<td>{{item.amount}} ({{item.currencyCode}})</td>
 			<td>{{item.transferTimestamp | date:'medium'}}</td>
-			<td>{{item.batchId}}</td>
+			<td><a routerLink="/settlements/batches" [queryParams]="{batchId: item.batchId, currencyCode: item.currencyCode}">{{item.batchId}}</a></td>
 			<td *ngIf="!item.settled">(Not yet settled)</td>
 			<td *ngIf="item.settled"><a routerLink="/settlements/matrix/{{item.matrixId}}">Matrix</a></td>
 		</tr>

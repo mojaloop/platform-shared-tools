@@ -28,8 +28,8 @@ export class QuoteDetailComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     console.log(this._route.snapshot.routeConfig?.path);
-	this._quoteId = this._route.snapshot.paramMap.get('id');
-    this._live = this._route.snapshot.queryParamMap.has('live');
+	this._quoteId = this._route.snapshot.paramMap.get("id");
+    this._live = this._route.snapshot.queryParamMap.has("live");
 
     if (!this._quoteId) {
       throw new Error("invalid quote id");

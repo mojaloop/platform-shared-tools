@@ -5,11 +5,11 @@
 		<thead class="thead-light">
 		<tr>
 			<th scope="col">Id</th>
+			<th scope="col">Type</th>
 			<th scope="col">State</th>
 			<th scope="col">Model</th>
 			<th scope="col">Currency</th>
 			<th scope="col">Batch Count</th>
-			<th scope="col">Transfer Count</th>
 			<th scope="col">Created at</th>
 			<th scope="col">Updated at</th>
 		</tr>
@@ -22,12 +22,12 @@
 		</ng-container>
 		<tr *ngFor="let item of (matrices | async)">
 			<td><a routerLink="/settlements/matrix/{{item.id}}">{{item.id}}</a></td>
+			<td>{{item.type}}</td>
 			<td>{{item.state}}</td>
 			<td>{{item.settlementModel}}</td>
 			<td>{{item.currencyCode}}</td>
 
 			<td>{{item.batches.length}}</td>
-			<td>{{item.totalTransferCount}}</td>
 			<td>{{item.createdAt | date: 'medium'}}</td>
 			<td>{{item.updatedAt | date: 'medium'}}</td>
 

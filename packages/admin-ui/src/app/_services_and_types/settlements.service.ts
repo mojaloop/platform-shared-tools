@@ -284,14 +284,16 @@ export class SettlementsService {
 		});
 	}
 
-	createMatrix(matrixId:string, settlementModel: string, currencyCode: string, fromDate: number, toDate: number):Observable<string>{
+
+	createDynamicMatrix(matrixId: string, settlementModel: string, currencyCode: string, fromDate: number, toDate: number): Observable<string> {
 		return new Observable<string>(subscriber => {
-			const createMatrixCmdPayload ={
+			const createMatrixCmdPayload = {
 				matrixId: matrixId,
 				settlementModel: settlementModel,
 				currencyCode: currencyCode,
 				fromDate: fromDate,
-				toDate: toDate
+				toDate: toDate,
+				type: "DYNAMIC"
 			}
 
 			this._http.post<{ id: string }>(SVC_BASEURL + "/matrix/", createMatrixCmdPayload).subscribe(
@@ -315,15 +317,41 @@ export class SettlementsService {
 		});
 	}
 
-	recalculateMatrix(matrixId:string, includeNewBatches:boolean = true):Observable<string>{
+	createStaticMatrix(matrixId:string, batchIds: string[]):Observable<string>{
 		return new Observable<string>(subscriber => {
-			const recalculateMatrixCmdPayload = {
-				includeNewBatches: includeNewBatches
-			};
+			const createMatrixCmdPayload ={
+				matrixId: matrixId,
+				batchIds: batchIds,
+				type: "STATIC"
+			}
+
+			this._http.post<{ id: string }>(SVC_BASEURL + "/matrix/", createMatrixCmdPayload).subscribe(
+				(resp: { id: string }) => {
+					console.log(`got response - matrixId: ${resp.id}`);
+
+					subscriber.next(resp.id);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status===403) {
+						console.warn("UnauthorizedError received on createMatrix");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+	recalculateMatrix(matrixId:string):Observable<string>{
+		return new Observable<string>(subscriber => {
 
 			const url = `${SVC_BASEURL}/matrix/${matrixId}/recalculate`;
 
-			this._http.post<{ id: string }>(url, recalculateMatrixCmdPayload).subscribe(
+			this._http.post<{ id: string }>(url, {}).subscribe(
 				(resp: { id: string }) => {
 					console.log(`got response - matrixId: ${resp.id}`);
 
@@ -344,7 +372,7 @@ export class SettlementsService {
 		});
 	}
 
-	closeMatrix(matrixId:string, includeNewBatches:boolean = true):Observable<string>{
+	closeMatrix(matrixId:string):Observable<string>{
 		return new Observable<string>(subscriber => {
 			const url = `${SVC_BASEURL}/matrix/${matrixId}/close`;
 
@@ -358,6 +386,56 @@ export class SettlementsService {
 				error => {
 					if (error && error.status===403) {
 						console.warn("UnauthorizedError received on closeMatrix");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+	disputeMatrix(matrixId: string): Observable<string> {
+		return new Observable<string>(subscriber => {
+			const url = `${SVC_BASEURL}/matrix/${matrixId}/dispute`;
+
+			this._http.post<{ id: string }>(url, {}).subscribe(
+				(resp: { id: string }) => {
+					console.log(`got response - matrixId: ${resp.id}`);
+
+					subscriber.next(resp.id);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status===403) {
+						console.warn("UnauthorizedError received on disputeMatrix");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+	settleMatrix(matrixId: string): Observable<string> {
+		return new Observable<string>(subscriber => {
+			const url = `${SVC_BASEURL}/matrix/${matrixId}/settle`;
+
+			this._http.post<{ id: string }>(url, {}).subscribe(
+				(resp: { id: string }) => {
+					console.log(`got response - matrixId: ${resp.id}`);
+
+					subscriber.next(resp.id);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status===403) {
+						console.warn("UnauthorizedError received on settleMatrix");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else {
 						console.error(error);

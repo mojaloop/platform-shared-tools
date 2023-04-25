@@ -49,8 +49,6 @@ export class TransferCreateComponent implements OnInit {
 		console.log("TransfersCreateComponent ngOnInit");
 		this.inputQuoteId = this._route.snapshot.queryParamMap.get('quoteId') || null;
 
-		debugger;
-
 		this._initForm();
 		this.isNewTransfer = true;
 		this.newTransfer();

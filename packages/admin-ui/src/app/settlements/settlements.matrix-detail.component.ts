@@ -18,6 +18,10 @@ import {ActivatedRoute} from "@angular/router";
 })
 export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 	private _matrixId: string | null = null;
+	private _live: boolean = false;
+	private _reloadRequested: boolean = false;
+	private _reloadCount = 0;
+
 	matrix: BehaviorSubject<ISettlementMatrix | null> = new BehaviorSubject<ISettlementMatrix|null>(null);
 	matrixSubs?: Subscription;
 
@@ -40,19 +44,27 @@ export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 		this._fetchMatrix(this._matrixId);
 	}
 	private async _fetchMatrix(id: string):Promise<void> {
-		return new Promise(resolve => {
-			this._settlementsService.getMatrix(id).subscribe(matrix => {
-				this.matrix.next(matrix);
 
-				if(!matrix){
-					resolve();
-					return;
-				}
+		this._settlementsService.getMatrix(id).subscribe(matrix => {
+			this.matrix.next(matrix);
+
+			if (this._live && !matrix || matrix?.state === "BUSY") {
+				if (this._reloadCount > 30) return;
+
+				this._reloadCount++;
+				this._reloadRequested = true;
+				setTimeout(() => {
+					this._fetchMatrix(id);
+				}, 1000);
+			} else if (this._live && this._reloadRequested) {
+				this._messageService.addSuccess("Matrix reloaded");
+			}
+
+			if(matrix && matrix.state !=="BUSY"){
 				this._settlementsService.getTransfersByMatrixId(matrix.id).subscribe(transfers => {
 					this.transfers.next(transfers)
 				});
-
-			});
+			}
 		});
 
 	}
@@ -61,17 +73,33 @@ export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 		this._fetchMatrix(this._matrixId!);
 	}
 
-	recalculate(newBatches:boolean){
-		this._settlementsService.recalculateMatrix(this._matrixId!, newBatches).subscribe(value => {
-			this._fetchMatrix(value);
+	recalculate(){
+		this._settlementsService.recalculateMatrix(this._matrixId!).subscribe(value => {
+			this.refresh();
 		},error => {
+			throw error;
+		});
+	}
+
+	dispute() {
+		this._settlementsService.disputeMatrix(this._matrixId!).subscribe(value => {
+			this.refresh();
+		}, error => {
 			throw error;
 		});
 	}
 
 	close(){
 		this._settlementsService.closeMatrix(this._matrixId!).subscribe(value => {
-			this._fetchMatrix(value);
+			this.refresh();
+		},error => {
+			throw error;
+		});
+	}
+
+	settle(){
+		this._settlementsService.settleMatrix(this._matrixId!).subscribe(value => {
+			this.refresh();
 		},error => {
 			throw error;
 		});

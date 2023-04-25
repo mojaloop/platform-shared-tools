@@ -15,13 +15,14 @@
 
 			<div class="form-group col-md-1">
 				<label for="criteriaCurrencyCode">Currency:</label>
-				<select class="form-control" id="criteriaCurrencyCode">
+				<select class="form-control" id="criteriaCurrencyCode" [ngModel]="criteriaCurrencyCode"
+						[ngModelOptions]="{standalone: true}">
 					<option value="USD">USD</option>
 					<option value="EUR">EUR</option>
 				</select>
 			</div>
 
-			<div class="form-group col-md-3">
+			<div class="form-group col-md-2">
 				<label for="criteriaFromDate">Start:</label>
 				<input class="form-control" type="datetime-local" id="criteriaFromDate"
 					   [ngModel]="criteriaFromDate" step=300
@@ -29,46 +30,71 @@
 			</div>
 
 
-			<div class="form-group col-md-3">
+			<div class="form-group col-md-2">
 				<label for="criteriaToDate">End:</label>
 				<input class="form-control" type="datetime-local" id="criteriaToDate"
 					   [ngModel]="criteriaToDate" step=300
 					   [ngModelOptions]="{standalone: true}">
 			</div>
-<!--
 
 			<div class="form-group col-md-1">
-				<label for="criteriaIncludeClosed">Include closed:</label>
-				<input class="form-control" type="checkbox" id="criteriaIncludeClosed">
+				<label for="criteriaToDate">Settled?</label>
+				<input class="form-control" type="checkbox" id="criteriaIncludeSettled"
+					   [ngModel]="criteriaIncludeSettled" [ngModelOptions]="{standalone: true}">
 			</div>
--->
 
-			<div class="form-group col-md-1">
+			<div class="form-group col-md-2">
+				<label for="criteriaToDate">Batch Id</label>
+				<input class="form-control" type="text" id="criteriaBatchId"
+					   [ngModel]="criteriaBatchId" [ngModelOptions]="{standalone: true}">
+			</div>
+
+
+			<div class="form-group col-md-2">
 				<label for="filterBtn">&nbsp;</label>
 					<button type="submit" class="form-control btn btn-primary" id="filterBtn" (click)="applyCriteria()">Search</button>
 			</div>
-			<div class="form-group col-md-2">
-				<label for="filterBtn">&nbsp;</label>
-				<button type="button" class="form-control btn btn-success" id="createMatrixBtn"
-						(click)="createMatrix()" ngbTooltip="Create Settlement Matrix using the selected criteria">Create Matrix</button>
-			</div>
+
 		</tr>
 	</table>
 	</form>
 </div>
+
+<form>
+	<tr class="form-row" >
+		<div class="col-md-8">&nbsp;</div>
+		<div class="form-group col-md-2">
+			<label for="createDynamicMatrixBtn">&nbsp;</label>
+			<button type="button" class="form-control btn btn-success" id="createDynamicMatrixBtn"
+					[disabled]="!batches || (batches | async)?.length==0 || selectedBatchIds.length>0"
+					(click)="createDynamicMatrix()"
+					ngbTooltip="Create a Dynamic Settlement Matrix using the selected criteria">Create Dynamic Matrix
+			</button>
+		</div>
+		<div class="form-group col-md-2">
+			<label for="createStaticMatrixBtn">&nbsp;</label>
+			<button type="button" class="form-control btn btn-success" id="createStaticMatrixBtn"
+					[disabled]="selectedBatchIds.length<=0"
+					(click)="createStaticMatrix()"
+					ngbTooltip="Create a Static Settlement Matrix using the selected criteria">Create Static Matrix
+			</button>
+		</div>
+	</tr>
+</form>
 
 
 <div>
 	<table class="table">
 		<thead class="thead-light">
 		<tr>
+			<th scope="col">Sel?</th>
 			<th scope="col">Batch ID</th>
 			<th scope="col">Model</th>
 			<th scope="col">Currency</th>
 			<th scope="col">Created</th>
 			<th scope="col">Seq#</th>
 			<th scope="col">Name</th>
-			<th scope="col">Closed?</th>
+			<th scope="col">State</th>
 
 		</tr>
 		</thead>
@@ -79,14 +105,17 @@
 			</tr>
 		</ng-container>
 		<tr *ngFor="let item of (batches | async)">
-<!--			<td><a routerLink="/settlements/batches{{item.id}}">{{item.id}}</a></td>-->
+			<td>
+				<input type="checkbox" class="form-control" *ngIf="item.state!=='SETTLED' && item.state!=='DISPUTED'" (change)="batchSelectionChanged($event)" [id]="batchSelPrefix+item.id">
+			</td>
 			<td><a (click)="selectBatch(item.id);" class="link">{{item.id}}</a></td>
 			<td>{{item.settlementModel}}</td>
 			<td>{{item.currencyCode}}</td>
 			<td>{{item.timestamp | date: 'medium'}}</td>
 			<td>{{item.batchSequence}}</td>
 			<td>{{item.batchName}}</td>
-			<td>{{item.isClosed}}</td>
+			<td>{{item.state}}</td>
+
 		</tr>
 		</tbody>
 	</table>

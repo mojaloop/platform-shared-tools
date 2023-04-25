@@ -19,24 +19,36 @@
 			<div class="col-4">
 				<div class="mb-2">
 					<label class="col-form-label text-secondary">State</label>
-					<div>{{(matrix | async)?.state}}</div>
+					<div>{{(matrix | async)?.state}}
+						<!--<span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"
+							  *ngIf="(matrix | async)?.state === 'BUSY'"></span>-->
+					</div>
 				</div>
+			</div>
+
+			<div class="col-4">
+				<div class="mb-2">
+					<label class="col-form-label text-secondary">Matrix Type</label>
+					<div>{{(matrix | async)?.type}}</div>
 				</div>
+			</div>
+
 			<div class="col-4">
 				<div class="mb-2">
 					<label class="col-form-label text-secondary">Settlement Model</label>
 					<div>{{(matrix | async)?.settlementModel}}</div>
 				</div>
-				</div>
+			</div>
+
+		</div>
+
+		<div class="row">
 			<div class="col-4">
 				<div class="mb-2">
 					<label class="col-form-label text-secondary">Currency</label>
 					<div>{{(matrix | async)?.currencyCode}}</div>
 				</div>
 			</div>
-		</div>
-
-		<div class="row">
 			<div class="col-4">
 				<div class="mb-2">
 					<label class="col-form-label text-secondary">Start Date</label>
@@ -49,15 +61,11 @@
 					<div>{{(matrix | async)?.dateTo | date: 'medium'}}</div>
 				</div>
 			</div>
-			<div class="col-4">
-				<div class="mb-2">
-					<label class="col-form-label text-secondary">Total Debit Balance</label>
-					<div>{{(matrix | async)?.totalDebitBalance}}</div>
-				</div>
-			</div>
+
 		</div>
 
 		<div class="row">
+
 			<div class="col-4">
 				<div class="mb-2">
 					<label class="col-form-label text-secondary">Last Updated</label>
@@ -67,11 +75,10 @@
 
 			<div class="col-4">
 				<div class="mb-2">
-					<label class="col-form-label text-secondary">Total Transfers Count</label>
-					<div>{{(matrix | async)?.totalTransferCount}}</div>
+					<label class="col-form-label text-secondary">Total Debit Balance</label>
+					<div>{{(matrix | async)?.totalDebitBalance}}</div>
 				</div>
 			</div>
-
 			<div class="col-4">
 				<div class="mb-2">
 					<label class="col-form-label text-secondary">Total Credit Balance</label>
@@ -85,11 +92,28 @@
 	</div> <!-- left col with form -->
 
 	<div class="col-2"> <!-- right col with action buttons -->
-		<button class="btn btn-primary btn-block" *ngIf="(matrix | async)?.state !== 'CLOSED'" (click)="refresh()">Refresh</button>
+		<ng-container *ngIf="(matrix | async)?.state === 'BUSY'">
+			<div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+				<span class="sr-only">Loading...</span>
+			</div>
+		</ng-container>
+
 		<ng-container *ngIf="(matrix | async)?.state === 'IDLE'">
-			<button class="btn btn-success btn-block" (click)="recalculate(false)">Recalculate</button>
-<!--			<button class="btn btn-success btn-block" (click)="recalculate(true)">Recalculate with new Batches</button>-->
-			<button class="btn btn-warning btn-block" (click)="close()">Settle</button>
+			<button class="btn btn-success btn-block" (click)="recalculate()">Recalculate</button>
+			<button class="btn btn-warning btn-block" (click)="dispute()">Dispute</button>
+			<button class="btn btn-warning btn-block" (click)="close()">Close</button>
+			<button class="btn btn-warning btn-block" (click)="settle()">Settle</button>
+		</ng-container>
+
+		<ng-container *ngIf="(matrix | async)?.state === 'CLOSED'">
+			<button class="btn btn-success btn-block" (click)="recalculate()">Recalculate</button>
+			<button class="btn btn-warning btn-block" (click)="dispute()">Dispute</button>
+			<button class="btn btn-warning btn-block" (click)="settle()">Settle</button>
+		</ng-container>
+
+		<ng-container *ngIf="(matrix | async)?.state === 'DISPUTED'">
+			<button class="btn btn-success btn-block" (click)="recalculate()">Recalculate</button>
+			<button class="btn btn-warning btn-block" (click)="close()">Undispute (Close)</button>
 		</ng-container>
 
 <!--		<ng-container *ngIf="(matrix | async)?.state !== 'IDLE'">
@@ -115,9 +139,8 @@
 					<th scope="col">Name</th>
 					<th scope="col">Debit Balance</th>
 					<th scope="col">Credit Balance</th>
-					<th scope="col">Transfer Count</th>
-					<th scope="col">Accounts</th>
-					<th scope="col">Closed?</th>
+<!--					<th scope="col">Accounts</th>-->
+					<th scope="col">State</th>
 
 				</tr>
 				</thead>
@@ -132,9 +155,8 @@
 					<td>{{item.name}}</td>
 					<td>{{item.batchDebitBalance}}</td>
 					<td>{{item.batchCreditBalance}}</td>
-					<td>{{item.batchTransferCount}}</td>
-					<td>{{item.batchAccounts?.length}}</td>
-					<td>{{item.isClosed}}</td>
+<!--					<td>{{item.batchAccounts?.length}}</td>-->
+					<td>{{item.state}}</td>
 				</tr>
 				</tbody>
 			</table>

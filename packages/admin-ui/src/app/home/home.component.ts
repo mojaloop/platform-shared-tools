@@ -21,7 +21,12 @@ export class HomeComponent implements OnInit,OnDestroy {
 	  return this._settings.getVersion();
   }
 
-  ngOnInit(): void {
+  getEnvName(): string {
+	return this._settings.envName;
+  }
+
+
+	ngOnInit(): void {
     this.isLoggedInSubs = this._authentication.LoggedInObs.subscribe(value => {
       this.isLoggedIn.next(value);
     });

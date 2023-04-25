@@ -1,5 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
+import {QuotesService} from "src/app/_services_and_types/quotes.service";
 import {Transfer} from "src/app/_services_and_types/transfer_types";
 import {TransfersService} from "src/app/_services_and_types/transfers.service";
 import {BehaviorSubject} from "rxjs";
@@ -23,7 +24,7 @@ export class TransferDetailComponent implements OnInit {
 
 	private _reloadCount = 0;
 
-  constructor(private _route: ActivatedRoute, private _transfersSvc: TransfersService, private _settlementsService: SettlementsService,private _messageService: MessageService) {
+  constructor(private _route: ActivatedRoute, private _transfersSvc: TransfersService, private _settlementsService: SettlementsService,private _messageService: MessageService, private _quotesSvc:QuotesService) {
 
   }
 
