@@ -35,6 +35,8 @@ mkdir {data}
 * transfers-api-svc
 * transfers-event-handler-svc
 * transfers-command-handler-svc
+* ttk1_data
+* ttk2_data
 * ttk1_ui_data
 * ttk2_ui_data
 
@@ -43,7 +45,7 @@ mkdir {data/aandb_builtin-ledger-grpc-svc,data/aandb_coa-grpc-svc,data/fspiop-ap
 data/account-lookup-svc,data/account-lookup-http-oracle-svc,data/participants-svc,\
 data/quoting-svc,data/transfers-api-svc,data/transfers-event-handler-svc,\
 data/transfers-command-handler-svc,data/settlements-api-svc,data/settlements-event-handler-svc,\
-data/settlements-command-handler-svc,data/ttk1_ui_data,data/ttk2_ui_data}
+data/settlements-command-handler-svc,data/ttk1_data,data/ttk2_data,data/ttk1_ui_data,data/ttk2_ui_data}
 ```
 
 Note: For Mac users you might have to grant full access to these directories, to do that execute in the exec directory:
@@ -70,6 +72,42 @@ docker compose -f ../docker-compose-apps.yml --env-file ./.env up -d
 docker-compose -f ../docker-compose-apps.yml --env-file ./.env up -d
 ```
 
+# Configure the Testing Toolkits
+
+### TTK 1 - Blue Bank
+Go to the TTK 1 settings page here: http://localhost:6060/admin/settings and change the following settings:
+- Callback URL: http://fspiop-api-svc:4000
+- FSP ID: bluebank
+
+Click the Save button
+
+### TTK 2 - Green Bank
+
+Go to the TTK 2 settings page here: http://localhost:6061/admin/settings and change the following settings:
+
+- Callback URL: http://fspiop-api-svc:4000
+- FSP ID: greenbank
+
+Click the Save button
+
+### TTK2 UI 
+
+In the file located at exec/data/ttk2_ui_data/static/main.*.chunk.css, add the following text to the end and save:
+
+```css
+.ant-layout-header {
+    background-color: green !important;
+}
+```
+
+# Login to the Mojaloop vNext Admin UI
+Your Mojaloop vNext development environment is now ready, and you can login to the Admin UI here: http://localhost:4200/login
+
+The default development users and passwords are:
+- user - superPass
+- admin - superMegaPass
+
+## Other scripts and commands
 To view the logs of the business apps containers, run:
 
 ```shell
