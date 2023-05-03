@@ -33,6 +33,16 @@
 				<div class="text-break">{{item.updatedAt | date:'medium'}}</div>
 			</div>
 
+			<div class="mb-2">
+				<label class="col-form-label text-secondary">Fulfilment Date</label>
+				<div class="text-break" *ngIf="!item?.completedTimestamp">-</div>
+				<div class="text-break" *ngIf="item?.completedTimestamp">{{item.completedTimestamp | date:'medium'}}</div>
+			</div>
+
+			<div class="mb-2">
+				<div><a href="/quotes/byTransactionId/{{item.transferId}}">Quote Info</a></div>
+			</div>
+
 		</div> <!-- col 1 -->
 
 		<div class="col-5"> <!-- col 2 -->
@@ -51,14 +61,13 @@
 				<label class="col-form-label text-secondary">Condition</label>
 				<div class="text-break">{{item.condition}}</div>
 			</div>
-
 			<div class="mb-2">
 				<label class="col-form-label text-secondary">Settled</label>
 				<div class="text-break" *ngIf="!(settlementTransfer | async)?.settled">No</div>
 				<div class="text-break" *ngIf="(settlementTransfer | async)?.settled">Yes<!-- - <a routerLink="/settlements/matrix/{{(settlementTransfer | async)?.matrixId}}">Matrix</a>--></div>
 			</div>
 
-
+			
 		</div> <!-- col 2 -->
 
 		<div class="col-3"> <!-- column 3 - buttons -->
@@ -72,4 +81,3 @@
 		</div>  <!-- column 3 - buttons -->
 	</div>
 </div>
-

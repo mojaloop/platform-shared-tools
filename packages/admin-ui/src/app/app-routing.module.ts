@@ -57,6 +57,7 @@ const routes: Routes = [
 	{path: "quotes", component: QuotesComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "quotes/new", component: QuoteCreateComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "quotes/:id", component: QuoteDetailComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "quotes/byTransactionId/:transactionId", component: QuoteDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "bulk-quotes", component: BulkQuotesComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "bulk-quotes/new", component: BulkQuoteCreateComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "bulk-quotes/:id", component: BulkQuoteDetailComponent, canActivate: [CanLoadIsLoggedIn]},

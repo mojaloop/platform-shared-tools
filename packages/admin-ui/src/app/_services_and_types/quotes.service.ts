@@ -101,6 +101,29 @@ export class QuotesService {
     });
   }
 
+  getQuoteByTransactionId(transactionId: string): Observable<Quote | null> {
+    return new Observable<Quote | null>(subscriber => {
+      this._http.get<Quote>(SVC_BASEURL + `/quotes?transactionId=${transactionId}`).subscribe(
+        (result: Quote) => {
+          console.log(`got response: ${result}`);
+
+          subscriber.next(result);
+          return subscriber.complete();
+        },
+        error => {
+          if (error && error.status===403) {
+            console.warn("Access forbidden received on getQuoteByTransactionId");
+            subscriber.error(new UnauthorizedError(error.error?.msg));
+          } else {
+            console.error(error);
+            subscriber.error(error.error?.msg);
+          }
+          return subscriber.complete();
+        }
+      );
+    });
+  }
+
   createQuote(item: Quote): Observable<string | null> {
     return new Observable<string>(subscriber => {
 
