@@ -1,13 +1,32 @@
 # Declare global configurations
-global: {}
-kibanaEnabled: true 
+global:
+  kibanaEnabled: false
+
 elasticsearch:
+  
   enabled: true
   fullnameOverride: "elastic"
 
+  coordinating: 
+    replicaCount: 1 
+
+  master:
+    replicaCount: 1 
+    persistence:
+      enabled: false
+
+  data:
+    replicaCount: 1 
+    persistence:
+      enabled: false
+
+  ingest:
+    replicaCount: 1 
+
+
 ## Reference: https://github.com/bitnami/charts/blob/main/bitnami/kafka/values.yaml
 kafka:
-  enabled: true
+  enabled: false
   fullnameOverride: "kafka"
 
   ## @section Persistence parameters
