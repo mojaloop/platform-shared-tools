@@ -1,0 +1,12 @@
+dependencies:
+- name: elasticsearch
+  repository: https://charts.bitnami.com/bitnami
+  version: 19.9.2
+- name: kafka
+  repository: https://charts.bitnami.com/bitnami
+  version: 19.0.2
+- name: mongodb
+  repository: https://charts.bitnami.com/bitnami
+  version: 13.3.1
+digest: sha256:3df4a98d257cfe1374b99d51aa3690fb3d856890a33d011c238d99ba45e64e78
+generated: "2023-05-18T02:07:17.333741569Z"
