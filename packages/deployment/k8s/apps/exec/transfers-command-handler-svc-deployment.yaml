@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose --file docker-compose-apps.yml convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: transfers-command-handler-svc
+  name: transfers-command-handler-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: transfers-command-handler-svc
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose --file docker-compose-apps.yml convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: transfers-command-handler-svc
+    spec:
+      containers:
+        - env:
+            - name: ACCOUNTS_BALANCES_COA_SVC_URL
+              value: accounts_and_balances_coa-grpc-svc:3300
+            - name: AUTH_N_SVC_BASEURL
+              value: http://authentication-svc:3201
+            - name: AUTH_N_TOKEN_AUDIENCE
+              value: mojaloop.vnext.dev.default_audience
+            - name: AUTH_N_TOKEN_ISSUER_NAME
+              value: mojaloop.vnext.dev.default_issuer
+            - name: AUTH_Z_SVC_BASEURL
+              value: http://authorization-svc:3202
+            - name: KAFKA_AUDITS_TOPIC
+              value: audits
+            - name: KAFKA_LOGS_TOPIC
+              value: logs
+            - name: KAFKA_URL
+              value: kafka:19092
+            - name: MONGO_URL
+              value: mongodb://root:mongoDbPas42@mongo:27017/
+            - name: PARTICIPANTS_SVC_URL
+              value: http://participants-svc:3010
+            - name: PLATFORM_CONFIG_BASE_SVC_URL
+              value: http://platform-configuration-svc:3100
+          image: mojaloop/transfers-bc-command-handler-svc:alpha-latest
+          name: transfers-command-handler-svc
+          resources: {}
+          volumeMounts:
+            - mountPath: /app/data
+              name: transfers-command-handler-svc-data
+      restartPolicy: Always
+      volumes:
+        - name: transfers-command-handler-svc-data
+          persistentVolumeClaim:
+            claimName: transfers-command-handler-svc-data
+status: {}

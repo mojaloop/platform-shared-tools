@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose --file docker-compose-apps.yml convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: ttk-ui-2
+  name: ttk-ui-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: ttk-ui-2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose --file docker-compose-apps.yml convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: ttk-ui-2
+    spec:
+      containers:
+        - args:
+            - sh
+            - /usr/share/nginx/start.sh
+          env:
+            - name: API_BASE_URL
+              value: http://localhost:5051
+            - name: AUTH_ENABLED
+              value: "FALSE"
+          image: mojaloop/ml-testing-toolkit-ui:v15.0.0
+          name: ttk-ui_2
+          ports:
+            - containerPort: 6060
+          resources: {}
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html
+              name: ttk2-ui-data
+      restartPolicy: Always
+      volumes:
+        - name: ttk2-ui-data
+          persistentVolumeClaim:
+            claimName: ttk2-ui-data
+status: {}
