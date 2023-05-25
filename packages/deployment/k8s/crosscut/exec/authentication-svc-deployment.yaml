@@ -37,7 +37,7 @@ spec:
             - name: KAFKA_LOGS_TOPIC
               value: logs
             - name: KAFKA_URL
-              value: kafka:19092
+              value: kafka:9092
             - name: PLATFORM_CONFIG_BASE_SVC_URL
               value: http://platform-configuration-svc:3100
           image: mojaloop/security-bc-authentication-svc:alpha-latest

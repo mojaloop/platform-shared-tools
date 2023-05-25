@@ -37,7 +37,7 @@ spec:
             - name: KAFKA_LOGS_TOPIC
               value: logs
             - name: KAFKA_URL
-              value: kafka:19092
+              value: kafka:9092
           image: mojaloop/logging-bc-logging-svc:alpha-latest
           name: logging-svc
           resources: {}

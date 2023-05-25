@@ -31,7 +31,7 @@ spec:
             - name: KAFKA_LOGS_TOPIC
               value: logs
             - name: KAFKA_URL
-              value: kafka:19092
+              value: kafka:9092
           image: mojaloop/platform-configuration-bc-configuration-svc:alpha-latest
           livenessProbe:
             exec:

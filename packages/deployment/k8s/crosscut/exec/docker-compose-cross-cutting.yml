@@ -27,7 +27,7 @@ services:
     volumes:
       - authentication-svc_data:/app/data
     environment:
-      - KAFKA_URL=kafka:19092
+      - KAFKA_URL=kafka:9092
       - KAFKA_LOGS_TOPIC=logs
       - KAFKA_AUDITS_TOPIC=audits
       - AUTH_N_TOKEN_LIFE_SECS=604800
