@@ -7,7 +7,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: ttk-ui-2
-  name: ttk-ui_2
+  name: ttk-ui-2
 spec:
   ports:
     - name: "6061"

@@ -34,7 +34,7 @@ spec:
             - name: AUTH_ENABLED
               value: "FALSE"
           image: mojaloop/ml-testing-toolkit-ui:v15.0.0
-          name: ttk-ui_2
+          name: ttk-ui-2
           ports:
             - containerPort: 6060
           resources: {}

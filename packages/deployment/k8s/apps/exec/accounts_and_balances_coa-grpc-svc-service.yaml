@@ -7,7 +7,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: accounts-and-balances-coa-grpc-svc
-  name: accounts_and_balances_coa-grpc-svc
+  name: accounts-and-balances-coa-grpc-svc
 spec:
   ports:
     - name: "3300"

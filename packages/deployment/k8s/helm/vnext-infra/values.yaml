@@ -4,7 +4,7 @@ global:
 
 elasticsearch:
   
-  enabled: true
+  enabled: false
   fullnameOverride: "elastic"
 
   coordinating: 
@@ -26,7 +26,7 @@ elasticsearch:
 
 ## Reference: https://github.com/bitnami/charts/blob/main/bitnami/kafka/values.yaml
 kafka:
-  enabled: false
+  enabled: true
   fullnameOverride: "kafka"
 
   ## @section Persistence parameters
@@ -81,26 +81,11 @@ kafka:
     ##     flush.messages: 1
     ##
     # topics: []
-    topics:
-      ## Mojaloop Topics
-      - name: topic-transfer-prepare
-        partitions: 1
-        replicationFactor: 1
-      - name: topic-transfer-position
-        partitions: 1
-        replicationFactor: 1
-      - name: topic-transfer-fulfil
-        partitions: 1
-        replicationFactor: 1
-      - name: topic-notification-event
-        partitions: 1
-        replicationFactor: 1
-      - name: topic-transfer-get
-        partitions: 1
-        replicationFactor: 1
-      - name: topic-admin-transfer
-        partitions: 1
-        replicationFactor: 1
+    topics: 
+      - name: KAFKA_AUDITS_TOPIC
+        value: audits
+      - name: KAFKA_LOGS_TOPIC
+        value: logs
 
     ## @param provisioning.nodeSelector Node labels for pod assignment
     ## Ref: https://kubernetes.io/docs/user-guide/node-selection/

@@ -30,7 +30,7 @@ spec:
             - -c
             - npm start
           image: mojaloop/ml-testing-toolkit:v15.0.0
-          name: ttk_2
+          name: ttk-2
           ports:
             - containerPort: 4040
             - containerPort: 5050

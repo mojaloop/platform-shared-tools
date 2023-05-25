@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose -f ./docker-compose-cross-cutting.yml convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: auditing-svc
+  name: auditing-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: auditing-svc
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose -f ./docker-compose-cross-cutting.yml convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: auditing-svc
+    spec:
+      containers:
+        - env:
+            - name: ELASTICSEARCH_AUDITS_INDEX
+              value: ml-auditing
+            - name: ELASTICSEARCH_PASSWORD
+              value: elasticSearchPas42
+            - name: ELASTICSEARCH_URL
+              value: https://es01:9200
+            - name: ELASTICSEARCH_USERNAME
+              value: elastic
+            - name: KAFKA_AUDITS_TOPIC
+              value: audits
+            - name: KAFKA_LOGS_TOPIC
+              value: logs
+            - name: KAFKA_URL
+              value: kafka:19092
+          image: mojaloop/auditing-bc-auditing-svc:alpha-latest
+          name: auditing-svc
+          resources: {}
+          volumeMounts:
+            - mountPath: /app/data
+              name: auditing-svc-data
+      restartPolicy: Always
+      volumes:
+        - name: auditing-svc-data
+          persistentVolumeClaim:
+            claimName: auditing-svc-data
+status: {}

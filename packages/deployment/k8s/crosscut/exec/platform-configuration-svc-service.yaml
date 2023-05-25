@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose -f ./docker-compose-cross-cutting.yml convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: platform-configuration-svc
+  name: platform-configuration-svc
+spec:
+  ports:
+    - name: "3100"
+      port: 3100
+      targetPort: 3100
+  selector:
+    io.kompose.service: platform-configuration-svc
+status:
+  loadBalancer: {}

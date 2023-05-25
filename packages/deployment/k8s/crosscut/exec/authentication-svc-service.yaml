@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose -f ./docker-compose-cross-cutting.yml convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: authentication-svc
+  name: authentication-svc
+spec:
+  ports:
+    - name: "3201"
+      port: 3201
+      targetPort: 3201
+  selector:
+    io.kompose.service: authentication-svc
+status:
+  loadBalancer: {}

@@ -59,7 +59,7 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 10
             timeoutSeconds: 10
-          name: accounts_and_balances_coa-grpc-svc
+          name: accounts-and-balances-coa-grpc-svc
           ports:
             - containerPort: 3300
           resources: {}

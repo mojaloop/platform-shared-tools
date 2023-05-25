@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose -f ./docker-compose-cross-cutting.yml convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: platform-configuration-svc
+  name: platform-configuration-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: platform-configuration-svc
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose -f ./docker-compose-cross-cutting.yml convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: platform-configuration-svc
+    spec:
+      containers:
+        - env:
+            - name: KAFKA_AUDITS_TOPIC
+              value: audits
+            - name: KAFKA_LOGS_TOPIC
+              value: logs
+            - name: KAFKA_URL
+              value: kafka:19092
+          image: mojaloop/platform-configuration-bc-configuration-svc:alpha-latest
+          livenessProbe:
+            exec:
+              command:
+                - nc -z localhost 3100 || exit -1
+            failureThreshold: 10
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 10
+          name: platform-configuration-svc
+          ports:
+            - containerPort: 3100
+          resources: {}
+          volumeMounts:
+            - mountPath: /app/data
+              name: platform-configuration-svc-data
+      restartPolicy: Always
+      volumes:
+        - name: platform-configuration-svc-data
+          persistentVolumeClaim:
+            claimName: platform-configuration-svc-data
+status: {}

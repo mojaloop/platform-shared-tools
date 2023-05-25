@@ -57,7 +57,7 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 10
             timeoutSeconds: 10
-          name: accounts_and_balances_builtin-ledger-grpc-svc
+          name: accounts-and-balances-builtin-ledger-grpc-svc
           ports:
             - containerPort: 3350
           resources: {}

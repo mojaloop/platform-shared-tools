@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose -f ./docker-compose-cross-cutting.yml convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: authorization-svc
+  name: authorization-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: authorization-svc
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose -f ./docker-compose-cross-cutting.yml convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: authorization-svc
+    spec:
+      containers:
+        - env:
+            - name: KAFKA_AUDITS_TOPIC
+              value: audits
+            - name: KAFKA_LOGS_TOPIC
+              value: logs
+            - name: KAFKA_URL
+              value: kafka:19092
+            - name: PLATFORM_CONFIG_BASE_SVC_URL
+              value: http://platform-configuration-svc:3100
+          image: mojaloop/security-bc-authorization-svc:alpha-latest
+          name: authorization-svc
+          ports:
+            - containerPort: 3202
+          resources: {}
+          volumeMounts:
+            - mountPath: /app/data
+              name: authorization-svc-data
+      restartPolicy: Always
+      volumes:
+        - name: authorization-svc-data
+          persistentVolumeClaim:
+            claimName: authorization-svc-data
+status: {}
