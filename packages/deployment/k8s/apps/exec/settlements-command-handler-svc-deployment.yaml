@@ -27,7 +27,7 @@ spec:
       containers:
         - env:
             - name: ACCOUNTS_BALANCES_COA_SVC_URL
-              value: accounts_and_balances_coa-grpc-svc:3300
+              value: accounts-and-balances-coa-grpc-svc:3300
             - name: AUTH_N_SVC_BASEURL
               value: http://authentication-svc:3201
             - name: AUTH_N_TOKEN_AUDIENCE
@@ -41,9 +41,9 @@ spec:
             - name: KAFKA_LOGS_TOPIC
               value: logs
             - name: KAFKA_URL
-              value: kafka:19092
+              value: kafka:9092
             - name: MONGO_URL
-              value: mongodb://root:mongoDbPas42@mongo:27017/
+              value: mongodb://root:mongoDbPas42@mongodb:27017/
             - name: PARTICIPANTS_SVC_URL
               value: http://participants-svc:3010
             - name: PLATFORM_CONFIG_BASE_SVC_URL

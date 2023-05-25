@@ -17,7 +17,7 @@ services:
     volumes:
       - fspiop-api-svc_data:/app/data
     environment:
-      - KAFKA_URL=kafka:19092
+      - KAFKA_URL=kafka:9092
       - KAFKA_LOGS_TOPIC=logs
       - KAFKA_AUDITS_TOPIC=audits
       - MONGO_URL=mongodb://root:mongoDbPas42@mongo:27017/
@@ -35,7 +35,7 @@ services:
     volumes:
       - aandb_builtin-ledger-grpc-svc_data:/app/data
     environment:
-      - KAFKA_URL=kafka:19092
+      - KAFKA_URL=kafka:9092
       - KAFKA_LOGS_TOPIC=logs
       - KAFKA_AUDITS_TOPIC=audits
       - MONGO_URL=mongodb://root:mongoDbPas42@mongo:27017/
@@ -64,7 +64,7 @@ services:
     volumes:
       - aandb_coa-grpc-svc_data:/app/data
     environment:
-      - KAFKA_URL=kafka:19092
+      - KAFKA_URL=kafka:9092
       - KAFKA_LOGS_TOPIC=logs
       - KAFKA_AUDITS_TOPIC=audits
       - MONGO_URL=mongodb://root:mongoDbPas42@mongo:27017/
@@ -96,7 +96,7 @@ services:
     volumes:
       - participants-svc_data:/app/data
     environment:
-      - KAFKA_URL=kafka:19092
+      - KAFKA_URL=kafka:9092
       - KAFKA_LOGS_TOPIC=logs
       - KAFKA_AUDITS_TOPIC=audits
       - MONGO_URL=mongodb://root:mongoDbPas42@mongo:27017/
@@ -107,7 +107,7 @@ services:
       - AUTH_N_TOKEN_AUDIENCE=mojaloop.vnext.dev.default_audience
       - TIGERBEETLE_CLUSTER_ID=0
       - TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES=tigerbeetle:3000
-      - ACCOUNTS_BALANCES_COA_SVC_URL=accounts_and_balances_coa-grpc-svc:3300
+      - ACCOUNTS_BALANCES_COA_SVC_URL=accounts-and-balances-coa-grpc-svc:3300
     healthcheck:
       test: nc -z localhost 3010 || exit -1
       start_period: 30s
@@ -128,7 +128,7 @@ services:
     volumes:
       - account-lookup-http-oracle-svc_data:/app/data
     environment:
-      - KAFKA_URL=kafka:19092
+      - KAFKA_URL=kafka:9092
       - KAFKA_LOGS_TOPIC=logs
       - KAFKA_AUDITS_TOPIC=audits
     healthcheck:
@@ -149,7 +149,7 @@ services:
     volumes:
       - account-lookup-svc_data:/app/data
     environment:
-      - KAFKA_URL=kafka:19092
+      - KAFKA_URL=kafka:9092
       - KAFKA_LOGS_TOPIC=logs
       - KAFKA_AUDITS_TOPIC=audits
       - MONGO_URL=mongodb://root:mongoDbPas42@mongo:27017/
@@ -179,7 +179,7 @@ services:
     volumes:
       - quoting-svc_data:/app/data
     environment:
-      - KAFKA_URL=kafka:19092
+      - KAFKA_URL=kafka:9092
       - KAFKA_LOGS_TOPIC=logs
       - KAFKA_AUDITS_TOPIC=audits
       - MONGO_URL=mongodb://root:mongoDbPas42@mongo:27017/
@@ -211,7 +211,7 @@ services:
     volumes:
       - transfers-api-svc_data:/app/data
     environment:
-      - KAFKA_URL=kafka:19092
+      - KAFKA_URL=kafka:9092
       - KAFKA_LOGS_TOPIC=logs
       - KAFKA_AUDITS_TOPIC=audits
       - MONGO_URL=mongodb://root:mongoDbPas42@mongo:27017/
@@ -241,7 +241,7 @@ services:
     volumes:
       - transfers-event-handler-svc_data:/app/data
     environment:
-      - KAFKA_URL=kafka:19092
+      - KAFKA_URL=kafka:9092
       - KAFKA_LOGS_TOPIC=logs
       - KAFKA_AUDITS_TOPIC=audits
       - PLATFORM_CONFIG_BASE_SVC_URL=http://platform-configuration-svc:3100
@@ -262,7 +262,7 @@ services:
     volumes:
       - transfers-command-handler-svc_data:/app/data
     environment:
-      - KAFKA_URL=kafka:19092
+      - KAFKA_URL=kafka:9092
       - KAFKA_LOGS_TOPIC=logs
       - KAFKA_AUDITS_TOPIC=audits
       - MONGO_URL=mongodb://root:mongoDbPas42@mongo:27017/
@@ -272,7 +272,7 @@ services:
       - AUTH_N_TOKEN_ISSUER_NAME=mojaloop.vnext.dev.default_issuer
       - AUTH_N_TOKEN_AUDIENCE=mojaloop.vnext.dev.default_audience
       - PARTICIPANTS_SVC_URL=http://participants-svc:3010
-      - ACCOUNTS_BALANCES_COA_SVC_URL=accounts_and_balances_coa-grpc-svc:3300
+      - ACCOUNTS_BALANCES_COA_SVC_URL=accounts-and-balances-coa-grpc-svc:3300
     restart: unless-stopped
 
 # settlements
@@ -287,7 +287,7 @@ services:
     volumes:
       - settlements-api-svc_data:/app/data
     environment:
-      - KAFKA_URL=kafka:19092
+      - KAFKA_URL=kafka:9092
       - KAFKA_LOGS_TOPIC=logs
       - KAFKA_AUDITS_TOPIC=audits
       - MONGO_URL=mongodb://root:mongoDbPas42@mongo:27017/
@@ -297,7 +297,7 @@ services:
       - AUTH_N_TOKEN_ISSUER_NAME=mojaloop.vnext.dev.default_issuer
       - AUTH_N_TOKEN_AUDIENCE=mojaloop.vnext.dev.default_audience
       - PARTICIPANTS_SVC_URL=http://participants-svc:3010
-      - ACCOUNTS_BALANCES_COA_SVC_URL=accounts_and_balances_coa-grpc-svc:3300
+      - ACCOUNTS_BALANCES_COA_SVC_URL=accounts-and-balances-coa-grpc-svc:3300
     healthcheck:
       test: nc -z localhost 3600 || exit -1
       start_period: 30s
@@ -318,7 +318,7 @@ services:
     volumes:
       - settlements-event-handler-svc_data:/app/data
     environment:
-      - KAFKA_URL=kafka:19092
+      - KAFKA_URL=kafka:9092
       - KAFKA_LOGS_TOPIC=logs
       - KAFKA_AUDITS_TOPIC=audits
       - PLATFORM_CONFIG_BASE_SVC_URL=http://platform-configuration-svc:3100
@@ -339,7 +339,7 @@ services:
     volumes:
       - settlements-command-handler-svc_data:/app/data
     environment:
-      - KAFKA_URL=kafka:19092
+      - KAFKA_URL=kafka:9092
       - KAFKA_LOGS_TOPIC=logs
       - KAFKA_AUDITS_TOPIC=audits
       - MONGO_URL=mongodb://root:mongoDbPas42@mongo:27017/
@@ -349,7 +349,7 @@ services:
       - AUTH_N_TOKEN_ISSUER_NAME=mojaloop.vnext.dev.default_issuer
       - AUTH_N_TOKEN_AUDIENCE=mojaloop.vnext.dev.default_audience
       - PARTICIPANTS_SVC_URL=http://participants-svc:3010
-      - ACCOUNTS_BALANCES_COA_SVC_URL=accounts_and_balances_coa-grpc-svc:3300
+      - ACCOUNTS_BALANCES_COA_SVC_URL=accounts-and-balances-coa-grpc-svc:3300
     restart: unless-stopped
 
 

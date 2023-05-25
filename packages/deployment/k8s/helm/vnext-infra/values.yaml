@@ -42,18 +42,9 @@ kafka:
   ## https://github.com/bitnami/charts/blob/main/bitnami/zookeeper/values.yaml
   ##
   zookeeper:
-    ## ZooKeeper Persistence parameters
-    ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
-    ## @param zookeeper.persistence.enabled Enable persistence on ZooKeeper using PVC(s)
-    ## @param zookeeper.persistence.storageClass Persistent Volume storage class
-    ## @param zookeeper.persistence.accessModes Persistent Volume access modes
-    ## @param zookeeper.persistence.size Persistent Volume size
-    ##
     persistence:
-      enabled: false
+      enabled: true
 
-    ## @param fullnameOverride String to fully override  template
-    ##
     fullnameOverride: "zookeeper"
 
   ## Kafka provisioning
@@ -136,7 +127,7 @@ mongodb:
     ## @param auth.rootPassword MongoDB(&reg;) root password
     ## ref: https://github.com/bitnami/containers/tree/main/bitnami/mongodb#setting-the-root-user-and-password-on-first-run
     ##
-    rootPassword: "adminpass"
+    rootPassword: mongoDbPas42
     ## MongoDB(&reg;) custom users and databases
     ## ref: https://github.com/bitnami/containers/tree/main/bitnami/mongodb#creating-a-user-and-database-on-first-run
     ## @param auth.usernames List of custom users to be created during the initialization
