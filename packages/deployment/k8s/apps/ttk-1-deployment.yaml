@@ -37,10 +37,10 @@ spec:
           resources: {}
           volumeMounts:
             - mountPath: /opt/app
-              name: ttk1-data
+              name: fred
       restartPolicy: Always
       volumes:
-        - name: ttk1-data
+        - name: fred
           persistentVolumeClaim:
-            claimName: ttk1-data
+            claimName: fred
 status: {}
