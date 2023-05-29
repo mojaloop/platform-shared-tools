@@ -129,3 +129,12 @@ devspace*
 /packages/deployment/docker-compose-cross-cutting/exec/
 
 /packages/deployment/docker-compose-apps/exec/
+
+# Helm
+**/charts
+**/tmpcharts
+requirements.lock
+Chart.lock
+
+# Helm Publish Repo
+repo/**
