@@ -51,13 +51,13 @@ import { Transfer } from "./transfer_types";
 	constructor(private _settings: SettingsService, private _http: HttpClient, private _authentication: AuthenticationService) {}
 
 	associateParticipant(participantId: string, partyType: string, partyId: string, partySubType: string, currencyCode: string):Observable<any>{
-		const URL = partySubType ? `${SVC_BASEURL}/parties/${partyType}/${partyId}/${partySubType}?currency=${currencyCode}` : `${SVC_BASEURL}/parties/${partyType}/${partyId}?currency=${currencyCode}`;
-
+        const URL = partySubType ? `${SVC_BASEURL}/participants/${partyType}/${partyId}/${partySubType}` : `${SVC_BASEURL}/participants/${partyType}/${partyId}?currency=${currencyCode}`;
+		
 		return new Observable<any>(subscriber => {
 			const headers = new HttpHeaders().set('fspiop-source', participantId)
 											.set('fspiop-date', new Date().toISOString());
 
-			this._http.post<any>(URL, {}, { headers }).subscribe(
+			this._http.post<any>(URL, { fspId: participantId, currency: currencyCode }, { headers }).subscribe(									
 			(result: any) => {
 				console.log(`POST associate response: ${result}`);
 
@@ -75,8 +75,8 @@ import { Transfer } from "./transfer_types";
 	}
 
 	disassociateParticipant(participantId: string,partyType: string, partyId: string, partySubType: string, currencyCode: string):Observable<any>{
-		const URL = partySubType ? `${SVC_BASEURL}/parties/${partyType}/${partyId}/${partySubType}?currency=${currencyCode}` : `${SVC_BASEURL}/parties/${partyType}/${partyId}?currency=${currencyCode}`;
-
+        const URL = partySubType ? `${SVC_BASEURL}/participants/${partyType}/${partyId}/${partySubType}?currency=${currencyCode}` : `${SVC_BASEURL}/participants/${partyType}/${partyId}?currency=${currencyCode}`;
+		
 		return new Observable<any>(subscriber => {
 			const headers = new HttpHeaders().set('fspiop-source', participantId)
 											.set('fspiop-date', new Date().toISOString());
