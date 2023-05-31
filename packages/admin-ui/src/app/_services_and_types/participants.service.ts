@@ -1,18 +1,21 @@
-import {Injectable} from '@angular/core';
-import {SettingsService} from "src/app/_services_and_types/settings.service";
-import {HttpClient} from "@angular/common/http";
-import {AllPrivilegesResp} from "./security_types";
-import {Observable} from "rxjs";
-import {PlatformRole, TokenEndpointResponse} from "@mojaloop/security-bc-public-types-lib";
+import { Injectable } from "@angular/core";
+import { SettingsService } from "src/app/_services_and_types/settings.service";
+import { HttpClient } from "@angular/common/http";
+import { AllPrivilegesResp } from "./security_types";
+import { Observable } from "rxjs";
+import {
+  PlatformRole,
+  TokenEndpointResponse,
+} from "@mojaloop/security-bc-public-types-lib";
 import {
   Participant,
   ParticipantAccount,
   ParticipantEndpoint,
-  ParticipantFundsMovement
+  ParticipantFundsMovement,
 } from "src/app/_services_and_types/participant_types";
-import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
+import { AuthenticationService } from "src/app/_services_and_types/authentication.service";
 import * as uuid from "uuid";
-import {UnauthorizedError} from "src/app/_services_and_types/errors";
+import { UnauthorizedError } from "src/app/_services_and_types/errors";
 
 const SVC_BASEURL = "/_participants";
 
@@ -22,7 +25,11 @@ const SVC_BASEURL = "/_participants";
 export class ParticipantsService {
   public hubId = "hub";
 
-  constructor(private _settings: SettingsService, private _http: HttpClient, private _authentication: AuthenticationService) {
+  constructor(
+    private _settings: SettingsService,
+    private _http: HttpClient,
+    private _authentication: AuthenticationService
+  ) {
     // this._http.
   }
 
@@ -44,8 +51,8 @@ export class ParticipantsService {
       participantEndpoints: [],
       participantAccounts: [],
       fundsMovements: [],
-      changeLog: []
-    }
+      changeLog: [],
+    };
   }
 
   createEmptyEndpoint(): ParticipantEndpoint {
@@ -53,20 +60,20 @@ export class ParticipantsService {
       id: uuid.v4(),
       type: "FSPIOP",
       protocol: "HTTPs/REST",
-      value: ""
-    }
+      value: "",
+    };
   }
 
   createEmptyAccount(): ParticipantAccount {
     return {
       id: uuid.v4(),
       type: "POSITION",
-      currencyCode: "EUR"
-    }
+      currencyCode: "EUR",
+    };
   }
 
   getAllParticipants(): Observable<Participant[]> {
-    return new Observable<Participant[]>(subscriber => {
+    return new Observable<Participant[]>((subscriber) => {
       this._http.get<Participant[]>(SVC_BASEURL + "/participants/").subscribe(
         (result: Participant[]) => {
           console.log(`got response: ${result}`);
@@ -74,8 +81,8 @@ export class ParticipantsService {
           subscriber.next(result);
           return subscriber.complete();
         },
-        error => {
-          if (error && error.status===403) {
+        (error) => {
+          if (error && error.status === 403) {
             console.warn("UnauthorizedError received on getAllParticipants");
             subscriber.error(new UnauthorizedError(error.error?.msg));
           } else {
@@ -90,96 +97,113 @@ export class ParticipantsService {
   }
 
   getParticipant(id: string): Observable<Participant | null> {
-    return new Observable<Participant | null>(subscriber => {
-      this._http.get<Participant>(SVC_BASEURL + `/participants/${id}`).subscribe(
-        (result: Participant) => {
-          console.log(`got response: ${result}`);
+    return new Observable<Participant | null>((subscriber) => {
+      this._http
+        .get<Participant>(SVC_BASEURL + `/participants/${id}`)
+        .subscribe(
+          (result: Participant) => {
+            console.log(`got response: ${result}`);
 
-          subscriber.next(result);
-          return subscriber.complete();
-        },
-        error => {
-          if (error && error.status===403) {
-            console.warn("UnauthorizedError received on getParticipant");
-            subscriber.error(new UnauthorizedError(error.error?.msg));
-          } else {
-            console.error(error);
-            subscriber.error(error.error?.msg);
+            subscriber.next(result);
+            return subscriber.complete();
+          },
+          (error) => {
+            if (error && error.status === 403) {
+              console.warn("UnauthorizedError received on getParticipant");
+              subscriber.error(new UnauthorizedError(error.error?.msg));
+            } else {
+              console.error(error);
+              subscriber.error(error.error?.msg);
+            }
+            return subscriber.complete();
           }
-          return subscriber.complete();
-        }
-      );
+        );
     });
   }
 
   createParticipant(item: Participant): Observable<string | null> {
-    return new Observable<string>(subscriber => {
+    return new Observable<string>((subscriber) => {
+      this._http
+        .post<{ id: string }>(SVC_BASEURL + "/participants/", item)
+        .subscribe(
+          (resp: { id: string }) => {
+            console.log(`got response - participantId: ${resp.id}`);
 
-      this._http.post<{ id: string }>(SVC_BASEURL + "/participants/", item).subscribe(
-        (resp: { id: string }) => {
-          console.log(`got response - participantId: ${resp.id}`);
-
-          subscriber.next(resp.id);
-          return subscriber.complete();
-        },
-        error => {
-          if (error && error.status===403) {
-            console.warn("UnauthorizedError received on createParticipant");
-            subscriber.error(new UnauthorizedError(error.error?.msg));
-          } else {
-            console.error(error);
-            subscriber.error(error.error?.msg);
+            subscriber.next(resp.id);
+            return subscriber.complete();
+          },
+          (error) => {
+            if (error && error.status === 403) {
+              console.warn("UnauthorizedError received on createParticipant");
+              subscriber.error(new UnauthorizedError(error.error?.msg));
+            } else {
+              console.error(error);
+              subscriber.error(error.error?.msg);
+            }
+            return subscriber.complete();
           }
-          return subscriber.complete();
-        }
-      );
+        );
     });
   }
 
   approveParticipant(participantId: string): Observable<boolean> {
-    return new Observable<boolean>(subscriber => {
+    return new Observable<boolean>((subscriber) => {
+      this._http
+        .put<void>(SVC_BASEURL + `/participants/${participantId}/approve`, {})
+        .subscribe(
+          (result) => {
+            console.log(`got response: ${result}`);
 
-      this._http.put<void>(SVC_BASEURL + `/participants/${participantId}/approve`, {}).subscribe(
-        (result) => {
-          console.log(`got response: ${result}`);
-
-          subscriber.next(true);
-          return subscriber.complete();
-        },
-        error => {
-          if (error && error.status===403) {
-            console.warn("UnauthorizedError received on approveParticipant");
-            subscriber.error(new UnauthorizedError(error.error?.msg));
-          } else {
-            console.error(error);
-            subscriber.error(error.error?.msg);
+            subscriber.next(true);
+            return subscriber.complete();
+          },
+          (error) => {
+            if (error && error.status === 403) {
+              console.warn("UnauthorizedError received on approveParticipant");
+              subscriber.error(new UnauthorizedError(error.error?.msg));
+            } else {
+              console.error(error);
+              subscriber.error(error.error?.msg);
+            }
+            return subscriber.complete();
           }
-          return subscriber.complete();
-        }
-      );
+        );
     });
   }
 
-  private _enableDisableParticipant(enable: boolean, participantId: string): Observable<boolean> {
-    return new Observable<boolean>(subscriber => {
-      this._http.put<void>(SVC_BASEURL + `/participants/${participantId}/${enable ? "enable":"disable"}`, {}).subscribe(
-        (result) => {
-          console.log(`got response: ${result}`);
+  private _enableDisableParticipant(
+    enable: boolean,
+    participantId: string
+  ): Observable<boolean> {
+    return new Observable<boolean>((subscriber) => {
+      this._http
+        .put<void>(
+          SVC_BASEURL +
+            `/participants/${participantId}/${enable ? "enable" : "disable"}`,
+          {}
+        )
+        .subscribe(
+          (result) => {
+            console.log(`got response: ${result}`);
 
-          subscriber.next(true);
-          return subscriber.complete();
-        },
-        error => {
-          if (error && error.status===403) {
-            console.warn(`UnauthorizedError received on ${enable ? "enable":"disable"} participant`);
-            subscriber.error(new UnauthorizedError(error.error?.msg));
-          } else {
-            console.error(error);
-            subscriber.error(error.error?.msg);
+            subscriber.next(true);
+            return subscriber.complete();
+          },
+          (error) => {
+            if (error && error.status === 403) {
+              console.warn(
+                `UnauthorizedError received on ${
+                  enable ? "enable" : "disable"
+                } participant`
+              );
+              subscriber.error(new UnauthorizedError(error.error?.msg));
+            } else {
+              console.error(error);
+              subscriber.error(error.error?.msg);
+            }
+            return subscriber.complete();
           }
-          return subscriber.complete();
-        }
-      );
+        );
     });
   }
 
@@ -192,198 +216,300 @@ export class ParticipantsService {
   }
 
   getParticipantAccounts(id: string): Observable<ParticipantAccount[]> {
-    return new Observable<ParticipantAccount[]>(subscriber => {
-      this._http.get<ParticipantAccount[]>(SVC_BASEURL + `/participants/${id}/accounts`).subscribe(
-        (result: ParticipantAccount[]) => {
+    return new Observable<ParticipantAccount[]>((subscriber) => {
+      this._http
+        .get<ParticipantAccount[]>(SVC_BASEURL + `/participants/${id}/accounts`)
+        .subscribe(
+          (result: ParticipantAccount[]) => {
+            console.log(`got response: ${result}`);
+
+            subscriber.next(result);
+            return subscriber.complete();
+          },
+          (error) => {
+            if (error && error.status === 403) {
+              console.warn(
+                "UnauthorizedError received on getParticipantAccounts"
+              );
+              subscriber.error(new UnauthorizedError(error.error?.msg));
+            } else {
+              console.error(error);
+              subscriber.error(error.error?.msg);
+            }
+            return subscriber.complete();
+          }
+        );
+    });
+  }
+
+  createAccount(
+    participantId: string,
+    account: ParticipantAccount
+  ): Observable<string> {
+    return new Observable<string>((subscriber) => {
+      this._http
+        .post<{ id: string }>(
+          `${SVC_BASEURL}/participants/${participantId}/account`,
+          account
+        )
+        .subscribe(
+          (resp: { id: string }) => {
+            console.log(`got response - accountId: ${resp.id}`);
+
+            subscriber.next(resp.id);
+            return subscriber.complete();
+          },
+          (error) => {
+            if (error && error.status === 401) {
+              console.warn("UnauthorizedError received on createAccount");
+              subscriber.error(new UnauthorizedError(error.error?.msg));
+            } else {
+              console.error(error);
+              subscriber.error(error.error?.msg);
+            }
+            return subscriber.complete();
+          }
+        );
+    });
+  }
+
+  createFundsMovement(
+    participantId: string,
+    fundsMovRec: ParticipantFundsMovement
+  ): Observable<string> {
+    return new Observable<string>((subscriber) => {
+      this._http
+        .post<{ id: string }>(
+          `${SVC_BASEURL}/participants/${participantId}/funds/`,
+          fundsMovRec
+        )
+        .subscribe(
+          (resp: { id: string }) => {
+            console.log(
+              `got response from createFundsMovement - created id: ${resp.id}`
+            );
+
+            subscriber.next(resp.id);
+            return subscriber.complete();
+          },
+          (error) => {
+            if (error && error.status === 401) {
+              console.warn("UnauthorizedError received on createFundsMovement");
+              subscriber.error(new UnauthorizedError(error.error?.msg));
+            } else {
+              console.error(error);
+              subscriber.error(error.error?.msg);
+            }
+            return subscriber.complete();
+          }
+        );
+    });
+  }
+
+  approveFundsMovement(
+    participantId: string,
+    fundsMovId: string
+  ): Observable<void> {
+    return new Observable<void>((subscriber) => {
+      this._http
+        .post<{ id: string }>(
+          `${SVC_BASEURL}/participants/${participantId}/funds/${fundsMovId}/approve`,
+          {}
+        )
+        .subscribe(
+          (resp: any) => {
+            console.log(`got success response from approveFundsMovement`);
+
+            subscriber.next();
+            return subscriber.complete();
+          },
+          (error) => {
+            if (error && error.status === 401) {
+              console.warn(
+                "UnauthorizedError received on approveFundsMovement"
+              );
+              subscriber.error(new UnauthorizedError(error.error?.msg));
+            }
+            if (error && error.status === 403) {
+              console.warn("Forbidden received on approveFundsMovement");
+              subscriber.error(new Error(error.error?.msg));
+            } else {
+              console.error(error);
+              subscriber.error(error.error?.msg);
+            }
+            return subscriber.complete();
+          }
+        );
+    });
+  }
+
+  createEndpoint(
+    participantId: string,
+    endpoint: ParticipantEndpoint
+  ): Observable<string> {
+    return new Observable<string>((subscriber) => {
+      this._http
+        .post<{ id: string }>(
+          `${SVC_BASEURL}/participants/${participantId}/endpoints`,
+          endpoint
+        )
+        .subscribe(
+          (resp: { id: string }) => {
+            console.log(`got response - endpointId: ${resp.id}`);
+
+            subscriber.next(resp.id);
+            return subscriber.complete();
+          },
+          (error) => {
+            if (error && error.status === 401) {
+              console.warn("UnauthorizedError received on createEndpoint");
+              subscriber.error(new UnauthorizedError(error.error?.msg));
+            } else {
+              console.error(error);
+              subscriber.error(error.error?.msg);
+            }
+            return subscriber.complete();
+          }
+        );
+    });
+  }
+
+  changeEndpoint(
+    participantId: string,
+    endpoint: ParticipantEndpoint
+  ): Observable<void> {
+    return new Observable<void>((subscriber) => {
+      this._http
+        .put<void>(
+          `${SVC_BASEURL}/participants/${participantId}/endpoints/${endpoint.id}`,
+          endpoint
+        )
+        .subscribe(
+          () => {
+            console.log(`got response`);
+
+            subscriber.next();
+            return subscriber.complete();
+          },
+          (error) => {
+            if (error && error.status === 401) {
+              console.warn("UnauthorizedError received on changeEndpoint");
+              subscriber.error(new UnauthorizedError(error.error?.msg));
+            } else {
+              console.error(error);
+              subscriber.error(error.error?.msg);
+            }
+            return subscriber.complete();
+          }
+        );
+    });
+  }
+
+  removeEndpoint(participantId: string, endpointId: string): Observable<void> {
+    return new Observable<void>((subscriber) => {
+      this._http
+        .delete<void>(
+          `${SVC_BASEURL}/participants/${participantId}/endpoints/${endpointId}`
+        )
+        .subscribe(
+          () => {
+            console.log(`got response`);
+
+            subscriber.next();
+            return subscriber.complete();
+          },
+          (error) => {
+            if (error && error.status === 401) {
+              console.warn("UnauthorizedError received on removeEndpoint");
+              subscriber.error(new UnauthorizedError(error.error?.msg));
+            } else {
+              console.error(error);
+              subscriber.error(error.error?.msg);
+            }
+            return subscriber.complete();
+          }
+        );
+    });
+  }
+
+  searchParticipants(
+    id?: string,
+    name?: string,
+    state?: string,
+  ): Observable<Participant[]> {
+    return new Observable<Participant[]>((subscriber) => {
+      let url = SVC_BASEURL + "/participants/?";
+
+      if (id) {
+        url += `id=${encodeURIComponent(id)}&`;
+      }
+      if (name) {
+        url += `name=${encodeURIComponent(name)}&`;
+      }
+      if (state) {
+        url += `state=${encodeURIComponent(state)}&`;
+      }
+
+      if (url.endsWith("&")) {
+        url = url.slice(0, url.length - 1);
+      }
+
+      this._http.get<Participant[]>(url).subscribe(
+        (result: Participant[]) => {
           console.log(`got response: ${result}`);
 
           subscriber.next(result);
           return subscriber.complete();
         },
-        error => {
-          if (error && error.status===403) {
-            console.warn("UnauthorizedError received on getParticipantAccounts");
+        (error) => {
+          if (error && error.status === 403) {
+            console.warn("Access forbidden received on getAllTransfers");
             subscriber.error(new UnauthorizedError(error.error?.msg));
           } else {
             console.error(error);
             subscriber.error(error.error?.msg);
           }
+
           return subscriber.complete();
         }
       );
     });
   }
-
-  createAccount(participantId: string, account: ParticipantAccount): Observable<string> {
-    return new Observable<string>(subscriber => {
-      this._http.post<{ id: string }>(`${SVC_BASEURL}/participants/${participantId}/account`, account).subscribe(
-        (resp: { id: string }) => {
-          console.log(`got response - accountId: ${resp.id}`);
-
-          subscriber.next(resp.id);
-          return subscriber.complete();
-        },
-        error => {
-          if (error && error.status===401) {
-            console.warn("UnauthorizedError received on createAccount");
-            subscriber.error(new UnauthorizedError(error.error?.msg));
-          } else {
-            console.error(error);
-            subscriber.error(error.error?.msg);
-          }
-          return subscriber.complete();
-        }
-      );
-    });
-  }
-
-  createFundsMovement(participantId:string, fundsMovRec:ParticipantFundsMovement):Observable<string>{
-    return new Observable<string>(subscriber => {
-      this._http.post<{ id: string }>(`${SVC_BASEURL}/participants/${participantId}/funds/`, fundsMovRec).subscribe(
-        (resp: { id: string } ) => {
-          console.log(`got response from createFundsMovement - created id: ${resp.id}`);
-
-          subscriber.next(resp.id);
-          return subscriber.complete();
-        },
-        error => {
-          if (error && error.status===401) {
-            console.warn("UnauthorizedError received on createFundsMovement");
-            subscriber.error(new UnauthorizedError(error.error?.msg));
-          } else {
-            console.error(error);
-            subscriber.error(error.error?.msg);
-          }
-          return subscriber.complete();
-        }
-      );
-    });
-  }
-
-  approveFundsMovement(participantId:string, fundsMovId:string):Observable<void>{
-    return new Observable<void>(subscriber => {
-      this._http.post<{ id: string }>(`${SVC_BASEURL}/participants/${participantId}/funds/${fundsMovId}/approve`, {}).subscribe(
-        (resp: any ) => {
-          console.log(`got success response from approveFundsMovement`);
-
-          subscriber.next();
-          return subscriber.complete();
-        },
-        error => {
-          if (error && error.status===401) {
-            console.warn("UnauthorizedError received on approveFundsMovement");
-            subscriber.error(new UnauthorizedError(error.error?.msg));
-          } if (error && error.status===403) {
-				console.warn("Forbidden received on approveFundsMovement");
-				subscriber.error(new Error(error.error?.msg));
-			}else {
-            console.error(error);
-            subscriber.error(error.error?.msg);
-          }
-          return subscriber.complete();
-        }
-      );
-    });
-  }
-
-
-  createEndpoint(participantId: string, endpoint: ParticipantEndpoint): Observable<string> {
-    return new Observable<string>(subscriber => {
-      this._http.post<{ id: string }>(`${SVC_BASEURL}/participants/${participantId}/endpoints`, endpoint).subscribe(
-        (resp: { id: string }) => {
-          console.log(`got response - endpointId: ${resp.id}`);
-
-          subscriber.next(resp.id);
-          return subscriber.complete();
-        },
-        error => {
-          if (error && error.status===401) {
-            console.warn("UnauthorizedError received on createEndpoint");
-            subscriber.error(new UnauthorizedError(error.error?.msg));
-          } else {
-            console.error(error);
-            subscriber.error(error.error?.msg);
-          }
-          return subscriber.complete();
-        }
-      );
-    });
-  }
-
-  changeEndpoint(participantId: string, endpoint: ParticipantEndpoint): Observable<void> {
-    return new Observable<void>(subscriber => {
-      this._http.put<void>(`${SVC_BASEURL}/participants/${participantId}/endpoints/${endpoint.id}`, endpoint).subscribe(
-        () => {
-          console.log(`got response`);
-
-          subscriber.next();
-          return subscriber.complete();
-        },
-        error => {
-          if (error && error.status===401) {
-            console.warn("UnauthorizedError received on changeEndpoint");
-            subscriber.error(new UnauthorizedError(error.error?.msg));
-          } else {
-            console.error(error);
-            subscriber.error(error.error?.msg);
-          }
-          return subscriber.complete();
-        }
-      );
-    });
-  }
-
-  removeEndpoint(participantId: string, endpointId: string): Observable<void> {
-    return new Observable<void>(subscriber => {
-      this._http.delete<void>(`${SVC_BASEURL}/participants/${participantId}/endpoints/${endpointId}`).subscribe(
-        () => {
-          console.log(`got response`);
-
-          subscriber.next();
-          return subscriber.complete();
-        },
-        error => {
-          if (error && error.status===401) {
-            console.warn("UnauthorizedError received on removeEndpoint");
-            subscriber.error(new UnauthorizedError(error.error?.msg));
-          } else {
-            console.error(error);
-            subscriber.error(error.error?.msg);
-          }
-          return subscriber.complete();
-        }
-      );
-    });
-  }
-
 
   /* TESTS */
-  simulateTransfer(payerId:string, payeeId:string, amount:number, currencyCode:string):Observable<void>{
-    const body ={
-      payerId:payerId,
-      payeeId:payeeId,
-      amount:amount.toString(),
-      currencyCode:currencyCode
+  simulateTransfer(
+    payerId: string,
+    payeeId: string,
+    amount: number,
+    currencyCode: string
+  ): Observable<void> {
+    const body = {
+      payerId: payerId,
+      payeeId: payeeId,
+      amount: amount.toString(),
+      currencyCode: currencyCode,
     };
-    return new Observable<void>(subscriber => {
-      this._http.post<{ id: string }>(`${SVC_BASEURL}/simulatetransfer`, body).subscribe(
-        (resp: any ) => {
-          console.log(`got success response from simulateTransfer`);
+    return new Observable<void>((subscriber) => {
+      this._http
+        .post<{ id: string }>(`${SVC_BASEURL}/simulatetransfer`, body)
+        .subscribe(
+          (resp: any) => {
+            console.log(`got success response from simulateTransfer`);
 
-          subscriber.next();
-          return subscriber.complete();
-        },
-        error => {
-          if (error && error.status===401) {
-            console.warn("UnauthorizedError received on simulateTransfer");
-            subscriber.error(new UnauthorizedError(error.error?.msg));
-          } else {
-            console.error(error);
-            subscriber.error(error.error?.msg);
+            subscriber.next();
+            return subscriber.complete();
+          },
+          (error) => {
+            if (error && error.status === 401) {
+              console.warn("UnauthorizedError received on simulateTransfer");
+              subscriber.error(new UnauthorizedError(error.error?.msg));
+            } else {
+              console.error(error);
+              subscriber.error(error.error?.msg);
+            }
+            return subscriber.complete();
           }
-          return subscriber.complete();
-        }
-      );
+        );
     });
   }
 }
