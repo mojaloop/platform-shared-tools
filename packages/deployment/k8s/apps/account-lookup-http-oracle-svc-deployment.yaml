@@ -2,27 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose --file docker-compose-apps.yml convert
-    kompose.version: 1.26.0 (40646f47)
   creationTimestamp: null
   labels:
-    io.kompose.service: account-lookup-http-oracle-svc
+    mojaloop.service: account-lookup-http-oracle-svc
   name: account-lookup-http-oracle-svc
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: account-lookup-http-oracle-svc
+      mojaloop.service: account-lookup-http-oracle-svc
   strategy:
     type: Recreate
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose --file docker-compose-apps.yml convert
-        kompose.version: 1.26.0 (40646f47)
       creationTimestamp: null
       labels:
-        io.kompose.service: account-lookup-http-oracle-svc
+        mojaloop.service: account-lookup-http-oracle-svc
     spec:
       containers:
         - env:

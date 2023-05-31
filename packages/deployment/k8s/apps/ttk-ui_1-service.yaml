@@ -2,11 +2,9 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    kompose.cmd: kompose --file docker-compose-apps.yml convert
-    kompose.version: 1.26.0 (40646f47)
   creationTimestamp: null
   labels:
-    io.kompose.service: ttk-ui-1
+    mojaloop.service: ttk-ui-1
   name: ttk-ui-1
 spec:
   ports:
@@ -14,6 +12,6 @@ spec:
       port: 6060
       targetPort: 6060
   selector:
-    io.kompose.service: ttk-ui-1
+    mojaloop.service: ttk-ui-1
 status:
   loadBalancer: {}

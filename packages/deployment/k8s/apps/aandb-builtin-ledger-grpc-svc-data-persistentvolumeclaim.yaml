@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: aandb-builtin-ledger-grpc-svc-data
+    mojaloop.service: aandb-builtin-ledger-grpc-svc-data
   name: aandb-builtin-ledger-grpc-svc-data
 spec:
   accessModes:

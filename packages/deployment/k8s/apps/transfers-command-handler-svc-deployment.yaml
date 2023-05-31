@@ -2,27 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose --file docker-compose-apps.yml convert
-    kompose.version: 1.26.0 (40646f47)
   creationTimestamp: null
   labels:
-    io.kompose.service: transfers-command-handler-svc
+    mojaloop.service: transfers-command-handler-svc
   name: transfers-command-handler-svc
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: transfers-command-handler-svc
+      mojaloop.service: transfers-command-handler-svc
   strategy:
     type: Recreate
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose --file docker-compose-apps.yml convert
-        kompose.version: 1.26.0 (40646f47)
       creationTimestamp: null
       labels:
-        io.kompose.service: transfers-command-handler-svc
+        mojaloop.service: transfers-command-handler-svc
     spec:
       containers:
         - env:

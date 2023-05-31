@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: account-lookup-http-oracle-svc-data
+    mojaloop.service: account-lookup-http-oracle-svc-data
   name: account-lookup-http-oracle-svc-data
 spec:
   accessModes:

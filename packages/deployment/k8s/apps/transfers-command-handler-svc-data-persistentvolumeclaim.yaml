@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: transfers-command-handler-svc-data
+    mojaloop.service: transfers-command-handler-svc-data
   name: transfers-command-handler-svc-data
 spec:
   accessModes:

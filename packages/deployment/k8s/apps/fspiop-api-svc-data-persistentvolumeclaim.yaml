@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: fspiop-api-svc-data
+    mojaloop.service: fspiop-api-svc-data
   name: fspiop-api-svc-data
 spec:
   accessModes:

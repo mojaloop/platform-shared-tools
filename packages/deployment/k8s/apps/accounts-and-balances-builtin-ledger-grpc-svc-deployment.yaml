@@ -2,27 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose --file docker-compose-apps.yml convert
-    kompose.version: 1.26.0 (40646f47)
   creationTimestamp: null
   labels:
-    io.kompose.service: accounts-and-balances-builtin-ledger-grpc-svc
+    mojaloop.service: accounts-and-balances-builtin-ledger-grpc-svc
   name: accounts-and-balances-builtin-ledger-grpc-svc
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: accounts-and-balances-builtin-ledger-grpc-svc
+      mojaloop.service: accounts-and-balances-builtin-ledger-grpc-svc
   strategy:
     type: Recreate
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose --file docker-compose-apps.yml convert
-        kompose.version: 1.26.0 (40646f47)
       creationTimestamp: null
       labels:
-        io.kompose.service: accounts-and-balances-builtin-ledger-grpc-svc
+        mojaloop.service: accounts-and-balances-builtin-ledger-grpc-svc
     spec:
       containers:
         - env:

@@ -2,11 +2,9 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    kompose.cmd: kompose --file docker-compose-apps.yml convert
-    kompose.version: 1.26.0 (40646f47)
   creationTimestamp: null
   labels:
-    io.kompose.service: participants-svc
+    mojaloop.service: participants-svc
   name: participants-svc
 spec:
   ports:
@@ -14,6 +12,6 @@ spec:
       port: 3010
       targetPort: 3010
   selector:
-    io.kompose.service: participants-svc
+    mojaloop.service: participants-svc
 status:
   loadBalancer: {}

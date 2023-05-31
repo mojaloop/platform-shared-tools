@@ -2,27 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose -f ./docker-compose-cross-cutting.yml convert
-    kompose.version: 1.26.0 (40646f47)
   creationTimestamp: null
   labels:
-    io.kompose.service: platform-configuration-svc
+    mojaloop.service: platform-configuration-svc
   name: platform-configuration-svc
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: platform-configuration-svc
+      mojaloop.service: platform-configuration-svc
   strategy:
     type: Recreate
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose -f ./docker-compose-cross-cutting.yml convert
-        kompose.version: 1.26.0 (40646f47)
       creationTimestamp: null
       labels:
-        io.kompose.service: platform-configuration-svc
+        mojaloop.service: platform-configuration-svc
     spec:
       containers:
         - env:

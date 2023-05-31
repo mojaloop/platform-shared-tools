@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: auditing-svc-data
+    mojaloop.service: auditing-svc-data
   name: auditing-svc-data
 spec:
   accessModes:

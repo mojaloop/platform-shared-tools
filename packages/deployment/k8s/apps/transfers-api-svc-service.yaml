@@ -2,11 +2,9 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    kompose.cmd: kompose --file docker-compose-apps.yml convert
-    kompose.version: 1.26.0 (40646f47)
   creationTimestamp: null
   labels:
-    io.kompose.service: transfers-api-svc
+    mojaloop.service: transfers-api-svc
   name: transfers-api-svc
 spec:
   ports:
@@ -14,6 +12,6 @@ spec:
       port: 3500
       targetPort: 3500
   selector:
-    io.kompose.service: transfers-api-svc
+    mojaloop.service: transfers-api-svc
 status:
   loadBalancer: {}

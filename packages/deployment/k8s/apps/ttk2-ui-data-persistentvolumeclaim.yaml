@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: ttk2-ui-data
+    mojaloop.service: ttk2-ui-data
   name: ttk2-ui-data
 spec:
   accessModes:

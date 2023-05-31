@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: settlements-api-svc-data
+    mojaloop.service: settlements-api-svc-data
   name: settlements-api-svc-data
 spec:
   accessModes:
