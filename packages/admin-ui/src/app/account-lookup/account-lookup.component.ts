@@ -159,7 +159,7 @@ export class AccountLookupComponent implements OnInit {
 
   async associateParticipant() {
     this._interopSvc.associateParticipant(this.formAssociateParticipant.controls["participantId"].value, this.formAssociateParticipant.controls["partyType"].value, this.formAssociateParticipant.controls["partyId"].value, this.formAssociateParticipant.controls["partySubType"].value, this.formAssociateParticipant.controls["currencyCode"].value).subscribe(result => {
-      if(result) {
+      if(!result) {
         this._messageService.addSuccess("associateParticipant event sucessfully sent");
       }else{
         this._messageService.addError("Something went wrong sending the associateParticipant event");
@@ -169,7 +169,7 @@ export class AccountLookupComponent implements OnInit {
 
   async disassociateParticipant() {
     this._interopSvc.disassociateParticipant(this.formDisassociateParticipant.controls["participantId"].value, this.formDisassociateParticipant.controls["partyType"].value, this.formDisassociateParticipant.controls["partyId"].value, this.formDisassociateParticipant.controls["partySubType"].value, this.formDisassociateParticipant.controls["currencyCode"].value).subscribe(result => {
-      if(result) {
+      if(!result) {
         this._messageService.addSuccess("disassociateParticipant event sucessfully sent");
       }else{
         this._messageService.addError("Something went wrong sending the disassociateParticipant event");
@@ -179,7 +179,7 @@ export class AccountLookupComponent implements OnInit {
 
   async getParticipant() {
     this._interopSvc.getParticipant(this.formGetParticipant.controls["participantId"].value, this.formGetParticipant.controls["partyType"].value, this.formGetParticipant.controls["partyId"].value, this.formGetParticipant.controls["partySubType"].value, this.formGetParticipant.controls["currencyCode"].value).subscribe(result => {
-      if(result) {
+      if(!result) {
         this._messageService.addSuccess("getParticipant event sucessfully sent");
       }else{
         this._messageService.addError("Something went wrong sending the getParticipant event");
@@ -189,7 +189,7 @@ export class AccountLookupComponent implements OnInit {
 
   async getParty() {
     this._interopSvc.getParty(this.formGetParty.controls["participantId"].value, this.formGetParty.controls["partyType"].value, this.formGetParty.controls["partyId"].value, this.formGetParty.controls["partySubType"].value, this.formGetParty.controls["currencyCode"].value).subscribe(result => {
-      if(result) {
+      if(!result) {
         this._messageService.addSuccess("getParty event sucessfully sent");
       }else{
         this._messageService.addError("Something went wrong sending the getParty event");
