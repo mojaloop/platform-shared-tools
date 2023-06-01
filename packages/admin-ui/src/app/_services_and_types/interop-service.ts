@@ -55,7 +55,7 @@ import { Transfer } from "./transfer_types";
 		
 		return new Observable<any>(subscriber => {
 			const headers = new HttpHeaders().set('fspiop-source', participantId)
-											.set('fspiop-date', new Date().toISOString());
+											.set('date', new Date().toISOString());
 
 			this._http.post<any>(URL, { fspId: participantId, currency: currencyCode }, { headers }).subscribe(									
 			(result: any) => {
