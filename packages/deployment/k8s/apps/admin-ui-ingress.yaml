@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: admin-ui-ingress
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: vnexthost
+    http:
+      paths:
+      - path: "/"
+        pathType: Prefix
+        backend:
+          service:
+            name: admin-ui
+            port:
+              number: 4200
+      # - path: "/v2"
+      #   pathType: Prefix
+      #   backend:
+      #     service:
+      #       name: apache-service
+      #       port:
+      #         number: 8282
