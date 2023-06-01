@@ -5,6 +5,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: settlements-command-handler-svc
+    mojaloop.layer: apps
   name: settlements-command-handler-svc
 spec:
   replicas: 1
@@ -19,6 +20,7 @@ spec:
       creationTimestamp: null
       labels:
         mojaloop.service: settlements-command-handler-svc
+        mojaloop.layer: apps
     spec:
       containers:
         - env:

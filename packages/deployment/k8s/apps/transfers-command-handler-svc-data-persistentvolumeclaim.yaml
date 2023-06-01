@@ -4,6 +4,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: transfers-command-handler-svc-data
+    mojaloop.layer: apps
   name: transfers-command-handler-svc-data
 spec:
   accessModes:

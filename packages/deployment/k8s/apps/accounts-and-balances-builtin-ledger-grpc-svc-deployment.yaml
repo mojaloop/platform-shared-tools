@@ -5,6 +5,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: accounts-and-balances-builtin-ledger-grpc-svc
+    mojaloop.layer: apps
   name: accounts-and-balances-builtin-ledger-grpc-svc
 spec:
   replicas: 1
@@ -19,6 +20,7 @@ spec:
       creationTimestamp: null
       labels:
         mojaloop.service: accounts-and-balances-builtin-ledger-grpc-svc
+        mojaloop.layer: apps
     spec:
       containers:
         - env:

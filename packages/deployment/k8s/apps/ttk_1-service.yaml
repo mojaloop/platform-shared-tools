@@ -5,6 +5,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: ttk-1
+    mojaloop.layer: apps
   name: ttk-1
 spec:
   ports:

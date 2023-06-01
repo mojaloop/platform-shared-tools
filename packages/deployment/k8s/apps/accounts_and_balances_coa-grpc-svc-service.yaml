@@ -5,6 +5,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: accounts-and-balances-coa-grpc-svc
+    mojaloop.layer: apps
   name: accounts-and-balances-coa-grpc-svc
 spec:
   ports:

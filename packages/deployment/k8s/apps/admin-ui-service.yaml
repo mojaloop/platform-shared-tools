@@ -5,6 +5,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: admin-ui
+    mojaloop.layer: apps
   name: admin-ui
 spec:
   ports:

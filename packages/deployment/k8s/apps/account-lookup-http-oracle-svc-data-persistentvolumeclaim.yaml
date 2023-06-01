@@ -4,6 +4,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: account-lookup-http-oracle-svc-data
+    mojaloop.layer: apps
   name: account-lookup-http-oracle-svc-data
 spec:
   accessModes:

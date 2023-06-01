@@ -4,6 +4,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: fspiop-api-svc-data
+    mojaloop.layer: apps
   name: fspiop-api-svc-data
 spec:
   accessModes:

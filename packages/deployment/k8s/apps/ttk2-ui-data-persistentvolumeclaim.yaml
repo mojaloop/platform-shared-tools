@@ -4,6 +4,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: ttk2-ui-data
+    mojaloop.layer: apps
   name: ttk2-ui-data
 spec:
   accessModes:

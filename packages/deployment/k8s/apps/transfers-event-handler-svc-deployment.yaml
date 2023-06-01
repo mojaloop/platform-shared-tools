@@ -5,6 +5,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: transfers-event-handler-svc
+    mojaloop.layer: apps
   name: transfers-event-handler-svc
 spec:
   replicas: 1
@@ -19,6 +20,7 @@ spec:
       creationTimestamp: null
       labels:
         mojaloop.service: transfers-event-handler-svc
+        mojaloop.layer: apps
     spec:
       containers:
         - env:

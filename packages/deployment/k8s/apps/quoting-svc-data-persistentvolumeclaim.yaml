@@ -4,6 +4,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: quoting-svc-data
+    mojaloop.layer: apps
   name: quoting-svc-data
 spec:
   accessModes:

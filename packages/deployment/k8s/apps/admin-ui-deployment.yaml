@@ -5,6 +5,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: admin-ui
+    mojaloop.layer: apps
   name: admin-ui
 spec:
   replicas: 1
@@ -18,6 +19,7 @@ spec:
       creationTimestamp: null
       labels:
         mojaloop.service: admin-ui
+        mojaloop.layer: apps
     spec:
       containers:
         - image: mojaloop/vnext-admin-ui-svc:0.1.8

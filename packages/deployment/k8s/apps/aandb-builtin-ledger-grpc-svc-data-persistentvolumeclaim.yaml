@@ -4,6 +4,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: aandb-builtin-ledger-grpc-svc-data
+    mojaloop.layer: apps
   name: aandb-builtin-ledger-grpc-svc-data
 spec:
   accessModes:

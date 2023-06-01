@@ -5,6 +5,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: quoting-svc
+    mojaloop.layer: apps
   name: quoting-svc
 spec:
   ports:

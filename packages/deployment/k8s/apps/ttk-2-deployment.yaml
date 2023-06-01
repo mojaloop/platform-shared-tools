@@ -5,6 +5,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: ttk-2
+    mojaloop.layer: apps
   name: ttk-2
 spec:
   replicas: 1
@@ -19,6 +20,7 @@ spec:
       creationTimestamp: null
       labels:
         mojaloop.service: ttk-2
+        mojaloop.layer: apps
     spec:
       containers:
         - args:

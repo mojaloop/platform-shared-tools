@@ -5,6 +5,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: ttk-ui-2
+    mojaloop.layer: apps
   name: ttk-ui-2
 spec:
   ports:
