@@ -5,12 +5,14 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: logging-svc
+    mojaloop.layer: crosscut
   name: logging-svc
 spec:
   replicas: 1
   selector:
     matchLabels:
       mojaloop.service: logging-svc
+      mojaloop.layer: crosscut
   strategy:
     type: Recreate
   template:
@@ -19,6 +21,7 @@ spec:
       creationTimestamp: null
       labels:
         mojaloop.service: logging-svc
+        mojaloop.layer: crosscut
     spec:
       containers:
         - env:

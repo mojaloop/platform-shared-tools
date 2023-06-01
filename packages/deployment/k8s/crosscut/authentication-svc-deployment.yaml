@@ -5,6 +5,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: authentication-svc
+    mojaloop.layer: crosscut
   name: authentication-svc
 spec:
   replicas: 1
@@ -19,34 +20,35 @@ spec:
       creationTimestamp: null
       labels:
         mojaloop.service: authentication-svc
+        mojaloop.layer: crosscut
     spec:
       containers:
-        - env:
-            - name: AUTH_N_DEFAULT_AUDIENCE
-              value: mojaloop.vnext.dev.default_audience
-            - name: AUTH_N_ISSUER_NAME
-              value: mojaloop.vnext.dev.default_issuer
-            - name: AUTH_N_TOKEN_LIFE_SECS
-              value: "604800"
-            - name: KAFKA_AUDITS_TOPIC
-              value: audits
-            - name: KAFKA_LOGS_TOPIC
-              value: logs
-            - name: KAFKA_URL
-              value: kafka:9092
-            - name: PLATFORM_CONFIG_BASE_SVC_URL
-              value: http://platform-configuration-svc:3100
-          image: mojaloop/security-bc-authentication-svc:alpha-latest
-          name: authentication-svc
-          ports:
-            - containerPort: 3201
-          resources: {}
-          volumeMounts:
-            - mountPath: /app/data
-              name: authentication-svc-data
+      - env:
+        - name: AUTH_N_DEFAULT_AUDIENCE
+          value: mojaloop.vnext.dev.default_audience
+        - name: AUTH_N_ISSUER_NAME
+          value: mojaloop.vnext.dev.default_issuer
+        - name: AUTH_N_TOKEN_LIFE_SECS
+          value: "604800"
+        - name: KAFKA_AUDITS_TOPIC
+          value: audits
+        - name: KAFKA_LOGS_TOPIC
+          value: logs
+        - name: KAFKA_URL
+          value: kafka:9092
+        - name: PLATFORM_CONFIG_BASE_SVC_URL
+          value: http://platform-configuration-svc:3100
+        image: mojaloop/security-bc-authentication-svc:alpha-latest
+        name: authentication-svc
+        ports:
+        - containerPort: 3201
+        resources: {}
+        volumeMounts:
+        - mountPath: /app/data
+          name: authentication-svc-data
       restartPolicy: Always
       volumes:
-        - name: authentication-svc-data
-          persistentVolumeClaim:
-            claimName: authentication-svc-data
+      - name: authentication-svc-data
+        persistentVolumeClaim:
+          claimName: authentication-svc-data
 status: {}

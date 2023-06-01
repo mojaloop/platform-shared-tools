@@ -5,12 +5,14 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: auditing-svc
+    mojaloop.layer: crosscut
   name: auditing-svc
 spec:
   replicas: 1
   selector:
     matchLabels:
       mojaloop.service: auditing-svc
+      mojaloop.layer: crosscut
   strategy:
     type: Recreate
   template:
@@ -19,6 +21,7 @@ spec:
       creationTimestamp: null
       labels:
         mojaloop.service: auditing-svc
+        mojaloop.layer: crosscut
     spec:
       containers:
         - env:

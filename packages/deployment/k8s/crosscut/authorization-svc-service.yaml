@@ -5,6 +5,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: authorization-svc
+    mojaloop.layer: crosscut
   name: authorization-svc
 spec:
   ports:
@@ -13,5 +14,6 @@ spec:
       targetPort: 3202
   selector:
     mojaloop.service: authorization-svc
+    mojaloop.layer: crosscut
 status:
   loadBalancer: {}

@@ -4,6 +4,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: logging-svc-data
+    mojaloop.layer: crosscut
   name: logging-svc-data
 spec:
   accessModes:

@@ -5,6 +5,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: authorization-svc
+    mojaloop.layer: crosscut
   name: authorization-svc
 spec:
   replicas: 1
@@ -19,6 +20,7 @@ spec:
       creationTimestamp: null
       labels:
         mojaloop.service: authorization-svc
+        mojaloop.layer: crosscut
     spec:
       containers:
         - env:

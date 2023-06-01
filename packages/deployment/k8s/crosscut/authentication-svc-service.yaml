@@ -5,12 +5,13 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: authentication-svc
+    mojaloop.layer: crosscut
   name: authentication-svc
 spec:
   ports:
-    - name: "3201"
-      port: 3201
-      targetPort: 3201
+  - name: "3201"
+    port: 3201
+    targetPort: 3201
   selector:
     mojaloop.service: authentication-svc
 status:

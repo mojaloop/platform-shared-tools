@@ -5,6 +5,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: platform-configuration-svc
+    mojaloop.layer: crosscut
   name: platform-configuration-svc
 spec:
   ports:
@@ -13,5 +14,6 @@ spec:
       targetPort: 3100
   selector:
     mojaloop.service: platform-configuration-svc
+    mojaloop.layer: crosscut
 status:
   loadBalancer: {}
