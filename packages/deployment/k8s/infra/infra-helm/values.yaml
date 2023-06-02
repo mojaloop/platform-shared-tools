@@ -1,27 +1,38 @@
 # Declare global configurations
 global:
-  kibanaEnabled: false
+  kibanaEnabled: true
+  elasticsearch:
+    service:
+      name: es01
 
 elasticsearch:
-  
-  enabled: false
+
+  enabled: true
   fullnameOverride: "elastic"
 
-  coordinating: 
-    replicaCount: 1 
+  security:
+    elasticPassword: elasticSearchPas42
+
+  coordinating:
+    replicaCount: 1
 
   master:
-    replicaCount: 1 
+    replicaCount: 1
     persistence:
       enabled: false
 
   data:
-    replicaCount: 1 
+    replicaCount: 1
     persistence:
       enabled: false
 
   ingest:
-    replicaCount: 1 
+    replicaCount: 1
+
+  kibana:
+    elasticsearch:
+      hosts:
+      - es01
 
 
 ## Reference: https://github.com/bitnami/charts/blob/main/bitnami/kafka/values.yaml
@@ -72,11 +83,11 @@ kafka:
     ##     flush.messages: 1
     ##
     # topics: []
-    topics: 
-      - name: KAFKA_AUDITS_TOPIC
-        value: audits
-      - name: KAFKA_LOGS_TOPIC
-        value: logs
+    topics:
+    - name: KAFKA_AUDITS_TOPIC
+      value: audits
+    - name: KAFKA_LOGS_TOPIC
+      value: logs
 
     ## @param provisioning.nodeSelector Node labels for pod assignment
     ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -135,11 +146,11 @@ mongodb:
     ## @param auth.databases List of custom databases to be created during the initialization
     ##
     usernames:
-      -   'mojaloop'
+    - 'mojaloop'
     passwords:
-      -   'password'
+    - 'password'
     databases:
-      -   'mlos'
+    - 'mlos'
     ## @param auth.username DEPRECATED: use `auth.usernames` instead
     ## @param auth.password DEPRECATED: use `auth.passwords` instead
     ## @param auth.database DEPRECATED: use `auth.databases` instead

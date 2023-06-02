@@ -24,28 +24,28 @@ spec:
         mojaloop.layer: crosscut
     spec:
       containers:
-        - env:
-            - name: ELASTICSEARCH_AUDITS_INDEX
-              value: ml-auditing
-            - name: ELASTICSEARCH_PASSWORD
-              value: elasticSearchPas42
-            - name: ELASTICSEARCH_URL
-              value: https://es01:9200
-            - name: ELASTICSEARCH_USERNAME
-              value: elastic
-            - name: KAFKA_LOGS_TOPIC
-              value: logs
-            - name: KAFKA_URL
-              value: kafka:9092
-          image: mojaloop/logging-bc-logging-svc:alpha-latest
-          name: logging-svc
-          resources: {}
-          volumeMounts:
-            - mountPath: /app/data
-              name: logging-svc-data
+      - env:
+        - name: ELASTICSEARCH_AUDITS_INDEX
+          value: ml-auditing
+        - name: ELASTICSEARCH_PASSWORD
+          value: elasticSearchPas42
+        - name: ELASTICSEARCH_URL
+          value: https://infra-es01:9200
+        - name: ELASTICSEARCH_USERNAME
+          value: elastic
+        - name: KAFKA_LOGS_TOPIC
+          value: logs
+        - name: KAFKA_URL
+          value: kafka:9092
+        image: mojaloop/logging-bc-logging-svc:alpha-latest
+        name: logging-svc
+        resources: {}
+        volumeMounts:
+        - mountPath: /app/data
+          name: logging-svc-data
       restartPolicy: Always
       volumes:
-        - name: logging-svc-data
-          persistentVolumeClaim:
-            claimName: logging-svc-data
+      - name: logging-svc-data
+        persistentVolumeClaim:
+          claimName: logging-svc-data
 status: {}

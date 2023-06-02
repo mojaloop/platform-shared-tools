@@ -140,4 +140,4 @@ Chart.lock
 
 # Helm Publish Repo
 packages/deployment/k8s/infra/repo/
-**/repo/**.*
+repo/
