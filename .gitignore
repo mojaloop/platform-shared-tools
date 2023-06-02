@@ -126,7 +126,7 @@ devspace*
 !.yarn/versions
 
 /packages/deployment/docker-compose-infra/exec/
-/packages/deployment/docker-compose-infra/k8s/repo
+
 /packages/deployment/docker-compose-cross-cutting/exec/
 
 /packages/deployment/docker-compose-apps/exec/
@@ -139,4 +139,5 @@ requirements.lock
 Chart.lock
 
 # Helm Publish Repo
+/packages/deployment/k8s/infra/repo
 **/repo/**.*
