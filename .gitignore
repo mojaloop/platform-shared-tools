@@ -137,4 +137,4 @@ requirements.lock
 Chart.lock
 
 # Helm Publish Repo
-**/repo/**
+**/repo/**.*
