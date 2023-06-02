@@ -139,5 +139,5 @@ requirements.lock
 Chart.lock
 
 # Helm Publish Repo
-/packages/deployment/k8s/infra/repo
+/packages/deployment/k8s/infra/repo/
 **/repo/**.*
