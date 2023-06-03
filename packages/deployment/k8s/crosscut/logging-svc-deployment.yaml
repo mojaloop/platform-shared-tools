@@ -30,7 +30,7 @@ spec:
         - name: ELASTICSEARCH_PASSWORD
           value: elasticSearchPas42
         - name: ELASTICSEARCH_URL
-          value: https://infra-es01:9200
+          value: http://infra-es01:9200
         - name: ELASTICSEARCH_USERNAME
           value: elastic
         - name: KAFKA_LOGS_TOPIC

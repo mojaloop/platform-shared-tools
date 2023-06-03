@@ -34,6 +34,9 @@ elasticsearch:
       hosts:
       - es01
 
+  ingress:
+    enabled: true
+
 
 ## Reference: https://github.com/bitnami/charts/blob/main/bitnami/kafka/values.yaml
 kafka:
