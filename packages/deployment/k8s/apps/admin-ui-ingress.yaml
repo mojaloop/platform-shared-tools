@@ -6,8 +6,9 @@ metadata:
     ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  ingressClassName: nginx
   rules:
-  - host: vnexthost
+  - host: vnextadmin
     http:
       paths:
       - path: "/"
