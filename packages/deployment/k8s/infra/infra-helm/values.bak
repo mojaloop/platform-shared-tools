@@ -8,13 +8,13 @@ global:
 elasticsearch:
 
   enabled: true
-  # fullnameOverride: "elastic"
+  #fullnameOverride: "elastic"
 
   security:
     elasticPassword: elasticSearchPas42
 
-    tls:
-      restEncryption: false
+    # tls:
+    #   restEncryption: false
 
   coordinating:
     replicaCount: 1
@@ -33,9 +33,9 @@ elasticsearch:
     replicaCount: 1
 
   # kibana:
-  # elasticsearch:
-  #   hosts:
-  #   - es01
+  #   elasticsearch:
+  #     hosts:
+  #     - es01
 
   ingress:
     enabled: true

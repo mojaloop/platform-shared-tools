@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ttk-ml-testing-toolkit-backend
+  labels:
+  annotations:
+spec:
+  #ingressClassName: nginx
+  rules:
+  - host: testing-toolkit.local
+    http:
+      paths:
+      - path: /api/
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: testing-toolkit-backend
+            port:
+              number: 5050
+      - path: /socket.io/
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: ttk-ml-testing-toolkit-backend
+            port:
+              number: 5050
+  - host: testing-toolkit-specapi.local
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: ttk-ml-testing-toolkit-backend
+            port:
+              number: 4040
