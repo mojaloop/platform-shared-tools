@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  creationTimestamp: null
+  labels:
+    mojaloop.service: ttk-ui-2
+    mojaloop.layer: apps
+  name: ttk-ui-2
+spec:
+  ports:
+    - name: "6061"
+      port: 6061
+      targetPort: 6060
+  selector:
+    mojaloop.service: ttk-ui-2
+status:
+  loadBalancer: {}

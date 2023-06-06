@@ -1,0 +1,45 @@
+apiVersion: v2
+description: Helm chart for mojaloop vNext infrastructure services 
+name: vnext-infra
+version: 15.0.0
+appVersion: "elasticsearch:19.9.2 kafka: 19.0.2; mongodb: 13.3.1"
+home: http://mojaloop.io
+icon: http://mojaloop.io/images/logo.png
+sources:
+  - https://github.com/mojaloop/mojaloop
+  - https://github.com/mojaloop/platform-shared-tools
+maintainers:
+  - name: Tom Daly
+    email: tomd@crosslaketech.com
+dependencies:
+  - name: elasticsearch
+    alias: elasticsearch
+    condition: elasticsearch.enabled
+    repository: https://charts.bitnami.com/bitnami
+    tags:
+      - mojaloop
+      - dependency
+      - vNext
+      - elasticsearch
+    version: 19.9.2
+  - name: kafka
+    alias: kafka
+    condition: kafka.enabled
+    repository: https://charts.bitnami.com/bitnami
+    tags:
+      - mojaloop
+      - dependency
+      - vNext
+      - kafka
+    version: 19.0.2
+  ## MongoDB
+  - name: mongodb
+    alias: mongodb
+    condition: mongodb.enabled
+    repository: https://charts.bitnami.com/bitnami
+    tags:
+      - mojaloop
+      - dependency
+      - vNext
+      - mongodb
+    version: 13.3.1

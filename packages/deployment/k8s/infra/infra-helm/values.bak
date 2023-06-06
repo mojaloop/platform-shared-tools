@@ -1,0 +1,183 @@
+# Declare global configurations
+global:
+  kibanaEnabled: true
+  # elasticsearch:
+  #   service:
+  #     name: es01
+
+elasticsearch:
+
+  enabled: true
+  #fullnameOverride: "elastic"
+
+  security:
+    elasticPassword: elasticSearchPas42
+
+    # tls:
+    #   restEncryption: false
+
+  coordinating:
+    replicaCount: 1
+
+  master:
+    replicaCount: 1
+    persistence:
+      enabled: false
+
+  data:
+    replicaCount: 1
+    persistence:
+      enabled: false
+
+  ingest:
+    replicaCount: 1
+
+  # kibana:
+  #   elasticsearch:
+  #     hosts:
+  #     - es01
+
+  ingress:
+    enabled: true
+    # hostname: es01
+
+
+## Reference: https://github.com/bitnami/charts/blob/main/bitnami/kafka/values.yaml
+kafka:
+  enabled: true
+  fullnameOverride: "kafka"
+
+  ## @section Persistence parameters
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    ## @param persistence.enabled Enable Kafka data persistence using PVC, note that ZooKeeper persistence is unaffected
+    ##
+    enabled: false
+
+  ## ZooKeeper chart configuration
+  ## https://github.com/bitnami/charts/blob/main/bitnami/zookeeper/values.yaml
+  ##
+  zookeeper:
+    persistence:
+      enabled: true
+
+    fullnameOverride: "zookeeper"
+
+  ## Kafka provisioning
+  ##
+  provisioning:
+    ## @param provisioning.enabled Enable kafka provisioning Job
+    ##
+    enabled: true
+
+    ## @param provisioning.numPartitions Default number of partitions for topics when unspecified
+    ##
+    numPartitions: 1
+
+    ## @param provisioning.replicationFactor Default replication factor for topics when unspecified
+    ##
+    replicationFactor: 1
+
+    ## @param provisioning.topics Kafka topics to provision
+    ## - name: topic-name
+    ##   partitions: 1
+    ##   replicationFactor: 1
+    ##   ## https://kafka.apache.org/documentation/#topicconfigs
+    ##   config:
+    ##     max.message.bytes: 64000
+    ##     flush.messages: 1
+    ##
+    # topics: []
+    topics:
+    - name: KAFKA_AUDITS_TOPIC
+      value: audits
+    - name: KAFKA_LOGS_TOPIC
+      value: logs
+
+    ## @param provisioning.nodeSelector Node labels for pod assignment
+    ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+    ##
+    nodeSelector: {}
+
+    ## @param provisioning.tolerations Tolerations for pod assignment
+    ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+    ##
+    tolerations: []
+
+    ## @param provisioning.extraProvisioningCommands Extra commands to run to provision cluster resources
+    ## - echo "Allow user to consume from any topic"
+    ## - >-
+    ##   /opt/bitnami/kafka/bin/kafka-acls.sh
+    ##   --bootstrap-server $KAFKA_SERVICE
+    ##   --command-config $CLIENT_CONF
+    ##   --add
+    ##   --allow-principal User:user
+    ##   --consumer --topic '*'
+    ## - "/opt/bitnami/kafka/bin/kafka-acls.sh
+    ##      --bootstrap-server $KAFKA_SERVICE
+    ##      --command-config $CLIENT_CONF
+    ##      --list"
+    ##
+    # extraProvisioningCommands: []
+
+    ## @param provisioning.waitForKafka If true use an init container to wait until kafka is ready before starting provisioning
+    ##
+    waitForKafka: true
+
+mongodb:
+  enabled: true
+
+  ## @param fullnameOverride String to fully override mongodb.fullname template
+  ##
+  fullnameOverride: "mongodb"
+  ## MongoDB(&reg;) Authentication parameters
+  ##
+  auth:
+    ## @param auth.enabled Enable authentication
+    ## ref: https://docs.mongodb.com/manual/tutorial/enable-authentication/
+    ##
+    enabled: true
+    ## @param auth.rootUser MongoDB(&reg;) root user
+    ##
+    rootUser: root
+    ## @param auth.rootPassword MongoDB(&reg;) root password
+    ## ref: https://github.com/bitnami/containers/tree/main/bitnami/mongodb#setting-the-root-user-and-password-on-first-run
+    ##
+    rootPassword: mongoDbPas42
+    ## MongoDB(&reg;) custom users and databases
+    ## ref: https://github.com/bitnami/containers/tree/main/bitnami/mongodb#creating-a-user-and-database-on-first-run
+    ## @param auth.usernames List of custom users to be created during the initialization
+    ## @param auth.passwords List of passwords for the custom users set at `auth.usernames`
+    ## @param auth.databases List of custom databases to be created during the initialization
+    ##
+    usernames:
+    - 'mojaloop'
+    passwords:
+    - 'password'
+    databases:
+    - 'mlos'
+    ## @param auth.username DEPRECATED: use `auth.usernames` instead
+    ## @param auth.password DEPRECATED: use `auth.passwords` instead
+    ## @param auth.database DEPRECATED: use `auth.databases` instead
+    username: ""
+    password: ""
+    database: ""
+    ## @param auth.replicaSetKey Key used for authentication in the replicaset (only when `architecture=replicaset`)
+    ##
+    replicaSetKey: ""
+    ## @param auth.existingSecret Existing secret with MongoDB(&reg;) credentials (keys: `mongodb-passwords`, `mongodb-root-password`, `mongodb-metrics-password`, ` mongodb-replica-set-key`)
+    ## NOTE: When it's set the previous parameters are ignored.
+    ##
+    existingSecret: ""
+  ## @section Persistence parameters
+  ##
+
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    ## @param persistence.enabled Enable MongoDB(&reg;) data persistence using PVC
+    ##
+    enabled: false

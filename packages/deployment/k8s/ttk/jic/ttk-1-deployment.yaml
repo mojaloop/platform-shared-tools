@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  creationTimestamp: null
+  labels:
+    mojaloop.service: ttk-1
+    mojaloop.layer: apps
+  name: ttk-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      mojaloop.service: ttk-1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+      creationTimestamp: null
+      labels:
+        mojaloop.service: ttk-1
+        mojaloop.layer: apps
+    spec:
+      containers:
+      - args:
+        - sh
+        - -c
+        - npm start
+        image: mojaloop/ml-testing-toolkit:v15.0.0
+        name: ttk-1
+        ports:
+        - containerPort: 4040
+        - containerPort: 5050
+        resources: {}
+      restartPolicy: Always
+status: {}
