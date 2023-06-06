@@ -1,12 +1,11 @@
 
-# Source: ml-testing-toolkit/charts/ml-testing-toolkit-backend/templates/config.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: testing-toolkit-backend-config-default
+  name: green-bank-backend-config-default
   labels:
-    name: ml-testing-toolkit-backend
-    mojaloop.service: testing-toolkit
+    name: ml-green-bank-backend
+    mojaloop.service: green-bank
     mojaloop.layer: ttk
 data:
   system_config.json: |
@@ -181,13 +180,13 @@ data:
           }
         }
       },
-      "FSPID": "greenbank",
+      "FSPID": "green-bank",
       "GITHUB_CONFIG": {
         "TEST_CASES_REPO_BASE_PATH": "collections/hub",
         "TEST_CASES_REPO_DEFAULT_RELEASE_TAG": "latest",
         "TEST_CASES_REPO_HUB_GP_PATH": "collections/hub/golden_path",
         "TEST_CASES_REPO_HUB_PROVISIONING_PATH": "collections/hub/provisioning",
-        "TEST_CASES_REPO_NAME": "testing-toolkit-test-cases",
+        "TEST_CASES_REPO_NAME": "green-bank-test-cases",
         "TEST_CASES_REPO_OWNER": "mojaloop"
       },
       "HUB_ONLY_MODE": false,
@@ -229,15 +228,15 @@ data:
       "VERSIONING_SUPPORT_ENABLE": true
     }
 ---
-# Source: ml-testing-toolkit/charts/ml-testing-toolkit-backend/templates/config.yaml
+# Source: ml-green-bank/charts/ml-green-bank-backend/templates/config.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: testing-toolkit-backend-config-extra-environments
+  name: green-bank-backend-config-extra-environments
   labels:
-    name: ml-testing-toolkit-backend
+    name: ml-green-bank-backend
     instance: ttk
-    mojaloop.service: testing-toolkit
+    mojaloop.service: green-bank
     mojaloop.layer: ttk
 data:
 ---
@@ -245,25 +244,25 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: testing-toolkit-frontend-config
+  name: green-bank-frontend-config
   labels:
-    name: ml-testing-toolkit-frontend
+    name: ml-green-bank-frontend
     instance: ttk
-    mojaloop.service: testing-toolkit
+    mojaloop.service: green-bank
     mojaloop.layer: ttk
 data:
-  API_BASE_URL: "http://testing-toolkit.local"
+  API_BASE_URL: "http://green-bank.local"
   AUTH_ENABLED: "FALSE"
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: testing-toolkit-backend
+  name: green-bank-backend
   labels:
-    name: ml-testing-toolkit-backend
+    name: ml-green-bank-backend
     instance: ttk
-    mojaloop.service: testing-toolkit
+    mojaloop.service: green-bank
     mojaloop.layer: ttk
   annotations:
 spec:
@@ -277,18 +276,18 @@ spec:
     targetPort: 5050
     name: admin-api
   selector:
-    name: ml-testing-toolkit-backend
+    name: ml-green-bank-backend
     instance: ttk
 ---
-# Source: ml-testing-toolkit/charts/ml-testing-toolkit-frontend/templates/service.yaml
+# Source: ml-green-bank/charts/ml-green-bank-frontend/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: testing-toolkit-frontend
+  name: green-bank-frontend
   labels:
-    name: ml-testing-toolkit-frontend
+    name: ml-green-bank-frontend
     instance: ttk
-    mojaloop.service: testing-toolkit
+    mojaloop.service: green-bank
     mojaloop.layer: ttk
   annotations:
 spec:
@@ -301,38 +300,38 @@ spec:
     protocol: TCP
     nodePort: null
   selector:
-    name: ml-testing-toolkit-frontend
+    name: ml-green-bank-frontend
     instance: ttk
 ---
-# Source: ml-testing-toolkit/charts/ml-testing-toolkit-frontend/templates/deployment.yaml
+# Source: ml-green-bank/charts/ml-green-bank-frontend/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: testing-toolkit-frontend
+  name: green-bank-frontend
   labels:
-    name: ml-testing-toolkit-frontend
+    name: ml-green-bank-frontend
     instance: ttk
-    mojaloop.service: testing-toolkit
+    mojaloop.service: green-bank
     mojaloop.layer: ttk
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: ml-testing-toolkit-frontend
+      name: ml-green-bank-frontend
       instance: ttk
   template:
     metadata:
       labels:
-        name: ml-testing-toolkit-frontend
+        name: ml-green-bank-frontend
         instance: ttk
-        mojaloop.service: testing-toolkit
+        mojaloop.service: green-bank
         mojaloop.layer: ttk
       annotations:
         checksum/config: 405baf6d779398aafbf157b1b8c067a228d656200b906b62ca382cdb83cc96cf
     spec:
       initContainers:
       containers:
-      - name: ml-testing-toolkit-frontend
+      - name: ml-green-bank-frontend
         image: "mojaloop/ml-testing-toolkit-ui:v15.3.0"
         imagePullPolicy: IfNotPresent
         command: ["sh", "/usr/share/nginx/start.sh"]
@@ -340,38 +339,38 @@ spec:
         - containerPort: 6060
         envFrom:
         - configMapRef:
-            name: testing-toolkit-frontend-config
+            name: green-bank-frontend-config
 ---
 
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: testing-toolkit-backend
+  name: green-bank-backend
   labels:
-    name: ml-testing-toolkit-backend
+    name: ml-green-bank-backend
     instance: ttk
-    mojaloop.service: testing-toolkit
+    mojaloop.service: green-bank
     mojaloop.layer: ttk
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: ml-testing-toolkit-backend
+      name: ml-green-bank-backend
       instance: ttk
-  serviceName: testing-toolkit-backend
+  serviceName: green-bank-backend
   template:
     metadata:
       annotations:
         checksum/config: 5c26e6f500eff1c03ac651704fd38f8333b5f3f7d93a56828df7906aa146cee5
       labels:
-        name: ml-testing-toolkit-backend
+        name: ml-green-bank-backend
         instance: ttk
-        mojaloop.service: testing-toolkit
+        mojaloop.service: green-bank
         mojaloop.layer: ttk
     spec:
       initContainers:
       containers:
-      - name: ml-testing-toolkit-backend
+      - name: ml-green-bank-backend
         image: "mojaloop/ml-testing-toolkit:v16.1.1"
         imagePullPolicy: IfNotPresent
         securityContext:
@@ -384,62 +383,62 @@ spec:
         - containerPort: 4040
         - containerPort: 5050
         volumeMounts:
-        - name: testing-toolkit-backend-volume-config-default
+        - name: green-bank-backend-volume-config-default
           mountPath: /opt/default_config
       volumes:
-      - name: testing-toolkit-backend-volume-config-default
+      - name: green-bank-backend-volume-config-default
         configMap:
-          name: testing-toolkit-backend-config-default
+          name: green-bank-backend-config-default
           items:
           - key: system_config.json
             path: system_config.json
           - key: user_config.json
             path: user_config.json
-      - name: testing-toolkit-backend-volume-extra-environments
+      - name: green-bank-backend-volume-extra-environments
         configMap:
-          name: testing-toolkit-backend-config-extra-environments
+          name: green-bank-backend-config-extra-environments
           items:
 ---
-# Source: ml-testing-toolkit/charts/ml-testing-toolkit-backend/templates/ingress.yaml
+# Source: ml-green-bank/charts/ml-green-bank-backend/templates/ingress.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: testing-toolkit-backend
+  name: green-bank-backend
   labels:
-    name: ml-testing-toolkit-backend
+    name: ml-green-bank-backend
     instance: ttk
-    mojaloop.service: testing-toolkit
+    mojaloop.service: green-bank
     mojaloop.layer: ttk
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "8m"
 spec:
   ingressClassName: nginx
   rules:
-  - host: testing-toolkit.local
+  - host: green-bank.local
     http:
       paths:
       - path: /api/
         pathType: ImplementationSpecific
         backend:
           service:
-            name: testing-toolkit-backend
+            name: green-bank-backend
             port:
               number: 5051
       - path: /socket.io/
         pathType: ImplementationSpecific
         backend:
           service:
-            name: testing-toolkit-backend
+            name: green-bank-backend
             port:
               number: 5051
-  - host: testing-toolkit-specapi.local
+  - host: green-bank-specapi.local
     http:
       paths:
       - path: /
         pathType: ImplementationSpecific
         backend:
           service:
-            name: testing-toolkit-backend
+            name: green-bank-backend
             port:
               number: 4041
 ---
@@ -447,24 +446,24 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: testing-toolkit-frontend
+  name: green-bank-frontend
   labels:
-    name: ml-testing-toolkit-frontend
+    name: ml-green-bank-frontend
     instance: ttk
-    mojaloop.service: testing-toolkit
+    mojaloop.service: green-bank
     mojaloop.layer: ttk
   annotations:
 spec:
   ingressClassName: nginx
   rules:
-  - host: testing-toolkit.local
+  - host: green-bank.local
     http:
       paths:
       - path: /
         pathType: ImplementationSpecific
         backend:
           service:
-            name: testing-toolkit-frontend
+            name: green-bank-frontend
             port:
               number: 6061
 
