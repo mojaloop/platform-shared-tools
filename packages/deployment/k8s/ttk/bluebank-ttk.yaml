@@ -136,7 +136,7 @@ data:
   user_config.json: |
     {
       "ADVANCED_FEATURES_ENABLED": true,
-      "CALLBACK_ENDPOINT": "http://localhost:4000",
+      "CALLBACK_ENDPOINT": "http://fspiop-api-svc:4000",
       "CALLBACK_RESOURCE_ENDPOINTS": {
         "enabled": true,
         "endpoints": [
@@ -181,7 +181,7 @@ data:
           }
         }
       },
-      "FSPID": "testingtoolkitdfsp",
+      "FSPID": "bluebank",
       "GITHUB_CONFIG": {
         "TEST_CASES_REPO_BASE_PATH": "collections/hub",
         "TEST_CASES_REPO_DEFAULT_RELEASE_TAG": "latest",

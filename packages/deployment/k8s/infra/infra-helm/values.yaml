@@ -1,13 +1,13 @@
 # Declare global configurations
 global:
-  kibanaEnabled: true
+  kibanaEnabled: false
   # elasticsearch:
   #   service:
   #     name: es01
 
 elasticsearch:
 
-  enabled: true
+  enabled: false
   # fullnameOverride: "elastic"
 
   security:
@@ -95,6 +95,10 @@ kafka:
       value: audits
     - name: KAFKA_LOGS_TOPIC
       value: logs
+    - name: AccountLookupBcRequests
+      value: AccountLookupBcRequests
+    - name: AccountLookupBcEvents
+      value: AccountLookupBcEvents
 
     ## @param provisioning.nodeSelector Node labels for pod assignment
     ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
