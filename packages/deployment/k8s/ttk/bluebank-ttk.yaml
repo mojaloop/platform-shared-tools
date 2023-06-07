@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: blue-bank-backend-config-default
+  name: bluebank-backend-config-default
   labels:
-    name: ml-blue-bank-backend
-    mojaloop.service: blue-bank
+    name: ml-bluebank-backend
+    mojaloop.service: bluebank
     mojaloop.layer: ttk
 data:
   system_config.json: |
@@ -179,13 +179,13 @@ data:
           }
         }
       },
-      "FSPID": "blue-bank",
+      "FSPID": "bluebank",
       "GITHUB_CONFIG": {
         "TEST_CASES_REPO_BASE_PATH": "collections/hub",
         "TEST_CASES_REPO_DEFAULT_RELEASE_TAG": "latest",
         "TEST_CASES_REPO_HUB_GP_PATH": "collections/hub/golden_path",
         "TEST_CASES_REPO_HUB_PROVISIONING_PATH": "collections/hub/provisioning",
-        "TEST_CASES_REPO_NAME": "blue-bank-test-cases",
+        "TEST_CASES_REPO_NAME": "bluebank-test-cases",
         "TEST_CASES_REPO_OWNER": "mojaloop"
       },
       "HUB_ONLY_MODE": false,
@@ -231,11 +231,11 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: blue-bank-backend-config-extra-environments
+  name: bluebank-backend-config-extra-environments
   labels:
-    name: ml-blue-bank-backend
+    name: ml-bluebank-backend
     instance: ttk
-    mojaloop.service: blue-bank
+    mojaloop.service: bluebank
     mojaloop.layer: ttk
 data:
 ---
@@ -243,25 +243,25 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: blue-bank-frontend-config
+  name: bluebank-frontend-config
   labels:
-    name: ml-blue-bank-frontend
+    name: ml-bluebank-frontend
     instance: ttk
-    mojaloop.service: blue-bank
+    mojaloop.service: bluebank
     mojaloop.layer: ttk
 data:
-  API_BASE_URL: "http://blue-bank.local"
+  API_BASE_URL: "http://bluebank.local"
   AUTH_ENABLED: "FALSE"
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: blue-bank-backend
+  name: bluebank-backend
   labels:
-    name: ml-blue-bank-backend
+    name: ml-bluebank-backend
     instance: ttk
-    mojaloop.service: blue-bank
+    mojaloop.service: bluebank
     mojaloop.layer: ttk
   annotations:
 spec:
@@ -275,18 +275,18 @@ spec:
     targetPort: 5050
     name: admin-api
   selector:
-    name: ml-blue-bank-backend
+    name: ml-bluebank-backend
     instance: ttk
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: blue-bank-frontend
+  name: bluebank-frontend
   labels:
-    name: ml-blue-bank-frontend
+    name: ml-bluebank-frontend
     instance: ttk
-    mojaloop.service: blue-bank
+    mojaloop.service: bluebank
     mojaloop.layer: ttk
   annotations:
 spec:
@@ -299,38 +299,38 @@ spec:
     protocol: TCP
     nodePort: null
   selector:
-    name: ml-blue-bank-frontend
+    name: ml-bluebank-frontend
     instance: ttk
 ---
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: blue-bank-frontend
+  name: bluebank-frontend
   labels:
-    name: ml-blue-bank-frontend
+    name: ml-bluebank-frontend
     instance: ttk
-    mojaloop.service: blue-bank
+    mojaloop.service: bluebank
     mojaloop.layer: ttk
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: ml-blue-bank-frontend
+      name: ml-bluebank-frontend
       instance: ttk
   template:
     metadata:
       labels:
-        name: ml-blue-bank-frontend
+        name: ml-bluebank-frontend
         instance: ttk
-        mojaloop.service: blue-bank
+        mojaloop.service: bluebank
         mojaloop.layer: ttk
       annotations:
         checksum/config: 405baf6d779398aafbf157b1b8c067a228d656200b906b62ca382cdb83cc96cf
     spec:
       initContainers:
       containers:
-      - name: ml-blue-bank-frontend
+      - name: ml-bluebank-frontend
         image: "mojaloop/ml-testing-toolkit-ui:v15.3.0"
         imagePullPolicy: IfNotPresent
         command: ["sh", "/usr/share/nginx/start.sh"]
@@ -338,38 +338,38 @@ spec:
         - containerPort: 6060
         envFrom:
         - configMapRef:
-            name: blue-bank-frontend-config
+            name: bluebank-frontend-config
 ---
 
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: blue-bank-backend
+  name: bluebank-backend
   labels:
-    name: ml-blue-bank-backend
+    name: ml-bluebank-backend
     instance: ttk
-    mojaloop.service: blue-bank
+    mojaloop.service: bluebank
     mojaloop.layer: ttk
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: ml-blue-bank-backend
+      name: ml-bluebank-backend
       instance: ttk
-  serviceName: blue-bank-backend
+  serviceName: bluebank-backend
   template:
     metadata:
       annotations:
         checksum/config: 5c26e6f500eff1c03ac651704fd38f8333b5f3f7d93a56828df7906aa146cee5
       labels:
-        name: ml-blue-bank-backend
+        name: ml-bluebank-backend
         instance: ttk
-        mojaloop.service: blue-bank
+        mojaloop.service: bluebank
         mojaloop.layer: ttk
     spec:
       initContainers:
       containers:
-      - name: ml-blue-bank-backend
+      - name: ml-bluebank-backend
         image: "mojaloop/ml-testing-toolkit:v16.1.1"
         imagePullPolicy: IfNotPresent
         securityContext:
@@ -382,62 +382,62 @@ spec:
         - containerPort: 4040
         - containerPort: 5050
         volumeMounts:
-        - name: blue-bank-backend-volume-config-default
+        - name: bluebank-backend-volume-config-default
           mountPath: /opt/default_config
       volumes:
-      - name: blue-bank-backend-volume-config-default
+      - name: bluebank-backend-volume-config-default
         configMap:
-          name: blue-bank-backend-config-default
+          name: bluebank-backend-config-default
           items:
           - key: system_config.json
             path: system_config.json
           - key: user_config.json
             path: user_config.json
-      - name: blue-bank-backend-volume-extra-environments
+      - name: bluebank-backend-volume-extra-environments
         configMap:
-          name: blue-bank-backend-config-extra-environments
+          name: bluebank-backend-config-extra-environments
           items:
 ---
 
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: blue-bank-backend
+  name: bluebank-backend
   labels:
-    name: ml-blue-bank-backend
+    name: ml-bluebank-backend
     instance: ttk
-    mojaloop.service: blue-bank
+    mojaloop.service: bluebank
     mojaloop.layer: ttk
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "8m"
 spec:
   ingressClassName: nginx
   rules:
-  - host: blue-bank.local
+  - host: bluebank.local
     http:
       paths:
       - path: /api/
         pathType: ImplementationSpecific
         backend:
           service:
-            name: blue-bank-backend
+            name: bluebank-backend
             port:
               number: 5050
       - path: /socket.io/
         pathType: ImplementationSpecific
         backend:
           service:
-            name: blue-bank-backend
+            name: bluebank-backend
             port:
               number: 5050
-  - host: blue-bank-specapi.local
+  - host: bluebank-specapi.local
     http:
       paths:
       - path: /
         pathType: ImplementationSpecific
         backend:
           service:
-            name: blue-bank-backend
+            name: bluebank-backend
             port:
               number: 4040
 ---
@@ -445,24 +445,24 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: blue-bank-frontend
+  name: bluebank-frontend
   labels:
-    name: ml-blue-bank-frontend
+    name: ml-bluebank-frontend
     instance: ttk
-    mojaloop.service: blue-bank
+    mojaloop.service: bluebank
     mojaloop.layer: ttk
   annotations:
 spec:
   ingressClassName: nginx
   rules:
-  - host: blue-bank.local
+  - host: bluebank.local
     http:
       paths:
       - path: /
         pathType: ImplementationSpecific
         backend:
           service:
-            name: blue-bank-frontend
+            name: bluebank-frontend
             port:
               number: 6060
 
