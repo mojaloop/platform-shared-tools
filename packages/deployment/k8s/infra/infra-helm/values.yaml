@@ -41,7 +41,6 @@ elasticsearch:
     enabled: true
     # hostname: es01
 
-
 ## Reference: https://github.com/bitnami/charts/blob/main/bitnami/kafka/values.yaml
 kafka:
   enabled: true
@@ -99,6 +98,28 @@ kafka:
       value: AccountLookupBcRequests
     - name: AccountLookupBcEvents
       value: AccountLookupBcEvents
+    - name: AccountLookupBcResponses
+      value: AccountLookupBcResponses
+    - name: OperatorBcErrors
+      value: OperatorBcErrors
+    - name: QuotingBcErrors
+      value: QuotingBcErrors
+    - name: QuotingBcEvents
+      value: QuotingBcEvents
+    - name: QuotingBcRequests
+      value: QuotingBcRequests
+    - name: SettlementsBcRequests
+      value: SettlementsBcRequests
+    - name: TransfersBcErrors
+      value: TransfersBcErrors
+    - name: TransfersBcEvents
+      value: TransfersBcEvents
+    - name: TransfersBcRequests
+      value: TransfersBcRequests
+
+
+
+
 
     ## @param provisioning.nodeSelector Node labels for pod assignment
     ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -132,6 +153,9 @@ kafka:
 
 mongodb:
   enabled: true
+
+  image:
+    tag: 5.0.18-debian-11-r8
 
   ## @param fullnameOverride String to fully override mongodb.fullname template
   ##
@@ -185,3 +209,15 @@ mongodb:
     ## @param persistence.enabled Enable MongoDB(&reg;) data persistence using PVC
     ##
     enabled: false
+
+mongo-express:
+  enabled: true
+
+  ingress:
+    enabled: true
+
+  mongodbEnableAdmin: true
+  mongodbAdminPassword: mongoDbPas42
+
+redpanda:
+  enabled: false

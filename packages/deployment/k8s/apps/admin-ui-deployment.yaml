@@ -22,10 +22,10 @@ spec:
         mojaloop.layer: apps
     spec:
       containers:
-        - image: mojaloop/vnext-admin-ui-svc:0.1.8
-          name: admin-ui
-          ports:
-            - containerPort: 4200
-          resources: {}
+      - image: mojaloop/vnext-admin-ui-svc:alpha-latest
+        name: admin-ui
+        ports:
+        - containerPort: 4200
+        resources: {}
       restartPolicy: Always
 status: {}
