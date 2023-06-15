@@ -215,6 +215,7 @@ mongo-express:
 
   ingress:
     enabled: true
+    ingressClassName: nginx
 
   mongodbEnableAdmin: true
   mongodbAdminPassword: mongoDbPas42
