@@ -124,5 +124,19 @@ mongo-express:
 
 # https://artifacthub.io/packages/helm/redpanda-data/console?modal=values
 # redpanda kakfa console config 
-redpanda:
+console:
   enabled: true
+
+  ingress:
+    enabled: true 
+    className: nginx
+    hosts:
+      - host: redpanda-console.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+
+  config:
+    kafka: 
+      brokers: 
+        - kafka:19092
