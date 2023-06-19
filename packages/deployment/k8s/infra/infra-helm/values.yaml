@@ -1,9 +1,6 @@
 # Declare global configurations
 global:
   kibanaEnabled: false
-  # elasticsearch:
-  #   service:
-  #     name: es01
 
 elasticsearch:
   enabled: false
@@ -124,8 +121,16 @@ mongo-express:
 
 # https://artifacthub.io/packages/helm/redpanda-data/console?modal=values
 # redpanda kakfa console config 
-console:
+
+redpanda-console:
   enabled: true
+  fullnameOverride: rpconsole
+
+  console:
+    config:
+      kafka:
+        brokers:
+          - kafka:9092
 
   ingress:
     enabled: true 
@@ -136,7 +141,3 @@ console:
           - path: /
             pathType: ImplementationSpecific
 
-  config:
-    kafka: 
-      brokers: 
-        - kafka:19092
