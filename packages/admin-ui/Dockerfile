@@ -5,7 +5,7 @@ FROM node:18.13-alpine as builder
 WORKDIR /app
 
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
-COPY package*.json ./
+COPY packages/admin-ui/package*.json ./
 
 # If you are building your code for production
 #RUN npm ci --only=production
@@ -13,13 +13,14 @@ RUN npm install
 
 ########################################
 # Copy code and build
-#
-COPY .browserslistrc ./
-COPY tsconfig.json ./
-COPY tsconfig.app.json ./
-COPY proxy.conf.json ./
-COPY angular.json ./
-COPY src ./src
+# NOTE: source files are in reference to the monorepo root
+
+COPY packages/admin-ui/.browserslistrc ./
+COPY packages/admin-ui/tsconfig.json ./
+COPY packages/admin-ui/tsconfig.app.json ./
+COPY packages/admin-ui/proxy.conf.json ./
+COPY packages/admin-ui/angular.json ./
+COPY packages/admin-ui/src ./src
 
 # build
 RUN npm run build
@@ -27,7 +28,7 @@ RUN npm run build
 ########################################
 FROM nginx:latest
 
-COPY nginx.default.conf /etc/nginx/conf.d/default.conf
+COPY packages/admin-ui/nginx.default.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/dist/vNextAdminUiApp /usr/share/nginx/html
 
 RUN ls -la /usr/share/nginx/html
