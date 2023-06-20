@@ -23,7 +23,7 @@
     "lint:fix": "npm -ws --if-present run lint:fix",
     "test": "npm run test:unit",
     "test:unit": "npm -ws --if-present run test:unit",
-    "posttest": "(test -f ./coverage/ || mkdir ./coverage) && npm run coverage:merge && npm run coverage:gen-report",
+    "posttest": "npm run coverage:merge && npm run coverage:gen-report",
     "coverage:merge": "nyc merge ./coverage/ ./coverage/coverage.json",
     "coverage:gen-report": "nyc report --reporter=lcov --reporter=text --temp-dir=./coverage",
     "test:integration": "jest",

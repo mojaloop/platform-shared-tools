@@ -91,6 +91,9 @@ jobs:
       - attach_workspace:
           at: *workingDirVar
       - run:
+          name: Ensure coverage directory exists (FIXME find better way)
+          command: mkdir -p ./coverage
+      - run:
           name: Merge json coverage files
           command: npm run coverage:merge
       - run:
