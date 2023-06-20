@@ -12,7 +12,7 @@ COPY packages/admin-ui/package*.json ./
 RUN npm install
 
 ########################################
-# Copy code and build
+# Copy only what matters and build
 # NOTE: source files are in reference to the monorepo root
 
 COPY packages/admin-ui/.browserslistrc ./
