@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/vnext-admin-ui-svc",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "scripts": {
     "ng": "NODE_OPTIONS=--openssl-legacy-provider ng",
     "start": "NODE_OPTIONS=--openssl-legacy-provider ng serve --proxy-config proxy.conf.json --no-live-reload",
@@ -9,7 +9,7 @@
     "build:prod": "NODE_OPTIONS=--openssl-legacy-provider ng build",
     "watch": "NODE_OPTIONS=--openssl-legacy-provider ng build --watch --configuration development",
     "test": "NODE_OPTIONS=--openssl-legacy-provider ng test",
-  	"docker:build": "echo 'NOTE: use circleci CI/CD pipeline'"
+    "docker:build": "echo 'NOTE: use circleci CI/CD pipeline'"
   },
   "private": true,
   "mojaloop": {
