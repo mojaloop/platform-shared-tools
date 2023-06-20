@@ -1,0 +1,59 @@
+@startuml
+
+title Mojaloop vNext Solution Space - Bounded Context
+
+participant "Transfers BC" as ext_transfers_bc
+note over ext_transfers_bc
+    //TransferCommittedFulfilled//
+    gRPC client for Settlement
+end note
+
+box Settlements BC #F9FFF9
+	participant "Settlements SVC" as sbc_grpc #D5E8D4
+    note over sbc_grpc
+        gRPC interface 
+        for Settlement
+    end note
+	participant "Settlements BC\nApp Logic" as sbc_app_logic #EDC54D
+	database "Settlements-Database" as sbc_db #DAE8FC
+end box
+
+box Accounts & Balances BC #FFFFF9
+    participant "A&B SVC" as abbc_grpc #D5E8D4
+    database "A&B-Ledger" as abbc_tigerbeetle #DAE8FC
+    note over abbc_grpc
+        gRPC interface for 
+        Accounts & Balances
+    end note
+    note over abbc_tigerbeetle
+        TigerBeetle 
+        enabled/disabled
+    end note
+end box
+
+group 1. Create Settlement Transfer - Transfers BC
+autonumber
+    ext_transfers_bc <--> ext_transfers_bc : Transfer fulfil occurred
+    ext_transfers_bc <--> ext_transfers_bc : Obtain Settlement model\nvia //settlement-model-lib//
+    ext_transfers_bc -> sbc_grpc : At time of fulfil://createSettlementTransfer//\n**//ISettlementTransferDto//**
+    sbc_grpc --> sbc_app_logic : Invoke App layer
+end
+
+group 2. Settlement - App Logic
+autonumber
+    sbc_app_logic <--> sbc_app_logic: Settlement Transfer event triggered
+    sbc_app_logic --> sbc_app_logic : Validate settlement Transfer data
+    sbc_app_logic <--> sbc_db : Fetch & cache settlement config\n**Platform Config BC**
+    sbc_app_logic <--> sbc_db : **Determine batch** using Settlement Transfer data.\n//Create new batch if no OPEN batch available//
+    sbc_app_logic <-> abbc_grpc : Obtain **Settlement accounts** using Participant account
+    abbc_grpc <--> abbc_tigerbeetle : Create account, if none exists
+    abbc_grpc -> sbc_app_logic : Return **Account** creation info
+    sbc_app_logic -> abbc_grpc: Create Settlement Transfer
+    abbc_grpc <-> abbc_tigerbeetle: Create Transfer: update accounts \nto DR payer & CR payee
+    abbc_grpc -> sbc_app_logic : Return **Transfer** creation info
+    sbc_app_logic <--> sbc_app_logic: Prepare response data
+    sbc_app_logic --> sbc_grpc: Return **Transfer/** \n**Account** data
+    sbc_grpc -> ext_transfers_bc: Return **Transfer/** \n**Account** data
+end
+
+@enduml

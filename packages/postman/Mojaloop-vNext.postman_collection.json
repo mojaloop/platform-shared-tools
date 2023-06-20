@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "83f13c64-ba14-4f57-a004-74babe8c06c2",
+		"_postman_id": "94b315c2-37d8-4c22-b42c-2ba0852e51e5",
 		"name": "Mojaloop-vNext",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -42,14 +42,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3100/globalConfigSets/dev",
+							"raw": "localhost:3100/globalConfigSets/dev/",
 							"host": [
 								"localhost"
 							],
 							"port": "3100",
 							"path": [
 								"globalConfigSets",
-								"dev"
+								"dev",
+								""
 							],
 							"query": [
 								{
@@ -68,7 +69,7 @@
 					"response": []
 				},
 				{
-					"name": "Global - patch global configset param",
+					"name": "Global - change global configset",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -82,28 +83,27 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3100/globalConfigSets/dev/setvalues",
+							"raw": "localhost:3100/globalConfigSets/dev",
 							"host": [
 								"localhost"
 							],
 							"port": "3100",
 							"path": [
 								"globalConfigSets",
-								"dev",
-								"setvalues"
+								"dev"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "App - bootstrap app configsets",
+					"name": "BoundedContext - bootstrap BC configsets",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"environmentName\": \"dev\",\n    \"boundedContextName\": \"test-bc\",\n    \"applicationName\": \"app1\",\n    \"applicationVersion\": \"0.1.2\",\n    \"schemaVersion\": \"0.1.1\",\n    \"parameters\": [\n        {\n            \"name\": \"boolParam1\",\n            \"type\": \"BOOL\",\n            \"defaultValue\": true,\n            \"description\": \"description bool param 1 - v2\"\n            \n        },\n        {\n            \"name\": \"stringParam1\",\n            \"type\": \"STRING\",\n            \"defaultValue\": \"default val\",\n            \"description\": \"description string param 1 - v2\"\n        },\n        {\n            \"name\": \"intParam1\",\n            \"type\": \"INT_NUMBER\",\n            \"defaultValue\": 5,\n            \"description\": \"description int number param 1 - v2\"\n        },\n        {\n            \"name\": \"floatParam1\",\n            \"type\": \"FLOAT_NUMBER\",\n            \"defaultValue\": 3.1415,\n            \"description\": \"description float number param 1 - v2\"\n        }\n    ],\n    \"featureFlags\": [\n        {\n            \"name\": \"featureFlag1\",\n            \"defaultValue\": false,\n            \"description\": \"description feature flag 1 - v2\"\n        }\n    ],\n    \"secrets\": [\n        {\n            \"name\": \"secret1\",\n            \"defaultValue\": \"password\",\n            \"description\": \"description secret 1 - v2\"\n        }\n    ]\n}",
+							"raw": "{\n    \"environmentName\": \"dev\",\n    \"boundedContextName\": \"test-bc\",\n    \"schemaVersion\": \"0.1.1\",\n    \"parameters\": [\n        {\n            \"name\": \"boolParam1\",\n            \"type\": \"BOOL\",\n            \"defaultValue\": true,\n            \"description\": \"description bool param 1 - v2\"\n            \n        },\n        {\n            \"name\": \"stringParam1\",\n            \"type\": \"STRING\",\n            \"defaultValue\": \"default val\",\n            \"description\": \"description string param 1 - v2\"\n        },\n        {\n            \"name\": \"intParam1\",\n            \"type\": \"INT_NUMBER\",\n            \"defaultValue\": 5,\n            \"description\": \"description int number param 1 - v2\"\n        },\n        {\n            \"name\": \"floatParam1\",\n            \"type\": \"FLOAT_NUMBER\",\n            \"defaultValue\": 3.1415,\n            \"description\": \"description float number param 1 - v2\"\n        }\n    ],\n    \"featureFlags\": [\n        {\n            \"name\": \"featureFlag1\",\n            \"defaultValue\": false,\n            \"description\": \"description feature flag 1 - v2\"\n        }\n    ],\n    \"secrets\": [\n        {\n            \"name\": \"secret1\",\n            \"defaultValue\": \"password\",\n            \"description\": \"description secret 1 - v2\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -111,13 +111,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3100/appConfigSets/bootstrap",
+							"raw": "localhost:3100/bcConfigSets/bootstrap",
 							"host": [
 								"localhost"
 							],
 							"port": "3100",
 							"path": [
-								"appConfigSets",
+								"bcConfigSets",
 								"bootstrap"
 							]
 						}
@@ -125,20 +125,20 @@
 					"response": []
 				},
 				{
-					"name": "App - get app configset",
+					"name": "BoundedContext - get BC configset",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3100/appConfigSets/dev/",
+							"raw": "localhost:3100/bcConfigSets/dev/consolebc",
 							"host": [
 								"localhost"
 							],
 							"port": "3100",
 							"path": [
-								"appConfigSets",
+								"bcConfigSets",
 								"dev",
-								""
+								"consolebc"
 							],
 							"query": [
 								{
@@ -152,13 +152,13 @@
 					"response": []
 				},
 				{
-					"name": "App - patch app configset param",
+					"name": "BoundedContext- change BC configset param",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"applicationVersion\": \"0.0.1\",\n    \"schemaVersion\": \"0.0.1\",\n    \"newValues\":[{\n        \"type\": \"parameter\",\n        \"name\": \"service-http-port\",\n        \"value\":4001\n    }]\n}",
+							"raw": "{\n    \"schemaVersion\": \"0.9\",\n    \"iterationNumber\": 0,\n    \"newValues\":[{\n        \"type\": \"parameter\",\n        \"name\": \"param1\",\n        \"value\":\"new 1\"\n    }]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -166,17 +166,15 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3100/appConfigSets/dev/typescript-bc-template/example-svc/setvalues",
+							"raw": "localhost:3100/bcConfigSets/dev/consolebc",
 							"host": [
 								"localhost"
 							],
 							"port": "3100",
 							"path": [
-								"appConfigSets",
+								"bcConfigSets",
 								"dev",
-								"typescript-bc-template",
-								"example-svc",
-								"setvalues"
+								"consolebc"
 							]
 						}
 					},
@@ -232,7 +230,7 @@
 							"response": []
 						},
 						{
-							"name": "get token / user login",
+							"name": "login/token",
 							"request": {
 								"auth": {
 									"type": "noauth"
@@ -266,91 +264,13 @@
 										},
 										{
 											"key": "username",
-											"value": "level_1_op",
-											"type": "default"
-										},
-										{
-											"key": "password",
-											"value": "pass",
-											"type": "default"
-										},
-										{
-											"key": "audience",
-											"value": "mojaloop.vnext",
-											"type": "default",
-											"disabled": true
-										},
-										{
-											"key": "scope",
-											"value": "my_scope",
-											"type": "default",
-											"disabled": true
-										}
-									]
-								},
-								"url": {
-									"raw": "localhost:3201/token",
-									"host": [
-										"localhost"
-									],
-									"port": "3201",
-									"path": [
-										"token"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "get token / app login",
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "POST",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "",
-										"type": "default",
-										"disabled": true
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "grant_type",
-											"value": "password",
-											"type": "default",
-											"disabled": true
-										},
-										{
-											"key": "grant_type",
-											"value": "client_credentials",
-											"type": "default"
-										},
-										{
-											"key": "client_id",
-											"value": "participants-svc",
-											"type": "default"
-										},
-										{
-											"key": "client_secret",
-											"value": "secretPass1",
-											"type": "default"
-										},
-										{
-											"key": "username",
 											"value": "user",
-											"type": "default",
-											"disabled": true
+											"type": "default"
 										},
 										{
 											"key": "password",
 											"value": "superPass",
-											"type": "default",
-											"disabled": true
+											"type": "default"
 										},
 										{
 											"key": "audience",
@@ -742,7 +662,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3010/participants/1ee075e7-2b42-4667-b56b-c214fe25b73b",
+							"raw": "http://localhost:3010/participants/hub/accountsap.",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -750,7 +670,8 @@
 							"port": "3010",
 							"path": [
 								"participants",
-								"1ee075e7-2b42-4667-b56b-c214fe25b73b"
+								"hub",
+								"accountsap."
 							]
 						}
 					},
@@ -763,7 +684,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik94cUxMbDlRdUVuaUNGTlpLblVpSkdTWHV6MGhRc0gyUHBiWXdsQW4xUEUifQ.eyJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzZWN1cml0eS1iYy11aSIsInJvbGVzIjpbIjNmMmVkOWJlLTc4MTMtNGYxYi1iYjEyLWE2NWExODViMTY5YiJdLCJpYXQiOjE2NjUzNjQxMDEsImV4cCI6MTY2NTM2NzcwMSwiYXVkIjoibW9qYWxvb3Audm5leHQuZGVmYXVsdF9hdWRpZW5jZSIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzIwMS8iLCJzdWIiOiJ1c2VyOjphZG1pbiIsImp0aSI6IjQyYWY5ZmVlLTJhNWEtNDYwYi1hNmFkLTY1Y2EyNzcwODhiZCJ9.Pr3b_jQ6Skc1k5QZViO61QV3rsIRj6aNpv9AyypIa649sG1rcrUSmQ2JEECF7t5Pvaad9J6yK4vmPBrk6JzU-N31olxqnyYiwLEQdJxk4NkNphIPWu9c9xiruSEWyxpcar746Z1QTtLKoLTVeFo3g1OaGCGte4GcjCFysfnlQfB_sHiYIOXZ5K3OVLgSUZN-lLHTJq8eOT2Uef0FHu35jQ91ygTFSfRRsmfTCdOgo2rI0dD8hjZDMvqDd3HYjuUSMAFzk7egVSTYQ2c0YVG-WzyIpTHFUDmfeygT1VDodgVMm88LZcYWbZQo3GoPeSYicbITvyHUZvtvyNkFZqlxlQ",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik94cUxMbDlRdUVuaUNGTlpLblVpSkdTWHV6MGhRc0gyUHBiWXdsQW4xUEUifQ.eyJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzZWN1cml0eS1iYy11aSIsInJvbGVzIjpbIjNmMmVkOWJlLTc4MTMtNGYxYi1iYjEyLWE2NWExODViMTY5YiJdLCJpYXQiOjE2NzMyOTQzNTMsImV4cCI6MTY3Mzg5OTE1MywiYXVkIjoibW9qYWxvb3Audm5leHQuZGVmYXVsdF9hdWRpZW5jZSIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzIwMS8iLCJzdWIiOiJ1c2VyOjp1c2VyIiwianRpIjoiZmU1MWExMmQtZjY0YS00ZTAzLTg2NmYtODIwYjIzNDU3Y2RlIn0.HlKKTliEsFi_PhmgjbtqgdGr3gpjSka4V0dxVjnzpSwBljHs6cnpckkRVXpR44o5Eb_aai465Ld1YmLF1_0rckuIWCEEmhEn2aUrf7IvRhDYgJ0wPIj4LSjFKEBgVM_FKOVw2uIRBsLmoNmENZ03QkAZTIHjcLDkEdoUhmznJ4Y6Js5hvA6XRy65G2OgA-djgQ3wUzLbKAh3GF67l0DRPhAH_uNPBxhd51nqN9jCff_hT_glxpnaBH5L2acX2efpd9nwQVBAP5p3mF0BRttd5QdzHAFff94_23YBOfLnQTmmbYMNPNJAsXnEjc__8U_Pk22m0WjNlmkRJmTx7ohWXQ",
 								"type": "default"
 							}
 						],
@@ -849,6 +770,10 @@
 		},
 		{
 			"name": "InteropAPI - FSPIOP",
+			"item": []
+		},
+		{
+			"name": "InteropAPI - FSPIOP",
 			"item": [
 				{
 					"name": "Account Lookup",
@@ -904,7 +829,7 @@
 									}
 								],
 								"url": {
-									"raw": "http://localhost:4000/parties/MSISDN/111",
+									"raw": "http://localhost:4000/parties/MSISDN/1",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -913,7 +838,7 @@
 									"path": [
 										"parties",
 										"MSISDN",
-										"111"
+										"1"
 									]
 								}
 							},
@@ -1388,6 +1313,133 @@
 								"description": "The HTTP request GET /participants/<Type>/<ID> (or GET /participants/<Type>/<ID>/<SubId>) is used to find out in which FSP the requested Party, defined by <Type>, <ID> and optionally <SubId>, is located (for example, GET /participants/MSISDN/123456789, or GET /participants/BUSINESS/shoecompany/employee1)."
 							},
 							"response": []
+						},
+						{
+							"name": "Disassociate Participant",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"fspId\":\"ze3\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3030/remote-oracle/participants/banco/activo",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3030",
+									"path": [
+										"remote-oracle",
+										"participants",
+										"banco",
+										"activo"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Associate Participant",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"fspId\":\"ze3\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3030/remote-oracle/participants/banco/activo",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3030",
+									"path": [
+										"remote-oracle",
+										"participants",
+										"banco",
+										"activo"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Associate Participant Copy",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"fspId\":\"ze3\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3030/remote-oracle/participants/banco/activo",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3030",
+									"path": [
+										"remote-oracle",
+										"participants",
+										"banco",
+										"activo"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetParticipantFspId",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"fspId\":\"ze3\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3030/remote-oracle/participants/banco/activo",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3030",
+									"path": [
+										"remote-oracle",
+										"participants",
+										"banco",
+										"activo"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				}
@@ -1396,6 +1448,115 @@
 		{
 			"name": "AccountLookup BC",
 			"item": [
+				{
+					"name": "Oracle Remote Tests",
+					"item": [
+						{
+							"name": "AssociateParticipant",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"fspId\":\"ze3\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3031/remote-oracle/participants/MSISDN/938800602",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3031",
+									"path": [
+										"remote-oracle",
+										"participants",
+										"MSISDN",
+										"938800602"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "HealthCheck",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3031/remote-oracle/health",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3031",
+									"path": [
+										"remote-oracle",
+										"health"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetParticipantFspId",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3031/remote-oracle/participants/MSISDN/938800602",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3031",
+									"path": [
+										"remote-oracle",
+										"participants",
+										"MSISDN",
+										"938800602"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DisassociateParticipant",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"fspId\":\"ze3\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3031/remote-oracle/participants/banco/activo",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3031",
+									"path": [
+										"remote-oracle",
+										"participants",
+										"banco",
+										"activo"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
 				{
 					"name": "GetAllOracles",
 					"request": {
@@ -1511,6 +1672,1111 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Quoting BC",
+			"item": [
+				{
+					"name": "Add Quote",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/vnd.interoperability.parties+json;version=1.0",
+								"type": "text"
+							},
+							{
+								"key": "content-type",
+								"value": "application/vnd.interoperability.parties+json;version=1.0",
+								"type": "text"
+							},
+							{
+								"key": "date",
+								"value": "randomdate",
+								"type": "text"
+							},
+							{
+								"key": "x-forwarded-for",
+								"value": "string",
+								"type": "text"
+							},
+							{
+								"key": "fspiop-source",
+								"value": "greenbank",
+								"type": "text"
+							},
+							{
+								"key": "fspiop-destination",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "fspiop-encryption",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "fspiop-signature",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "fspiop-uri",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "fspiop-http-method",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"quoteId\": \"{{$guid}}\",\r\n    \"transactionId\": \"9f5d9784-3a57-5865-9aa0-7dde77915481\",\r\n    \"payee\": {\r\n        \"partyIdInfo\": {\r\n            \"partyIdType\": \"MSISDN\",\r\n            \"partyIdentifier\": \"blue_acc_1\",\r\n            \"fspId\": \"bluebank\"\r\n        }\r\n    },\r\n    \"payer\": {\r\n        \"partyIdInfo\": {\r\n            \"partyIdType\": \"MSISDN\",\r\n            \"partyIdentifier\": \"green_acc_1\",\r\n            \"fspId\": \"greenbank\"\r\n        }\r\n    },\r\n    \"amountType\": \"SEND\",\r\n    \"amount\": {\r\n        \"currency\": \"EUR\",\r\n        \"amount\": \"10\"\r\n    },\r\n    \"transactionType\": {\r\n        \"scenario\": \"DEPOSIT\",\r\n        \"initiator\": \"PAYER\",\r\n        \"initiatorType\": \"BUSINESS\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/quotes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"quotes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add BulkQuote",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/vnd.interoperability.parties+json;version=1.0",
+								"type": "text"
+							},
+							{
+								"key": "content-type",
+								"value": "application/vnd.interoperability.parties+json;version=1.0",
+								"type": "text"
+							},
+							{
+								"key": "date",
+								"value": "randomdate",
+								"type": "text"
+							},
+							{
+								"key": "x-forwarded-for",
+								"value": "string",
+								"type": "text"
+							},
+							{
+								"key": "fspiop-source",
+								"value": "Greenbank",
+								"type": "text"
+							},
+							{
+								"key": "fspiop-destination",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "fspiop-encryption",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "fspiop-signature",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "fspiop-uri",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "fspiop-http-method",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bulkQuoteId\": \"9943fdbe-5dea-3abd-a210-3780e7f2f1f4\",\r\n    \"geoCode\": {\r\n        \"latitude\": \"+45.4215\",\r\n        \"longitude\": \"+75.6972\"\r\n    },\r\n    \"expiration\": \"2023-02-10T12:48:59.398Z\",\r\n    \"individualQuotes\": [\r\n        {\r\n            \"quoteId\": \"5243fdba-5dea-3abd-a210-3780e7f2f1f4\",\r\n            \"transactionId\": \"7f5d9784-3a57-5865-9aa0-7dde7791548a\",\r\n            \"payee\": {\r\n                \"partyIdInfo\": {\r\n                    \"partyIdType\": \"MSISDN\",\r\n                    \"partyIdentifier\": \"1\",\r\n                    \"fspId\": \"Greenbank\"\r\n                }\r\n            },\r\n            \"amountType\": \"SEND\",\r\n            \"amount\": {\r\n                \"currency\": \"EUR\",\r\n                \"amount\": \"1\"\r\n            },\r\n            \"transactionType\": {\r\n                \"scenario\": \"DEPOSIT\",\r\n                \"initiator\": \"PAYER\",\r\n                \"initiatorType\": \"BUSINESS\"\r\n            }\r\n        },\r\n        {\r\n            \"quoteId\": \"6243fdba-5dea-3abd-a210-3780e7f2f1f4\",\r\n            \"transactionId\": \"8f5d9784-3a57-5865-9aa0-7dde7791548a\",\r\n            \"payee\": {\r\n                \"partyIdInfo\": {\r\n                    \"partyIdType\": \"MSISDN\",\r\n                    \"partyIdentifier\": \"1\",\r\n                    \"fspId\": \"Greenbank\"\r\n                }\r\n            },\r\n            \"amountType\": \"SEND\",\r\n            \"amount\": {\r\n                \"currency\": \"EUR\",\r\n                \"amount\": \"1\"\r\n            },\r\n            \"transactionType\": {\r\n                \"scenario\": \"DEPOSIT\",\r\n                \"initiator\": \"PAYER\",\r\n                \"initiatorType\": \"BUSINESS\"\r\n            }\r\n        },\r\n        {\r\n            \"quoteId\": \"1243fdba-5dea-3abd-a210-3780e7f2f1f4\",\r\n            \"transactionId\": \"1f5d9784-3a57-5865-9aa0-7dde7791548a\",\r\n            \"payee\": {\r\n                \"partyIdInfo\": {\r\n                    \"partyIdType\": \"MSISDN\",\r\n                    \"partyIdentifier\": \"1\",\r\n                    \"fspId\": \"Greenbank\"\r\n                }\r\n            },\r\n            \"amountType\": \"SEND\",\r\n            \"amount\": {\r\n                \"currency\": \"EUR\",\r\n                \"amount\": \"1\"\r\n            },\r\n            \"transactionType\": {\r\n                \"scenario\": \"DEPOSIT\",\r\n                \"initiator\": \"PAYER\",\r\n                \"initiatorType\": \"BUSINESS\"\r\n            }\r\n        },\r\n        {\r\n            \"quoteId\": \"4243fdba-5dea-3abd-a210-3780e7f2f1f4\",\r\n            \"transactionId\": \"4f5d9784-3a57-5865-9aa0-7dde7791548a\",\r\n            \"payee\": {\r\n                \"partyIdInfo\": {\r\n                    \"partyIdType\": \"nonexistingtype\",\r\n                    \"partyIdentifier\": \"nonexistingid\"\r\n                }\r\n            },\r\n            \"amountType\": \"SEND\",\r\n            \"amount\": {\r\n                \"currency\": \"EUR\",\r\n                \"amount\": \"1\"\r\n            },\r\n            \"transactionType\": {\r\n                \"scenario\": \"DEPOSIT\",\r\n                \"initiator\": \"PAYER\",\r\n                \"initiatorType\": \"BUSINESS\"\r\n            }\r\n        }\r\n    ],\r\n    \"payer\": {\r\n        \"partyIdInfo\": {\r\n            \"partyIdType\": \"MSISDN\",\r\n            \"partyIdentifier\": \"1\",\r\n            \"fspId\": \"Bluebank\"\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/bulkQuotes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"bulkQuotes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Quotes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3033/quotes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3033",
+							"path": [
+								"quotes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Quote By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3033/quotes/5243fdbe-5dea-3abd-a210-3780e7f2f1f4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3033",
+							"path": [
+								"quotes",
+								"5243fdbe-5dea-3abd-a210-3780e7f2f1f4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get BulkQuotes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get BulkQuote By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3033/bulk-quotes/2243fdbe-5dea-3abd-a210-3780e7f2f1f4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3033",
+							"path": [
+								"bulk-quotes",
+								"2243fdbe-5dea-3abd-a210-3780e7f2f1f4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transfers BC",
+			"item": [
+				{
+					"name": "Add Transfer",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "tokenType",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "accessToken",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Imtrb2F4SEZZaFNCcjZJcHo1NVdkSWpaN09GX3pFRkJhZUVVR2hLZ1habW8ifQ.eyJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzZWN1cml0eS1iYy11aSIsInJvbGVzIjpbImFkbWluIl0sImlhdCI6MTY3NzcwNjc5NywiZXhwIjoxNjc4MzExNTk3LCJhdWQiOiJtb2phbG9vcC52bmV4dC5kZXYuZGVmYXVsdF9hdWRpZW5jZSIsImlzcyI6Im1vamFsb29wLnZuZXh0LmRldi5kZWZhdWx0X2lzc3VlciIsInN1YiI6InVzZXI6OmFkbWluIiwianRpIjoiZDA5YmFlMTktZDI1ZC00NjM3LWFlMDMtZDk4ZWFjNjRhNjQ0In0.g-b6mCNfAcaaVEKXjlHdiWP1dAOnnT16GZZR0QHUe-OrR8bBcCAZLWWGI6EbKPvbjjOL382nZqda_jcNfpenMbhwCNyhuBkl-pGYP2Dz3ou9izg0r5uHa8jzRV1fxyoxDmllL7w8ID2tgQmPy0vlOgWoG456Kp_To62abdg6g1iVR6twYKvj3_CVlnschAtoTbEVx5tQSC97d7Jsl4ZIQHxtywSuEgmEGSlsgEXCy0MOtVLYlK6wyR2yFxkl0By89n_8oag0JdTeXZH-yi5-iCcibzd25reTjngn7D-9rs3bVKA4ef1w7H0ewllCneWdt5L6WgsbsCzAOt9WEFdCYA",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "client_authentication",
+									"value": "body",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "security-bc-ui",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "superMegaPass",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "http://localhost:3201/token",
+									"type": "string"
+								},
+								{
+									"key": "grant_type",
+									"value": "password_credentials",
+									"type": "string"
+								},
+								{
+									"key": "challengeAlgorithm",
+									"value": "S256",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/vnd.interoperability.parties+json;version=1.1",
+								"type": "text"
+							},
+							{
+								"key": "content-type",
+								"value": "application/vnd.interoperability.parties+json;version=1.1",
+								"type": "text"
+							},
+							{
+								"key": "date",
+								"value": "randomdate",
+								"type": "text"
+							},
+							{
+								"key": "x-forwarded-for",
+								"value": "string",
+								"type": "text"
+							},
+							{
+								"key": "fspiop-source",
+								"value": "greenbank",
+								"type": "text"
+							},
+							{
+								"key": "fspiop-destination",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "fspiop-encryption",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "fspiop-signature",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "fspiop-uri",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "fspiop-http-method",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"transferId\": \"{{$guid}}\",\r\n    \"payerFsp\": \"greenbank\",\r\n    \"payeeFsp\": \"bluebank\",\r\n    \"amount\": {\r\n        \"currency\": \"EUR\",\r\n        \"amount\": \"10\"\r\n    },\r\n    \"ilpPacket\": \"AYICbQAAAAAAAAPoHGcuYmx1ZWJhbmsubXNpc2RuLmJsdWVfYWNjXzGCAkRleUowY21GdWMyRmpkR2x2Ymtsa0lqb2lPV1kxWkRrM09EUXRNMkUxTnkwMU9EWTFMVGxoWVRBdE4yUmtaVGMzT1RFMU5EZ3hJaXdpY1hWdmRHVkpaQ0k2SW1ZMU5UaGtORFE0TFRCbU1UQXROREF4TmkwNE9ESXpMVEU1TjJObU5qZ3haamhrWmlJc0luQmhlV1ZsSWpwN0luQmhjblI1U1dSSmJtWnZJanA3SW5CaGNuUjVTV1JVZVhCbElqb2lUVk5KVTBST0lpd2ljR0Z5ZEhsSlpHVnVkR2xtYVdWeUlqb2lZbXgxWlY5aFkyTmZNU0lzSW1aemNFbGtJam9pWW14MVpXSmhibXNpZlgwc0luQmhlV1Z5SWpwN0luQmhjblI1U1dSSmJtWnZJanA3SW5CaGNuUjVTV1JVZVhCbElqb2lUVk5KVTBST0lpd2ljR0Z5ZEhsSlpHVnVkR2xtYVdWeUlqb2laM0psWlc1ZllXTmpYekVpTENKbWMzQkpaQ0k2SW1keVpXVnVZbUZ1YXlKOWZTd2lZVzF2ZFc1MElqcDdJbU4xY25KbGJtTjVJam9pUlZWU0lpd2lZVzF2ZFc1MElqb2lNVEFpZlN3aWRISmhibk5oWTNScGIyNVVlWEJsSWpwN0luTmpaVzVoY21sdklqb2lSRVZRVDFOSlZDSXNJbWx1YVhScFlYUnZjaUk2SWxCQldVVlNJaXdpYVc1cGRHbGhkRzl5Vkhsd1pTSTZJa0pWVTBsT1JWTlRJbjE5AA\",\r\n    \"condition\": \"STksBXN1-J5HnG_4owlzKnbmzCfiOlrKDPgiR-QZ7Kg\",\r\n    \"expiration\": \"2023-02-28T13:27:53.536Z\",\r\n    \"extensionList\": {\r\n        \"extension\": [\r\n            {\r\n                \"key\": \"occae\",\r\n                \"value\": \"ut do consequat id\"\r\n            }\r\n        ]\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/transfers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"transfers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transfers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://10.152.183.141:80/transfers",
+							"protocol": "http",
+							"host": [
+								"10",
+								"152",
+								"183",
+								"141"
+							],
+							"port": "80",
+							"path": [
+								"transfers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transfer By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3030/transfers/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"transfers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Settlements BC",
+			"item": [
+				{
+					"name": "Send Transfer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : null,\n  \"transferId\" : \"{{$uuid}}\",\n  \"debitParticipantAccountId\" : \"deb-acc\",\n  \"creditParticipantAccountId\" : \"credit-acc\",\n  \"currencyCode\" : \"USD\",\n  \"amount\" : \"10000\",\n  \"timestamp\" : {{$timestamp}}000,\n  \"settlementModel\" :  \"DEFAULT\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3600/transfer",
+							"host": [
+								"localhost"
+							],
+							"port": "3600",
+							"path": [
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get batches",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "client_authentication",
+									"value": "body",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "security-bc-ui",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "superMegaPass",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "http://localhost:3201/token",
+									"type": "string"
+								},
+								{
+									"key": "grant_type",
+									"value": "password_credentials",
+									"type": "string"
+								},
+								{
+									"key": "challengeAlgorithm",
+									"value": "S256",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3600/batches?settlementModel=DEFAULT&currencyCode=USD&fromDate=1677771333000&toDate=9677771547000",
+							"host": [
+								"localhost"
+							],
+							"port": "3600",
+							"path": [
+								"batches"
+							],
+							"query": [
+								{
+									"key": "batchname",
+									"value": "DEFAULT.USD.2023.03.02.22.00",
+									"disabled": true
+								},
+								{
+									"key": "settlementModel",
+									"value": "DEFAULT"
+								},
+								{
+									"key": "currencyCode",
+									"value": "USD"
+								},
+								{
+									"key": "fromDate",
+									"value": "1677771333000"
+								},
+								{
+									"key": "toDate",
+									"value": "9677771547000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get transfers",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "tokenType",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "accessToken",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Imtrb2F4SEZZaFNCcjZJcHo1NVdkSWpaN09GX3pFRkJhZUVVR2hLZ1habW8ifQ.eyJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzZWN1cml0eS1iYy11aSIsInJvbGVzIjpbImFkbWluIl0sImlhdCI6MTY3NzcwNjc5NywiZXhwIjoxNjc4MzExNTk3LCJhdWQiOiJtb2phbG9vcC52bmV4dC5kZXYuZGVmYXVsdF9hdWRpZW5jZSIsImlzcyI6Im1vamFsb29wLnZuZXh0LmRldi5kZWZhdWx0X2lzc3VlciIsInN1YiI6InVzZXI6OmFkbWluIiwianRpIjoiZDA5YmFlMTktZDI1ZC00NjM3LWFlMDMtZDk4ZWFjNjRhNjQ0In0.g-b6mCNfAcaaVEKXjlHdiWP1dAOnnT16GZZR0QHUe-OrR8bBcCAZLWWGI6EbKPvbjjOL382nZqda_jcNfpenMbhwCNyhuBkl-pGYP2Dz3ou9izg0r5uHa8jzRV1fxyoxDmllL7w8ID2tgQmPy0vlOgWoG456Kp_To62abdg6g1iVR6twYKvj3_CVlnschAtoTbEVx5tQSC97d7Jsl4ZIQHxtywSuEgmEGSlsgEXCy0MOtVLYlK6wyR2yFxkl0By89n_8oag0JdTeXZH-yi5-iCcibzd25reTjngn7D-9rs3bVKA4ef1w7H0ewllCneWdt5L6WgsbsCzAOt9WEFdCYA",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "client_authentication",
+									"value": "body",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "security-bc-ui",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "superMegaPass",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "http://localhost:3201/token",
+									"type": "string"
+								},
+								{
+									"key": "grant_type",
+									"value": "password_credentials",
+									"type": "string"
+								},
+								{
+									"key": "challengeAlgorithm",
+									"value": "S256",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3600/transfers?batchId=DEFAULT.USD.2023.03.02.22.00.001",
+							"host": [
+								"localhost"
+							],
+							"port": "3600",
+							"path": [
+								"transfers"
+							],
+							"query": [
+								{
+									"key": "batchId",
+									"value": "DEFAULT.USD.2023.03.02.22.00.001"
+								},
+								{
+									"key": "batchName",
+									"value": "DEFAULT.USD.2023.03.02.21.15",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Matrix",
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "client_authentication",
+									"value": "body",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "security-bc-ui",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "superMegaPass",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "http://localhost:3201/token",
+									"type": "string"
+								},
+								{
+									"key": "grant_type",
+									"value": "password_credentials",
+									"type": "string"
+								},
+								{
+									"key": "challengeAlgorithm",
+									"value": "S256",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fromDate\":1677771333000,\n    \"toDate\":  9677771547000,\n    \"settlementModel\":\"DEFAULT\",\n    \"currencyCode\":\"USD\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3600/matrix",
+							"host": [
+								"localhost"
+							],
+							"port": "3600",
+							"path": [
+								"matrix"
+							],
+							"query": [
+								{
+									"key": "batchId",
+									"value": "DEFAULT.EUR.2023.03.01.22.20.001",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Matrix",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "tokenType",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "accessToken",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Imtrb2F4SEZZaFNCcjZJcHo1NVdkSWpaN09GX3pFRkJhZUVVR2hLZ1habW8ifQ.eyJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzZWN1cml0eS1iYy11aSIsInJvbGVzIjpbImFkbWluIl0sImlhdCI6MTY3NzcwNjc5NywiZXhwIjoxNjc4MzExNTk3LCJhdWQiOiJtb2phbG9vcC52bmV4dC5kZXYuZGVmYXVsdF9hdWRpZW5jZSIsImlzcyI6Im1vamFsb29wLnZuZXh0LmRldi5kZWZhdWx0X2lzc3VlciIsInN1YiI6InVzZXI6OmFkbWluIiwianRpIjoiZDA5YmFlMTktZDI1ZC00NjM3LWFlMDMtZDk4ZWFjNjRhNjQ0In0.g-b6mCNfAcaaVEKXjlHdiWP1dAOnnT16GZZR0QHUe-OrR8bBcCAZLWWGI6EbKPvbjjOL382nZqda_jcNfpenMbhwCNyhuBkl-pGYP2Dz3ou9izg0r5uHa8jzRV1fxyoxDmllL7w8ID2tgQmPy0vlOgWoG456Kp_To62abdg6g1iVR6twYKvj3_CVlnschAtoTbEVx5tQSC97d7Jsl4ZIQHxtywSuEgmEGSlsgEXCy0MOtVLYlK6wyR2yFxkl0By89n_8oag0JdTeXZH-yi5-iCcibzd25reTjngn7D-9rs3bVKA4ef1w7H0ewllCneWdt5L6WgsbsCzAOt9WEFdCYA",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "client_authentication",
+									"value": "body",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "security-bc-ui",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "superMegaPass",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "http://localhost:3201/token",
+									"type": "string"
+								},
+								{
+									"key": "grant_type",
+									"value": "password_credentials",
+									"type": "string"
+								},
+								{
+									"key": "challengeAlgorithm",
+									"value": "S256",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3600/matrix/024b2adc-2bba-4212-a9ea-72aeef6568c3",
+							"host": [
+								"localhost"
+							],
+							"port": "3600",
+							"path": [
+								"matrix",
+								"024b2adc-2bba-4212-a9ea-72aeef6568c3"
+							],
+							"query": [
+								{
+									"key": "batchId",
+									"value": "DEFAULT.EUR.2023.03.01.22.20.001",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Recalculate Matrix",
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "tokenType",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "accessToken",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Imtrb2F4SEZZaFNCcjZJcHo1NVdkSWpaN09GX3pFRkJhZUVVR2hLZ1habW8ifQ.eyJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzZWN1cml0eS1iYy11aSIsInJvbGVzIjpbImFkbWluIl0sImlhdCI6MTY3NzcwNjc5NywiZXhwIjoxNjc4MzExNTk3LCJhdWQiOiJtb2phbG9vcC52bmV4dC5kZXYuZGVmYXVsdF9hdWRpZW5jZSIsImlzcyI6Im1vamFsb29wLnZuZXh0LmRldi5kZWZhdWx0X2lzc3VlciIsInN1YiI6InVzZXI6OmFkbWluIiwianRpIjoiZDA5YmFlMTktZDI1ZC00NjM3LWFlMDMtZDk4ZWFjNjRhNjQ0In0.g-b6mCNfAcaaVEKXjlHdiWP1dAOnnT16GZZR0QHUe-OrR8bBcCAZLWWGI6EbKPvbjjOL382nZqda_jcNfpenMbhwCNyhuBkl-pGYP2Dz3ou9izg0r5uHa8jzRV1fxyoxDmllL7w8ID2tgQmPy0vlOgWoG456Kp_To62abdg6g1iVR6twYKvj3_CVlnschAtoTbEVx5tQSC97d7Jsl4ZIQHxtywSuEgmEGSlsgEXCy0MOtVLYlK6wyR2yFxkl0By89n_8oag0JdTeXZH-yi5-iCcibzd25reTjngn7D-9rs3bVKA4ef1w7H0ewllCneWdt5L6WgsbsCzAOt9WEFdCYA",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "client_authentication",
+									"value": "body",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "security-bc-ui",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "superMegaPass",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "http://localhost:3201/token",
+									"type": "string"
+								},
+								{
+									"key": "grant_type",
+									"value": "password_credentials",
+									"type": "string"
+								},
+								{
+									"key": "challengeAlgorithm",
+									"value": "S256",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3600/matrix/024b2adc-2bba-4212-a9ea-72aeef6568c3/recalculate",
+							"host": [
+								"localhost"
+							],
+							"port": "3600",
+							"path": [
+								"matrix",
+								"024b2adc-2bba-4212-a9ea-72aeef6568c3",
+								"recalculate"
+							],
+							"query": [
+								{
+									"key": "batchId",
+									"value": "DEFAULT.EUR.2023.03.01.22.20.001",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Close Matrix",
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "tokenType",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "accessToken",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Imtrb2F4SEZZaFNCcjZJcHo1NVdkSWpaN09GX3pFRkJhZUVVR2hLZ1habW8ifQ.eyJ0eXAiOiJCZWFyZXIiLCJhenAiOiJzZWN1cml0eS1iYy11aSIsInJvbGVzIjpbImFkbWluIl0sImlhdCI6MTY3NzcwNjc5NywiZXhwIjoxNjc4MzExNTk3LCJhdWQiOiJtb2phbG9vcC52bmV4dC5kZXYuZGVmYXVsdF9hdWRpZW5jZSIsImlzcyI6Im1vamFsb29wLnZuZXh0LmRldi5kZWZhdWx0X2lzc3VlciIsInN1YiI6InVzZXI6OmFkbWluIiwianRpIjoiZDA5YmFlMTktZDI1ZC00NjM3LWFlMDMtZDk4ZWFjNjRhNjQ0In0.g-b6mCNfAcaaVEKXjlHdiWP1dAOnnT16GZZR0QHUe-OrR8bBcCAZLWWGI6EbKPvbjjOL382nZqda_jcNfpenMbhwCNyhuBkl-pGYP2Dz3ou9izg0r5uHa8jzRV1fxyoxDmllL7w8ID2tgQmPy0vlOgWoG456Kp_To62abdg6g1iVR6twYKvj3_CVlnschAtoTbEVx5tQSC97d7Jsl4ZIQHxtywSuEgmEGSlsgEXCy0MOtVLYlK6wyR2yFxkl0By89n_8oag0JdTeXZH-yi5-iCcibzd25reTjngn7D-9rs3bVKA4ef1w7H0ewllCneWdt5L6WgsbsCzAOt9WEFdCYA",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "client_authentication",
+									"value": "body",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "security-bc-ui",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "superMegaPass",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "http://localhost:3201/token",
+									"type": "string"
+								},
+								{
+									"key": "grant_type",
+									"value": "password_credentials",
+									"type": "string"
+								},
+								{
+									"key": "challengeAlgorithm",
+									"value": "S256",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3600/matrix/024b2adc-2bba-4212-a9ea-72aeef6568c3/close",
+							"host": [
+								"localhost"
+							],
+							"port": "3600",
+							"path": [
+								"matrix",
+								"024b2adc-2bba-4212-a9ea-72aeef6568c3",
+								"close"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "grant_type",
+				"value": "password_credentials",
+				"type": "string"
+			},
+			{
+				"key": "client_authentication",
+				"value": "body",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "localhost:3201/token",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "security-bc-ui",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "user",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "superPass",
+				"type": "string"
+			},
+			{
+				"key": "tokenName",
+				"value": "vNext dev - user",
+				"type": "string"
+			},
+			{
+				"key": "challengeAlgorithm",
+				"value": "S256",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "http://localhost:3201/token",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }

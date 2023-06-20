@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/vnext-admin-ui-svc",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "scripts": {
     "ng": "NODE_OPTIONS=--openssl-legacy-provider ng",
     "start": "NODE_OPTIONS=--openssl-legacy-provider ng serve --proxy-config proxy.conf.json --no-live-reload",
@@ -11,7 +11,10 @@
     "test": "NODE_OPTIONS=--openssl-legacy-provider ng test",
   	"docker:build": "docker build -f Dockerfile -t mojaloop/vnext-admin-ui-svc:0.1.0 . ## NOTE: UPDATE THE VERSION"
   },
-  "private": true,
+	"private": true,
+	"mojaloop": {
+		"publish_to_dockerhub": false
+	},
   "dependencies": {
     "@angular/animations": "~12.2.16",
     "@angular/common": "~12.2.16",
