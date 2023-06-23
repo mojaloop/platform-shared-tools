@@ -8,6 +8,7 @@ import {
   TokenEndpointResponse,
 } from "@mojaloop/security-bc-public-types-lib";
 import {
+  IParticipantNetDebitCapChangeRequest,
   Participant,
   ParticipantAccount,
   ParticipantEndpoint,
@@ -52,6 +53,8 @@ export class ParticipantsService {
       participantAccounts: [],
       fundsMovements: [],
       changeLog: [],
+      netDebitCapChangeRequests: [],
+      netDebitCaps: [],
     };
   }
 
@@ -69,6 +72,23 @@ export class ParticipantsService {
       id: uuid.v4(),
       type: "POSITION",
       currencyCode: "EUR",
+      balance: null,
+    };
+  }
+  createEmptyNDC(): IParticipantNetDebitCapChangeRequest {
+    return {
+      id: uuid.v4(),
+      createdBy: "",
+      createdDate: new Date().getTime(),
+      type: "ABSOLUTE",
+      fixedValue: 100,
+      percentage: 0,
+      currencyCode: "EUR",
+      note: "",
+      extReference: "",
+      approved: false,
+      approvedBy: null,
+      approvedDate: null,
     };
   }
 
@@ -343,6 +363,71 @@ export class ParticipantsService {
     });
   }
 
+  createNDC(
+    participantId: string,
+    ndc: IParticipantNetDebitCapChangeRequest
+  ): Observable<string> {
+    return new Observable<string>((subscriber) => {
+      this._http
+        .post<{}>(
+          `${SVC_BASEURL}/participants/${participantId}/ndcchangerequests`,
+          ndc
+        )
+        .subscribe(
+          (resp: {}) => {
+            console.log(`got success response from createNDC`);
+
+            subscriber.next();
+            return subscriber.complete();
+          },
+          (error) => {
+            if (error && error.status === 401) {
+              console.warn("UnauthorizedError received on createAccount");
+              subscriber.error(new UnauthorizedError(error.error?.msg));
+            } else {
+              console.error(error);
+              subscriber.error(error.error?.msg);
+            }
+            return subscriber.complete();
+          }
+        );
+    });
+  }
+
+  approveNDC(participantId: string, ndcId: string): Observable<void> {
+    return new Observable<void>((subscriber) => {
+      this._http
+        .post(
+          `${SVC_BASEURL}/participants/${participantId}/ndcchangerequests/${ndcId}/approve`,
+          {}
+        )
+        .subscribe(
+          () => {
+            console.log(`got success response from approveNDC`);
+
+            subscriber.next();
+            return subscriber.complete();
+          },
+          (error) => {
+            if (error && error.status === 401) {
+              console.warn(
+                "UnauthorizedError received on approveFundsMovement"
+              );
+              subscriber.error(new UnauthorizedError(error.error?.msg));
+            }
+            if (error && error.status === 403) {
+              console.warn("Forbidden received on approveFundsMovement");
+              subscriber.error(new Error(error.error?.msg));
+            } else {
+              console.error(error);
+              subscriber.error(error.error?.msg);
+            }
+            return subscriber.complete();
+          }
+        );
+    });
+  }
+
   createEndpoint(
     participantId: string,
     endpoint: ParticipantEndpoint
@@ -435,7 +520,7 @@ export class ParticipantsService {
   searchParticipants(
     id?: string,
     name?: string,
-    state?: string,
+    state?: string
   ): Observable<Participant[]> {
     return new Observable<Participant[]>((subscriber) => {
       let url = SVC_BASEURL + "/participants/?";

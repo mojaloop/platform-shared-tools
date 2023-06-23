@@ -28,11 +28,9 @@
  --------------
  ******/
 
-"use strict"
-
+"use strict";
 
 /** Participants **/
-
 
 export declare type ParticipantType = "HUB" | "DFSP";
 
@@ -58,10 +56,34 @@ export declare type Participant = {
   participantAccounts: ParticipantAccount[];
 
   fundsMovements: ParticipantFundsMovement[];
-  changeLog:ParticipantActivityLogEntry[];
+  changeLog: ParticipantActivityLogEntry[];
+  netDebitCaps: IParticipantNetDebitCap[];
+  netDebitCapChangeRequests: IParticipantNetDebitCapChangeRequest[];
+};
+export declare interface IParticipantNetDebitCap {
+  currencyCode: string;
+  type: "ABSOLUTE" | "PERCENTAGE";
+  percentage: number | null;
+  currentValue: number;
+}
+export declare interface IParticipantNetDebitCapChangeRequest {
+  id: string;
+  createdBy: string;
+  createdDate: number;
+  approved: boolean;
+  approvedBy: string | null;
+  approvedDate: number | null;
+  currencyCode: string;
+  type: "ABSOLUTE" | "PERCENTAGE";
+  percentage: number | null;
+  fixedValue: number | null;
+  extReference: string | null;
+  note: string | null;
 }
 
-export declare type ParticipantFundsMovementDirection = "FUNDS_DEPOSIT" | "FUNDS_WITHDRAWAL";
+export declare type ParticipantFundsMovementDirection =
+  | "FUNDS_DEPOSIT"
+  | "FUNDS_WITHDRAWAL";
 
 export declare type ParticipantFundsMovement = {
   id: string;
@@ -78,46 +100,54 @@ export declare type ParticipantFundsMovement = {
   transferId: string | null;
   extReference: string | null;
   note: string | null;
-}
-
+};
 
 export declare type ParticipantAllowedSourceIps = {
-  id: string;                                             // uuid of the source IP
-  cidr:string;                                            // proper cidr format
+  id: string; // uuid of the source IP
+  cidr: string; // proper cidr format
   // ANY to only use the cidr, allow traffic from any ports, SPECIFIC to use ports array, RANGE to use portRange
   portMode: "ANY" | "SPECIFIC" | "RANGE";
-  ports?: number[];                                       // using a single or multiple ports
-  portRange?:{ rangeFirst: number, rangeLast: number;};   // port range
-}
+  ports?: number[]; // using a single or multiple ports
+  portRange?: { rangeFirst: number; rangeLast: number }; // port range
+};
 
 export declare type PartipantEndpointType = "FSPIOP" | "ISO20022";
 export declare type PartipantEndpointProtocol = "HTTPs/REST";
 
 export declare type ParticipantEndpoint = {
-  id: string;                                             // uuid of the endpoint
-  type: PartipantEndpointType;                            // "FSPIOP" | "ISO20022"
-  protocol: PartipantEndpointProtocol;                                 // for now only "HTTPs/REST";
-  value: string;                                          // URL format for urls, ex: https://example.com:8080/fspcallbacks/, or simply 192.168.1.1:3000
-}
+  id: string; // uuid of the endpoint
+  type: PartipantEndpointType; // "FSPIOP" | "ISO20022"
+  protocol: PartipantEndpointProtocol; // for now only "HTTPs/REST";
+  value: string; // URL format for urls, ex: https://example.com:8080/fspcallbacks/, or simply 192.168.1.1:3000
+};
 
 export declare type ParticipantAccount = {
-  id: string;                                             // uuid of the account (from the external accounts and balances system)
+  id: string; // uuid of the account (from the external accounts and balances system)
   type: string;
   //isActive: boolean                                     //TODO do we need this?
-  currencyCode: string;                                   //TODO move
-  debitBalance?: string;                                  // output only, we don't store this here
-  creditBalance?: string;                                 // output only, we don't store this here
-}
+  currencyCode: string; //TODO move
+  debitBalance?: string; // output only, we don't store this here
+  creditBalance?: string; // output only, we don't store this here
+  balance: string | null; // output only, we don't store this here
+};
 
 export declare type ParticipantChangeType =
-  "CREATE" | "APPROVE" | "ENABLE" | "DISABLE"
-  | "ADDACCOUNT" | "REMOVEACCOUNT"
-  | "ADDENDPOINT" | "REMOVEENDPOINT" | "EDITENDPOINT"
-  | "ADDSOURCEIP" | "REMOVESOURCEIP" | "EDITSOURCEIP";
+  | "CREATE"
+  | "APPROVE"
+  | "ENABLE"
+  | "DISABLE"
+  | "ADDACCOUNT"
+  | "REMOVEACCOUNT"
+  | "ADDENDPOINT"
+  | "REMOVEENDPOINT"
+  | "EDITENDPOINT"
+  | "ADDSOURCEIP"
+  | "REMOVESOURCEIP"
+  | "EDITSOURCEIP";
 
 export declare type ParticipantActivityLogEntry = {
   changeType: ParticipantChangeType;
   user: string;
   timestamp: number;
   notes: string | null;
-}
+};
