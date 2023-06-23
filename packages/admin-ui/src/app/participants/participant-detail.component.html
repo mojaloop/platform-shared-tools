@@ -1,67 +1,99 @@
 <div class="row">
   <div class="col-md-8 align-self-center">
-    <h2>{{(participant | async)?.name}}</h2>
+    <h2>{{ (participant | async)?.name }}</h2>
   </div>
 
   <div class="col-md-4 align-self-center">
-    <small><strong>ID: </strong> {{(participant | async)?.id}}
-      <a [hidden]="(participant | async)?.type ==='HUB'" (click)="copyParticipantIdToClipboard()"
-         ngbTooltip="Copy ID to clipboard"><i class="bi bi-clipboard-plus"></i></a></small>
+    <small
+      ><strong>ID: </strong> {{ (participant | async)?.id }}
+      <a
+        [hidden]="(participant | async)?.type === 'HUB'"
+        (click)="copyParticipantIdToClipboard()"
+        ngbTooltip="Copy ID to clipboard"
+        ><i class="bi bi-clipboard-plus"></i></a
+    ></small>
   </div>
 </div>
-<hr>
+<hr />
 
 <div class="row">
-  <div class="col-8"> <!-- left col with form -->
+  <div class="col-8">
+    <!-- left col with form -->
 
     <div class="mb-2">
       <label class="col-form-label text-secondary">Description</label>
-      <div>{{(participant | async)?.description}}</div>
+      <div>{{ (participant | async)?.description }}</div>
     </div>
 
     <div class="mb-2">
       <label class="col-form-label text-secondary">Creation</label>
-      <div>Created by {{(participant | async)?.createdBy}}
-        at {{((participant | async)?.createdDate) | date: 'medium'}}</div>
+      <div>
+        Created by {{ (participant | async)?.createdBy }} at
+        {{ (participant | async)?.createdDate | date : "medium" }}
+      </div>
     </div>
 
     <div class="mb-2">
       <label class="col-form-label text-secondary">Approval</label>
-      <div *ngIf="(participant | async)?.approved">Approved by {{(participant | async)?.approvedBy}}
-        at {{((participant | async)?.approvedDate) | date: 'medium'}}</div>
-      <div *ngIf="!(participant | async)?.approved" class="text-danger">Not yet approved</div>
-
+      <div *ngIf="(participant | async)?.approved">
+        Approved by {{ (participant | async)?.approvedBy }} at
+        {{ (participant | async)?.approvedDate | date : "medium" }}
+      </div>
+      <div *ngIf="!(participant | async)?.approved" class="text-danger">
+        Not yet approved
+      </div>
     </div>
+  </div>
+  <!-- left col with form -->
 
-  </div> <!-- left col with form -->
-
-  <div class="col-4"> <!-- right col with action buttons -->
+  <div class="col-4">
+    <!-- right col with action buttons -->
     <ng-container *ngIf="(participant | async)?.approved">
-      <ng-container *ngIf="(participant | async)?.type !=='HUB'">
+      <ng-container *ngIf="(participant | async)?.type !== 'HUB'">
         <!--<button class="btn btn-primary btn-block" [hidden]="editing || (participant | async)?.isActive">Activate</button>
         <button class="btn btn-primary btn-block" [hidden]="editing || !(participant | async)?.isActive">Deactivate</button>-->
-        <button class="btn btn-primary btn-block" [disabled]="editing " (click)="showDeposit()">Deposit</button>
-        <button class="btn btn-primary btn-block" [disabled]="editing " (click)="showWithdrawal()">Withdrawal</button>
+        <button
+          class="btn btn-primary btn-block"
+          [disabled]="editing"
+          (click)="showDeposit()"
+        >
+          Deposit
+        </button>
+        <button
+          class="btn btn-primary btn-block"
+          [disabled]="editing"
+          (click)="showWithdrawal()"
+        >
+          Withdrawal
+        </button>
       </ng-container>
 
-      <button class="btn btn-primary btn-block" [disabled]="editing" (click)="updateAccounts()">Refresh Account
-        Balances
+      <button
+        class="btn btn-primary btn-block"
+        [disabled]="editing"
+        (click)="updateAccounts()"
+      >
+        Refresh Account Balances
       </button>
     </ng-container>
 
     <ng-container *ngIf="!(participant | async)?.approved">
-      <button class="btn btn-primary btn-block" [disabled]="editing || (participant | async)?.isActive"
-              (click)="approve()" [hidden]="(participant | async)?.type ==='HUB'">Approve
+      <button
+        class="btn btn-primary btn-block"
+        [disabled]="editing || (participant | async)?.isActive"
+        (click)="approve()"
+        [hidden]="(participant | async)?.type === 'HUB'"
+      >
+        Approve
       </button>
     </ng-container>
-
-
-  </div> <!-- right col with action buttons -->
+  </div>
+  <!-- right col with action buttons -->
 </div>
 
-
 <ul ngbNav #nav="ngbNav" class="mt-4 nav-tabs" (navChange)="tabChange($event)">
-  <li ngbNavItem="changeLog">  <!-- changeLog -->
+  <li ngbNavItem="changeLog">
+    <!-- changeLog -->
     <a ngbNavLink>Change Log</a>
     <ng-template ngbNavContent>
       <!--<div class="container mt-2 text-right">
@@ -70,185 +102,447 @@
       <h4 class="mt-3">Change log for this participant</h4>
       <table class="table table-hover mt-3">
         <thead class="thead-light">
-        <tr>
-          <th scope="col">Change Type</th>
-          <th scope="col">User</th>
-          <th scope="col">Date</th>
-          <th scope="col">Notes</th>
-        </tr>
+          <tr>
+            <th scope="col">Change Type</th>
+            <th scope="col">User</th>
+            <th scope="col">Date</th>
+            <th scope="col">Notes</th>
+          </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let item of (participant | async)?.changeLog">
-          <td>{{item.changeType}}</td>
-          <td>{{item.user}}</td>
-          <td>{{item.timestamp | date: 'medium'}}</td>
-          <td>{{item.notes}}</td>
-        </tr>
+          <tr *ngFor="let item of (participant | async)?.changeLog">
+            <td>{{ item.changeType }}</td>
+            <td>{{ item.user }}</td>
+            <td>{{ item.timestamp | date : "medium" }}</td>
+            <td>{{ item.notes }}</td>
+          </tr>
         </tbody>
       </table>
     </ng-template>
-  </li><!-- changeLog -->
+  </li>
+  <!-- changeLog -->
 
-  <li ngbNavItem="endpoints" [hidden]="(participant | async)?.type ==='HUB'">  <!-- EndPoints -->
+  <li ngbNavItem="endpoints" [hidden]="(participant | async)?.type === 'HUB'">
+    <!-- EndPoints -->
     <a ngbNavLink>Endpoints</a>
 
     <ng-template ngbNavContent>
       <h4 class="mt-3">Registered Endpoints for this Participant</h4>
       <table class="table table-hover mt-3">
         <thead class="thead-light">
-        <tr>
-          <th scope="col">Type</th>
-          <th scope="col">Protocol</th>
-          <th scope="col">Endpoint</th>
-          <th scope="col" style="width: 90px;">Actions</th>
-        </tr>
+          <tr>
+            <th scope="col">Type</th>
+            <th scope="col">Protocol</th>
+            <th scope="col">Endpoint</th>
+            <th scope="col" style="width: 90px">Actions</th>
+          </tr>
         </thead>
         <tbody>
+          <tr *ngFor="let item of (participant | async)?.participantEndpoints">
+            <ng-container
+              *ngIf="
+                endpointEditModeEnabled && item.id === endpointEditingId;
+                else editNotEnabled
+              "
+            >
+              <td>
+                <select
+                  class="form-control"
+                  [id]="'endpointType_' + item.id"
+                  value="{{ item.type }}"
+                >
+                  <option [selected]="item.type === 'FSPIOP'">FSPIOP</option>
+                  <option [selected]="item.type === 'ISO20022'">
+                    ISO20022
+                  </option>
+                </select>
+              </td>
+              <td>
+                <select
+                  class="form-control"
+                  [id]="'endpointProtocol_' + item.id"
+                  value="{{ item.protocol }}"
+                >
+                  <option [selected]="item.protocol === 'HTTPs/REST'">
+                    HTTPs/REST
+                  </option>
+                </select>
+              </td>
+              <td>
+                <input
+                  [id]="'endpointValue_' + item.id"
+                  type="text"
+                  class="form-control"
+                  placeholder=""
+                  value="{{ item.value }}"
+                />
+              </td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group" aria-label="">
+                  <button
+                    type="button"
+                    class="btn btn-success"
+                    (click)="endpointSaveEdit(item.id)"
+                  >
+                    <span class="bi bi-check-lg"></span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    (click)="endpointStopEdit()"
+                  >
+                    <span class="bi bi-x-lg"></span>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
 
-        <tr *ngFor="let item of (participant | async)?.participantEndpoints">
-          <ng-container *ngIf="endpointEditModeEnabled && item.id === endpointEditingId; else editNotEnabled">
-            <td>
-              <select class="form-control" [id]="'endpointType_'+item.id" value="{{item.type}}">
-                <option [selected]="item.type==='FSPIOP'">FSPIOP</option>
-                <option [selected]="item.type==='ISO20022'">ISO20022</option>
-              </select>
-            </td>
-            <td>
-              <select class="form-control" [id]="'endpointProtocol_'+item.id" value="{{item.protocol}}">
-                <option [selected]="item.protocol==='HTTPs/REST'">HTTPs/REST</option>
-              </select>
-            </td>
-            <td><input [id]="'endpointValue_'+item.id" type="text" class="form-control" placeholder=""
-                       value="{{item.value}}"></td>
-            <td>
-              <div class="btn-group btn-group-sm" role="group" aria-label="">
-                <button type="button" class="btn btn-success" (click)="endpointSaveEdit(item.id)">
-                  <span class="bi bi-check-lg"></span>
-                </button>
-                <button type="button" class="btn btn-danger" (click)="endpointStopEdit()">
-                  <span class="bi bi-x-lg"></span>
-                </button>
-              </div>
-            </td>
-
-          </ng-container>
-
-          <ng-template #editNotEnabled>
-            <td>{{item.type}}</td>
-            <td>{{item.protocol}}</td>
-            <td>{{item.value}}</td>
-            <td>
-              <div class="btn-group btn-group-sm" role="group" aria-label="">
-                <button type="button" class="btn btn-primary" [hidden]="endpointEditModeEnabled"
-                        (click)="endpointStartEdit(item.id)">
-                  <span class="bi bi-pencil"></span>
-                </button>
-                <button type="button" class="btn btn-danger" [hidden]="endpointEditModeEnabled"
-                        (click)="endpointRemote(item.id)">
-                  <span class="bi bi-trash"></span>
-                </button>
-              </div>
-            </td>
-          </ng-template>
-
-
-        </tr>
-
+            <ng-template #editNotEnabled>
+              <td>{{ item.type }}</td>
+              <td>{{ item.protocol }}</td>
+              <td>{{ item.value }}</td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group" aria-label="">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    [hidden]="endpointEditModeEnabled"
+                    (click)="endpointStartEdit(item.id)"
+                  >
+                    <span class="bi bi-pencil"></span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    [hidden]="endpointEditModeEnabled"
+                    (click)="endpointRemote(item.id)"
+                  >
+                    <span class="bi bi-trash"></span>
+                  </button>
+                </div>
+              </td>
+            </ng-template>
+          </tr>
         </tbody>
       </table>
 
-      <hr>
+      <hr />
 
       <div class="form-row d-flex mb-3">
         <div class="p-2">
-          <button class="btn btn-secondary" (click)="endpointAddNew()" [disabled]="endpointEditModeEnabled">Add
-            Endpoint
+          <button
+            class="btn btn-secondary"
+            (click)="endpointAddNew()"
+            [disabled]="endpointEditModeEnabled"
+          >
+            Add Endpoint
           </button>
         </div>
         <div class="ml-auto p-2">
           <!--          <button class="btn btn-outline-primary" (click)="updateAccounts()">Refresh Account Balances</button>-->
         </div>
       </div>
-
     </ng-template>
-  </li> <!-- EndPoints -->
+  </li>
+  <!-- EndPoints -->
 
-  <li ngbNavItem="accounts">  <!-- Accounts -->
+  <li ngbNavItem="accounts">
+    <!-- Accounts -->
     <a ngbNavLink>Accounts</a>
     <ng-template ngbNavContent>
       <h4 class="mt-3">Registered Accounts for this Participant</h4>
       <table class="table table-hover mt-3">
         <thead class="thead-light">
-        <tr>
-          <th scope="col">Type</th>
-          <th scope="col">Currency</th>
-          <th scope="col">DebitBalance</th>
-          <th scope="col">CreditBalance</th>
-          <th scope="col" style="width: 90px;">Actions</th>
-        </tr>
+          <tr>
+            <th scope="col">Type</th>
+            <th scope="col">Currency</th>
+            <th scope="col">Debit Balance</th>
+            <th scope="col">Credit Balance</th>
+            <th scope="col">Balance</th>
+            <th scope="col" style="width: 90px">Actions</th>
+          </tr>
         </thead>
         <tbody>
+          <tr *ngFor="let item of (participant | async)?.participantAccounts">
+            <ng-container
+              *ngIf="
+                accountEditModeEnabled && item.id === accountEditingId;
+                else editNotEnabled
+              "
+            >
+              <td>
+                <select
+                  class="form-control"
+                  [id]="'accountType_' + item.id"
+                  value="{{ item.type }}"
+                >
+                  <ng-container
+                    *ngIf="(participant | async)?.type === 'HUB'; else nonHub"
+                  >
+                    <option [selected]="item.type === 'HUB_ASSET'">
+                      HUB_ASSET
+                    </option>
+                  </ng-container>
+                  <ng-template #nonHub>
+                    <option [selected]="item.type === 'POSITION'">
+                      POSITION
+                    </option>
+                    <option [selected]="item.type === 'SETTLEMENT'">
+                      SETTLEMENT
+                    </option>
+                  </ng-template>
+                </select>
+              </td>
+              <td>
+                <select
+                  class="form-control"
+                  [id]="'accountCurrency_' + item.id"
+                  value="{{ item.currencyCode }}"
+                >
+                  <option [selected]="item.currencyCode === 'EUR'">EUR</option>
+                  <option [selected]="item.currencyCode === 'USD'">USD</option>
+                  <option [selected]="item.currencyCode === 'TZS'">TZS</option>
+                </select>
+              </td>
+              <td></td>
+              <td></td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group" aria-label="">
+                  <button
+                    type="button"
+                    class="btn btn-success"
+                    (click)="accountSaveEdit(item.id)"
+                  >
+                    <span class="bi bi-check-lg"></span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    (click)="accountStopEdit()"
+                  >
+                    <span class="bi bi-x-lg"></span>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
 
-        <tr *ngFor="let item of (participant | async)?.participantAccounts">
-          <ng-container *ngIf="accountEditModeEnabled && item.id === accountEditingId; else editNotEnabled">
-            <td>
-              <select class="form-control" [id]="'accountType_'+item.id" value="{{item.type}}">
-                <ng-container *ngIf="(participant | async)?.type ==='HUB'; else nonHub">
-                  <option [selected]="item.type==='HUB_ASSET'">HUB_ASSET</option>
-                </ng-container>
-                <ng-template #nonHub>
-                  <option [selected]="item.type==='POSITION'">POSITION</option>
-                  <option [selected]="item.type==='SETTLEMENT'">SETTLEMENT</option>
-                </ng-template>
-
-
-              </select>
-            </td>
-            <td>
-              <select class="form-control" [id]="'accountCurrency_'+item.id" value="{{item.currencyCode}}">
-                <option [selected]="item.currencyCode==='EUR'">EUR</option>
-                <option [selected]="item.currencyCode==='USD'">USD</option>
-                <option [selected]="item.currencyCode==='TZS'">TZS</option>
-              </select>
-            </td>
-            <td></td>
-            <td></td>
-            <td>
-              <div class="btn-group btn-group-sm" role="group" aria-label="">
-                <button type="button" class="btn btn-success" (click)="accountSaveEdit(item.id)">
-                  <span class="bi bi-check-lg"></span>
-                </button>
-                <button type="button" class="btn btn-danger" (click)="accountStopEdit()">
-                  <span class="bi bi-x-lg"></span>
-                </button>
-              </div>
-            </td>
-
-          </ng-container>
-
-          <ng-template #editNotEnabled>
-            <td>{{item.type}}</td>
-            <td>{{item.currencyCode}}</td>
-            <td>{{item.debitBalance}}</td>
-            <td>{{item.creditBalance}}</td>
-            <td>
-              <div class="btn-group btn-group-sm" role="group" aria-label="">
-                <button type="button" class="btn btn-danger" [hidden]="accountEditModeEnabled"
-                        ngbTooltip="Disable account">
-                  <span class="bi bi-dash-circle"></span>
-                </button>
-              </div>
-            </td>
-          </ng-template>
-        </tr>
+            <ng-template #editNotEnabled>
+              <td>{{ item.type }}</td>
+              <td>{{ item.currencyCode }}</td>
+              <td>{{ item.debitBalance }}</td>
+              <td>{{ item.creditBalance }}</td>
+              <td>{{ item.balance }}</td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group" aria-label="">
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    [hidden]="accountEditModeEnabled"
+                    ngbTooltip="Disable account"
+                  >
+                    <span class="bi bi-dash-circle"></span>
+                  </button>
+                </div>
+              </td>
+            </ng-template>
+          </tr>
         </tbody>
       </table>
 
-      <hr>
+      <hr />
 
       <div class="form-row d-flex mb-3">
         <div class="p-2">
-          <button class="btn btn-secondary" (click)="accountAddNew()" [disabled]="accountEditModeEnabled">Add Account
+          <button
+            class="btn btn-secondary"
+            (click)="accountAddNew()"
+            [disabled]="accountEditModeEnabled"
+          >
+            Add Account
+          </button>
+        </div>
+        <div class="ml-auto p-2">
+          <!--          <input id="depositValue" type="number" class="form-control" placeholder="100" value="100">-->
+          <!--          <button class="btn btn-secondary" (click)="showDeposit()" [disabled]="accountEditModeEnabled">Deposit</button>-->
+          <!--          <button class="btn btn-outline-primary" (click)="updateAccounts()">Refresh Account Balances</button>-->
+        </div>
+      </div>
+    </ng-template>
+  </li>
+  <!-- Accounts -->
+
+  <li ngbNavItem="fundsMovs" [hidden]="(participant | async)?.type === 'HUB'">
+    <!-- Funds Movs -->
+    <a ngbNavLink>Funds Movements</a>
+    <ng-template ngbNavContent>
+      <h4 class="mt-3">Funds Movement of this Participant</h4>
+      <table class="table table-hover mt-3">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">Direction</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Currency</th>
+            <th scope="col">Created</th>
+            <th scope="col">Approved</th>
+            <th scope="col">Transfer Id</th>
+            <th scope="col">Ext Reference</th>
+            <th scope="col">Note</th>
+            <th scope="col" style="width: 90px">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let fundsMov of (participant | async)?.fundsMovements">
+            <ng-container>
+              <td>{{ fundsMov.direction }}</td>
+              <td>{{ fundsMov.amount }}</td>
+              <td>{{ fundsMov.currencyCode }}</td>
+              <td>
+                {{ fundsMov.createdBy }} on
+                {{ fundsMov.createdDate | date : "medium" }}
+              </td>
+              <td *ngIf="!fundsMov.approved" class="text-danger">
+                (Not yet approved)
+              </td>
+              <td *ngIf="fundsMov.approved">
+                {{ fundsMov.approvedBy }} on
+                {{ fundsMov.approvedDate | date : "medium" }}
+              </td>
+              <td>{{ fundsMov.transferId }}</td>
+              <td>{{ fundsMov.extReference }}</td>
+              <td>{{ fundsMov.note }}</td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group" aria-label="">
+                  <button
+                    type="button"
+                    class="btn btn-success"
+                    *ngIf="!fundsMov.approved"
+                    (click)="approveFundsMov(fundsMov.id)"
+                    ngbTooltip="Approve"
+                  >
+                    <span class="bi bi-check-lg"></span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    *ngIf="!fundsMov.approved"
+                    (click)="rejectFundsMov(fundsMov.id)"
+                    ngbTooltip="Reject"
+                  >
+                    <span class="bi bi-x-lg"></span>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+
+      <hr />
+    </ng-template>
+  </li>
+  <!-- Funds Movs -->
+
+  <li ngbNavItem="ndc" [hidden]="(participant | async)?.type === 'HUB'">
+    <!-- Funds Movs -->
+    <a ngbNavLink>NDC</a>
+    <ng-template ngbNavContent>
+      <h4 class="mt-3">NDC of this Participant</h4>
+      <table class="table table-hover mt-3">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col" style="width: 200px">Type</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Percentage</th>
+            <th scope="col" style="width: 200px">Currency</th>
+            <th scope="col" style="width: 90px">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let netDebitCaps of (participant | async)?.netDebitCaps">
+            <ng-container>
+              <td>{{ netDebitCaps.type }}</td>
+              <td>{{ netDebitCaps.currentValue }}</td>
+              <td>
+                {{
+                  netDebitCaps.percentage ? netDebitCaps.percentage + "%" : "-"
+                }}
+              </td>
+              <td>{{ netDebitCaps.currencyCode }}</td>
+              <td></td>
+            </ng-container>
+          </tr>
+          <tr>
+            <ng-container *ngIf="ndcEditModeEnabled">
+              <td>
+                <select
+                  class="form-control"
+                  id="ndcType"
+                  value="ABSOLUTE"
+                  (change)="setNDCType($event)"
+                >
+                  <option value="ABSOLUTE">ABSOLUTE</option>
+                  <option value="PERCENTAGE">PERCENTAGE</option>
+                </select>
+              </td>
+              <td>
+                <input
+                  class="form-control"
+                  type="number"
+                  min="100"
+                  id="ndcAmount"
+                  value="{{ newNDC?.fixedValue }}"
+                  [disabled]="newNDC?.type === 'PERCENTAGE'"
+                />
+              </td>
+              <td>
+                <input
+                  class="form-control"
+                  type="number"
+                  max="100"
+                  id="ndcPercentage"
+                  value="{{ newNDC?.percentage }}"
+                  [disabled]="newNDC?.type === 'ABSOLUTE'"
+                />
+              </td>
+              <td>
+                <select class="form-control" id="ndcCurrency" value="EUR">
+                  <option value="EUR">EUR</option>
+                  <option value="USD">USD</option>
+                  <option value="TZS">TZS</option>
+                </select>
+              </td>
+
+              <td>
+                <div class="btn-group btn-group-sm" role="group" aria-label="">
+                  <button
+                    type="button"
+                    class="btn btn-success"
+                    (click)="createNDCRequest()"
+                  >
+                    <span class="bi bi-check-lg"></span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    (click)="ndcStopEdit()"
+                  >
+                    <span class="bi bi-x-lg"></span>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="form-row d-flex mb-3">
+        <div class="p-2">
+          <button
+            class="btn btn-secondary"
+            (click)="ndcAddNew()"
+            [disabled]="ndcEditModeEnabled"
+          >
+            Request NDC Change
           </button>
         </div>
         <div class="ml-auto p-2">
@@ -258,108 +552,147 @@
         </div>
       </div>
 
-    </ng-template>
-  </li>  <!-- Accounts -->
-
-  <li ngbNavItem="fundsMovs" [hidden]="(participant | async)?.type ==='HUB'">  <!-- Funds Movs -->
-    <a ngbNavLink>Funds Movements</a>
-    <ng-template ngbNavContent>
-      <h4 class="mt-3">Funds Movement of this Participant</h4>
+      <hr />
+      <h4 class="mt-3">NDC Change Requests</h4>
       <table class="table table-hover mt-3">
         <thead class="thead-light">
-        <tr>
-          <th scope="col">Direction</th>
-          <th scope="col">Amount</th>
-          <th scope="col">Currency</th>
-          <th scope="col">Created</th>
-          <th scope="col">Approved</th>
-          <th scope="col">Transfer Id</th>
-          <th scope="col">Ext Reference</th>
-          <th scope="col">Note</th>
-          <th scope="col" style="width: 90px;">Actions</th>
-        </tr>
+          <tr>
+            <th scope="col">Type</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Percentage</th>
+            <th scope="col">Currency</th>
+            <th scope="col">Created</th>
+            <th scope="col">Approved</th>
+            <th scope="col">Request Id</th>
+            <th scope="col" style="width: 90px">Actions</th>
+          </tr>
         </thead>
         <tbody>
-
-        <tr *ngFor="let fundsMov of (participant | async)?.fundsMovements">
-          <ng-container >
-            <td>{{fundsMov.direction}}</td>
-            <td>{{fundsMov.amount}}</td>
-            <td>{{fundsMov.currencyCode}}</td>
-            <td>{{fundsMov.createdBy}} on {{fundsMov.createdDate | date: 'medium'}}</td>
-            <td *ngIf="!fundsMov.approved" class="text-danger">(Not yet approved)</td>
-            <td *ngIf="fundsMov.approved">{{fundsMov.approvedBy}} on {{fundsMov.approvedDate | date: 'medium'}}</td>
-            <td>{{fundsMov.transferId}}</td>
-            <td>{{fundsMov.extReference}}</td>
-            <td>{{fundsMov.note}}</td>
+          <tr
+            *ngFor="
+              let ndcReq of (participant | async)?.netDebitCapChangeRequests
+            "
+          >
+            <td>{{ ndcReq.type }}</td>
+            <td>{{ ndcReq.fixedValue }}</td>
+            <td>{{ ndcReq.percentage ? ndcReq.percentage + "%" : "-" }}</td>
+            <td>{{ ndcReq.currencyCode }}</td>
+            <td>
+              {{ ndcReq.createdBy }} on
+              {{ ndcReq.createdDate | date : "medium" }}
+            </td>
+            <td *ngIf="!ndcReq.approved" class="text-danger">
+              (Not yet approved)
+            </td>
+            <td *ngIf="ndcReq.approved">
+              {{ ndcReq.approvedBy }} on
+              {{ ndcReq.approvedDate | date : "medium" }}
+            </td>
+            <td>{{ ndcReq.id }}</td>
             <td>
               <div class="btn-group btn-group-sm" role="group" aria-label="">
-                <button type="button" class="btn btn-success" *ngIf="!fundsMov.approved" (click)="approveFundsMov(fundsMov.id)" ngbTooltip="Approve">
+                <button
+                  type="button"
+                  class="btn btn-success"
+                  *ngIf="!ndcReq.approved"
+                  (click)="approveNDCRequest(ndcReq.id)"
+                  ngbTooltip="Approve"
+                >
                   <span class="bi bi-check-lg"></span>
                 </button>
-                <button type="button" class="btn btn-danger" *ngIf="!fundsMov.approved" (click)="rejectFundsMov(fundsMov.id)" ngbTooltip="Reject">
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  *ngIf="!ndcReq.approved"
+                  (click)="rejectNDCRequest(ndcReq.id)"
+                  ngbTooltip="Reject"
+                >
                   <span class="bi bi-x-lg"></span>
                 </button>
               </div>
             </td>
-
-          </ng-container>
-
-        </tr>
+          </tr>
         </tbody>
       </table>
-
-      <hr>
-
-
     </ng-template>
-  </li>  <!-- Funds Movs -->
+  </li>
+  <!-- NDC -->
 
-  <li ngbNavItem="sourceips" [hidden]="(participant | async)?.type ==='HUB'"> <!-- Source IPs -->
+  <li ngbNavItem="sourceips" [hidden]="(participant | async)?.type === 'HUB'">
+    <!-- Source IPs -->
     <a ngbNavLink>Source IPs</a>
     <ng-template ngbNavContent>
-      <h4 class="mt-3">Source IP Addresses this Participant sends requests from</h4>
+      <h4 class="mt-3">
+        Source IP Addresses this Participant sends requests from
+      </h4>
     </ng-template>
-  </li> <!-- Source IPs -->
+  </li>
+  <!-- Source IPs -->
 
-  <li ngbNavItem="certificates" [hidden]="(participant | async)?.type ==='HUB'"> <!-- Certificates -->
+  <li
+    ngbNavItem="certificates"
+    [hidden]="(participant | async)?.type === 'HUB'"
+  >
+    <!-- Certificates -->
     <a ngbNavLink>Certificates</a>
     <ng-template ngbNavContent>
       <h4 class="mt-3">Participant Certificates for secure communication</h4>
     </ng-template>
-  </li> <!-- Certificates -->
+  </li>
+  <!-- Certificates -->
 
-  <li ngbNavItem="certificateAuthority" [hidden]="(participant | async)?.type !=='HUB'"> <!-- Certificates -->
+  <li
+    ngbNavItem="certificateAuthority"
+    [hidden]="(participant | async)?.type !== 'HUB'"
+  >
+    <!-- Certificates -->
     <a ngbNavLink>Certificate Authority</a>
     <ng-template ngbNavContent>
       <h4 class="mt-3">Hub Certificate Authority Certificates</h4>
     </ng-template>
-  </li> <!-- Certificates -->
+  </li>
+  <!-- Certificates -->
 </ul>
 
 <div class="mt-6" [ngbNavOutlet]="nav"></div>
 
-
 <!-- Deposit/Withdrawal Modal -->
 <ng-template #depositWithdrawalModal let-modal>
   <div class="modal-header">
+    <h4
+      *ngIf="depositWithdrawalModalMode === 'FUNDS_DEPOSIT'"
+      class="modal-title"
+    >
+      Deposit Funds
+    </h4>
+    <h4
+      *ngIf="depositWithdrawalModalMode === 'FUNDS_WITHDRAWAL'"
+      class="modal-title"
+    >
+      Withdrawal Funds
+    </h4>
 
-    <h4 *ngIf="depositWithdrawalModalMode==='FUNDS_DEPOSIT'" class="modal-title">Deposit Funds</h4>
-    <h4 *ngIf="depositWithdrawalModalMode==='FUNDS_WITHDRAWAL'" class="modal-title">Withdrawal Funds</h4>
-
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    >
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
     <form class="">
-
       <div class="form-group">
         <label class="ml-2 mr-2" for="depositAmount">Amount</label>
-        <input type="number" class="form-control" id="depositAmount" min="0" required>
-        <div class="invalid-feedback">
-          Invalid amount
-        </div>
+        <input
+          type="number"
+          class="form-control"
+          id="depositAmount"
+          min="0"
+          required
+        />
+        <div class="invalid-feedback">Invalid amount</div>
       </div>
 
       <div class="form-group">
@@ -376,25 +709,27 @@
 
       <div class="form-group">
         <label class="ml-2 mr-2" for="depositExtRef">External Reference</label>
-        <input type="text" class="form-control" id="depositExtRef">
-        <div class="invalid-feedback">
-          Invalid external reference
-        </div>
+        <input type="text" class="form-control" id="depositExtRef" />
+        <div class="invalid-feedback">Invalid external reference</div>
       </div>
 
       <div class="form-group">
         <label class="ml-2 mr-2" for="depositNote">Note</label>
         <textarea class="form-control" id="depositNote"></textarea>
-        <div class="invalid-feedback">
-          Invalid note
-        </div>
+        <div class="invalid-feedback">Invalid note</div>
       </div>
-
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-success" (click)="createFundsMov($event, 'FUNDS_DEPOSIT')">Save</button>
-    <button type="button" class="btn btn-danger" (click)="modal.dismiss()">Cancel</button>
+    <button
+      type="button"
+      class="btn btn-success"
+      (click)="createFundsMov($event, 'FUNDS_DEPOSIT')"
+    >
+      Save
+    </button>
+    <button type="button" class="btn btn-danger" (click)="modal.dismiss()">
+      Cancel
+    </button>
   </div>
 </ng-template>
-
