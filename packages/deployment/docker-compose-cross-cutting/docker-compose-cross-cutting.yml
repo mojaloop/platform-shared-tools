@@ -2,13 +2,15 @@ version: "3.8"
 
 services:
   platform-configuration-svc:
-    image: mojaloop/platform-configuration-bc-configuration-svc:alpha-latest
+    image: mojaloop/platform-configuration-bc-configuration-svc:0.3.3
     volumes:
       - platform-configuration-svc_data:/app/data
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
       - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
     healthcheck:
       test: nc -z localhost 3100 || exit -1
       start_period: 30s
@@ -20,7 +22,7 @@ services:
     restart: unless-stopped
 
   authentication-svc:
-    image: mojaloop/security-bc-authentication-svc:alpha-latest
+    image: mojaloop/security-bc-authentication-svc:0.1.18
     depends_on:
       platform-configuration-svc:
         condition: service_healthy
@@ -39,7 +41,7 @@ services:
     restart: unless-stopped
 
   authorization-svc:
-    image: mojaloop/security-bc-authorization-svc:alpha-latest
+    image: mojaloop/security-bc-authorization-svc:0.1.19
     depends_on:
       platform-configuration-svc:
         condition: service_healthy

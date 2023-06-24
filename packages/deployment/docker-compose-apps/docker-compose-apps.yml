@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   fspiop-api-svc:
-    image: mojaloop/interop-apis-bc-fspiop-api-svc:alpha-latest
+    image: mojaloop/interop-apis-bc-fspiop-api-svc:0.1.17
     depends_on:
       settlements-api-svc:
         condition: service_healthy
@@ -31,7 +31,7 @@ services:
       - 4000:4000
 
   accounts_and_balances_builtin-ledger-grpc-svc:
-    image: mojaloop/accounts-and-balances-bc-builtin-ledger-grpc-svc:alpha-latest
+    image: mojaloop/accounts-and-balances-bc-builtin-ledger-grpc-svc:0.2.2
     volumes:
       - aandb_builtin-ledger-grpc-svc_data:/app/data
     environment:
@@ -46,6 +46,8 @@ services:
       - AUTH_N_TOKEN_AUDIENCE=${AUTH_N_TOKEN_AUDIENCE}
       - TIGERBEETLE_CLUSTER_ID=${TIGERBEETLE_CLUSTER_ID}
       - TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES=${TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
     healthcheck:
       test: nc -z localhost 3350 || exit -1
       start_period: 30s
@@ -57,7 +59,7 @@ services:
     restart: unless-stopped
 
   accounts_and_balances_coa-grpc-svc:
-    image: mojaloop/accounts-and-balances-bc-coa-grpc-svc:alpha-latest
+    image: mojaloop/accounts-and-balances-bc-coa-grpc-svc:0.2.2
     depends_on:
       accounts_and_balances_builtin-ledger-grpc-svc:
         condition: service_healthy
@@ -76,6 +78,8 @@ services:
       - TIGERBEETLE_CLUSTER_ID=${TIGERBEETLE_CLUSTER_ID}
       - TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES=${TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES}
       - BUILTIN_LEDGER_SVC_URL=${BUILTIN_LEDGER_SVC_URL}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
     healthcheck:
       test: nc -z localhost 3300 || exit -1
       start_period: 30s
@@ -89,7 +93,7 @@ services:
 # participants
 
   participants-svc:
-    image: mojaloop/participants-bc-participants-svc:0.1.4
+    image: mojaloop/participants-bc-participants-svc:0.1.13
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -142,7 +146,7 @@ services:
     restart: unless-stopped
 
   account-lookup-svc:
-    image: mojaloop/account-lookup-bc-account-lookup-svc:alpha-latest
+    image: mojaloop/account-lookup-bc-account-lookup-svc:0.1.10
     depends_on:
       account-lookup-http-oracle-svc:
         condition: service_healthy
@@ -172,7 +176,7 @@ services:
 # quoting
 
   quoting-svc:
-    image: mojaloop/quoting-bc-quoting-svc:alpha-latest
+    image: mojaloop/quoting-bc-quoting-svc:0.1.11
     depends_on:
       participants-svc:
         condition: service_healthy
@@ -202,7 +206,7 @@ services:
 # transfers
 
   transfers-api-svc:
-    image: mojaloop/transfers-bc-transfers-api-svc:alpha-latest
+    image: mojaloop/transfers-bc-transfers-api-svc:0.2.1
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -232,7 +236,7 @@ services:
     restart: unless-stopped
 
   transfers-event-handler-svc:
-    image: mojaloop/transfers-bc-event-handler-svc:alpha-latest
+    image: mojaloop/transfers-bc-event-handler-svc:0.2.0
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -253,7 +257,7 @@ services:
     restart: unless-stopped
 
   transfers-command-handler-svc:
-    image: mojaloop/transfers-bc-command-handler-svc:alpha-latest
+    image: mojaloop/transfers-bc-command-handler-svc:0.2.0
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -354,7 +358,7 @@ services:
 
 
   admin-ui:
-    image: mojaloop/vnext-admin-ui-svc:alpha-latest
+    image: mojaloop/vnext-admin-ui-svc:0.1.12
     depends_on:
       transfers-api-svc:
         condition: service_healthy

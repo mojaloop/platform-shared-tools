@@ -59,7 +59,7 @@ services:
         condition: service_healthy
     image: docker.elastic.co/elasticsearch/elasticsearch:${ES_STACK_VERSION}
     restart: unless-stopped
-    volumes: 
+    volumes:
       - certs_vol:/usr/share/elasticsearch/config/certs
       - esdata01_vol:/usr/share/elasticsearch/data
     ports:
@@ -164,6 +164,14 @@ services:
       retries: 10
     depends_on:
       - zoo
+
+  redis:
+    image: redis:latest
+    restart: unless-stopped
+    environment:
+      - REDIS_ARGS="--save 60 1000 --appendonly yes"
+    ports:
+      - 6379:6379
 
   redpanda-console:
     depends_on:
