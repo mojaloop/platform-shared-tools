@@ -2,35 +2,7 @@
 global:
   kibanaEnabled: false
 
-elasticsearch:
-  enabled: false
-  # fullnameOverride: "elastic"
-
-  security:
-    elasticPassword: elasticSearchPas42
-    tls:
-      restEncryption: false
-
-  coordinating:
-    replicaCount: 1
-
-  master:
-    replicaCount: 1
-    persistence:
-      enabled: false
-
-  data:
-    replicaCount: 1
-    persistence:
-      enabled: false
-
-  ingest:
-    replicaCount: 1
-
-  ingress:
-    enabled: true
-    # hostname: es01
-
+############### Kafka and Zookeeper ####################
 ## Reference: https://github.com/bitnami/charts/blob/main/bitnami/kafka/values.yaml
 kafka:
   enabled: true
@@ -84,6 +56,30 @@ kafka:
     tolerations: []
     waitForKafka: true
 
+############### RedPanda Console for Kafka  ####################
+# https://artifacthub.io/packages/helm/redpanda-data/console?modal=values
+# redpanda kakfa console config 
+
+redpanda-console:
+  enabled: true
+  fullnameOverride: rpconsole
+
+  console:
+    config:
+      kafka:
+        brokers:
+          - kafka:9092
+
+  ingress:
+    enabled: true 
+    className: nginx
+    hosts:
+      - host: redpanda-console.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+
+############### MongoDB  ####################
 # https://github.com/bitnami/charts/tree/main/bitnami/mongodb
 mongodb:
   enabled: true
@@ -108,8 +104,10 @@ mongodb:
   persistence:
     enabled: false
 
+############### Mongo Express ####################
 # mongo express config 
 mongo-express:
+  fullnameOverride: mongo-express
   enabled: true
 
   ingress:
@@ -119,25 +117,44 @@ mongo-express:
   mongodbEnableAdmin: true
   mongodbAdminPassword: mongoDbPas42
 
-# https://artifacthub.io/packages/helm/redpanda-data/console?modal=values
-# redpanda kakfa console config 
-
-redpanda-console:
+############### Redis  ####################
+## Reference: https://github.com/bitnami/charts/blob/main/bitnami/redis/values.yaml
+redis:
   enabled: true
-  fullnameOverride: rpconsole
+  fullnameOverride: redis 
+  architecture: standalone
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: false
 
-  console:
-    config:
-      kafka:
-        brokers:
-          - kafka:9092
+############### Elasticsearch and Kibana  ####################
+elasticsearch:
+  enabled: false
+  # fullnameOverride: "elastic"
+
+  security:
+    elasticPassword: elasticSearchPas42
+    tls:
+      restEncryption: false
+
+  coordinating:
+    replicaCount: 1
+
+  master:
+    replicaCount: 1
+    persistence:
+      enabled: false
+
+  data:
+    replicaCount: 1
+    persistence:
+      enabled: false
+
+  ingest:
+    replicaCount: 1
 
   ingress:
-    enabled: true 
-    className: nginx
-    hosts:
-      - host: redpanda-console.local
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-
+    enabled: true
+    # hostname: es01

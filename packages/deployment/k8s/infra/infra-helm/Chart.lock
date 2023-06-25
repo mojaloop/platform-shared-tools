@@ -1,0 +1,21 @@
+dependencies:
+- name: kafka
+  repository: https://charts.bitnami.com/bitnami
+  version: 19.0.2
+- name: console
+  repository: https://charts.redpanda.com
+  version: 0.6.6
+- name: mongodb
+  repository: https://charts.bitnami.com/bitnami
+  version: 13.3.1
+- name: mongo-express
+  repository: https://cowboysysop.github.io/charts/
+  version: 3.1.1
+- name: redis
+  repository: https://charts.bitnami.com/bitnami
+  version: 17.11.6
+- name: elasticsearch
+  repository: https://charts.bitnami.com/bitnami
+  version: 19.9.2
+digest: sha256:8944ca5f86ea417d675cd7252d4e00fd07838eee3d8d8c7ec634ac2400c49898
+generated: "2023-06-25T07:45:56.25259401Z"

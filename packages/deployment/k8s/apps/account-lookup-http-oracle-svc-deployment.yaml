@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-  creationTimestamp: null
+  creationTimestamp:
   labels:
     mojaloop.service: account-lookup-http-oracle-svc
     mojaloop.layer: apps
@@ -17,38 +17,38 @@ spec:
   template:
     metadata:
       annotations:
-      creationTimestamp: null
+      creationTimestamp:
       labels:
         mojaloop.service: account-lookup-http-oracle-svc
         mojaloop.layer: apps
     spec:
       containers:
-        - env:
-            - name: KAFKA_AUDITS_TOPIC
-              value: audits
-            - name: KAFKA_LOGS_TOPIC
-              value: logs
-            - name: KAFKA_URL
-              value: kafka:9092
-          image: mojaloop/account-lookup-bc-http-oracle-svc:alpha-latest
-          livenessProbe:
-            exec:
-              command:
-                - nc -z localhost 3031 || exit -1
-            failureThreshold: 10
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 10
-          name: account-lookup-http-oracle-svc
-          ports:
-            - containerPort: 3031
-          resources: {}
-          volumeMounts:
-            - mountPath: /app/data
-              name: account-lookup-http-oracle-svc-data
+      - env:
+        - name: KAFKA_AUDITS_TOPIC
+          value: audits
+        - name: KAFKA_LOGS_TOPIC
+          value: logs
+        - name: KAFKA_URL
+          value: kafka:9092
+        image: mojaloop/account-lookup-bc-http-oracle-svc:0.1.1
+        livenessProbe:
+          exec:
+            command:
+            - nc -z localhost 3031 || exit -1
+          failureThreshold: 10
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 10
+        name: account-lookup-http-oracle-svc
+        ports:
+        - containerPort: 3031
+        resources: {}
+        volumeMounts:
+        - mountPath: /app/data
+          name: account-lookup-http-oracle-svc-data
       restartPolicy: Always
       volumes:
-        - name: account-lookup-http-oracle-svc-data
-          persistentVolumeClaim:
-            claimName: account-lookup-http-oracle-svc-data
+      - name: account-lookup-http-oracle-svc-data
+        persistentVolumeClaim:
+          claimName: account-lookup-http-oracle-svc-data
 status: {}

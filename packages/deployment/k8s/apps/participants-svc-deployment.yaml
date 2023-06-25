@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-  creationTimestamp: null
+  creationTimestamp:
   labels:
     mojaloop.service: participants-svc
     mojaloop.layer: apps
@@ -17,7 +17,7 @@ spec:
   template:
     metadata:
       annotations:
-      creationTimestamp: null
+      creationTimestamp:
       labels:
         mojaloop.service: participants-svc
         mojaloop.layer: apps
@@ -45,7 +45,7 @@ spec:
         - name: PLATFORM_CONFIG_BASE_SVC_URL
           value: http://platform-configuration-svc:3100
         - name: TIGERBEETLE_CLUSTER_ID
-          value: "0"
+          value: '0'
         - name: TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES
           value: tigerbeetle:3000
         image: mojaloop/participants-bc-participants-svc:0.1.13

@@ -2,7 +2,7 @@ apiVersion: v2
 description: Helm chart for mojaloop vNext infrastructure services
 name: vnext-infra
 version: 15.0.0
-appVersion: "elasticsearch:19.9.2 kafka: 19.0.2; mongodb: 13.3.1; mongo-express: 3.1.1; console: 0.6.6"
+appVersion: "kafka: 19.0.2; console: 0.6.6; mongodb: 13.3.1; mongo-express: 3.1.1; elasticsearch:19.9.2; redis: 17.11.6"
 home: http://mojaloop.io
 icon: http://mojaloop.io/images/logo.png
 sources:
@@ -12,16 +12,7 @@ maintainers:
 - name: Tom Daly
   email: tomd@crosslaketech.com
 dependencies:
-- name: elasticsearch
-  alias: elasticsearch
-  condition: elasticsearch.enabled
-  repository: https://charts.bitnami.com/bitnami
-  tags:
-  - mojaloop
-  - dependency
-  - vNext
-  - elasticsearch
-  version: 19.9.2
+## kafka 
 - name: kafka
   alias: kafka
   condition: kafka.enabled
@@ -32,6 +23,18 @@ dependencies:
   - vNext
   - kafka
   version: 19.0.2
+## redpanda kafka console 
+- name: console
+  alias: redpanda-console
+  condition: console.enabled
+  repository: https://charts.redpanda.com
+  tags:
+  - mojaloop
+  - dependency
+  - vNext
+  - kafka
+  - redpanda
+  version: 0.6.6
 ## MongoDB
 - name: mongodb
   alias: mongodb
@@ -54,15 +57,25 @@ dependencies:
   - vNext
   - mongodb
   version: 3.1.1
-## redpanda kafka console 
-- name: console
-  alias: redpanda-console
-  condition: console.enabled
-  repository: https://charts.redpanda.com
+## redis 
+- name: redis
+  alias: redis 
+  condition: redis.enabled
+  repository: https://charts.bitnami.com/bitnami
   tags:
   - mojaloop
   - dependency
   - vNext
-  - kafka
-  - redpanda
-  version: 0.6.6
+  - mongodb
+  version: 17.11.6
+## Elastic Search Kibana 
+- name: elasticsearch
+  alias: elasticsearch
+  condition: elasticsearch.enabled
+  repository: https://charts.bitnami.com/bitnami
+  tags:
+  - mojaloop
+  - dependency
+  - vNext
+  - elasticsearch
+  version: 19.9.2
