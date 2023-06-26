@@ -68,7 +68,7 @@ export class ParticipantDetailComponent implements OnInit {
       throw new Error("invalid participant id");
     }
 
-    this._fetchParticipant(this._participantId);
+    await this._fetchParticipant(this._participantId);
   }
 
   private async _fetchParticipant(id: string): Promise<void> {
@@ -477,61 +477,47 @@ export class ParticipantDetailComponent implements OnInit {
 
   createNDCRequest() {
     if (!this.newNDC) {
-      throw new Error(`newNDC is empty to create`);
+      throw new Error("newNDC is empty to create");
     }
 
-    const fixedValue = document.getElementById("ndcAmount") as HTMLInputElement;
+	if(this.newNDC.type === "ABSOLUTE"){
+		const fixedValue = document.getElementById("ndcAmount") as HTMLInputElement;
+		this.newNDC.fixedValue = Number(fixedValue.value);
+	}else if(this.newNDC.type === "PERCENTAGE"){
+		const percentage = document.getElementById("ndcPercentage") as HTMLInputElement;
+		this.newNDC.percentage = Number(percentage.value);
+	}else{
+		this._messageService.addWarning("Invalid Net Debit Cap Type");
+		return;
+	}
 
-    if (fixedValue && this.newNDC.type === "ABSOLUTE") {
-      this.newNDC.fixedValue = Number(fixedValue.value);
-    } else {
-      this.newNDC.fixedValue = null; // default
-    }
+    const currencyElement = document.getElementById("ndcCurrency") as HTMLSelectElement;
 
-    const percentage = document.getElementById(
-      "ndcPercentage"
-    ) as HTMLInputElement;
-
-    if (percentage && this.newNDC.type === "PERCENTAGE") {
-      this.newNDC.percentage = Number(percentage.value);
-    } else {
-      this.newNDC.percentage = null; // default
-    }
-
-    const currencyElement = document.getElementById(
-      `ndcCurrency`
-    ) as HTMLSelectElement;
-
-    if (currencyElement) {
-      this.newNDC.currencyCode = currencyElement.value;
-    } else {
-      this.newNDC.currencyCode = "EUR"; // default
-    }
+    if (!currencyElement) {
+		this._messageService.addWarning("Invalid Net Debit Cap Currency");
+		return;
+	}
+	this.newNDC.currencyCode = currencyElement.value;
 
     // check overlaps
-    const duplicateNDC = this.participant.value?.netDebitCaps.find(
-      (item) =>
-        item.type === this.newNDC?.type &&
-        item.currencyCode === this.newNDC.currencyCode
-    );
+	if(this.participant.value?.netDebitCaps) {
+		const duplicateNDC = this.participant.value.netDebitCaps.find(
+			(item) =>
+				item.currencyCode === this.newNDC!.currencyCode
+		);
+		if (duplicateNDC) {
+			this._messageService.addWarning("An Net Debit Cap already exists for that currency");
+			return;
+		}
+	}
+	// TODO check duplicates also in requests (pending approval)
 
-    if (duplicateNDC) {
-      this._messageService.addWarning(
-        "Cannot add a NDC with the same type and currency"
-      );
-      return;
-    }
-
-    this._participantsSvc
-      .createNDC(this.participant.value!.id, this.newNDC)
-      .subscribe(
-        (value) => {
+    this._participantsSvc.createNDC(this.participant.value!.id, this.newNDC).subscribe(async(value) => {
           this.ndcCreateModeEnabled = false;
           this.ndcEditModeEnabled = false;
           this.newNDC = null;
 
-          this._fetchParticipant(this.participant.value!.id);
-          this.updateAccounts();
+          await this._fetchParticipant(this.participant.value!.id);
         },
         (error) => {
           this._messageService.addError(error.message);
@@ -555,7 +541,6 @@ export class ParticipantDetailComponent implements OnInit {
           this._messageService.addSuccess("NDC Request approved with success!");
 
           await this._fetchParticipant(this.participant.value!.id);
-          this.updateAccounts();
         },
         (error) => {
           if (this.depositWithdrawalModalRef)

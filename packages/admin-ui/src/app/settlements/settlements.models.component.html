@@ -1,0 +1,25 @@
+<h3>Settlement Models</h3>
+
+<div>
+	<table class="table">
+		<thead class="thead-light">
+		<tr>
+			<th scope="col">Id</th>
+			<th scope="col">Name</th>
+			<th scope="col">Batch Duration (secs)</th>
+		</tr>
+		</thead>
+		<tbody>
+		<ng-container *ngIf="(models | async)?.length==0">
+			<tr class="">
+				<td colspan="6">No Settlement Models found</td>
+			</tr>
+		</ng-container>
+		<tr *ngFor="let item of (models | async)">
+			<td>{{item.id}}</td>
+			<td>{{item.settlementModel}}</td>
+			<td>{{item.batchCreateInterval}}</td>
+		</tr>
+		</tbody>
+	</table>
+</div>

@@ -7,16 +7,18 @@ import {PlatformRole, TokenEndpointResponse} from "@mojaloop/security-bc-public-
 import {Participant, ParticipantAccount, ParticipantEndpoint} from "src/app/_services_and_types/participant_types";
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
 import * as uuid from "uuid";
+
 import {
-  AppConfigurationSet,
-  ConfigurationSet,
-  GlobalConfigurationSet
-} from "src/app/_services_and_types/platform-config_types";
+	ConfigurationSet,
+	BoundedContextConfigurationSet,
+	GlobalConfigurationSet,
+	BCCONFIGSET_URL_RESOURCE_NAME,
+	GLOBALCONFIGSET_URL_RESOURCE_NAME
+} from "@mojaloop/platform-configuration-bc-public-types-lib";
+
 import semver from "semver";
 
 const SVC_BASEURL = "/_platform-configuration-svc";
-const GLOBALCONFIGSET_URL_RESOURCE_NAME = "globalConfigSets";
-const APPCONFIGSET_URL_RESOURCE_NAME = "appConfigSets";
 
 
 @Injectable({
@@ -30,10 +32,10 @@ export class PlatformConfigService {
   }
 
 
-  getAllAppConfigs():Observable<AppConfigurationSet[]>{
-    return new Observable<AppConfigurationSet[]>(subscriber => {
-      this._http.get<AppConfigurationSet[]>(`${SVC_BASEURL}/${APPCONFIGSET_URL_RESOURCE_NAME}/${this._envName}/`).subscribe(
-        (result:AppConfigurationSet[]) => {
+  getAllBcConfigs():Observable<BoundedContextConfigurationSet[]>{
+    return new Observable<BoundedContextConfigurationSet[]>(subscriber => {
+      this._http.get<BoundedContextConfigurationSet[]>(`${SVC_BASEURL}/${BCCONFIGSET_URL_RESOURCE_NAME}/`).subscribe(
+        (result:BoundedContextConfigurationSet[]) => {
           console.log(`got getAllAppConfigs response: ${result}`);
 
           subscriber.next(result);
@@ -50,7 +52,7 @@ export class PlatformConfigService {
 
   getAllGlobalConfigs():Observable<GlobalConfigurationSet[]>{
     return new Observable<GlobalConfigurationSet[]>(subscriber => {
-      this._http.get<GlobalConfigurationSet[]>(`${SVC_BASEURL}/${GLOBALCONFIGSET_URL_RESOURCE_NAME}/${this._envName}/`).subscribe(
+      this._http.get<GlobalConfigurationSet[]>(`${SVC_BASEURL}/${GLOBALCONFIGSET_URL_RESOURCE_NAME}/`).subscribe(
         (result:GlobalConfigurationSet[]) => {
           console.log(`got getAllGlobalConfigs response: ${result}`);
 

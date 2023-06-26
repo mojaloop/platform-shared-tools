@@ -75,17 +75,18 @@ export class ParticipantsService {
       balance: null,
     };
   }
+
   createEmptyNDC(): IParticipantNetDebitCapChangeRequest {
     return {
       id: uuid.v4(),
-      createdBy: "",
+      createdBy: this._authentication.username!,
       createdDate: new Date().getTime(),
       type: "ABSOLUTE",
-      fixedValue: 100,
-      percentage: 0,
+      fixedValue: 0,
+      percentage: null,
       currencyCode: "EUR",
-      note: "",
-      extReference: "",
+      note: null,
+      extReference: null,
       approved: false,
       approvedBy: null,
       approvedDate: null,

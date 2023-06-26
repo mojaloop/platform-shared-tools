@@ -30,7 +30,22 @@
 
 "use strict";
 
-// TODO use settlements-public-lib instead
+//TODO use settlements-public-lib instead
+
+export interface ISettlementConfig {
+	id: string;
+	/**
+	 * Settlement model name, should be unique.
+	 * @todo rename to modelName
+	 */
+	settlementModel: string;
+	/**
+	 * Batch duration interval in seconds
+	 * @todo rename to batchCreateIntervalSecs
+	 */
+	batchCreateInterval: number;
+}
+
 
 export interface ISettlementBatch {
 	id: string; // FX.XOF:RWF.2021.08.23.00.00.001

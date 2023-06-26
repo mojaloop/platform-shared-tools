@@ -38,7 +38,7 @@ import {AuthenticationService} from "src/app/_services_and_types/authentication.
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
 import {
 	ISettlementBatch,
-	ISettlementBatchTransfer,
+	ISettlementBatchTransfer, ISettlementConfig,
 	ISettlementMatrix
 } from "src/app/_services_and_types/settlements_types";
 import {Transfer} from "src/app/_services_and_types/transfer_types";
@@ -53,6 +53,34 @@ const SVC_BASEURL = "/_settlements";
 export class SettlementsService {
 
 	constructor(private _http: HttpClient, private _authentication: AuthenticationService) {}
+
+	getAllModels(): Observable<ISettlementConfig[]> {
+		return new Observable<ISettlementConfig[]>(subscriber => {
+			const url = `${SVC_BASEURL}/models`;
+			this._http.get<ISettlementConfig[]>(url).subscribe(
+				(result: ISettlementConfig[]) => {
+					console.log(`got response: ${result}`);
+
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status===403) {
+						console.warn("Access forbidden received on getAllModels");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else if (error && error.status===404) {
+						subscriber.next([]);
+						return subscriber.complete();
+					}else{
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+
+					return subscriber.complete();
+				}
+			);
+		});
+	}
 
 	getBatchesByCriteria(settlementModel: string, currencyCode: string, fromDate: number, toDate: number): Observable<ISettlementBatch[]>{
 		return new Observable<ISettlementBatch[]>(subscriber => {

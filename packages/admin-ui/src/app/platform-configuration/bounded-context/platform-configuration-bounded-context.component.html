@@ -1,19 +1,19 @@
-<h3>Platform Configuration - Application Specific Configurations</h3>
+<h3>Platform Configuration - Bounded Context Specific Configurations</h3>
 
-<h4>Registered Applications</h4>
+<h4>Registered Bounded Contexts</h4>
 <div>
   <table class="table">
     <thead class="thead-light">
     <tr>
-      <th scope="col">Application</th>
+      <th scope="col">Bounded Context</th>
       <th scope="col">Iteration #</th>
 
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let app of (apps | async)">
-      <td>{{app.boundedContextName}} / {{app.applicationName}}  <span class="badge badge-secondary">{{app.applicationVersion}}</span></td>
-      <td>{{app.iterationNumber}}</td>
+    <tr *ngFor="let bc of (bcs | async)">
+      <td>{{bc.boundedContextName}} <span class="badge badge-secondary">{{bc.schemaVersion}}</span></td>
+      <td>{{bc.iterationNumber}}</td>
     </tr>
     </tbody>
   </table>
@@ -26,7 +26,7 @@
   <table class="table">
     <thead class="thead-light">
     <tr>
-      <th scope="col">Application</th>
+      <th scope="col">Bounded Context</th>
       <th scope="col">Param Name</th>
       <th scope="col">Type</th>
       <th scope="col">Default Value</th>
@@ -36,7 +36,7 @@
     </thead>
     <tbody>
     <tr *ngFor="let item of (params | async)">
-      <td>{{item.boundedContextName}} / {{item.applicationName}}  <span class="badge badge-secondary">{{item.applicationVersion}}</span></td>
+      <td>{{item.boundedContextName}}  <span class="badge badge-secondary">{{item.schemaVersion}}</span></td>
       <td>{{item.name}}</td>
       <td>{{item.type}}</td>
       <td>{{item.defaultValue}}</td>
@@ -53,7 +53,7 @@
   <table class="table">
     <thead class="thead-light">
     <tr>
-      <th scope="col">Application</th>
+      <th scope="col">Bounded Context</th>
       <th scope="col">Flag Name</th>
 
       <th scope="col">Default Value</th>
@@ -63,7 +63,7 @@
     </thead>
     <tbody>
     <tr *ngFor="let flag of (featureFlags | async)">
-      <td>{{flag.boundedContextName}} / {{flag.applicationName}}  <span class="badge badge-secondary">{{flag.applicationVersion}}</span></td>
+      <td>{{flag.boundedContextName}} <span class="badge badge-secondary">{{flag.schemaVersion}}</span></td>
       <td>{{flag.name}}</td>
 
       <td>{{flag.defaultValue}}</td>
@@ -82,7 +82,7 @@
   <table class="table">
     <thead class="thead-light">
     <tr>
-      <th scope="col">Application</th>
+      <th scope="col">Bounded Context</th>
       <th scope="col">Secret Name</th>
 
       <th scope="col">Current Value</th>
@@ -91,7 +91,7 @@
     </thead>
     <tbody>
     <tr *ngFor="let secret of (secrets | async)">
-      <td>{{secret.boundedContextName}} / {{secret.applicationName}}  <span class="badge badge-secondary">{{secret.applicationVersion}}</span></td>
+      <td>{{secret.boundedContextName}}  <span class="badge badge-secondary">{{secret.schemaVersion}}</span></td>
       <td>{{secret.name}}</td>
 
       <td>****</td>

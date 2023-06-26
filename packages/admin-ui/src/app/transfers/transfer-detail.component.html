@@ -19,17 +19,17 @@
 		<div class="col-4"> <!-- col 1 -->
 
 			<div class="mb-2">
-				<label class="col-form-label text-secondary">Payee FSP</label>
-				<div><a href="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></div>
-			</div>
-
-			<div class="mb-2">
 				<label class="col-form-label text-secondary">Payer FSP</label>
 				<div><a href="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></div>
 			</div>
 
 			<div class="mb-2">
-				<label class="col-form-label text-secondary">Last udate</label>
+				<label class="col-form-label text-secondary">Payee FSP</label>
+				<div><a href="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></div>
+			</div>
+
+			<div class="mb-2">
+				<label class="col-form-label text-secondary">Last update</label>
 				<div class="text-break">{{item.updatedAt | date:'medium'}}</div>
 			</div>
 
@@ -67,7 +67,7 @@
 				<div class="text-break" *ngIf="(settlementTransfer | async)?.settled">Yes<!-- - <a routerLink="/settlements/matrix/{{(settlementTransfer | async)?.matrixId}}">Matrix</a>--></div>
 			</div>
 
-			
+
 		</div> <!-- col 2 -->
 
 		<div class="col-3"> <!-- column 3 - buttons -->

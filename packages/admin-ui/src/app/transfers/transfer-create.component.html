@@ -42,14 +42,6 @@
 
 		</div>
 
-		<!--payeeFsp-->
-		<div class="form-group col-md-4">
-			<label for="payeeFsp">Payee Fsp:</label>
-			<select id="payeeFsp" class="form-control" formControlName="payeeFsp">
-				<option *ngFor="let participant of (participants | async)"
-						value="{{participant.id}}">{{participant.name}}</option>
-			</select>
-		</div>
 
 		<!--payerFsp-->
 		<div class="form-group col-md-4">
@@ -59,6 +51,16 @@
 						value="{{participant.id}}">{{participant.name}}</option>
 			</select>
 		</div>
+
+		<!--payeeFsp-->
+		<div class="form-group col-md-4">
+			<label for="payeeFsp">Payee Fsp:</label>
+			<select id="payeeFsp" class="form-control" formControlName="payeeFsp">
+				<option *ngFor="let participant of (participants | async)"
+						value="{{participant.id}}">{{participant.name}}</option>
+			</select>
+		</div>
+
 
 		<!--amount-->
 		<div class="form-group col-md-2">

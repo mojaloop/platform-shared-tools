@@ -1,36 +1,80 @@
 <h3>Platform Configuration - Global Configurations</h3>
 
 
-<h4>Global configuration stats</h4>
-<ul>
-  <li><strong>{{(globalConfigStatus|async)?.distinctVersionCount}}</strong> schema versions registered</li>
-  <li>Latest schema version is: <strong>v{{(globalConfigStatus|async)?.latestSchemaVersion}}</strong></li>
-  <li>Current iteration number is: <strong>#{{(globalConfigStatus|async)?.currentIteration}}</strong></li>
-</ul>
+<div class="row" style="margin-top: 20px; margin-bottom: 20px;">
+	<div class="col-sm-2">
+	<div class="card text-white bg-secondary mb-2 text-center h-100 " style="max-width: 18rem;">
+		<div class="card-body">
+			<h5 class="card-title"><strong>{{(globalConfigStatus|async)?.distinctVersionCount}}</strong></h5>
+			<p class="card-text">Versions</p>
+		</div>
+	</div>
+	</div>
 
-<h4>Global Configurations</h4>
+	<div class="col-sm-2">
+	<div class="card text-white bg-secondary mb-2 text-center h-100 " style="max-width: 18rem;">
+		<div class="card-body">
+			<h5 class="card-title"><strong>v{{(globalConfigStatus|async)?.latestSchemaVersion}}</strong></h5>
+			<p class="card-text">Latest version</p>
+		</div>
+	</div>
+	</div>
+
+	<div class="col-sm-2">
+	<div class="card text-white bg-secondary mb-2 text-center h-100 " style="max-width: 18rem;">
+		<div class="card-body">
+			<h5 class="card-title"><strong>#{{(globalConfigStatus|async)?.currentIteration}}</strong></h5>
+			<p class="card-text">Current iteration</p>
+		</div>
+	</div>
+	</div>
+</div>
+
+
+<!--<ul>-->
+<!--  <li><strong>{{(globalConfigStatus|async)?.distinctVersionCount}}</strong> schema versions registered</li>-->
+<!--  <li>Latest schema version is: <strong>v{{(globalConfigStatus|async)?.latestSchemaVersion}}</strong></li>-->
+<!--  <li>Current iteration number is: <strong>#{{(globalConfigStatus|async)?.currentIteration}}</strong></li>-->
+<!--</ul>-->
 
 <h4>Parameters</h4>
 <div>
   <table class="table">
     <thead class="thead-light">
     <tr>
-      <th scope="col">Schema/Iteration</th>
+      <th scope="col">Iteration / Schema</th>
       <th scope="col">Param Name</th>
       <th scope="col">Type</th>
       <th scope="col">Default Value</th>
       <th scope="col">Current Value</th>
       <th scope="col">Description</th>
+		<th scope="col" style="width: 90px;">Actions</th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let item of (params | async)">
-      <td><span class="badge badge-secondary">#{{item.iterationNumber}} @ v{{item.schemaVersion}}</span></td>
-      <td>{{item.name}}</td>
-      <td>{{item.type}}</td>
-      <td>{{item.defaultValue}}</td>
-      <td>{{item.currentValue}}</td>
-      <td>{{item.description}}</td>
+    <tr *ngFor="let param of (params | async)">
+      <td>#{{param.iterationNumber}} / v{{param.schemaVersion}}</td>
+      <td>{{param.name}}</td>
+      <td>{{param.type}}</td>
+
+		<td *ngIf="param.type==='LIST' || param.type==='OBJECT'">(list or object not shown)</td>
+		<td *ngIf="param.type!=='LIST' && param.type!=='OBJECT'">{{param.defaultValue}}</td>
+
+		<td *ngIf="param.type==='LIST' || param.type==='OBJECT'">(list or object not shown)</td>
+		<td *ngIf="param.type!=='LIST' && param.type!=='OBJECT'">{{param.currentValue}}</td>
+
+      <td>{{param.description}}</td>
+
+		<td> <!--actions-->
+			<button class="btn btn-primary btn-block" [disabled]="editing" (click)="showEditConfigItemModal()">Deposit</button>
+			<div class="btn-group btn-group-sm" role="group" aria-label="">
+
+				<button type="button" class="btn btn-danger" [hidden]="false"
+						ngbTooltip="Disable account">
+					<span class="bi bi-dash-circle"></span>
+				</button>
+			</div>
+		</td>
     </tr>
     </tbody>
   </table>
@@ -52,7 +96,7 @@
     </thead>
     <tbody>
     <tr *ngFor="let flag of (featureFlags | async)">
-      <td><span class="badge badge-secondary">#{{flag.iterationNumber}} @ v{{flag.schemaVersion}}</span></td>
+		<td>#{{flag.iterationNumber}} / v{{flag.schemaVersion}}</td>
       <td>{{flag.name}}</td>
 
       <td>{{flag.defaultValue}}</td>
@@ -80,7 +124,7 @@
     </thead>
     <tbody>
     <tr *ngFor="let secret of (secrets | async)">
-      <td><span class="badge badge-secondary">#{{secret.iterationNumber}} @ v{{secret.schemaVersion}}</span></td>
+		<td>#{{secret.iterationNumber}} / v{{secret.schemaVersion}}</td>
       <td>{{secret.name}}</td>
 
       <td>****</td>
@@ -89,3 +133,62 @@
     </tbody>
   </table>
 </div>
+
+
+
+
+<!-- Edit Config Modal -->
+<ng-template #editConfigItemModal let-modal>
+	<div class="modal-header">
+
+		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<form class="">
+
+			<div class="form-group">
+				<label class="ml-2 mr-2" for="depositAmount">Amount</label>
+				<input type="number" class="form-control" id="depositAmount" min="0" required>
+				<div class="invalid-feedback">
+					Invalid amount
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="" for="depositCurrencyCode">Currency</label>
+				<select class="form-control" id="depositCurrencyCode">
+					<option value="EUR">EUR</option>
+					<option value="USD">USD</option>
+					<option value="TZS">TZS</option>
+				</select>
+				<div class="invalid-feedback">
+					Please choose a currency for which a position account exists.
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="ml-2 mr-2" for="depositExtRef">External Reference</label>
+				<input type="text" class="form-control" id="depositExtRef">
+				<div class="invalid-feedback">
+					Invalid external reference
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="ml-2 mr-2" for="depositNote">Note</label>
+				<textarea class="form-control" id="depositNote"></textarea>
+				<div class="invalid-feedback">
+					Invalid note
+				</div>
+			</div>
+
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-success" (click)="saveConfigItem($event)">Save</button>
+		<button type="button" class="btn btn-danger" (click)="modal.dismiss()">Cancel</button>
+	</div>
+</ng-template>
+

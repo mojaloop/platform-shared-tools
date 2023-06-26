@@ -1,130 +1,151 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {PlatformConfigService} from "src/app/_services_and_types/platform-config.service";
 import {BehaviorSubject, Subscription} from "rxjs";
-import {
-  ConfigFeatureFlag,
-  ConfigParameter,
-  ConfigSecret,
-  ConfigurationSet, GlobalConfigurationSet
-} from "src/app/_services_and_types/platform-config_types";
 import semver from "semver";
+import {
+	ConfigFeatureFlag,
+	GlobalConfigurationSet,
+	ConfigParameter,
+	ConfigSecret,
+	ConfigParameterTypes
+} from "@mojaloop/platform-configuration-bc-public-types-lib";
+import {NgbModal, NgbModalRef, NgbNav} from "@ng-bootstrap/ng-bootstrap";
+import {ParticipantFundsMovementDirection} from "../../_services_and_types/participant_types";
 
-export type BaseListItem  =  {
-  schemaVersion?: string;
-  iterationNumber?: number;
+export type BaseListItem = {
+	schemaVersion?: string;
+	iterationNumber?: number;
 }
 
-export type ParamListItem  = ConfigParameter & BaseListItem;
+export type ParamListItem = ConfigParameter & BaseListItem;
 export type FeatureFlagListItem = ConfigFeatureFlag & BaseListItem;
-export type SecretListItem  = ConfigSecret & BaseListItem;
+export type SecretListItem = ConfigSecret & BaseListItem;
 
 export type GlobalConfigStatus = {
-  latestSchemaVersion: string;
-  currentIteration: number;
-  distinctVersionCount: number;
+	latestSchemaVersion: string;
+	currentIteration: number;
+	distinctVersionCount: number;
 }
 
 @Component({
-  selector: "app-platform-configuration-global",
-  templateUrl: './platform-configuration-global.component.html'
+	selector: "app-platform-configuration-global",
+	templateUrl: './platform-configuration-global.component.html'
 })
 export class PlatformConfigurationGlobalComponent implements OnInit, OnDestroy {
-  globalConfigSetsSubs?:Subscription;
+	globalConfigSetsSubs?: Subscription;
 
-  globalConfigStatus: BehaviorSubject<GlobalConfigStatus|null> = new BehaviorSubject<GlobalConfigStatus|null>(null);
-  //latestSchemaVersions: BehaviorSubject<string> = new BehaviorSubject<string>("");
-  //differentSchemaVersions: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+	globalConfigStatus: BehaviorSubject<GlobalConfigStatus | null> = new BehaviorSubject<GlobalConfigStatus | null>(null);
+	//latestSchemaVersions: BehaviorSubject<string> = new BehaviorSubject<string>("");
+	//differentSchemaVersions: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
-  params: BehaviorSubject<ParamListItem[]> = new BehaviorSubject<ParamListItem[]>([]);
-  featureFlags: BehaviorSubject<FeatureFlagListItem[]> = new BehaviorSubject<FeatureFlagListItem[]>([]);
-  secrets: BehaviorSubject<SecretListItem[]> = new BehaviorSubject<SecretListItem[]>([]);
+	params: BehaviorSubject<ParamListItem[]> = new BehaviorSubject<ParamListItem[]>([]);
+	featureFlags: BehaviorSubject<FeatureFlagListItem[]> = new BehaviorSubject<FeatureFlagListItem[]>([]);
+	secrets: BehaviorSubject<SecretListItem[]> = new BehaviorSubject<SecretListItem[]>([]);
 
-  constructor(private _platformConfigsSvc:PlatformConfigService) {
+	@ViewChild("editConfigItemModal") // Get a reference to the depositModal
+	editConfigItemModal!: NgbModal;
+	editConfigItemModalRef?: NgbModalRef;
 
-  }
+	private _editing:boolean = false;
 
-  ngOnInit(): void {
-    console.log("PlatformConfigurationComponent ngOnInit");
+	constructor(private _platformConfigsSvc: PlatformConfigService,private _modalService: NgbModal) {
 
-    this.globalConfigSetsSubs = this._platformConfigsSvc.getAllGlobalConfigs().subscribe((list) => {
-      console.log("PlatformConfigurationComponent ngOnInit - got getAll");
+	}
 
-      // sort by decreasing schemaVersion order (latest version first)
-      list.sort((a: GlobalConfigurationSet, b: GlobalConfigurationSet) => semver.compare(b.schemaVersion, a.schemaVersion));
-      const latestSchemaVersion = list[0].schemaVersion;
+	ngOnInit(): void {
+		console.log("PlatformConfigurationComponent ngOnInit");
 
-      if(!latestSchemaVersion) {
-        this.globalConfigStatus.next(null);
-        this.params.next([]);
-        this.featureFlags.next([]);
-        this.secrets.next([]);
-        return;
-      }
+		this.globalConfigSetsSubs = this._platformConfigsSvc.getAllGlobalConfigs().subscribe((list) => {
+			console.log("PlatformConfigurationComponent ngOnInit - got getAll");
 
-      const schemaVersions: string[] = [];
-      const params: ParamListItem[] = [];
-      const featureFlags: FeatureFlagListItem[] = [];
-      const secrets: SecretListItem[] = [];
+			// sort by decreasing schemaVersion order (latest version first)
+			list.sort((a: GlobalConfigurationSet, b: GlobalConfigurationSet) => semver.compare(b.schemaVersion, a.schemaVersion));
+			const latestSchemaVersion = list[0].schemaVersion;
 
-      // get distinct versions
-      const distinctVersions = list.reduce((acc:string[], v:GlobalConfigurationSet) => (!acc.includes(v.schemaVersion) && acc.push(v.schemaVersion), acc), []);
+			if (!latestSchemaVersion) {
+				this.globalConfigStatus.next(null);
+				this.params.next([]);
+				this.featureFlags.next([]);
+				this.secrets.next([]);
+				return;
+			}
 
-      list = list.filter((item: GlobalConfigurationSet) => item.schemaVersion === latestSchemaVersion);
-      const latestSchemaVersionIterationCount = list.length;
-      list.sort((a: GlobalConfigurationSet, b: GlobalConfigurationSet) => b.iterationNumber-a.iterationNumber);
-      const currentIteration = list[0].iterationNumber;
+			const schemaVersions: string[] = [];
+			const params: ParamListItem[] = [];
+			const featureFlags: FeatureFlagListItem[] = [];
+			const secrets: SecretListItem[] = [];
 
-      // second pass
-      list.forEach(configSet => {
-        if(!schemaVersions.includes(configSet.schemaVersion)){
-          schemaVersions.push(configSet.schemaVersion);
-        }
-        if(configSet.schemaVersion !== latestSchemaVersion || configSet.iterationNumber !== currentIteration) return;
+			// get distinct versions
+			const distinctVersions = list.reduce((acc: string[], v: GlobalConfigurationSet) => (!acc.includes(v.schemaVersion) && acc.push(v.schemaVersion), acc), []);
 
-        configSet.parameters.forEach(param =>{
-          params.push({
-            schemaVersion: configSet.schemaVersion,
-            iterationNumber: configSet.iterationNumber,
-            ...param
-          });
-        });
+			list = list.filter((item: GlobalConfigurationSet) => item.schemaVersion === latestSchemaVersion);
+			const latestSchemaVersionIterationCount = list.length;
+			list.sort((a: GlobalConfigurationSet, b: GlobalConfigurationSet) => b.iterationNumber - a.iterationNumber);
+			const currentIteration = list[0].iterationNumber;
 
-        configSet.featureFlags.forEach(featureflag =>{
-          featureFlags.push({
-            schemaVersion: configSet.schemaVersion,
-            iterationNumber: configSet.iterationNumber,
-            ...featureflag
-          });
-        })
+			// second pass
+			list.forEach(configSet => {
+				if (!schemaVersions.includes(configSet.schemaVersion)) {
+					schemaVersions.push(configSet.schemaVersion);
+				}
+				if (configSet.schemaVersion !== latestSchemaVersion || configSet.iterationNumber !== currentIteration) return;
 
-        configSet.secrets.forEach(secret =>{
-          secrets.push({
-            schemaVersion: configSet.schemaVersion,
-            iterationNumber: configSet.iterationNumber,
-            ...secret
-          });
-        });
+				configSet.parameters.forEach(param => {
+					params.push({
+						schemaVersion: configSet.schemaVersion,
+						iterationNumber: configSet.iterationNumber,
+						...param
+					});
+				});
 
-      });
+				configSet.featureFlags.forEach(featureflag => {
+					featureFlags.push({
+						schemaVersion: configSet.schemaVersion,
+						iterationNumber: configSet.iterationNumber,
+						...featureflag
+					});
+				})
 
-      const globalConfigStatus: GlobalConfigStatus = {
-        latestSchemaVersion: latestSchemaVersion,
-        currentIteration: currentIteration,
-        distinctVersionCount: distinctVersions.length
-      }
+				configSet.secrets.forEach(secret => {
+					secrets.push({
+						schemaVersion: configSet.schemaVersion,
+						iterationNumber: configSet.iterationNumber,
+						...secret
+					});
+				});
 
-      this.globalConfigStatus.next(globalConfigStatus);
-      this.params.next(params);
-      this.featureFlags.next(featureFlags);
-      this.secrets.next(secrets);
-    });
-  }
+			});
 
-  ngOnDestroy() {
-    if (this.globalConfigSetsSubs) {
-      this.globalConfigSetsSubs.unsubscribe();
-    }
-  }
+			const globalConfigStatus: GlobalConfigStatus = {
+				latestSchemaVersion: latestSchemaVersion,
+				currentIteration: currentIteration,
+				distinctVersionCount: distinctVersions.length
+			}
 
+			this.globalConfigStatus.next(globalConfigStatus);
+			this.params.next(params);
+			this.featureFlags.next(featureFlags);
+			this.secrets.next(secrets);
+		});
+	}
+
+	ngOnDestroy() {
+		if (this.globalConfigSetsSubs) {
+			this.globalConfigSetsSubs.unsubscribe();
+		}
+	}
+
+	get editing(): boolean {
+		return this._editing;
+	}
+
+	showEditConfigItemModal() {
+		this.editConfigItemModalRef = this._modalService.open(this.editConfigItemModal, {centered: true});
+	}
+
+	saveConfigItem(e:Event){
+		console.log(e);
+		debugger;
+	}
 
 }

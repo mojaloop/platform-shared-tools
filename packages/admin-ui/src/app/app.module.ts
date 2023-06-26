@@ -20,8 +20,8 @@ import {InteropInterceptor} from "src/app/_pipes_and_guards/interop_interceptor"
 import { ParticipantDetailComponent } from 'src/app/participants/participant-detail.component';
 import { PlatformConfigurationComponent } from './platform-configuration/platform-configuration.component';
 import {
-  PlatformConfigurationAppComponent
-} from "src/app/platform-configuration/app/platform-configuration-app.component";
+  PlatformConfigurationBoundedContextComponent
+} from "src/app/platform-configuration/bounded-context/platform-configuration-bounded-context.component";
 import {
   PlatformConfigurationGlobalComponent
 } from "src/app/platform-configuration/global/platform-configuration-global.component";
@@ -46,6 +46,7 @@ import { SettlementsBatchesComponent } from 'src/app/settlements/settlements.bat
 import {SettlementsMatrixDetailComponent} from "src/app/settlements/settlements.matrix-detail.component";
 import { SettlementsMatricesComponent } from './settlements/settlements.matrices.component';
 import {SettlementsTransfersComponent} from "src/app/settlements/settlements.transfers.component";
+import {SettlementsModelsComponent} from "./settlements/settlements.models.component";
 
 @NgModule({
   declarations: [
@@ -61,7 +62,7 @@ import {SettlementsTransfersComponent} from "src/app/settlements/settlements.tra
     ParticipantCreateComponent,
     ParticipantDetailComponent,
     PlatformConfigurationComponent,
-    PlatformConfigurationAppComponent,
+    PlatformConfigurationBoundedContextComponent,
     PlatformConfigurationGlobalComponent,
     AccountLookupComponent,
     AccountLookupOracleListComponent,
@@ -80,7 +81,8 @@ import {SettlementsTransfersComponent} from "src/app/settlements/settlements.tra
     SettlementsBatchesComponent,
 	SettlementsMatrixDetailComponent,
     SettlementsMatricesComponent,
-	SettlementsTransfersComponent
+	SettlementsTransfersComponent,
+	SettlementsModelsComponent
   ],
   imports: [
     BrowserModule,

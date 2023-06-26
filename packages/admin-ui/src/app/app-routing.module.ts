@@ -10,8 +10,8 @@ import {MyAccountComponent} from "src/app/my-account/my-account.component";
 import {ParticipantDetailComponent} from "src/app/participants/participant-detail.component";
 import {PlatformConfigurationComponent} from "src/app/platform-configuration/platform-configuration.component";
 import {
-	PlatformConfigurationAppComponent
-} from "src/app/platform-configuration/app/platform-configuration-app.component";
+	PlatformConfigurationBoundedContextComponent
+} from "src/app/platform-configuration/bounded-context/platform-configuration-bounded-context.component";
 import {
 	PlatformConfigurationGlobalComponent
 } from "src/app/platform-configuration/global/platform-configuration-global.component";
@@ -36,6 +36,7 @@ import {TransferCreateComponent} from './transfers/transfer-create.component';
 import {SettlementsMatrixDetailComponent} from "src/app/settlements/settlements.matrix-detail.component";
 import {SettlementsMatricesComponent} from "src/app/settlements/settlements.matrices.component";
 import {SettlementsTransfersComponent} from "src/app/settlements/settlements.transfers.component";
+import {SettlementsModelsComponent} from "./settlements/settlements.models.component";
 
 const routes: Routes = [
 	{path: "", redirectTo: "/home", pathMatch: "full"},
@@ -66,12 +67,13 @@ const routes: Routes = [
 	{path: "transfers/:id", component: TransferDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "account-lookup/oracles/:id", component: QuoteDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "platform-configuration-global", component: PlatformConfigurationGlobalComponent, canActivate: [CanLoadIsLoggedIn]},
-	{path: "platform-configuration-app", component: PlatformConfigurationAppComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "platform-configuration-bc", component: PlatformConfigurationBoundedContextComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "platform-configuration", component: PlatformConfigurationComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/matrix/:id", component: SettlementsMatrixDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/matrix", component: SettlementsMatricesComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/batches", component: SettlementsBatchesComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/transfers", component: SettlementsTransfersComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "settlements/models", component: SettlementsModelsComponent, canActivate: [CanLoadIsLoggedIn]},
 ];
 
 

@@ -256,29 +256,18 @@
           <tr>
             <th scope="col">Type</th>
             <th scope="col">Currency</th>
-            <th scope="col">Debit Balance</th>
-            <th scope="col">Credit Balance</th>
+<!--            <th scope="col">Debit Balance</th>-->
+<!--            <th scope="col">Credit Balance</th>-->
             <th scope="col">Balance</th>
             <th scope="col" style="width: 90px">Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let item of (participant | async)?.participantAccounts">
-            <ng-container
-              *ngIf="
-                accountEditModeEnabled && item.id === accountEditingId;
-                else editNotEnabled
-              "
-            >
+            <ng-container *ngIf="accountEditModeEnabled && item.id === accountEditingId; else editNotEnabled">
               <td>
-                <select
-                  class="form-control"
-                  [id]="'accountType_' + item.id"
-                  value="{{ item.type }}"
-                >
-                  <ng-container
-                    *ngIf="(participant | async)?.type === 'HUB'; else nonHub"
-                  >
+                <select  class="form-control" [id]="'accountType_' + item.id" value="{{ item.type }}" >
+                  <ng-container *ngIf="(participant | async)?.type === 'HUB'; else nonHub">
                     <option [selected]="item.type === 'HUB_ASSET'">
                       HUB_ASSET
                     </option>
@@ -294,32 +283,19 @@
                 </select>
               </td>
               <td>
-                <select
-                  class="form-control"
-                  [id]="'accountCurrency_' + item.id"
-                  value="{{ item.currencyCode }}"
-                >
+                <select class="form-control" [id]="'accountCurrency_' + item.id" value="{{ item.currencyCode }}" >
                   <option [selected]="item.currencyCode === 'EUR'">EUR</option>
                   <option [selected]="item.currencyCode === 'USD'">USD</option>
                   <option [selected]="item.currencyCode === 'TZS'">TZS</option>
                 </select>
               </td>
               <td></td>
-              <td></td>
               <td>
                 <div class="btn-group btn-group-sm" role="group" aria-label="">
-                  <button
-                    type="button"
-                    class="btn btn-success"
-                    (click)="accountSaveEdit(item.id)"
-                  >
+                  <button type="button" class="btn btn-success" (click)="accountSaveEdit(item.id)">
                     <span class="bi bi-check-lg"></span>
                   </button>
-                  <button
-                    type="button"
-                    class="btn btn-danger"
-                    (click)="accountStopEdit()"
-                  >
+                  <button type="button" class="btn btn-danger" (click)="accountStopEdit()" >
                     <span class="bi bi-x-lg"></span>
                   </button>
                 </div>
@@ -329,19 +305,14 @@
             <ng-template #editNotEnabled>
               <td>{{ item.type }}</td>
               <td>{{ item.currencyCode }}</td>
-              <td>{{ item.debitBalance }}</td>
-              <td>{{ item.creditBalance }}</td>
+<!--              <td>{{ item.debitBalance }}</td>-->
+<!--              <td>{{ item.creditBalance }}</td>-->
               <td>{{ item.balance }}</td>
               <td>
                 <div class="btn-group btn-group-sm" role="group" aria-label="">
-                  <button
-                    type="button"
-                    class="btn btn-danger"
-                    [hidden]="accountEditModeEnabled"
-                    ngbTooltip="Disable account"
-                  >
-                    <span class="bi bi-dash-circle"></span>
-                  </button>
+<!--                  <button type="button" class="btn btn-danger" [hidden]="accountEditModeEnabled" ngbTooltip="Disable account">-->
+<!--                    <span class="bi bi-dash-circle"></span>-->
+<!--                  </button>-->
                 </div>
               </td>
             </ng-template>
@@ -353,11 +324,7 @@
 
       <div class="form-row d-flex mb-3">
         <div class="p-2">
-          <button
-            class="btn btn-secondary"
-            (click)="accountAddNew()"
-            [disabled]="accountEditModeEnabled"
-          >
+          <button class="btn btn-secondary" (click)="accountAddNew()" [disabled]="accountEditModeEnabled">
             Add Account
           </button>
         </div>
@@ -446,7 +413,7 @@
     <!-- Funds Movs -->
     <a ngbNavLink>NDC</a>
     <ng-template ngbNavContent>
-      <h4 class="mt-3">NDC of this Participant</h4>
+      <h4 class="mt-3">Net Debit Caps of this Participant</h4>
       <table class="table table-hover mt-3">
         <thead class="thead-light">
           <tr>
@@ -474,12 +441,7 @@
           <tr>
             <ng-container *ngIf="ndcEditModeEnabled">
               <td>
-                <select
-                  class="form-control"
-                  id="ndcType"
-                  value="ABSOLUTE"
-                  (change)="setNDCType($event)"
-                >
+                <select class="form-control" id="ndcType" value="ABSOLUTE" (change)="setNDCType($event)">
                   <option value="ABSOLUTE">ABSOLUTE</option>
                   <option value="PERCENTAGE">PERCENTAGE</option>
                 </select>
@@ -514,18 +476,10 @@
 
               <td>
                 <div class="btn-group btn-group-sm" role="group" aria-label="">
-                  <button
-                    type="button"
-                    class="btn btn-success"
-                    (click)="createNDCRequest()"
-                  >
+                  <button type="button" class="btn btn-success" (click)="createNDCRequest()">
                     <span class="bi bi-check-lg"></span>
                   </button>
-                  <button
-                    type="button"
-                    class="btn btn-danger"
-                    (click)="ndcStopEdit()"
-                  >
+                  <button type="button" class="btn btn-danger" (click)="ndcStopEdit()">
                     <span class="bi bi-x-lg"></span>
                   </button>
                 </div>
@@ -542,7 +496,7 @@
             (click)="ndcAddNew()"
             [disabled]="ndcEditModeEnabled"
           >
-            Request NDC Change
+            Create Net Debit Cap Request
           </button>
         </div>
         <div class="ml-auto p-2">
@@ -563,7 +517,7 @@
             <th scope="col">Currency</th>
             <th scope="col">Created</th>
             <th scope="col">Approved</th>
-            <th scope="col">Request Id</th>
+
             <th scope="col" style="width: 90px">Actions</th>
           </tr>
         </thead>
@@ -588,7 +542,7 @@
               {{ ndcReq.approvedBy }} on
               {{ ndcReq.approvedDate | date : "medium" }}
             </td>
-            <td>{{ ndcReq.id }}</td>
+
             <td>
               <div class="btn-group btn-group-sm" role="group" aria-label="">
                 <button

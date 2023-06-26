@@ -136,14 +136,14 @@ export class QuoteCreateComponent implements OnInit {
 
 		const quote = removeEmpty(this.activeQuote) as Quote;
 
-		const success = this._interopSvc.createQuoteRequest(quote).subscribe(success => {
-			if (!success)
-				throw new Error("error saving Quote");
-
+		this._interopSvc.createQuoteRequest(quote).subscribe(success => {
 			this._messageService.addSuccess("Quote Created");
 			setTimeout(()=>{
 				this._router.navigateByUrl(`/quotes/${this.activeQuote!.quoteId}?live`);
 			}, 500);
+		}, error => {
+			console.error(error);
+			this._messageService.addError("Quote Creation error: " + error.toString());
 		});
 
 
