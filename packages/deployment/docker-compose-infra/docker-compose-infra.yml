@@ -136,6 +136,8 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:7.2.1
+    depends_on:
+      - zoo
     restart: unless-stopped
     ports:
       - "9092:9092"
@@ -156,15 +158,44 @@ services:
       KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
       KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
       KAFKA_NUM_PARTITIONS: 4
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     healthcheck:
       test: nc -z localhost 9092 || exit -1
       start_period: 30s
       interval: 10s
       timeout: 10s
       retries: 10
+
+  init-kafka:
+    image: confluentinc/cp-kafka:7.2.1
     depends_on:
-      - zoo
+      - kafka
+    entrypoint: [ "/bin/sh", "-c" ]
+    command: |
+      "
+      # blocks until kafka is reachable
+      echo -e 'Existing kafka topics:'
+      kafka-topics --bootstrap-server kafka:19092 --list
+      echo -e '\nCreating kafka topics:'
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic audits
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic logs
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic AccountLookupBcEvents
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic AccountLookupBcRequests
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic AccountLookupBcResponses
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic AccountLookupBcErrors
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic OperatorBcErrors
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic QuotingBcEvents
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic QuotingBcRequests
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic QuotingBcErrors
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic SettlementsBcEvents
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic SettlementsBcCommands
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic TransfersBcEvents
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic TransfersBcRequests
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic TransfersBcErrors
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic PlatformConfigurationBcEvents
+      echo -e '\nSuccessfully created the following topics:'
+      kafka-topics --bootstrap-server kafka:19092 --list
+      "
 
   redis:
     image: redis:latest
