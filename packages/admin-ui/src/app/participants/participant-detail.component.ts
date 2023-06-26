@@ -499,17 +499,17 @@ export class ParticipantDetailComponent implements OnInit {
 	}
 	this.newNDC.currencyCode = currencyElement.value;
 
-    // check overlaps
-	if(this.participant.value?.netDebitCaps) {
-		const duplicateNDC = this.participant.value.netDebitCaps.find(
-			(item) =>
-				item.currencyCode === this.newNDC!.currencyCode
-		);
-		if (duplicateNDC) {
-			this._messageService.addWarning("An Net Debit Cap already exists for that currency");
-			return;
-		}
-	}
+    // // check overlaps
+	// if(this.participant.value?.netDebitCaps) {
+	// 	const duplicateNDC = this.participant.value.netDebitCaps.find(
+	// 		(item) =>
+	// 			item.currencyCode === this.newNDC!.currencyCode
+	// 	);
+	// 	if (duplicateNDC) {
+	// 		this._messageService.addWarning("An Net Debit Cap already exists for that currency");
+	// 		return;
+	// 	}
+	// }
 	// TODO check duplicates also in requests (pending approval)
 
     this._participantsSvc.createNDC(this.participant.value!.id, this.newNDC).subscribe(async(value) => {

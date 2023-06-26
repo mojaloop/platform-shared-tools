@@ -358,7 +358,7 @@ services:
 
 
   admin-ui:
-    image: mojaloop/vnext-admin-ui-svc:0.1.13
+    image: mojaloop/vnext-admin-ui-svc:0.1.14
     depends_on:
       transfers-api-svc:
         condition: service_healthy
