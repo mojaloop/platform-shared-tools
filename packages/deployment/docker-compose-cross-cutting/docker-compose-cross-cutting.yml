@@ -1,31 +1,8 @@
 version: "3.8"
 
 services:
-  platform-configuration-svc:
-    image: mojaloop/platform-configuration-bc-configuration-svc:0.3.3
-    volumes:
-      - platform-configuration-svc_data:/app/data
-    environment:
-      - KAFKA_URL=${KAFKA_URL}
-      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
-      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
-      - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
-      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
-    healthcheck:
-      test: nc -z localhost 3100 || exit -1
-      start_period: 30s
-      interval: 10s
-      timeout: 10s
-      retries: 10
-    ports:
-      - 3100:3100
-    restart: unless-stopped
-
   authentication-svc:
     image: mojaloop/security-bc-authentication-svc:0.1.18
-    depends_on:
-      platform-configuration-svc:
-        condition: service_healthy
     volumes:
       - authentication-svc_data:/app/data
     environment:
@@ -38,13 +15,16 @@ services:
       - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
     ports:
       - 3201:3201
+    healthcheck:
+      test: nc -z localhost 3201 || exit -1
+      start_period: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
     restart: unless-stopped
 
   authorization-svc:
     image: mojaloop/security-bc-authorization-svc:0.1.20
-    depends_on:
-      platform-configuration-svc:
-        condition: service_healthy
     volumes:
       - authorization-svc_data:/app/data
     environment:
@@ -54,9 +34,13 @@ services:
       - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
     ports:
       - 3202:3202
+    healthcheck:
+      test: nc -z localhost 3202 || exit -1
+      start_period: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
     restart: unless-stopped
-
-
 
   auditing-svc:
     image: mojaloop/auditing-bc-auditing-svc:alpha-latest
@@ -83,6 +67,31 @@ services:
       - ELASTICSEARCH_AUDITS_INDEX=${ELASTICSEARCH_AUDITS_INDEX}
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME}
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
+    restart: unless-stopped
+
+  platform-configuration-svc:
+    image: mojaloop/platform-configuration-bc-configuration-svc:0.3.3
+    depends_on:
+      authentication-svc:
+        condition: service_healthy
+      authorization-svc:
+        condition: service_healthy
+    volumes:
+      - platform-configuration-svc_data:/app/data
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+    healthcheck:
+      test: nc -z localhost 3100 || exit -1
+      start_period: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    ports:
+      - 3100:3100
     restart: unless-stopped
 
 volumes:

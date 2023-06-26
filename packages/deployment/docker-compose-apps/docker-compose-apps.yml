@@ -93,7 +93,7 @@ services:
 # participants
 
   participants-svc:
-    image: mojaloop/participants-bc-participants-svc:0.1.14
+    image: mojaloop/participants-bc-participants-svc:0.1.15
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
