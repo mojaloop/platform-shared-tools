@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   fspiop-api-svc:
-    image: mojaloop/interop-apis-bc-fspiop-api-svc:0.1.17
+    image: mojaloop/interop-apis-bc-fspiop-api-svc:0.1.19
     depends_on:
       settlements-api-svc:
         condition: service_healthy
@@ -146,7 +146,7 @@ services:
     restart: unless-stopped
 
   account-lookup-svc:
-    image: mojaloop/account-lookup-bc-account-lookup-svc:0.1.10
+    image: mojaloop/account-lookup-bc-account-lookup-svc:0.1.11
     depends_on:
       account-lookup-http-oracle-svc:
         condition: service_healthy
@@ -176,7 +176,7 @@ services:
 # quoting
 
   quoting-svc:
-    image: mojaloop/quoting-bc-quoting-svc:0.1.11
+    image: mojaloop/quoting-bc-quoting-svc:0.1.12
     depends_on:
       participants-svc:
         condition: service_healthy
