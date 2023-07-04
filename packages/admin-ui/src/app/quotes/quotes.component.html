@@ -3,9 +3,9 @@
     <h3>Quotes</h3>
   </div>
   <div class="col text-right">
-    <button class="btn btn-primary" routerLink="/quotes/new">
-      Create Quote
-    </button>
+<!--    <button class="btn btn-warning" routerLink="/quotes/new">-->
+<!--      Create Test Quote-->
+<!--    </button>-->
   </div>
 </div>
 
@@ -41,17 +41,16 @@
           <input class="form-control" type="text" id="filterTransactionId" />
         </div>
 
-		  <div class="form-group col-md-3"></div> <!-- spacer-->
+		  <div class="form-group col-md-2"></div> <!-- spacer-->
 
-        <div class="form-group col-md-1">
+        <div class="form-group col-md-2">
           <label for="filterBtn">&nbsp;</label>
           <button
             type="submit"
             class="form-control btn btn-primary"
             id="filterBtn"
-            (click)="search()"
-          >
-            Search
+            (click)="search()">
+			  Search&nbsp;&nbsp;<i class="bi bi-search"></i>
           </button>
         </div>
       </tr>

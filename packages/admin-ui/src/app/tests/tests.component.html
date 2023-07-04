@@ -1,50 +1,31 @@
-<h2>Test page</h2>
+<h2>Test page <span class="text-secondary">(dev mode enable)</span></h2>
 <hr>
 
 
 <div *ngIf="(isLoggedIn | async)">
-  <h4>Transfer Simulation <span class="text-secondary ml-2">(simulate simple transfer between accounts)</span></h4>
 
-  <div class="row my-3 align-items-end">
-    <div class="col-3">
-      <label class=" mr-2" for="transf_payer">Payer</label>
-      <select class="custom-select mr-sm-2" id="transf_payer">
-        <option *ngFor="let payer of (participants | async);" value="{{payer.id}}">{{payer.name}}</option>
-      </select>
-    </div>
 
-    <div class="col-3">
-      <label class=" mr-2" for="transf_payee">Payee</label>
-      <select class="custom-select mr-sm-2" id="transf_payee">
-        <option *ngFor="let payee of (participants | async);" value="{{payee.id}}">{{payee.name}}</option>
+	<h2>Quotes</h2>
+	<a href="http://localhost:4200/quotes/new" class="btn btn-primary btn-block col-md-3" >
+		Create Test Quote
+	</a>
 
-      </select>
-    </div>
+	<hr>
 
-    <div class="col">
-      <label class=" mr-2" for="transf_amount">Amount</label>
-      <input type="number" class="form-control" id="transf_amount" placeholder="0">
-    </div>
+	<h2>Transfers</h2>
+	<a href="http://localhost:4200/transfers/new" class="btn btn-primary btn-block col-md-3" >
+		Create Test Transfer
+	</a>
 
-    <div class="col">
-      <label class="mr-2" for="transf_currency">Currency</label>
-      <select class="custom-select mr-sm-2" id="transf_currency">
-        <option *ngFor="let currency of (currencies | async);" value="{{currency}}">{{currency}}</option>
-      </select>
-    </div>
+	<hr>
 
-    <div class="col-auto">
-      <button type="button" class="btn btn-primary mr-3" (click)="simulateTransfer()">Simulate Transfer</button>
-    </div>
+	<h2>Account Lookup Tests</h2>
 
-  </div>
+	<a href="http://localhost:4200/account-lookup" class="btn btn-primary btn-block col-md-3" >
+		Account Lookup Dedicated Test Page
+	</a>
+
+	<hr>
+
+
 </div>
-
-
-<!--<hr>-->
-<!--<h5>UI </h5>-->
-<!--<div>-->
-<!--  <button type="button" class="btn btn-success mr-3" (click)="testSuccessToast()">Test Success Toast</button>-->
-<!--  <button type="button" class="btn btn-warning mr-3" (click)="testWarnToast()">Test Warn Toast</button>-->
-<!--  <button type="button" class="btn btn-danger mr-3" (click)="testDangerToast()">Test Danger Toast</button>-->
-<!--</div>-->

@@ -65,13 +65,10 @@
 	</div> <!-- column 2 -->
 
 	<div class="col-3"> <!-- column 3 - buttons -->
-		    <ng-container >
-		      <a href="/transfers/new?quoteId={{(quote | async)?.quoteId}}">
-		        <button class="btn btn-primary btn-block">
-		          Create Transfer
-		        </button>
-		      </a>
-		    </ng-container>
+		<a href="/transfers/new?quoteId={{(quote | async)?.quoteId}}" class="btn btn-warning btn-block" [hidden]="(quote | async)?.status!=='ACCEPTED'">
+			Create Test Transfer
+		</a>
+
 	</div>  <!-- column 3 - buttons -->
 </div>
 

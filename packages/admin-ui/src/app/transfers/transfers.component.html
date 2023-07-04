@@ -2,9 +2,9 @@
 	<div class="col">
 		<h3>Transfers</h3>
 	</div>
-	<div class="col text-right">
-		<button class="btn btn-primary" routerLink="/transfers/new">Create Transfer</button>
-	</div>
+	<!--<div class="col text-right">
+		<button class="btn btn-warning" routerLink="/transfers/new">Create Test Transfer</button>
+	</div>-->
 </div>
 
 
@@ -14,7 +14,7 @@
 	<form >
 		<table class="table">
 			<tr class="form-row">
-				<div class="form-group col-md-2">
+				<div class="form-group col-md-1">
 					<label for="filterState">State:</label>
 					<select class="form-control" id="filterState">
 						<option value="ALL">All</option>
@@ -51,9 +51,9 @@
 					<input class="form-control" type="text" id="filterId">
 				</div>
 
-				<div class="form-group col-md-1">
+				<div class="form-group col-md-2">
 					<label for="filterBtn">&nbsp;</label>
-					<button type="submit" class="form-control btn btn-primary" id="filterBtn" (click)="search()">Search</button>
+					<button type="submit" class="form-control btn btn-primary" id="filterBtn" (click)="search()">Search &nbsp;&nbsp;<i class="bi bi-search"></i></button>
 				</div>
 			</tr>
 		</table>
@@ -65,8 +65,8 @@
 	<table class="table">
 		<thead class="thead-light">
 		<tr>
-			<th scope="col">Transfer ID</th>
 			<th scope="col">Timestamp</th>
+			<th scope="col">Transfer ID</th>
 			<th scope="col">Payer FSP</th>
 			<th scope="col">Payee FSP</th>
 			<th scope="col">Transfer State</th>
@@ -76,11 +76,15 @@
 		</thead>
 		<tbody>
 		<tr *ngFor="let item of (transfers | async)">
-			<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
 			<td >{{item.updatedAt | date: 'medium'}}</td>
+			<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
 			<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
 			<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
-			<td>{{item.transferState}}</td>
+
+			<td *ngIf="item.transferState==='COMMITTED'" class="text-success">{{item.transferState}}</td>
+			<td *ngIf="item.transferState==='RESERVED'" class="text-warning">{{item.transferState}}</td>
+			<td *ngIf="item.transferState!=='RESERVED' && item.transferState!=='COMMITTED'" class="text-danger">{{item.transferState}}</td>
+
 			<td>{{item.amount}}</td>
 			<td>{{item.currencyCode}}</td>
 		</tr>

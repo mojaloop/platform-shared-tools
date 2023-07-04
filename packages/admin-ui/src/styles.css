@@ -8,6 +8,9 @@ html, body {
   margin: 0;
   padding: 0;
 }
+body{
+	background-color: #e9ecef;
+}
 
 body, input[text] {
   color: #333;
@@ -42,7 +45,35 @@ can be found in the LICENSE file at https://angular.io/license
 */
 
 .filterbox{
-	background-color:#e9ecef;
-	padding:5px 10px;
+	background-color:#f6f6f6;
+	padding:10px 15px;
 	margin-bottom:10px;
+	border-radius: 10px;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active{
+	background-color: whitesmoke;
+}
+.tab-content{
+	background-color: whitesmoke;
+	padding: 10px 20px;
+}
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+	color: #495057;
+	background-color: whitesmoke;
+	border-color: #dee2e6 #dee2e6 whitesmoke;
+}
+
+
+.btn-label {
+	position: relative;
+	left: -12px;
+	display: inline-block;
+	padding: 10px 15px;
+	border-radius: 5px 0 0 5px;
+	border-right: solid 1px rgba(0, 0, 0, 0.15);
+}
+.btn-labeled {
+	padding-top: 0;
+	padding-bottom: 0;
 }

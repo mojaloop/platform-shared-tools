@@ -12,6 +12,12 @@
 				   ngbTooltip="Copy ID to clipboard"><i class="bi bi-clipboard-plus"></i></a></small>
 		</div>
 	</div> <!--	Top header-->
+	<div class=" row">
+		<div class="col-md-12 align-self-center text-secondary" *ngIf="(payer | async) && (payee | async)">
+			<h5>{{item.amount}} ({{item.currencyCode}}) - {{(payer | async)?.name}} <i class="bi bi-arrow-right"></i> {{(payee | async)?.name}} </h5>
+		</div>
+	</div>
+
 	<hr>
 
 	<div class="row">
@@ -20,12 +26,12 @@
 
 			<div class="mb-2">
 				<label class="col-form-label text-secondary">Payer FSP</label>
-				<div><a href="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></div>
+				<div><a href="/participants/{{item.payerFspId}}">{{(payer | async)?.name}}</a></div>
 			</div>
 
 			<div class="mb-2">
 				<label class="col-form-label text-secondary">Payee FSP</label>
-				<div><a href="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></div>
+				<div><a href="/participants/{{item.payeeFspId}}">{{(payee | async)?.name}}</a></div>
 			</div>
 
 			<div class="mb-2">
@@ -39,9 +45,6 @@
 				<div class="text-break" *ngIf="item?.completedTimestamp">{{item.completedTimestamp | date:'medium'}}</div>
 			</div>
 
-			<div class="mb-2">
-				<div><a href="/quotes/byTransactionId/{{item.transferId}}">Quote Info</a></div>
-			</div>
 
 		</div> <!-- col 1 -->
 
@@ -71,13 +74,15 @@
 		</div> <!-- col 2 -->
 
 		<div class="col-3"> <!-- column 3 - buttons -->
-			<ng-container >
-				<a href="/settlements/transfers?transferId={{item.transferId}}">
-					<button class="btn btn-primary btn-block">
-						Search in Settlements
-					</button>
-				</a>
-			</ng-container>
+
+			<a href="/settlements/transfers?transferId={{item.transferId}}" class="btn btn-primary btn-block" [hidden]="item.transferState !=='COMMITTED'">
+ 				Search in Settlements
+			</a>
+
+			<a href="/quotes/byTransactionId/{{item.transferId}}" class="btn btn-primary btn-block" [hidden]="item.transferId == null || item.transferId == undefined">
+				Quote Info
+			</a>
+
 		</div>  <!-- column 3 - buttons -->
 	</div>
 </div>

@@ -3,8 +3,8 @@
     <h3>Participants</h3>
   </div>
   <div class="col text-right">
-    <button class="btn btn-primary" routerLink="/participants/new">
-      Create Participant
+    <button class="btn btn-success btn-labeled" routerLink="/participants/new">
+      <span class="btn-label"><i class="bi bi-plus-lg"></i></span>Create Participant
     </button>
   </div>
 </div>
@@ -14,14 +14,16 @@
   <form>
     <table class="table">
       <tr class="form-row">
-        <div class="form-group col-md-2">
+		  <div class="form-group col-md-4">
+			  <label for="filterParticipantName">Name:</label>
+			  <input class="form-control" type="text" id="filterParticipantName" />
+		  </div>
+
+		  <div class="form-group col-md-2">
           <label for="filterParticipantId">ID:</label>
           <input class="form-control" type="text" id="filterParticipantId" />
         </div>
-        <div class="form-group col-md-2">
-          <label for="filterParticipantName">Name:</label>
-          <input class="form-control" type="text" id="filterParticipantName" />
-        </div>
+
 
         <div class="form-group col-md-2">
           <label for="filterParticipantState">State:</label>
@@ -32,16 +34,16 @@
           </select>
         </div>
 
-		<div class="form-group col-md-5"></div> <!-- spacer-->
+		<div class="form-group col-md-2"></div> <!-- spacer-->
 
-		  <div class="form-group col-md-1">
+		  <div class="form-group col-md-2">
           <label for="filterBtn">&nbsp;</label>
           <button
             type="submit"
             class="form-control btn btn-primary"
             id="filterBtn"
             (click)="search()">
-            Search
+			  Search&nbsp;&nbsp;<i class="bi bi-search"></i>
           </button>
         </div>
       </tr>
