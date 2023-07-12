@@ -35,6 +35,9 @@ mkdir {data}
 * transfers-api-svc
 * transfers-event-handler-svc
 * transfers-command-handler-svc
+* settlements-api-svc
+* settlements-event-handler-svc
+* settlements-command-handler-svc
 * ttk1_data
 * ttk2_data
 * ttk1_ui_data
