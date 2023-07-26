@@ -58,7 +58,7 @@ kafka:
 
 ############### RedPanda Console for Kafka  ####################
 # https://artifacthub.io/packages/helm/redpanda-data/console?modal=values
-# redpanda kakfa console config 
+# redpanda kakfa console config
 
 redpanda-console:
   enabled: true
@@ -71,7 +71,7 @@ redpanda-console:
           - kafka:9092
 
   ingress:
-    enabled: true 
+    enabled: true
     className: nginx
     hosts:
       - host: redpanda-console.local
@@ -89,7 +89,7 @@ mongodb:
   fullnameOverride: "mongodb"
   auth:
     enabled: true
-  
+
     rootUser: root
     rootPassword: mongoDbPas42
     usernames:
@@ -105,7 +105,7 @@ mongodb:
     enabled: false
 
 ############### Mongo Express ####################
-# mongo express config 
+# mongo express config
 mongo-express:
   fullnameOverride: mongo-express
   enabled: true
@@ -121,11 +121,12 @@ mongo-express:
 ## Reference: https://github.com/bitnami/charts/blob/main/bitnami/redis/values.yaml
 redis:
   enabled: true
-  fullnameOverride: redis 
+  fullnameOverride: redis
   architecture: standalone
   auth:
     enabled: false
   master:
+    disableCommands: []
     persistence:
       enabled: false
 
