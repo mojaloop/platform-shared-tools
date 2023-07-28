@@ -32,14 +32,9 @@ At this time a browser can be pointed to http://localhost:4200/ to start the app
 
 ### Login
 
-To login use this credentials:
-***user***: user
-***password***: superPass
-
-or
-
-***user***: admin
-***password***: superMegaPass
+Try these default development credentials:
+- user - superPass
+- admin - superMegaPass
 
 
 ### Issues starting

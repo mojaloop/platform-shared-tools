@@ -12,6 +12,11 @@ function printHeader() {
 }
 
 function testEnv(){
+    if [[ -z "${CIRCLE_BRANCH}" ]]; then
+        echo -e "\e[93mEnvironment variable CIRCLE_BRANCH is not set. Exiting.\e[0m"
+        exit 1
+    fi
+
     if [[ -z "${CIRCLE_SHA1}" ]]; then
         echo -e "\e[93mEnvironment variable CIRCLE_SHA1 is not set. Exiting.\e[0m"
         exit 1
@@ -32,6 +37,7 @@ function testEnv(){
         exit 1
     fi
 
+    echo -e "Provided CI Build branch: \t\t${CIRCLE_BRANCH}"
     echo -e "Provided CI Build commit hash: \t\t${CIRCLE_SHA1}"
     echo -e "Provided CI Build username: \t\t${CIRCLE_PROJECT_USERNAME}"
     echo -e "Provided project repository name: \t${CIRCLE_PROJECT_REPONAME}"
@@ -62,7 +68,7 @@ function loadCommits(){
     #SUCCESS=$?
 
     # new method using js and CircleCI v2 API - iterates all pipelines and child workflows in order
-    LAST_CI_BUILD_COMMIT=$(node .circleci/getLastCommit.js --repo="$CIRCLE_PROJECT_REPONAME" --user="$CIRCLE_TOKEN")
+    LAST_CI_BUILD_COMMIT=$(node .circleci/getLastCommit.js --repo="$CIRCLE_PROJECT_REPONAME" --branch="$CIRCLE_BRANCH" --user="$CIRCLE_TOKEN")
     SUCCESS=$?
 
     if [[ ! SUCCESS -eq 0 ]]; then

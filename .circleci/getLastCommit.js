@@ -2,6 +2,7 @@ const slugPrefix = "gh/mojaloop/";
 //const ciUsername = "mojaloopci";
 let debug = false;
 let user;// = "0d7c20153dcb2e4805b49d4a207eafed923dd53b";
+let branch;
 let projectslug;
 let headers;
 
@@ -44,8 +45,13 @@ function processArgs() {
         console.error("Invalid repo arg provided - should be '--repo=repositoryName'");
         process.exit(1);
     }
+    if(!args.branch || typeof args.branch !== "string" || !args.branch.length>1){
+        console.error("Invalid branch arg provided - should be '--branch=branchName'");
+        process.exit(1);
+    }
 
     user = args.user;
+    branch = args.branch;
     projectslug = slugPrefix + args.repo;
 
     headers = new Headers({
@@ -104,6 +110,8 @@ async function startLoop() {
 
         for (const pipeline of pipelineList) {
             if (pipeline.state==="errored") continue;
+
+            if(!pipeline.vcs || pipeline.vcs.branch !== branch) continue;
 
             const workflowList = await getPipelineWorkflows(pipeline.id) || [];
             if (debug) console.log(`Pipeline with num: ${pipeline.number} state: ${pipeline.state} created at: ${pipeline.created_at} vcs_revision: ${pipeline.vcs.revision} - workflow count: ${workflowList.length} by user: ${pipeline.trigger.actor.login}`);
