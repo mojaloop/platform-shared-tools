@@ -22,7 +22,7 @@ spec:
         mojaloop.layer: apps
     spec:
       containers:
-      - image: mojaloop/vnext-admin-ui-svc:0.1.16
+      - image: mojaloop/vnext-admin-ui-svc:0.1.17
         name: admin-ui
         ports:
         - containerPort: 4200
