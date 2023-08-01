@@ -46,6 +46,8 @@ spec:
           value: http://participants-svc:3010
         - name: PLATFORM_CONFIG_BASE_SVC_URL
           value: http://platform-configuration-svc:3100
+        - name: SETTLEMENTS_SVC_URL
+          value: http://settlements-api-svc:3600
         image: mojaloop/transfers-bc-command-handler-svc:0.2.4
         name: transfers-command-handler-svc
         resources: {}
