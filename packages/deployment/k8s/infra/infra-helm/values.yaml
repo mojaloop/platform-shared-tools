@@ -35,6 +35,8 @@ kafka:
       value: AccountLookupBcEvents
     - name: AccountLookupBcResponses
       value: AccountLookupBcResponses
+    - name: AccountLookupBcErrors
+      value: AccountLookupBcErrors
     - name: OperatorBcErrors
       value: OperatorBcErrors
     - name: QuotingBcErrors
@@ -51,6 +53,12 @@ kafka:
       value: TransfersBcEvents
     - name: TransfersBcRequests
       value: TransfersBcRequests
+    - name: SettlementsBcEvents
+      value: SettlementsBcEvents
+    - name: SettlementsBcCommands
+      value: SettlementsBcCommands
+    - name: PlatformConfigurationBcEvents
+      value: PlatformConfigurationBcEvents
 
     nodeSelector: {}
     tolerations: []
