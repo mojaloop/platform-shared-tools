@@ -172,9 +172,9 @@ data:
       "SEND_CALLBACK_ENABLE": true,
       "FSPID": "greenbank",
       "DEFAULT_USER_FSPID": "userdfsp",
-      "TRANSFERS_VALIDATION_WITH_PREVIOUS_QUOTES": true,
-      "TRANSFERS_VALIDATION_ILP_PACKET": true,
-      "TRANSFERS_VALIDATION_CONDITION": true,
+      "TRANSFERS_VALIDATION_WITH_PREVIOUS_QUOTES": false,
+      "TRANSFERS_VALIDATION_ILP_PACKET": false,
+      "TRANSFERS_VALIDATION_CONDITION": false,
       "MONITORING_LOG_INCLUDE_PAYLOAD": true,
       "ILP_SECRET": "secret",
       "VERSIONING_SUPPORT_ENABLE": true,
@@ -355,6 +355,10 @@ spec:
         envFrom:
         - configMapRef:
             name: greenbank-frontend-config
+        lifecycle:
+          postStart:
+            exec:
+              command: [ "/bin/sh", "-c", "echo '.ant-layout-header{background-color: green !important;}' >> /usr/share/nginx/html/static/css/main.c74f8fec.chunk.css" ]
 ---
 
 apiVersion: apps/v1
