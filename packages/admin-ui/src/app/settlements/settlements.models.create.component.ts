@@ -28,7 +28,11 @@ export class SettlementsModelsCreateComponent implements OnInit {
         Validators.minLength(3),
       ]),
       batchCreateInterval: new FormControl(this.model.batchCreateInterval, [
-        Validators.pattern(/\d+/g)
+        Validators.required,
+        Validators.pattern(/[0-9]+/g)
+      ]),
+      isActive: new FormControl(this.model.isActive, [
+        Validators.required
       ])
     });
   }
@@ -45,6 +49,7 @@ export class SettlementsModelsCreateComponent implements OnInit {
     // update model from form
     this.model.settlementModel = this.form.controls["name"].value;
     this.model.batchCreateInterval = this.form.controls["batchCreateInterval"].value;
+    this.model.isActive = this.form.controls["isActive"].value === "YES";
 
     this._settlementsService.createSettlementModel(this.model).subscribe(success => {
       if(!success)
