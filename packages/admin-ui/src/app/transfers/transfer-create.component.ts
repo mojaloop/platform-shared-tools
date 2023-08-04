@@ -12,14 +12,7 @@ import {QuotesService} from '../_services_and_types/quotes.service';
 import {Participant} from '../_services_and_types/participant_types';
 import {ParticipantsService} from '../_services_and_types/participants.service';
 import * as uuid from "uuid";
-
-const removeEmpty = (obj: any) => {
-	Object.entries(obj).forEach(([key, val]) =>
-		(val && typeof val==='object') && removeEmpty(val) ||
-		(val===null || val==="") && delete obj[key]
-	);
-	return obj;
-};
+import { removeEmpty } from '../_utils';
 
 @Component({
 	selector: 'app-transfer-create',
