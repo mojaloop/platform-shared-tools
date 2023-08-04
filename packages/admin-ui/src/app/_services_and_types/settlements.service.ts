@@ -41,8 +41,7 @@ import {
 	ISettlementBatchTransfer, ISettlementConfig,
 	ISettlementMatrix
 } from "src/app/_services_and_types/settlements_types";
-import {Transfer} from "src/app/_services_and_types/transfer_types";
-import {Participant} from "src/app/_services_and_types/participant_types";
+import * as uuid from "uuid";
 
 const SVC_BASEURL = "/_settlements";
 
@@ -457,6 +456,43 @@ export class SettlementsService {
 			this._http.post<{ id: string }>(url, {}).subscribe(
 				(resp: { id: string }) => {
 					console.log(`got response - matrixId: ${resp.id}`);
+
+					subscriber.next(resp.id);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status===403) {
+						console.warn("UnauthorizedError received on settleMatrix");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+	createEmptyModel(): ISettlementConfig {
+		return {
+			id: uuid.v4(),
+			settlementModel: '',
+			batchCreateInterval: 3000,
+			isActive: true,
+			createdBy: this._authentication.username!,
+			createdDate: new Date().getTime(),
+			changeLog: []
+		}
+	}
+
+	createSettlementModel(data: ISettlementConfig) {
+		return new Observable<string>(subscriber => {
+			const url = `${SVC_BASEURL}/models`;
+
+			this._http.post<{id: string}>(url, data).subscribe(
+				(resp: {id: string}) => {
+					console.log(`got response - model create`);
 
 					subscriber.next(resp.id);
 					return subscriber.complete();
