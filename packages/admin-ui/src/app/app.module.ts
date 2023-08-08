@@ -84,7 +84,7 @@ import { SettlementsModelsCreateComponent } from './settlements/settlements.mode
     SettlementsMatricesComponent,
 	SettlementsTransfersComponent,
 	SettlementsModelsComponent,
-  SettlementsModelsCreateComponent
+    SettlementsModelsCreateComponent
   ],
   imports: [
     BrowserModule,

@@ -477,8 +477,8 @@ export class SettlementsService {
 	createEmptyModel(): ISettlementConfig {
 		return {
 			id: uuid.v4(),
-			settlementModel: '',
-			batchCreateInterval: 3000,
+			settlementModel: "",
+			batchCreateInterval: 300,
 			isActive: true,
 			createdBy: this._authentication.username!,
 			createdDate: new Date().getTime(),
@@ -486,9 +486,16 @@ export class SettlementsService {
 		}
 	}
 
-	createSettlementModel(data: ISettlementConfig) {
+	createSettlementModel(id:string | null, modelName:string, batchCreateIntervalSecs:number) {
 		return new Observable<string>(subscriber => {
 			const url = `${SVC_BASEURL}/models`;
+
+			const data={
+				id: id,
+				settlementModel: modelName,
+				batchCreateInterval: batchCreateIntervalSecs,
+				createdBy: this._authentication.username
+			};
 
 			this._http.post<{id: string}>(url, data).subscribe(
 				(resp: {id: string}) => {
@@ -496,8 +503,7 @@ export class SettlementsService {
 
 					subscriber.next(resp.id);
 					return subscriber.complete();
-				},
-				error => {
+				},			error => {
 					if (error && error.status===403) {
 						console.warn("UnauthorizedError received on settleMatrix");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
