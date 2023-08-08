@@ -1,25 +1,36 @@
-<h3>Settlement Models</h3>
-
+<div class="row mb-2">
+  <div class="col">
+    <h3>Settlement Models</h3>
+  </div>
+  <div class="col text-right">
+    <button
+      class="btn btn-success btn-labeled"
+      routerLink="/settlements/models/new"
+    >
+      <span class="btn-label"><i class="bi bi-plus-lg"></i></span>Create Settlement Model
+    </button>
+  </div>
+</div>
 <div>
-	<table class="table">
-		<thead class="thead-light">
-		<tr>
-			<th scope="col">Id</th>
-			<th scope="col">Name</th>
-			<th scope="col">Batch Duration (secs)</th>
-		</tr>
-		</thead>
-		<tbody>
-		<ng-container *ngIf="(models | async)?.length==0">
-			<tr class="">
-				<td colspan="6">No Settlement Models found</td>
-			</tr>
-		</ng-container>
-		<tr *ngFor="let item of (models | async)">
-			<td>{{item.id}}</td>
-			<td>{{item.settlementModel}}</td>
-			<td>{{item.batchCreateInterval}}</td>
-		</tr>
-		</tbody>
-	</table>
+  <table class="table">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Name</th>
+        <th scope="col">Batch Duration (secs)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngIf="(models | async)?.length == 0">
+        <tr class="">
+          <td colspan="6">No Settlement Models found</td>
+        </tr>
+      </ng-container>
+      <tr *ngFor="let item of models | async">
+        <td>{{ item.id }}</td>
+        <td>{{ item.settlementModel }}</td>
+        <td>{{ item.batchCreateInterval }}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>

@@ -16,10 +16,8 @@ import {ActivatedRoute} from "@angular/router";
 	selector: 'app-settlements',
 	templateUrl: './settlements.models.component.html'
 })
-export class SettlementsModelsComponent implements OnInit, OnDestroy {
-	private _matrixId: string | null = null;
+export class SettlementsModelsComponent implements OnInit {
 	models: BehaviorSubject<ISettlementConfig[]> = new BehaviorSubject<ISettlementConfig[]>([]);
-	matrixSubs?: Subscription;
 
 	constructor(private _settlementsService: SettlementsService, private _messageService: MessageService) {
 
@@ -27,7 +25,6 @@ export class SettlementsModelsComponent implements OnInit, OnDestroy {
 
 	ngOnInit(): void {
 		console.log("SettlementsModelsComponent ngOnInit");
-
 		this._fetchModels();
 	}
 
@@ -43,8 +40,9 @@ export class SettlementsModelsComponent implements OnInit, OnDestroy {
 
 
 	ngOnDestroy() {
-		if (this.matrixSubs) {
-			this.matrixSubs.unsubscribe();
+		if (this.models) {
+			this.models.unsubscribe();
 		}
 	}
+
 }

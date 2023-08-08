@@ -7,14 +7,7 @@ import {BulkQuotesService} from "src/app/_services_and_types/bulk-quotes.service
 import { QuotesService } from '../_services_and_types/quotes.service';
 import { InteropService } from '../_services_and_types/interop-service';
 import { Quote } from '../_services_and_types/quote_types';
-
-const removeEmpty = (obj: any) => {
-  Object.entries(obj).forEach(([key, val])  =>
-    (val && typeof val === 'object') && removeEmpty(val) ||
-    (val === null || val === "") && delete obj[key]
-  );
-  return obj;
-};
+import { removeEmpty } from '../_utils';
 
 @Component({
   selector: 'app-bulk-quote-create',

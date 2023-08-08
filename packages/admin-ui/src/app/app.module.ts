@@ -47,6 +47,7 @@ import {SettlementsMatrixDetailComponent} from "src/app/settlements/settlements.
 import { SettlementsMatricesComponent } from './settlements/settlements.matrices.component';
 import {SettlementsTransfersComponent} from "src/app/settlements/settlements.transfers.component";
 import {SettlementsModelsComponent} from "./settlements/settlements.models.component";
+import { SettlementsModelsCreateComponent } from './settlements/settlements.models.create.component';
 
 @NgModule({
   declarations: [
@@ -82,7 +83,8 @@ import {SettlementsModelsComponent} from "./settlements/settlements.models.compo
 	SettlementsMatrixDetailComponent,
     SettlementsMatricesComponent,
 	SettlementsTransfersComponent,
-	SettlementsModelsComponent
+	SettlementsModelsComponent,
+    SettlementsModelsCreateComponent
   ],
   imports: [
     BrowserModule,
