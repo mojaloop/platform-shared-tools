@@ -103,24 +103,6 @@ In the file located at exec/data/ttk2_ui_data/static/main.*.chunk.css, add the f
 }
 ```
 
-### Running the TTK Tests
-
-If you wish to run the list of testing-toolkit-test-cases (https://github.com/mojaloop/testing-toolkit-test-cases) there are a few steps required for them to be ran sucessfully (please note that the following values are based on the default bootstrap of the same docker-compose containers present in this repository).
-
-#### Testing Toolkit Interface
-- Change the default/current values on the following field of the Environment Manager of the TTK you're running your tests on
-
-#### Account-Lookup
-- Create at least an oracle (builtin or remote) so that we can later create the associations with it for the corresponding parties and participants 
-
-- Create the required associations of parties belonging to a participant
-
-#### Transfers
-- Make sure that the participants in question have enough available funds for the tests to run sucessfully
-
-
-
-
 # Login to the Mojaloop vNext Admin UI
 Your Mojaloop vNext development environment is now ready, and you can login to the Admin UI here: http://localhost:4200/login
 
@@ -145,3 +127,33 @@ docker compose -f ../docker-compose-apps.yml --env-file ./.env stop
 docker-compose -f ../docker-compose-apps.yml --env-file ./.env stop
 ```
 
+
+# Running the TTK Tests
+
+If you wish to run the list of testing-toolkit-test-cases (https://github.com/mojaloop/testing-toolkit-test-cases) there are a few steps required for them to be ran sucessfully (please note that the following values are based on the default bootstrap of the same docker-compose containers present in this repository). Repeat the same process for the greenbank whenever a process is shown for the bluebank.
+
+**Note:** At the moment, only the negative scenario tests are confirmed to be successfully passing after following these steps. 
+
+
+### Testing Toolkit Interface
+- Change the default/current values on the following field of the Environment Manager of the TTK you're running your tests on
+
+  ![ttk_enrivonment](https://github.com/mojaloop/testing-toolkit-test-cases/assets/38566292/b0e9e822-af8c-4651-bb45-a51b7bc82454)
+
+### Participants
+- Create the participants mentioned in the previous point (default: bluebank & greenbank) and **don't forget** to add their corresponding endpoints (e.g., http://host.docker.internal:4040 for the **bluebank** and http://host.docker.internal:4041 for the **greenbank**) otherwise, communication between them won't be possible. Approve them with a different user than the one logged in due to maker check restrictions.
+   
+   ![ttk_create_participant](https://github.com/mojaloop/testing-toolkit-test-cases/assets/38566292/4a15eabd-9e8c-4bac-b49a-7b3f10a516e1)
+
+### Account-Lookup
+
+- Create at least an oracle of a party type **MSISDN** (builtin or remote) so that we can later create the associations with it for the corresponding parties and participants. Afterwards, create the required associations of parties belonging to a participant using the following matches:
+   - bluebank -> 27713803912 
+   - greenbank -> 22507008181 
+
+  ![ttk_party_association](https://github.com/mojaloop/testing-toolkit-test-cases/assets/38566292/e8a86497-cc3f-4112-9501-de1006be2738)
+
+### Transfers
+- Make sure that the participants in question have enough available funds for the tests to run sucessfully, similar to the following deposit examples.
+
+  ![ttk_transfer_funds](https://github.com/mojaloop/testing-toolkit-test-cases/assets/38566292/30cc313d-8de2-4d37-90e5-c2bb4df44331)
