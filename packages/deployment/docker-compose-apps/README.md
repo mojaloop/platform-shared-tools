@@ -103,6 +103,24 @@ In the file located at exec/data/ttk2_ui_data/static/main.*.chunk.css, add the f
 }
 ```
 
+### Running the TTK Tests
+
+If you wish to run the list of testing-toolkit-test-cases (https://github.com/mojaloop/testing-toolkit-test-cases) there are a few steps required for them to be ran sucessfully (please note that the following values are based on the default bootstrap of the same docker-compose containers present in this repository).
+
+#### Testing Toolkit Interface
+- Change the default/current values on the following field of the Environment Manager of the TTK you're running your tests on
+
+#### Account-Lookup
+- Create at least an oracle (builtin or remote) so that we can later create the associations with it for the corresponding parties and participants 
+
+- Create the required associations of parties belonging to a participant
+
+#### Transfers
+- Make sure that the participants in question have enough available funds for the tests to run sucessfully
+
+
+
+
 # Login to the Mojaloop vNext Admin UI
 Your Mojaloop vNext development environment is now ready, and you can login to the Admin UI here: http://localhost:4200/login
 
