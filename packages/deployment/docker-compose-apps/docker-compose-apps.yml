@@ -283,7 +283,7 @@ services:
 # settlements
 
   settlements-api-svc:
-    image: mojaloop/settlements-bc-settlements-api-svc:0.1.8
+    image: mojaloop/settlements-bc-settlements-api-svc:0.1.9
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -335,7 +335,7 @@ services:
     restart: unless-stopped
 
   settlements-command-handler-svc:
-    image: mojaloop/settlements-bc-command-handler-svc:0.1.7
+    image: mojaloop/settlements-bc-command-handler-svc:0.1.8
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -359,7 +359,7 @@ services:
 
 
   admin-ui:
-    image: mojaloop/vnext-admin-ui-svc:0.1.18
+    image: mojaloop/vnext-admin-ui-svc:0.1.19
     depends_on:
       transfers-api-svc:
         condition: service_healthy
