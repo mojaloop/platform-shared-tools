@@ -105,6 +105,22 @@ export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 		});
 	}
 
+	lock() {
+		this._settlementsService.lockMatrix(this._matrixId!).subscribe(value => {
+			this.refresh();
+		}, error => {
+			throw error;
+		});
+	}
+
+	unlock() {
+		this._settlementsService.unlockMatrix(this._matrixId!).subscribe(value => {
+			this.refresh();
+		}, error => {
+			throw error;
+		});
+	}
+
 	async copyIdToClipboard(){
 		await navigator.clipboard.writeText(this._matrixId || "");
 	}

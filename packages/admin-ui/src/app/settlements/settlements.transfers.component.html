@@ -10,7 +10,7 @@
 			<th scope="col">Amount</th>
 			<th scope="col">Timestamp</th>
 			<th scope="col">Batch Id</th>
-			<th scope="col">Settled</th>
+
 		</tr>
 		</thead>
 		<tbody>
@@ -26,7 +26,7 @@
 			<td>{{item.amount}} ({{item.currencyCode}})</td>
 			<td>{{item.transferTimestamp | date:'medium'}}</td>
 			<td><a routerLink="/settlements/batches" [queryParams]="{batchId: item.batchId, currencyCode: item.currencyCode}">{{item.batchId}}</a></td>
-			<td *ngIf="!item.settled">(Not yet settled)</td>
+
 			<td *ngIf="item.settled"><a routerLink="/settlements/matrix/{{item.matrixId}}">Matrix</a></td>
 		</tr>
 		</tbody>

@@ -449,6 +449,56 @@ export class SettlementsService {
 		});
 	}
 
+	lockMatrix(matrixId: string): Observable<string> {
+		return new Observable<string>(subscriber => {
+			const url = `${SVC_BASEURL}/matrix/${matrixId}/lock`;
+
+			this._http.post<{ id: string }>(url, {}).subscribe(
+				(resp: { id: string }) => {
+					console.log(`got response - matrixId: ${resp.id}`);
+
+					subscriber.next(resp.id);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status===403) {
+						console.warn("UnauthorizedError received on disputeMatrix");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+	unlockMatrix(matrixId: string): Observable<string> {
+		return new Observable<string>(subscriber => {
+			const url = `${SVC_BASEURL}/matrix/${matrixId}/unlock`;
+
+			this._http.post<{ id: string }>(url, {}).subscribe(
+				(resp: { id: string }) => {
+					console.log(`got response - matrixId: ${resp.id}`);
+
+					subscriber.next(resp.id);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status===403) {
+						console.warn("UnauthorizedError received on disputeMatrix");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
 	settleMatrix(matrixId: string): Observable<string> {
 		return new Observable<string>(subscriber => {
 			const url = `${SVC_BASEURL}/matrix/${matrixId}/settle`;

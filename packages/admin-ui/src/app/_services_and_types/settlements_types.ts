@@ -78,8 +78,11 @@ export interface ISettlementBatch {
 	currencyCode: string;
 	batchName: string; // FX.XOF:RWF.2021.08.23.00.00 (minus seq)
 	batchSequence: number; // 1 (seq only)
-	state: "OPEN" | "DISPUTED" | "SETTLED" | "CLOSED";
-
+	state: "OPEN" | "CLOSED" | "DISPUTED" | "AWAITING_SETTLEMENT" | "SETTLED";
+	// this will only exist for batches that are in a state that mandates a
+	// single matrix owning it, like "AWAITING_SETTLEMENT" or "SETTLED"
+	// when locking or settling, put matrixId, when unlocking put it to null again
+	ownerMatrixId: null | string;
 	accounts: ISettlementBatchAccount[];
 }
 
@@ -114,20 +117,20 @@ export interface ISettlementMatrix {
 	updatedAt: number;
 
 	// criteria
-	dateFrom: number;
-	dateTo: number;
+	dateFrom: number | null;
+	dateTo: number | null;
 	currencyCode: string;
-	settlementModel: string;
-
+	settlementModel: string | null;
 	batches: ISettlementMatrixBatch[];
 	participantBalances: ISettlementMatrixParticipantBalance[];
-
-	state: "IDLE" | "BUSY" | "DISPUTED" | "CLOSED" | "SETTLED";
+	participantBalancesDisputed: ISettlementMatrixParticipantBalance[];
+	state: "IDLE" | "BUSY" | "DISPUTED" | "CLOSED" | "AWAITING_SETTLEMENT" | "SETTLED";
 	type: "STATIC" | "DYNAMIC";
-
 	generationDurationSecs: number | null;
 	totalDebitBalance: string;
 	totalCreditBalance: string;
+	totalDebitBalanceDisputed: string;
+	totalCreditBalanceDisputed: string;
 }
 
 export interface ISettlementMatrixParticipantBalance {
@@ -139,15 +142,9 @@ export interface ISettlementMatrixParticipantBalance {
 export interface ISettlementMatrixBatch {
 	id: string;
 	name: string;
-
 	batchDebitBalance: string;
 	batchCreditBalance: string;
-	batchTransferCount: number;
-
-	state: "OPEN" | "DISPUTED" | "SETTLED" | "CLOSED";
-	//batchWasClosedBeforeExec: boolean;
-
-	// not persisted - only populated on output - for api responses
+	state: "OPEN" | "DISPUTED" | "SETTLED" | "CLOSED" | "AWAITING_SETTLEMENT";
 	batchAccounts?: ISettlementMatrixBatchAccount[];
 }
 

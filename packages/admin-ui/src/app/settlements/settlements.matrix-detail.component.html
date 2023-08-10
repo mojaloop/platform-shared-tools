@@ -102,18 +102,24 @@
 			<button class="btn btn-success btn-block" (click)="recalculate()">Recalculate</button>
 			<button class="btn btn-warning btn-block" (click)="dispute()">Dispute</button>
 			<button class="btn btn-warning btn-block" (click)="close()">Close</button>
-			<button class="btn btn-warning btn-block" (click)="settle()">Settle</button>
+			<!--<button class="btn btn-warning btn-block" (click)="settle()">Settle</button>-->
 		</ng-container>
 
 		<ng-container *ngIf="(matrix | async)?.state === 'CLOSED'">
 			<button class="btn btn-success btn-block" (click)="recalculate()">Recalculate</button>
 			<button class="btn btn-warning btn-block" (click)="dispute()">Dispute</button>
-			<button class="btn btn-warning btn-block" (click)="settle()">Settle</button>
+			<button class="btn btn-warning btn-block" (click)="lock()">Lock</button>
+			<!--<button class="btn btn-warning btn-block" (click)="settle()">Settle</button>-->
 		</ng-container>
 
 		<ng-container *ngIf="(matrix | async)?.state === 'DISPUTED'">
-			<button class="btn btn-success btn-block" (click)="recalculate()">Recalculate</button>
+			<!--<button class="btn btn-success btn-block" (click)="recalculate()">Recalculate</button>-->
 			<button class="btn btn-warning btn-block" (click)="close()">Undispute (Close)</button>
+		</ng-container>
+
+		<ng-container *ngIf="(matrix | async)?.state === 'AWAITING_SETTLEMENT'">
+			<button class="btn btn-warning btn-block" (click)="unlock()">Unlock</button>
+			<button class="btn btn-warning btn-block" (click)="settle()">Settle</button>
 		</ng-container>
 
 <!--		<ng-container *ngIf="(matrix | async)?.state !== 'IDLE'">
