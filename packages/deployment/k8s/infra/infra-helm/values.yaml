@@ -166,4 +166,15 @@ elasticsearch:
 
   ingress:
     enabled: true
-    # hostname: es01
+    ingressClassName: nginx
+
+  kibana:
+    elasticsearch:
+      hosts:
+        -   infra-elasticsearch
+      security:
+        auth:
+          enabled: false
+    ingress:
+      enabled: true
+      ingressClassName: nginx
