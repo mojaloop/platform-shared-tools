@@ -69,6 +69,7 @@ export class ParticipantDetailComponent implements OnInit {
     }
 
     await this._fetchParticipant(this._participantId);
+	this.updateAccounts();
   }
 
   private async _fetchParticipant(id: string): Promise<void> {
