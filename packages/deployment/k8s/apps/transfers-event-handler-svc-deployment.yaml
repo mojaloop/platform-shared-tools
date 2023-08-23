@@ -42,7 +42,7 @@ spec:
           value: http://participants-svc:3010
         - name: PLATFORM_CONFIG_BASE_SVC_URL
           value: http://platform-configuration-svc:3100
-        image: mojaloop/transfers-bc-event-handler-svc:0.2.1
+        image: mojaloop/transfers-bc-event-handler-svc:latest
         name: transfers-event-handler-svc
         resources: {}
         volumeMounts:

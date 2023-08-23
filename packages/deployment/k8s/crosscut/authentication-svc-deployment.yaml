@@ -38,7 +38,7 @@ spec:
           value: kafka:9092
         - name: PLATFORM_CONFIG_BASE_SVC_URL
           value: http://platform-configuration-svc:3100
-        image: mojaloop/security-bc-authentication-svc:0.1.18
+        image: mojaloop/security-bc-authentication-svc:latest
         name: authentication-svc
         ports:
         - containerPort: 3201

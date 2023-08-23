@@ -44,7 +44,7 @@ spec:
           value: http://participants-svc:3010
         - name: PLATFORM_CONFIG_BASE_SVC_URL
           value: http://platform-configuration-svc:3100
-        image: mojaloop/account-lookup-bc-account-lookup-svc:0.1.11
+        image: mojaloop/account-lookup-bc-account-lookup-svc:latest
         livenessProbe:
           exec:
             command:
