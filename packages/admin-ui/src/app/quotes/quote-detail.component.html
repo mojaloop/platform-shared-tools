@@ -5,8 +5,8 @@
 
 	<div class="col-md-4 align-self-center">
 		<small><strong>ID: </strong> {{(quote | async)?.quoteId}}
-			<a (click)="copyQuoteIdToClipboard()"
-			   ngbTooltip="Copy ID to clipboard"><i class="bi bi-clipboard-plus"></i></a></small>
+			<a (click)="copyQuoteIdToClipboard()" ngbTooltip="Copy ID to clipboard"><i
+					class="bi bi-clipboard-plus"></i></a></small>
 	</div>
 </div>
 <hr>
@@ -25,12 +25,14 @@
 
 		<div class="mb-2">
 			<label class="col-form-label text-secondary">Requester FspId</label>
-			<div><a href="/participants/{{(quote | async)?.requesterFspId}}">{{(quote | async)?.requesterFspId}}</a></div>
+			<div><a href="/participants/{{(quote | async)?.requesterFspId}}">{{(quote | async)?.requesterFspId}}</a>
+			</div>
 		</div>
 
 		<div class="mb-2">
 			<label class="col-form-label text-secondary">Destination FspId</label>
-			<div><a href="/participants/{{(quote | async)?.destinationFspId}}">{{(quote | async)?.destinationFspId}}</a></div>
+			<div><a href="/participants/{{(quote | async)?.destinationFspId}}">{{(quote | async)?.destinationFspId}}</a>
+			</div>
 			<div></div>
 		</div>
 
@@ -43,8 +45,8 @@
 	<div class="col-5"> <!-- column 2 -->
 		<div class="mb-2">
 			<label class="col-form-label text-secondary">Status</label>
-			<div
-				[ngClass]="(quote | async)?.status==='ACCEPTED'?'text-success':'text-danger'">{{(quote | async)?.status}}</div>
+			<div [ngClass]="(quote | async)?.status==='ACCEPTED'?'text-success':'text-danger'">{{(quote |
+				async)?.status}}</div>
 		</div>
 
 		<div class="mb-2">
@@ -65,49 +67,50 @@
 	</div> <!-- column 2 -->
 
 	<div class="col-3"> <!-- column 3 - buttons -->
-		<a href="/transfers/new?quoteId={{(quote | async)?.quoteId}}" class="btn btn-warning btn-block" [hidden]="(quote | async)?.status!=='ACCEPTED'">
+		<a href="/transfers/new?quoteId={{(quote | async)?.quoteId}}" class="btn btn-warning btn-block"
+			[hidden]="(quote | async)?.status!=='ACCEPTED'">
 			Create Test Transfer
 		</a>
 
-	</div>  <!-- column 3 - buttons -->
+	</div> <!-- column 3 - buttons -->
 </div>
 
 
 <ul ngbNav #nav="ngbNav" class="mt-4 nav-tabs" (navChange)="tabChange($event)">
-	<li ngbNavItem="fsp">  <!-- fsp -->
+	<li ngbNavItem="fsp"> <!-- fsp -->
 		<a ngbNavLink>Parties</a>
 		<ng-template ngbNavContent>
 			<h4 class="mt-3">List of parties involved in the quote</h4>
 			<table class="table table-hover mt-3">
 				<thead class="thead-light">
-				<tr>
-					<th scope="col">FSP Type</th>
-					<th scope="col">Party Type</th>
-					<th scope="col">Party Identifier</th>
-					<th scope="col">Party SubType</th>
-					<th scope="col">fspId</th>
-				</tr>
+					<tr>
+						<th scope="col">FSP Type</th>
+						<th scope="col">Party Type</th>
+						<th scope="col">Party Identifier</th>
+						<th scope="col">Party SubType</th>
+						<th scope="col">fspId</th>
+					</tr>
 				</thead>
 				<tbody>
-				<tr>
-					<td>Payer</td>
-					<td>{{(quote | async)?.payer?.partyIdInfo?.partyIdType}}</td>
-					<td>{{(quote | async)?.payer?.partyIdInfo?.partyIdentifier}}</td>
-					<td>{{(quote | async)?.payer?.partyIdInfo?.partySubIdOrType}}</td>
-					<td>{{(quote | async)?.payer?.partyIdInfo?.fspId}}</td>
-				</tr>
-				<tr>
-					<td>Payee</td>
-					<td>{{(quote | async)?.payee?.partyIdInfo?.partyIdType}}</td>
-					<td>{{(quote | async)?.payee?.partyIdInfo?.partyIdentifier}}</td>
-					<td>{{(quote | async)?.payee?.partyIdInfo?.partySubIdOrType}}</td>
-					<td>{{(quote | async)?.payee?.partyIdInfo?.fspId}}</td>
-				</tr>
+					<tr>
+						<td>Payer</td>
+						<td>{{(quote | async)?.payer?.partyIdInfo?.partyIdType}}</td>
+						<td>{{(quote | async)?.payer?.partyIdInfo?.partyIdentifier}}</td>
+						<td>{{(quote | async)?.payer?.partyIdInfo?.partySubIdOrType}}</td>
+						<td>{{(quote | async)?.payer?.partyIdInfo?.fspId}}</td>
+					</tr>
+					<tr>
+						<td>Payee</td>
+						<td>{{(quote | async)?.payee?.partyIdInfo?.partyIdType}}</td>
+						<td>{{(quote | async)?.payee?.partyIdInfo?.partyIdentifier}}</td>
+						<td>{{(quote | async)?.payee?.partyIdInfo?.partySubIdOrType}}</td>
+						<td>{{(quote | async)?.payee?.partyIdInfo?.fspId}}</td>
+					</tr>
 				</tbody>
 			</table>
 		</ng-template>
 	</li><!-- fsp -->
-	<li ngbNavItem="ilp">  <!-- interledger -->
+	<li ngbNavItem="ilp"> <!-- interledger -->
 		<a ngbNavLink>ILP</a>
 		<ng-template ngbNavContent>
 			<h4 class="mt-3">Interledger protocol</h4>
@@ -117,18 +120,18 @@
 				<div class="col-12">
 					<div class="mb-2">
 						<label class="col-form-label text-secondary">Condition</label>
-						<div>{{(quote | async)?.condition}}</div>
+						<div style="font-family: monospace;">{{(quote | async)?.condition}}</div>
 					</div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-12">
-					<div class="mb-2">
-						<label class="col-form-label text-secondary">ILP Packet</label>
-						<div style="max-width: 300px;" class="text-wrap">
-							{{(quote | async)?.ilpPacket}}
-						</div>
-					</div>
+					<label class="col-form-label text-secondary">ILP Packet</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-12">
+					<pre><p style="font-family: monospace;">{{((quote | async)?.ilpPacket | json)}}</p></pre>
 				</div>
 			</div>
 
