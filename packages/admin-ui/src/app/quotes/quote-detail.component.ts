@@ -5,6 +5,7 @@ import { Quote } from "src/app/_services_and_types/quote_types";
 import { QuotesService } from "src/app/_services_and_types/quotes.service";
 import { BehaviorSubject } from "rxjs";
 import { NgbModal, NgbNav } from "@ng-bootstrap/ng-bootstrap";
+import { deserializeIlpPacket } from '../_utils';
 
 
 @Component({
@@ -28,22 +29,20 @@ export class QuoteDetailComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    
+
     console.log(this._route.snapshot.routeConfig?.path);
 
     this._live = this._route.snapshot.queryParamMap.has('live');
-    
+
     this._route.params.subscribe(params => {
       this._quoteId = params['id'];
       this._transactionId = params['transactionId']
-      
+
       if (this._transactionId) {
         this._fetchQuoteByTransactionId(this._transactionId)
-      }
-      else if (this._quoteId) {
+      }else if (this._quoteId) {
         this._fetchQuote(this._quoteId);
-      }
-      else {
+      }else {
         throw new Error("invalid parameter");
       }
     });
@@ -54,12 +53,26 @@ export class QuoteDetailComponent implements OnInit {
     this._quotesSvc.getQuoteByTransactionId(transactionId).subscribe(quote => {
       this.quote.next(quote);
 
+	  // Decode ILP packet
+	  if(quote?.ilpPacket){
+	    //debugger
+		const decodedIlpPacket = deserializeIlpPacket(quote.ilpPacket)
+		quote.ilpPacket = decodedIlpPacket;
+	  }
+
     });
   }
 
   private async _fetchQuote(id: string): Promise<void> {
     this._quotesSvc.getQuote(id).subscribe(quote => {
       this.quote.next(quote);
+
+	  // Decode ILP packet
+      if(quote?.ilpPacket){
+        //debugger
+        const decodedIlpPacket = deserializeIlpPacket(quote.ilpPacket)
+        quote.ilpPacket = decodedIlpPacket;
+      }
 
       if (this._live && !quote || !(quote?.status === "REJECTED" || quote?.status === "ACCEPTED")) {
 
@@ -79,7 +92,7 @@ export class QuoteDetailComponent implements OnInit {
   }
 
   tabChange(e: any) {
-    console.log(`Tab changed to ${e.nextId}`);
+    //console.log(`Tab changed to ${e.nextId}`);
   }
 
 
