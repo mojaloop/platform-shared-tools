@@ -37,7 +37,7 @@ spec:
           value: logs
         - name: KAFKA_URL
           value: kafka:9092
-        image: mojaloop/logging-bc-logging-svc:0.1.7
+        image: mojaloop/logging-bc-logging-svc:snapshot
         name: logging-svc
         resources: {}
         volumeMounts:
