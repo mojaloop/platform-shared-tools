@@ -29,22 +29,20 @@ export class QuoteDetailComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    
+
     console.log(this._route.snapshot.routeConfig?.path);
 
     this._live = this._route.snapshot.queryParamMap.has('live');
-    
+
     this._route.params.subscribe(params => {
       this._quoteId = params['id'];
       this._transactionId = params['transactionId']
-      
+
       if (this._transactionId) {
         this._fetchQuoteByTransactionId(this._transactionId)
-      }
-      else if (this._quoteId) {
+      }else if (this._quoteId) {
         this._fetchQuote(this._quoteId);
-      }
-      else {
+      }else {
         throw new Error("invalid parameter");
       }
     });
@@ -55,6 +53,13 @@ export class QuoteDetailComponent implements OnInit {
     this._quotesSvc.getQuoteByTransactionId(transactionId).subscribe(quote => {
       this.quote.next(quote);
 
+	  // Decode ILP packet
+	  if(quote?.ilpPacket){
+	    //debugger
+		const decodedIlpPacket = deserializeIlpPacket(quote.ilpPacket)
+		quote.ilpPacket = decodedIlpPacket;
+	  }
+
     });
   }
 
@@ -62,6 +67,7 @@ export class QuoteDetailComponent implements OnInit {
     this._quotesSvc.getQuote(id).subscribe(quote => {
       this.quote.next(quote);
 
+	  // Decode ILP packet
       if(quote?.ilpPacket){
         //debugger
         const decodedIlpPacket = deserializeIlpPacket(quote.ilpPacket)
