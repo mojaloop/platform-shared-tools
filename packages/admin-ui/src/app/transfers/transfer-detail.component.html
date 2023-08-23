@@ -86,3 +86,70 @@
 		</div>  <!-- column 3 - buttons -->
 	</div>
 </div>
+
+<ul ngbNav #nav="ngbNav" class="mt-4 nav-tabs" (navChange)="tabChange($event)">
+	<li ngbNavItem="fsp"> <!-- fsp -->
+		<a ngbNavLink>Parties</a>
+		<ng-template ngbNavContent>
+			<h4 class="mt-3">List of parties involved in the transfer</h4>
+			<table class="table table-hover mt-3">
+				<thead class="thead-light">
+					<tr>
+						<th scope="col">FSP Type</th>
+						<th scope="col">Party Type</th>
+						<th scope="col">Party Identifier</th>
+						<th scope="col">Party SubType</th>
+						<th scope="col">fspId</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Payer</td>
+						<td>{{decodedIlpPacket?.payer?.partyIdInfo?.partyIdType}}</td>
+						<td>{{decodedIlpPacket?.payer?.partyIdInfo?.partyIdentifier}}</td>
+						<td>{{decodedIlpPacket?.payer?.partyIdInfo?.partySubIdOrType}}</td>
+						<td>{{decodedIlpPacket?.payer?.partyIdInfo?.fspId}}</td>
+					</tr>
+					<tr>
+						<td>Payee</td>
+						<td>{{decodedIlpPacket?.payee?.partyIdInfo?.partyIdType}}</td>
+						<td>{{decodedIlpPacket?.payee?.partyIdInfo?.partyIdentifier}}</td>
+						<td>{{decodedIlpPacket?.payee?.partyIdInfo?.partySubIdOrType}}</td>
+						<td>{{decodedIlpPacket?.payee?.partyIdInfo?.fspId}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</ng-template>
+	</li><!-- fsp -->
+	<li ngbNavItem="ilp"> <!-- interledger -->
+		<a ngbNavLink>ILP</a>
+		<ng-template ngbNavContent>
+			<h4 class="mt-3">Interledger protocol</h4>
+
+
+			<div class="row">
+				<div class="col-12">
+					<div class="mb-2">
+						<label class="col-form-label text-secondary">Condition</label>
+						<div style="font-family: monospace;">{{(transfer | async)?.condition}}</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-12">
+					<label class="col-form-label text-secondary">ILP Packet</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-12">
+					<pre><p style="font-family: monospace;">{{((transfer | async)?.ilpPacket | json)}}</p></pre>
+				</div>
+			</div>
+
+
+		</ng-template>
+	</li><!-- interledger -->
+</ul>
+
+<div class="mt-6" [ngbNavOutlet]="nav"></div>
+

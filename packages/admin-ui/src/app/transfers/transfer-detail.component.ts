@@ -6,8 +6,10 @@ import { BehaviorSubject } from "rxjs";
 import { ISettlementBatchTransfer } from "src/app/_services_and_types/settlements_types";
 import { SettlementsService } from "src/app/_services_and_types/settlements.service";
 import { MessageService } from "src/app/_services_and_types/message.service";
-import {ParticipantsService} from "../_services_and_types/participants.service";
-import {Participant} from "../_services_and_types/participant_types";
+import { ParticipantsService } from "../_services_and_types/participants.service";
+import { Participant } from "../_services_and_types/participant_types";
+import { deserializeIlpPacket } from '../_utils';
+import { Quote } from "src/app/_services_and_types/quote_types";
 
 
 @Component({
@@ -24,15 +26,16 @@ export class TransferDetailComponent implements OnInit {
   public payer: BehaviorSubject<Participant | null> = new BehaviorSubject<Participant | null>(null);
   public payee: BehaviorSubject<Participant | null> = new BehaviorSubject<Participant | null>(null);
   settlementTransfer: BehaviorSubject<ISettlementBatchTransfer | null> = new BehaviorSubject<ISettlementBatchTransfer | null>(null);
+  public decodedIlpPacket: any;
 
   private _reloadCount = 0;
 
   constructor(
-	  private _route: ActivatedRoute,
-	  private _transfersSvc: TransfersService,
-	  private _settlementsService: SettlementsService,
-	  private _messageService: MessageService,
-	  private _participantsService: ParticipantsService
+    private _route: ActivatedRoute,
+    private _transfersSvc: TransfersService,
+    private _settlementsService: SettlementsService,
+    private _messageService: MessageService,
+    private _participantsService: ParticipantsService
   ) {
 
   }
@@ -51,9 +54,9 @@ export class TransferDetailComponent implements OnInit {
   }
 
   private async _fetchTransfer(id: string): Promise<void> {
-    this._transfersSvc.getTransfer(id).subscribe(async(transfer) => {
+    this._transfersSvc.getTransfer(id).subscribe(async (transfer) => {
       this.transfer.next(transfer);
-	  if (this._live && !transfer || !(transfer?.transferState === "COMMITTED" || transfer?.transferState === "REJECTED" || transfer?.transferState === "ABORTED")) {
+      if (this._live && !transfer || !(transfer?.transferState === "COMMITTED" || transfer?.transferState === "REJECTED" || transfer?.transferState === "ABORTED")) {
         if (this._reloadCount > 30) return;
 
         this._reloadCount++;
@@ -64,31 +67,36 @@ export class TransferDetailComponent implements OnInit {
 
       } else if (this._live && this._reloadRequested) {
         this._messageService.addSuccess("Transfer reloaded");
-      }else {
-		  this._settlementsService.getTransfersByTransferId(id!).subscribe(async (value) => {
-			  this.settlementTransfer.next(value);
-		  });
-	  }
+      } else {
+        this._settlementsService.getTransfersByTransferId(id!).subscribe(async (value) => {
+          this.settlementTransfer.next(value);
+        });
+      }
 
-	  if(!transfer || !transfer.payerFspId || !transfer.payeeFspId) return;
+      if (!transfer || !transfer.payerFspId || !transfer.payeeFspId) return;
 
-	  let payer = this.payer.getValue();
-	  if(!payer || payer.id !== transfer.payerFspId){
-		  payer = await this._participantsService.getParticipant(transfer.payerFspId).toPromise();
-		  if(payer) this.payer.next(payer);
-	  }
+      if (transfer.ilpPacket) {
+        this.decodedIlpPacket = deserializeIlpPacket(transfer.ilpPacket)
+        transfer.ilpPacket = this.decodedIlpPacket;
+      }
 
-	  let payee = this.payee.getValue();
-	  if(!payee || payee.id !== transfer.payeeFspId){
-		  payee = await this._participantsService.getParticipant(transfer.payeeFspId).toPromise()
-		if(payee) this.payee.next(payee);
-	  }
+      let payer = this.payer.getValue();
+      if (!payer || payer.id !== transfer.payerFspId) {
+        payer = await this._participantsService.getParticipant(transfer.payerFspId).toPromise();
+        if (payer) this.payer.next(payer);
+      }
+
+      let payee = this.payee.getValue();
+      if (!payee || payee.id !== transfer.payeeFspId) {
+        payee = await this._participantsService.getParticipant(transfer.payeeFspId).toPromise()
+        if (payee) this.payee.next(payee);
+      }
 
     });
   }
 
   tabChange(e: any) {
-    console.log(`Tab changed to ${e.nextId}`);
+    //console.log(`Tab changed to ${e.nextId}`);
   }
 
   async copyTransferIdToClipboard() {

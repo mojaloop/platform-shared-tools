@@ -5,6 +5,7 @@ import { Quote } from "src/app/_services_and_types/quote_types";
 import { QuotesService } from "src/app/_services_and_types/quotes.service";
 import { BehaviorSubject } from "rxjs";
 import { NgbModal, NgbNav } from "@ng-bootstrap/ng-bootstrap";
+import { deserializeIlpPacket } from '../_utils';
 
 
 @Component({
@@ -61,6 +62,12 @@ export class QuoteDetailComponent implements OnInit {
     this._quotesSvc.getQuote(id).subscribe(quote => {
       this.quote.next(quote);
 
+      if(quote?.ilpPacket){
+        //debugger
+        const decodedIlpPacket = deserializeIlpPacket(quote.ilpPacket)
+        quote.ilpPacket = decodedIlpPacket;
+      }
+
       if (this._live && !quote || !(quote?.status === "REJECTED" || quote?.status === "ACCEPTED")) {
 
         if (this._reloadCount > 30) return;
@@ -79,7 +86,7 @@ export class QuoteDetailComponent implements OnInit {
   }
 
   tabChange(e: any) {
-    console.log(`Tab changed to ${e.nextId}`);
+    //console.log(`Tab changed to ${e.nextId}`);
   }
 
 
