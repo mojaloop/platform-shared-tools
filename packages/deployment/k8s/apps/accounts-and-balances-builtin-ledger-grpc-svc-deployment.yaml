@@ -50,7 +50,7 @@ spec:
           value: '0'
         - name: TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES
           value: tigerbeetle:3000
-        image: mojaloop/accounts-and-balances-bc-builtin-ledger-grpc-svc:latest
+        image: mojaloop/accounts-and-balances-bc-builtin-ledger-grpc-svc:snapshot
         livenessProbe:
           exec:
             command:

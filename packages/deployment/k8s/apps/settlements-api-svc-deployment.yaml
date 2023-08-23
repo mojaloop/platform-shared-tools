@@ -46,7 +46,7 @@ spec:
           value: http://participants-svc:3010
         - name: PLATFORM_CONFIG_BASE_SVC_URL
           value: http://platform-configuration-svc:3100
-        image: mojaloop/settlements-bc-settlements-api-svc:latest
+        image: mojaloop/settlements-bc-settlements-api-svc:snapshot
         livenessProbe:
           exec:
             command:
