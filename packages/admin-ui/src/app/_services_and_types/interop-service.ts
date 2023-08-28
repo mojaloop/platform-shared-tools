@@ -33,31 +33,31 @@
  import {Observable} from "rxjs";
  import {Injectable} from "@angular/core";
  import {HttpClient, HttpHeaders} from "@angular/common/http";
- 
+
  import {SettingsService} from "./settings.service";
  import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
 import { Quote } from "./quote_types";
 import { BulkQuote } from "./bulk_quote_types";
 import { Transfer } from "./transfer_types";
 //  import {} from "./interop_types";
- 
+
  const SVC_BASEURL = "/_interop";
- 
+
  @Injectable({
    providedIn: "root",
  })
  export class InteropService {
- 
+
 	constructor(private _settings: SettingsService, private _http: HttpClient, private _authentication: AuthenticationService) {}
 
 	associateParticipant(participantId: string, partyType: string, partyId: string, partySubType: string, currencyCode: string):Observable<any>{
         const URL = partySubType ? `${SVC_BASEURL}/participants/${partyType}/${partyId}/${partySubType}` : `${SVC_BASEURL}/participants/${partyType}/${partyId}`;
-		
+
 		return new Observable<any>(subscriber => {
 			const headers = new HttpHeaders().set('fspiop-source', participantId)
 											.set('fspiop-date', new Date().toISOString());
 
-			this._http.post<any>(URL, { fspId: participantId, currency: currencyCode }, { headers }).subscribe(									
+			this._http.post<any>(URL, { fspId: participantId, currency: currencyCode }, { headers }).subscribe(
 			(result: any) => {
 				console.log(`POST associate response: ${result}`);
 
@@ -104,7 +104,7 @@ import { Transfer } from "./transfer_types";
 		return new Observable<any>(subscriber => {
 			const headers = new HttpHeaders().set('fspiop-source', participantId)
 											.set('fspiop-date', new Date().toISOString());
-			
+
 			this._http.get<any>(URL, { headers }).subscribe(
 			(result: any) => {
 				console.log(`GET participant response: ${result}`);
@@ -209,7 +209,7 @@ import { Transfer } from "./transfer_types";
 			(result: any) => {
 				console.log(`GET transfer response: ${result}`);
 
-				subscriber.next(result);
+				subscriber.next();
 				return subscriber.complete();
 			},
 			error => {
@@ -223,4 +223,3 @@ import { Transfer } from "./transfer_types";
 	}
 
 }
- 

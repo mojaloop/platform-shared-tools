@@ -1,93 +1,102 @@
 {
-  "/auth_n": {
-    "target": "http://localhost:3201/",
-    "secure": true,
-    "changeOrigin": true,
-    "pathRewrite": {
-      "^/auth_n": ""
-    },
-    "logLevel": "debug"
-  },
-  "/auth_z": {
-    "target": "http://localhost:3202/",
-    "secure": true,
-    "changeOrigin": true,
-    "pathRewrite": {
-      "^/auth_z": ""
-    },
-    "logLevel": "debug"
-  },
-  "/_participants": {
-    "target": "http://localhost:3010/",
-    "secure": true,
-    "changeOrigin": true,
-    "pathRewrite": {
-      "^/_participants": ""
-    },
-    "logLevel": "debug"
-  },
-  "/_platform-configuration-svc": {
-    "target": "http://localhost:3100/",
-    "secure": true,
-    "changeOrigin": true,
-    "pathRewrite": {
-      "^/_platform-configuration-svc": ""
-    },
-    "logLevel": "debug"
-  },
-  "/_account-lookup": {
-    "target": "http://localhost:3030/",
-    "secure": true,
-    "changeOrigin": true,
-    "pathRewrite": {
-      "^/_account-lookup": ""
-    },
-    "logLevel": "debug"
-  },
-  "/_interop": {
-    "target": "http://localhost:4000/",
-    "secure": true,
-    "changeOrigin": true,
-    "pathRewrite": {
-      "^/_interop": ""
-    },
-    "logLevel": "debug"
-  },
-  "/_quotes": {
-    "target": "http://localhost:3033/",
-    "secure": true,
-    "changeOrigin": true,
-    "pathRewrite": {
-      "^/_quotes": ""
-    },
-    "logLevel": "debug"
-  },
-  "/_bulk-quotes": {
-    "target": "http://localhost:3033/",
-    "secure": true,
-    "changeOrigin": true,
-    "pathRewrite": {
-      "^/_bulk-quotes": ""
-    },
-    "logLevel": "debug"
-  },
-  "/_transfers": {
-    "target": "http://localhost:3500/",
-    "secure": true,
-    "changeOrigin": true,
-    "pathRewrite": {
-      "^/_transfers": ""
-    },
-    "logLevel": "debug"
-  },
-  "/_settlements": {
-    "target": "http://localhost:3600/",
-    "secure": true,
-    "changeOrigin": true,
-    "pathRewrite": {
-      "^/_settlements": ""
-    },
-    "logLevel": "debug"
-  }
+	"/auth_n": {
+		"target": "http://localhost:3201/",
+		"secure": true,
+		"changeOrigin": true,
+		"pathRewrite": {
+			"^/auth_n": ""
+		},
+		"logLevel": "debug"
+	},
+	"/auth_z": {
+		"target": "http://localhost:3202/",
+		"secure": true,
+		"changeOrigin": true,
+		"pathRewrite": {
+			"^/auth_z": ""
+		},
+		"logLevel": "debug"
+	},
+	"/_participants": {
+		"target": "http://localhost:3010/",
+		"secure": true,
+		"changeOrigin": true,
+		"pathRewrite": {
+			"^/_participants": ""
+		},
+		"logLevel": "debug"
+	},
+	"/_platform-configuration-svc": {
+		"target": "http://localhost:3100/",
+		"secure": true,
+		"changeOrigin": true,
+		"pathRewrite": {
+			"^/_platform-configuration-svc": ""
+		},
+		"logLevel": "debug"
+	},
+	"/_account-lookup": {
+		"target": "http://localhost:3030/",
+		"secure": true,
+		"changeOrigin": true,
+		"pathRewrite": {
+			"^/_account-lookup": ""
+		},
+		"logLevel": "debug"
+	},
+	"/_interop": {
+		"target": "http://localhost:4000/",
+		"secure": true,
+		"changeOrigin": true,
+		"pathRewrite": {
+			"^/_interop": ""
+		},
+		"logLevel": "debug"
+	},
+	"/_quotes": {
+		"target": "http://localhost:3033/",
+		"secure": true,
+		"changeOrigin": true,
+		"pathRewrite": {
+			"^/_quotes": ""
+		},
+		"logLevel": "debug"
+	},
+	"/_bulk-quotes": {
+		"target": "http://localhost:3033/",
+		"secure": true,
+		"changeOrigin": true,
+		"pathRewrite": {
+			"^/_bulk-quotes": ""
+		},
+		"logLevel": "debug"
+	},
+	"/_transfers": {
+		"target": "http://localhost:3500/",
+		"secure": true,
+		"changeOrigin": true,
+		"pathRewrite": {
+			"^/_transfers": ""
+		},
+		"logLevel": "debug"
+	},
+	"/_settlements": {
+		"target": "http://localhost:3600/",
+		"secure": true,
+		"changeOrigin": true,
+		"pathRewrite": {
+			"^/_settlements": ""
+		},
+		"logLevel": "debug"
+	},
+	"/_auditing": {
+		"target": "http://localhost:3050/",
+		"secure": true,
+		"changeOrigin": true,
+		"pathRewrite": {
+			"^/_auditing": ""
+		},
+		"logLevel": "debug"
+	}
 }
 

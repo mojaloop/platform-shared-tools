@@ -38,6 +38,7 @@ import {SettlementsMatricesComponent} from "src/app/settlements/settlements.matr
 import {SettlementsTransfersComponent} from "src/app/settlements/settlements.transfers.component";
 import {SettlementsModelsComponent} from "./settlements/settlements.models.component";
 import {SettlementsModelsCreateComponent} from './settlements/settlements.models.create.component'
+import {AuditingComponent} from "./auditing/auditing.component";
 
 const routes: Routes = [
 	{path: "", redirectTo: "/home", pathMatch: "full"},
@@ -75,7 +76,8 @@ const routes: Routes = [
 	{path: "settlements/batches", component: SettlementsBatchesComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/transfers", component: SettlementsTransfersComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/models", component: SettlementsModelsComponent, canActivate: [CanLoadIsLoggedIn]},
-	{path: "settlements/models/new", component: SettlementsModelsCreateComponent}
+	{path: "settlements/models/new", component: SettlementsModelsCreateComponent},
+	{path: "auditing", component: AuditingComponent},
 ];
 
 

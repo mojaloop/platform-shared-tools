@@ -1,161 +1,101 @@
 {
-  "mappings": {
-    "properties": {
-      "actionSuccessful": {
-        "type": "boolean"
-      },
-      "actionTimestamp": {
-        "type": "date"
-      },
-      "actionType": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
-        }
-      },
-      "auditingSvcAppName": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
-        }
-      },
-      "auditingSvcAppVersion": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
-        }
-      },
-      "auditingSvcKeyId": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
-        }
-      },
-      "auditingSvcSignature": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
-        }
-      },
-      "callerNetworkSources": {
+    "mappings": {
         "properties": {
-          "address": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword",
-                "ignore_above": 256
-              }
+            "actionTimestamp": {
+                "type": "date"
+            },
+            "sourceAppName": {
+                "type": "keyword"
+            },
+            "sourceAppVersion": {
+                "type": "keyword"
+            },
+            "sourceBcName": {
+                "type": "keyword"
+            },
+            "actionType": {
+                "type": "keyword"
+            },
+            "actionSuccessful": {
+                "type": "boolean"
+            },
+            "auditingSvcAppName": {
+                "type": "keyword"
+            },
+            "auditingSvcAppVersion": {
+                "type": "keyword"
+            },
+            "auditingSvcKeyId": {
+                "type": "keyword"
+            },
+            "auditingSvcSignature": {
+                "type": "keyword"
+            },
+            "callerNetworkSources": {
+                "properties": {
+                    "address": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword",
+                                "ignore_above": 256
+                            }
+                        }
+                    },
+                    "family": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword",
+                                "ignore_above": 256
+                            }
+                        }
+                    }
+                }
+            },
+            "id": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                }
+            },
+            "invalidSourceSignature": {
+                "type": "boolean"
+            },
+            "persistenceTimestamp": {
+                "type": "date"
+            },
+            "securityContext": {
+                "properties": {
+                    "role": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword",
+                                "ignore_above": 256
+                            }
+                        }
+                    },
+                    "userId": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword",
+                                "ignore_above": 256
+                            }
+                        }
+                    }
+                }
+            },
+            "sourceKeyId": {
+                "type": "keyword"
+            },
+            "sourceSignature": {
+                "type": "keyword"
             }
-          },
-          "family": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword",
-                "ignore_above": 256
-              }
-            }
-          }
         }
-      },
-      "id": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
-        }
-      },
-      "invalidSourceSignature": {
-        "type": "boolean"
-      },
-      "persistenceTimestamp": {
-        "type": "date"
-      },
-      "securityContext": {
-        "properties": {
-          "role": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword",
-                "ignore_above": 256
-              }
-            }
-          },
-          "userId": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword",
-                "ignore_above": 256
-              }
-            }
-          }
-        }
-      },
-      "sourceAppName": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
-        }
-      },
-      "sourceAppVersion": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
-        }
-      },
-      "sourceBcName": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
-        }
-      },
-      "sourceKeyId": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
-        }
-      },
-      "sourceSignature": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
-        }
-      }
     }
-  }
 }

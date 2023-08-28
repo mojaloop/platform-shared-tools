@@ -120,9 +120,6 @@ export class TransferCreateComponent implements OnInit {
 
 		const transfer = removeEmpty(this.activeTransfer) as Transfer;
 		const success = this._interopSvc.createTransferRequest(transfer).subscribe(success => {
-			if (!success)
-				throw new Error("error saving Transfer");
-
 			this._messageService.addSuccess("Transfer Created");
 
 			setTimeout(()=>{

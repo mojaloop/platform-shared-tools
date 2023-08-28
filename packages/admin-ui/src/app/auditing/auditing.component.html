@@ -1,0 +1,85 @@
+<div class="row mb-2">
+	<div class="col">
+		<h3>Auditing</h3>
+	</div>
+	<!--<div class="col text-right">
+		<button class="btn btn-warning" routerLink="/transfers/new">Create Test Transfer</button>
+	</div>-->
+</div>
+
+
+
+<!--filter-->
+<div class="filterbox">
+	<form >
+		<table class="table">
+			<tr class="form-row">
+				<div class="form-group col-md-2">
+					<label for="filterSourceBcName">Source BC Name:</label>
+					<select class="form-control" id="filterSourceBcName">
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordSourceBcName | async)">{{item}}</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-2">
+					<label for="filterSourceAppName">Source App Name:</label>
+					<select class="form-control" id="filterSourceAppName">
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordSourceAppName| async)">{{item}}</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-2">
+					<label for="filterActionType">Action Type:</label>
+					<select class="form-control" id="filterActionType" >
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordActionType | async)">{{item}}</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-2">
+					<label for="filterStartDate">Start date:</label>
+					<input class="form-control" type="datetime-local" id="filterStartDate" step=300>
+				</div>
+
+
+				<div class="form-group col-md-2">
+					<label for="filterEndDate">End date:</label>
+					<input class="form-control" type="datetime-local" id="filterEndDate" step=300>
+				</div>
+
+
+				<div class="form-group col-md-2">
+					<label for="filterBtn">&nbsp;</label>
+					<button type="submit" class="form-control btn btn-primary" id="filterBtn" (click)="search()">Search &nbsp;&nbsp;<i class="bi bi-search"></i></button>
+				</div>
+			</tr>
+		</table>
+	</form>
+</div>
+
+<table class="table">
+  <thead class="thead-light">
+  <tr>
+    <th scope="col">When</th>
+    <th scope="col">BC</th>
+    <th scope="col">App</th>
+    <th scope="col">Action Type</th>
+<!--	<th scope="col">User</th>-->
+    <th scope="col">Success</th>
+
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let item of (entries | async)">
+    <td> {{item.actionTimestamp  | date:"medium"}}</td>
+    <td> {{item.sourceBcName}}</td>
+    <td> {{item.sourceAppName}} <span class="badge badge-secondary">{{item.sourceAppVersion}}</span></td>
+    <td> {{item.actionType}}</td>
+<!--	  <td> {{item.securityContext.userId}}</td>-->
+    <td> {{item.actionSuccessful}}</td>
+
+  </tr>
+  </tbody>
+</table>
