@@ -11,6 +11,7 @@ import {
   IParticipantNetDebitCapChangeRequest,
   Participant,
   ParticipantAccount,
+  ParticipantAccountChangeRequest,
   ParticipantEndpoint,
   ParticipantFundsMovement,
 } from "src/app/_services_and_types/participant_types";
@@ -51,6 +52,7 @@ export class ParticipantsService {
       participantAllowedSourceIps: [],
       participantEndpoints: [],
       participantAccounts: [],
+      participantAccountsChangeRequest: [],
       fundsMovements: [],
       changeLog: [],
       netDebitCapChangeRequests: [],
@@ -69,10 +71,12 @@ export class ParticipantsService {
 
   createEmptyAccount(): ParticipantAccount {
     return {
-      id: uuid.v4(),
+      id: null,
+      externalBankAccountId: "",
+      externalBankAccountName:"",
       type: "POSITION",
       currencyCode: "EUR",
-      balance: null,
+      balance: null
     };
   }
 
@@ -265,7 +269,7 @@ export class ParticipantsService {
 
   createAccount(
     participantId: string,
-    account: ParticipantAccount
+    account: ParticipantAccountChangeRequest
   ): Observable<string> {
     return new Observable<string>((subscriber) => {
       this._http
@@ -284,6 +288,40 @@ export class ParticipantsService {
             if (error && error.status === 401) {
               console.warn("UnauthorizedError received on createAccount");
               subscriber.error(new UnauthorizedError(error.error?.msg));
+            } else {
+              console.error(error);
+              subscriber.error(error.error?.msg);
+            }
+            return subscriber.complete();
+          }
+        );
+    });
+  }
+
+  approveAccountChangeRequest(participantId: string, requestId: string): Observable<void> {
+    return new Observable<void>((subscriber) => {
+      this._http
+        .post(
+          `${SVC_BASEURL}/participants/${participantId}/account/${requestId}/approve`,
+          {}
+        )
+        .subscribe(
+          () => {
+            console.log(`got success response from participantAccountChangeRequest`);
+
+            subscriber.next();
+            return subscriber.complete();
+          },
+          (error) => {
+            if (error && error.status === 401) {
+              console.warn(
+                "UnauthorizedError received on participantAccountChangeRequest"
+              );
+              subscriber.error(new UnauthorizedError(error.error?.msg));
+            }
+            if (error && error.status === 403) {
+              console.warn("Forbidden received on participantAccountChangeRequest");
+              subscriber.error(new Error(error.error?.msg));
             } else {
               console.error(error);
               subscriber.error(error.error?.msg);
