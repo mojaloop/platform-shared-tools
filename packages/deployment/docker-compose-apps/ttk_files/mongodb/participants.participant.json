@@ -1,0 +1,956 @@
+[{
+  "_id": {
+    "$oid": "64d169e324c398c975d5a94d"
+  },
+  "id": "hub",
+  "name": "HUB",
+  "type": "HUB",
+  "isActive": true,
+  "description": "Hub participant account",
+  "createdBy": "(system)",
+  "createdDate": {
+    "$numberLong": "1691445731108"
+  },
+  "approved": true,
+  "approvedBy": "(system)",
+  "approvedDate": {
+    "$numberLong": "1691445731108"
+  },
+  "lastUpdated": {
+    "$numberLong": "1691445731108"
+  },
+  "participantAccounts": [
+    {
+      "id": "eac0134c-66fa-4bcb-8b8e-872a553fea10",
+      "type": "HUB_MULTILATERAL_SETTLEMENT",
+      "currencyCode": "EUR",
+      "debitBalance": null,
+      "creditBalance": null,
+      "balance": null
+    },
+    {
+      "id": "ceb939a4-dc1a-491c-8899-6d43d49527e4",
+      "type": "HUB_RECONCILIATION",
+      "currencyCode": "EUR",
+      "debitBalance": null,
+      "creditBalance": null,
+      "balance": null
+    },
+    {
+      "id": "96f52fb1-cdbc-4d17-a6b6-11c6e2d61800",
+      "type": "HUB_MULTILATERAL_SETTLEMENT",
+      "currencyCode": "USD",
+      "debitBalance": null,
+      "creditBalance": null,
+      "balance": null
+    },
+    {
+      "id": "47338b2a-522d-4f92-84cb-8f1f92df41c4",
+      "type": "HUB_RECONCILIATION",
+      "currencyCode": "USD",
+      "debitBalance": null,
+      "creditBalance": null,
+      "balance": null
+    },
+    {
+      "id": "e363484c-f93a-4f72-8857-62e2ca23b4c6",
+      "type": "HUB_MULTILATERAL_SETTLEMENT",
+      "currencyCode": "MMK",
+      "debitBalance": null,
+      "creditBalance": null,
+      "balance": null
+    },
+    {
+      "id": "ac125703-4536-4b64-82de-cc9a94215d12",
+      "type": "HUB_RECONCILIATION",
+      "currencyCode": "MMK",
+      "debitBalance": null,
+      "creditBalance": null,
+      "balance": null
+    }
+  ],
+  "participantEndpoints": [],
+  "participantAllowedSourceIps": [],
+  "fundsMovements": [],
+  "changeLog": [
+    {
+      "changeType": "CREATE",
+      "user": "(system)",
+      "timestamp": {
+        "$numberLong": "1691445731108"
+      },
+      "notes": "(participants-svc bootstrap routine)"
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "(system)",
+      "timestamp": {
+        "$numberLong": "1691445731108"
+      },
+      "notes": "(participants-svc bootstrap routine added HMLNS account for: [object Object])"
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "(system)",
+      "timestamp": {
+        "$numberLong": "1691445731108"
+      },
+      "notes": "(participants-svc bootstrap routine added Reconciliation account for: [object Object])"
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "(system)",
+      "timestamp": {
+        "$numberLong": "1691445731108"
+      },
+      "notes": "(participants-svc bootstrap routine added HMLNS account for: [object Object])"
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "(system)",
+      "timestamp": {
+        "$numberLong": "1691445731108"
+      },
+      "notes": "(participants-svc bootstrap routine added Reconciliation account for: [object Object])"
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "(system)",
+      "timestamp": {
+        "$numberLong": "1691445731108"
+      },
+      "notes": "(participants-svc bootstrap routine added HMLNS account for: [object Object])"
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "(system)",
+      "timestamp": {
+        "$numberLong": "1691445731108"
+      },
+      "notes": "(participants-svc bootstrap routine added Reconciliation account for: [object Object])"
+    }
+  ],
+  "netDebitCaps": [],
+  "netDebitCapChangeRequests": []
+},
+{
+  "_id": {
+    "$oid": "64d17a0924c398c975d5a94e"
+  },
+  "id": "testingtoolkitdfsp",
+  "name": "testingtoolkitdfsp name",
+  "type": "DFSP",
+  "isActive": false,
+  "description": "testingtoolkitdfsp description",
+  "createdBy": "admin",
+  "createdDate": {
+    "$numberLong": "1691449865202"
+  },
+  "approved": true,
+  "approvedBy": "user",
+  "approvedDate": {
+    "$numberLong": "1691450050359"
+  },
+  "lastUpdated": {
+    "$numberLong": "1691450050359"
+  },
+  "participantAccounts": [
+    {
+      "id": "47f9f674-c459-4f28-aa59-d0f6dc876b67",
+      "type": "POSITION",
+      "currencyCode": "USD",
+      "creditBalance": null,
+      "debitBalance": null,
+      "balance": null
+    },
+    {
+      "id": "e5b4fc0e-4fec-40dc-b2b8-851426a06079",
+      "type": "POSITION",
+      "currencyCode": "EUR",
+      "creditBalance": null,
+      "debitBalance": null,
+      "balance": null
+    },
+    {
+      "id": "3231f43c-4eb0-489a-9cd2-923807b9e350",
+      "type": "SETTLEMENT",
+      "currencyCode": "EUR",
+      "creditBalance": null,
+      "debitBalance": null,
+      "balance": null
+    },
+    {
+      "id": "734ffc8f-9d69-4f6b-8cd9-f2ab4360ee48",
+      "type": "SETTLEMENT",
+      "currencyCode": "USD",
+      "creditBalance": null,
+      "debitBalance": null,
+      "balance": null
+    }
+  ],
+  "participantEndpoints": [
+    {
+      "id": "9aa9fe7a-a630-450d-b724-793bf6cabee4",
+      "type": "FSPIOP",
+      "protocol": "HTTPs/REST",
+      "value": "http://host.docker.internal:4040"
+    }
+  ],
+  "participantAllowedSourceIps": [],
+  "fundsMovements": [
+    {
+      "id": "b937e226-3702-42c0-b1df-6a420b69cce6",
+      "createdBy": "user",
+      "createdDate": {
+        "$numberLong": "1691450055170"
+      },
+      "direction": "FUNDS_DEPOSIT",
+      "amount": "1e+21",
+      "currencyCode": "EUR",
+      "note": "",
+      "extReference": "",
+      "approved": false,
+      "approvedBy": null,
+      "approvedDate": null,
+      "transferId": null
+    },
+    {
+      "id": "f169f8b3-d52e-4182-9a94-295052c08e47",
+      "createdBy": "user",
+      "createdDate": {
+        "$numberLong": "1691450059049"
+      },
+      "direction": "FUNDS_DEPOSIT",
+      "amount": "999999999999999",
+      "currencyCode": "USD",
+      "note": "",
+      "extReference": "",
+      "approved": true,
+      "approvedBy": "admin",
+      "approvedDate": {
+        "$numberLong": "1691450133417"
+      },
+      "transferId": "da1814c6-10da-49a8-b3f6-69a098b133f4"
+    },
+    {
+      "id": "432b9f4c-4cde-408f-81fc-de266900083d",
+      "createdBy": "user",
+      "createdDate": {
+        "$numberLong": "1691450077848"
+      },
+      "direction": "FUNDS_DEPOSIT",
+      "amount": "99999999999999",
+      "currencyCode": "EUR",
+      "note": "",
+      "extReference": "",
+      "approved": true,
+      "approvedBy": "admin",
+      "approvedDate": {
+        "$numberLong": "1691450135867"
+      },
+      "transferId": "7edf4501-6484-49a7-8d25-91c3573fb72c"
+    },
+    {
+      "id": "a0d2018d-633a-4ab5-b971-f495f705fbde",
+      "createdBy": "admin",
+      "createdDate": {
+        "$numberLong": "1692674027160"
+      },
+      "direction": "FUNDS_DEPOSIT",
+      "amount": "99999999999",
+      "currencyCode": "USD",
+      "note": "",
+      "extReference": "",
+      "approved": true,
+      "approvedBy": "user",
+      "approvedDate": {
+        "$numberLong": "1692674050828"
+      },
+      "transferId": "09127f9b-70f7-4563-b4a0-bde0bac22000"
+    }
+  ],
+  "changeLog": [
+    {
+      "changeType": "CREATE",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691449865202"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ENDPOINT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691449974211"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691449982031"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691449986265"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691449990770"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691449996309"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "APPROVE",
+      "user": "user",
+      "timestamp": {
+        "$numberLong": "1691450050359"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "FUNDS_DEPOSIT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691450133417"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "FUNDS_DEPOSIT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691450135867"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "FUNDS_DEPOSIT",
+      "user": "user",
+      "timestamp": {
+        "$numberLong": "1692674050828"
+      },
+      "notes": null
+    }
+  ],
+  "netDebitCaps": [],
+  "netDebitCapChangeRequests": []
+},
+{
+  "_id": {
+    "$oid": "64d17a6124c398c975d5a94f"
+  },
+  "id": "payeefsp",
+  "name": "payeefsp name",
+  "type": "DFSP",
+  "isActive": false,
+  "description": "payeefsp description",
+  "createdBy": "admin",
+  "createdDate": {
+    "$numberLong": "1691449953733"
+  },
+  "approved": true,
+  "approvedBy": "user",
+  "approvedDate": {
+    "$numberLong": "1691450085198"
+  },
+  "lastUpdated": {
+    "$numberLong": "1691450085198"
+  },
+  "participantAccounts": [
+    {
+      "id": "54f74ad5-fcdf-48f0-9e37-81af6798929c",
+      "type": "POSITION",
+      "currencyCode": "EUR",
+      "creditBalance": null,
+      "debitBalance": null,
+      "balance": null
+    },
+    {
+      "id": "15d4e7d6-9d7c-48a8-b06c-80988470133d",
+      "type": "POSITION",
+      "currencyCode": "USD",
+      "creditBalance": null,
+      "debitBalance": null,
+      "balance": null
+    },
+    {
+      "id": "79601a35-bdb0-474e-b444-f56ad42a4a01",
+      "type": "SETTLEMENT",
+      "currencyCode": "EUR",
+      "creditBalance": null,
+      "debitBalance": null,
+      "balance": null
+    },
+    {
+      "id": "0bb984bb-39c6-45d3-b7c5-84d5419fbcb0",
+      "type": "SETTLEMENT",
+      "currencyCode": "USD",
+      "creditBalance": null,
+      "debitBalance": null,
+      "balance": null
+    }
+  ],
+  "participantEndpoints": [
+    {
+      "id": "a83470b0-3fb7-42db-ad3c-187319ccc186",
+      "type": "FSPIOP",
+      "protocol": "HTTPs/REST",
+      "value": "http://host.docker.internal:4041"
+    }
+  ],
+  "participantAllowedSourceIps": [],
+  "fundsMovements": [
+    {
+      "id": "22bc2d0d-7619-4930-ba01-aa0d4e836af7",
+      "createdBy": "user",
+      "createdDate": {
+        "$numberLong": "1691450106127"
+      },
+      "direction": "FUNDS_DEPOSIT",
+      "amount": "10000000000000000",
+      "currencyCode": "EUR",
+      "note": "",
+      "extReference": "",
+      "approved": true,
+      "approvedBy": "admin",
+      "approvedDate": {
+        "$numberLong": "1691450122347"
+      },
+      "transferId": "1a3dbadc-a9a4-4db5-b41a-96124419b3b3"
+    },
+    {
+      "id": "7084003a-822a-4b37-9b51-e86ec10a62bc",
+      "createdBy": "user",
+      "createdDate": {
+        "$numberLong": "1691450114177"
+      },
+      "direction": "FUNDS_DEPOSIT",
+      "amount": "99999999999999",
+      "currencyCode": "USD",
+      "note": "",
+      "extReference": "",
+      "approved": true,
+      "approvedBy": "admin",
+      "approvedDate": {
+        "$numberLong": "1691450124887"
+      },
+      "transferId": "5fd74aea-6ae5-4b55-9bcd-d7918697bbd0"
+    }
+  ],
+  "changeLog": [
+    {
+      "changeType": "CREATE",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691449953733"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ENDPOINT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691450018290"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691450024517"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691450028707"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691450031527"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691450035196"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "APPROVE",
+      "user": "user",
+      "timestamp": {
+        "$numberLong": "1691450085198"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "FUNDS_DEPOSIT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691450122347"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "FUNDS_DEPOSIT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691450124887"
+      },
+      "notes": null
+    }
+  ],
+  "netDebitCaps": [],
+  "netDebitCapChangeRequests": []
+},
+{
+  "_id": {
+    "$oid": "64d31aaef31b34d714ba9091"
+  },
+  "id": "bluebank",
+  "name": "bluebank name",
+  "type": "DFSP",
+  "isActive": false,
+  "description": "bluebank description",
+  "createdBy": "admin",
+  "createdDate": {
+    "$numberLong": "1691556526410"
+  },
+  "approved": true,
+  "approvedBy": "user",
+  "approvedDate": {
+    "$numberLong": "1691557123065"
+  },
+  "lastUpdated": {
+    "$numberLong": "1691557123065"
+  },
+  "participantAccounts": [
+    {
+      "id": "dfa2131f-9045-4e99-a106-927c04684737",
+      "type": "POSITION",
+      "currencyCode": "USD",
+      "creditBalance": null,
+      "debitBalance": null,
+      "balance": null
+    },
+    {
+      "id": "44f73c6f-3b3c-4004-a68e-3547d543eaa7",
+      "type": "SETTLEMENT",
+      "currencyCode": "USD",
+      "creditBalance": null,
+      "debitBalance": null,
+      "balance": null
+    }
+  ],
+  "participantEndpoints": [
+    {
+      "id": "af8d1d64-89b9-4f0c-89b7-3a3660c9f61d",
+      "type": "FSPIOP",
+      "protocol": "HTTPs/REST",
+      "value": "http://host.docker.internal:4040"
+    }
+  ],
+  "participantAllowedSourceIps": [],
+  "fundsMovements": [
+    {
+      "id": "0a451988-5792-4cc4-8aa2-e0e0ebaf22b6",
+      "createdBy": "user",
+      "createdDate": {
+        "$numberLong": "1691557257195"
+      },
+      "direction": "FUNDS_DEPOSIT",
+      "amount": "999999999",
+      "currencyCode": "USD",
+      "note": "",
+      "extReference": "",
+      "approved": true,
+      "approvedBy": "admin",
+      "approvedDate": {
+        "$numberLong": "1691557275834"
+      },
+      "transferId": "86cb847b-a54d-40fe-89f6-caf17500bdec"
+    },
+    {
+      "id": "4e163876-3381-4192-a481-a5285ef10138",
+      "createdBy": "user",
+      "createdDate": {
+        "$numberLong": "1692674085298"
+      },
+      "direction": "FUNDS_DEPOSIT",
+      "amount": "99999999999999",
+      "currencyCode": "USD",
+      "note": "",
+      "extReference": "",
+      "approved": true,
+      "approvedBy": "admin",
+      "approvedDate": {
+        "$numberLong": "1692674178477"
+      },
+      "transferId": "4d54a147-4cd6-43ac-9206-6af341f90009"
+    }
+  ],
+  "changeLog": [
+    {
+      "changeType": "CREATE",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691556526410"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "APPROVE",
+      "user": "user",
+      "timestamp": {
+        "$numberLong": "1691557123065"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "user",
+      "timestamp": {
+        "$numberLong": "1691557243520"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "user",
+      "timestamp": {
+        "$numberLong": "1691557248169"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "FUNDS_DEPOSIT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691557275834"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "FUNDS_DEPOSIT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1692674178477"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ENDPOINT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1692674215048"
+      },
+      "notes": null
+    }
+  ],
+  "netDebitCaps": [],
+  "netDebitCapChangeRequests": []
+},
+{
+  "_id": {
+    "$oid": "64d91a29e3f24db4cc2ea370"
+  },
+  "id": "payerfsp",
+  "name": "payerfsp name",
+  "type": "DFSP",
+  "isActive": false,
+  "description": "payerfsp description",
+  "createdBy": "admin",
+  "createdDate": {
+    "$numberLong": "1691949609838"
+  },
+  "approved": true,
+  "approvedBy": "user",
+  "approvedDate": {
+    "$numberLong": "1691949637173"
+  },
+  "lastUpdated": {
+    "$numberLong": "1691949637173"
+  },
+  "participantAccounts": [
+    {
+      "id": "079d80a8-8507-4dda-ac1b-a259264f86aa",
+      "type": "POSITION",
+      "currencyCode": "EUR",
+      "creditBalance": null,
+      "debitBalance": null,
+      "balance": null
+    },
+    {
+      "id": "b7f4cb69-697f-4847-a1a3-2ba4338e3b62",
+      "type": "POSITION",
+      "currencyCode": "USD",
+      "creditBalance": null,
+      "debitBalance": null,
+      "balance": null
+    },
+    {
+      "id": "7c9b5638-5744-4791-92e3-faa8a7680a73",
+      "type": "SETTLEMENT",
+      "currencyCode": "USD",
+      "creditBalance": null,
+      "debitBalance": null,
+      "balance": null
+    },
+    {
+      "id": "6ca20d80-4065-45ac-bb01-7794df721a79",
+      "type": "SETTLEMENT",
+      "currencyCode": "EUR",
+      "creditBalance": null,
+      "debitBalance": null,
+      "balance": null
+    }
+  ],
+  "participantEndpoints": [
+    {
+      "id": "57e975b9-d186-414a-aff4-5bbc9fbb8e14",
+      "type": "FSPIOP",
+      "protocol": "HTTPs/REST",
+      "value": "http://host.docker.internal:4040"
+    }
+  ],
+  "participantAllowedSourceIps": [],
+  "fundsMovements": [
+    {
+      "id": "58eb0de9-ae0d-4ae5-bbe9-0338ab15e9d8",
+      "createdBy": "user",
+      "createdDate": {
+        "$numberLong": "1691949686373"
+      },
+      "direction": "FUNDS_DEPOSIT",
+      "amount": "999999999999",
+      "currencyCode": "USD",
+      "note": "",
+      "extReference": "",
+      "approved": true,
+      "approvedBy": "admin",
+      "approvedDate": {
+        "$numberLong": "1691949704245"
+      },
+      "transferId": "cef78d6c-3899-4861-a0f4-a7cd4b97ceff"
+    }
+  ],
+  "changeLog": [
+    {
+      "changeType": "CREATE",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691949609838"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "APPROVE",
+      "user": "user",
+      "timestamp": {
+        "$numberLong": "1691949637173"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "user",
+      "timestamp": {
+        "$numberLong": "1691949653235"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "user",
+      "timestamp": {
+        "$numberLong": "1691949657774"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "user",
+      "timestamp": {
+        "$numberLong": "1691949662623"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "user",
+      "timestamp": {
+        "$numberLong": "1691949666672"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "FUNDS_DEPOSIT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691949704245"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ENDPOINT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1691949730503"
+      },
+      "notes": null
+    }
+  ],
+  "netDebitCaps": [],
+  "netDebitCapChangeRequests": []
+},
+{
+  "_id": {
+    "$oid": "64e42841c12e28a9dc8c7fae"
+  },
+  "id": "greenbank",
+  "name": "greenbank name",
+  "type": "DFSP",
+  "isActive": false,
+  "description": "greenbank description",
+  "createdBy": "user",
+  "createdDate": {
+    "$numberLong": "1692674113008"
+  },
+  "approved": true,
+  "approvedBy": "admin",
+  "approvedDate": {
+    "$numberLong": "1692674121337"
+  },
+  "lastUpdated": {
+    "$numberLong": "1692674121337"
+  },
+  "participantAccounts": [
+    {
+      "id": "b843d9e5-7790-4fb5-adbc-ea8a521bc751",
+      "type": "POSITION",
+      "currencyCode": "USD",
+      "creditBalance": null,
+      "debitBalance": null,
+      "balance": null
+    },
+    {
+      "id": "946d00b1-3e54-4e9f-8c61-d01bded6aa93",
+      "type": "SETTLEMENT",
+      "currencyCode": "USD",
+      "creditBalance": null,
+      "debitBalance": null,
+      "balance": null
+    }
+  ],
+  "participantEndpoints": [
+    {
+      "id": "60e551c7-466f-45e5-8e1c-c06c8e4a562b",
+      "type": "FSPIOP",
+      "protocol": "HTTPs/REST",
+      "value": "http://host.docker.internal:4041"
+    }
+  ],
+  "participantAllowedSourceIps": [],
+  "fundsMovements": [
+    {
+      "id": "eaaeb51c-cacc-4d44-88b4-6de035b2dd50",
+      "createdBy": "user",
+      "createdDate": {
+        "$numberLong": "1692674153018"
+      },
+      "direction": "FUNDS_DEPOSIT",
+      "amount": "10000000000000000",
+      "currencyCode": "USD",
+      "note": "",
+      "extReference": "",
+      "approved": true,
+      "approvedBy": "admin",
+      "approvedDate": {
+        "$numberLong": "1692674170558"
+      },
+      "transferId": "ed6beb35-d775-4a27-82d1-68d49e838c66"
+    }
+  ],
+  "changeLog": [
+    {
+      "changeType": "CREATE",
+      "user": "user",
+      "timestamp": {
+        "$numberLong": "1692674113008"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "APPROVE",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1692674121337"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "user",
+      "timestamp": {
+        "$numberLong": "1692674142812"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ACCOUNT",
+      "user": "user",
+      "timestamp": {
+        "$numberLong": "1692674147114"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "FUNDS_DEPOSIT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1692674170558"
+      },
+      "notes": null
+    },
+    {
+      "changeType": "ADD_ENDPOINT",
+      "user": "admin",
+      "timestamp": {
+        "$numberLong": "1692674224527"
+      },
+      "notes": null
+    }
+  ],
+  "netDebitCaps": [],
+  "netDebitCapChangeRequests": []
+}]

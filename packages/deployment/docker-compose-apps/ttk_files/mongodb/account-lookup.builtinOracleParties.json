@@ -1,0 +1,298 @@
+[{
+  "_id": {
+    "$oid": "6453eb8eb83e940e036d4c81"
+  },
+  "partyId": "1",
+  "fspId": "Bluebank",
+  "partyType": "MSISDN",
+  "currency": "EUR"
+},
+{
+  "_id": {
+    "$oid": "64767bf5aaeafbb20ce2ba01"
+  },
+  "partyId": "1111",
+  "fspId": "Greenbank",
+  "partyType": "MSISDN",
+  "currency": "EUR"
+},
+{
+  "_id": {
+    "$oid": "64767de8aaeafbb20ce2ba02"
+  },
+  "partyId": "11111",
+  "fspId": "Greenbank",
+  "partyType": "MSISDN",
+  "currency": "EUR"
+},
+{
+  "_id": {
+    "$oid": "64767df4aaeafbb20ce2ba03"
+  },
+  "partyId": "11111",
+  "fspId": "Bluebank",
+  "partyType": "MSISDN",
+  "currency": "EUR"
+},
+{
+  "_id": {
+    "$oid": "6476896faaeafbb20ce2ba04"
+  },
+  "partyId": "123123123",
+  "fspId": "Bluebank",
+  "partyType": "MSISDN",
+  "currency": "EUR"
+},
+{
+  "_id": {
+    "$oid": "64768a42aaeafbb20ce2ba05"
+  },
+  "partyId": "111",
+  "fspId": "Bluebank",
+  "partyType": "MSISDN",
+  "currency": "EUR"
+},
+{
+  "_id": {
+    "$oid": "64771610aaeafbb20ce2ba06"
+  },
+  "partyId": "111",
+  "fspId": "Bluebank",
+  "partyType": "MSISDN",
+  "currency": null
+},
+{
+  "_id": {
+    "$oid": "64e5761bf1633f0db42ceaf1"
+  },
+  "partyId": "27713803912",
+  "fspId": "greenbank",
+  "partyType": "MSISDN",
+  "currency": "USD"
+},
+{
+  "_id": {
+    "$oid": "64e577ebe9f76693c1b125ba"
+  },
+  "partyId": "22507008181",
+  "fspId": "greenbank",
+  "partyType": "MSISDN",
+  "currency": "USD"
+},
+{
+  "_id": {
+    "$oid": "64e57d4ce9f76693c1b125bb"
+  },
+  "partyId": "27713803912",
+  "fspId": "greenbank",
+  "partyType": "MSISDN",
+  "currency": "USD",
+  "partySubType": "30"
+},
+{
+  "_id": {
+    "$oid": "64e58da16b266abcf5fb3baa"
+  },
+  "partyId": "17039811902",
+  "fspId": "greenbank",
+  "partyType": "MSISDN",
+  "currency": "USD"
+},
+{
+  "_id": {
+    "$oid": "64e59baaaa4718c25d1ee9c7"
+  },
+  "partyId": "17039811902",
+  "fspId": "payeefsp",
+  "partyType": "MSISDN",
+  "currency": "USD"
+},
+{
+  "_id": {
+    "$oid": "64e5cc09aa4718c25d1ee9c8"
+  },
+  "partyId": "97039819999",
+  "fspId": "payeefsp",
+  "partyType": "MSISDN",
+  "currency": "USD"
+},
+{
+  "_id": {
+    "$oid": "64e5cd21e9f76693c1b125be"
+  },
+  "partyId": "97039819999",
+  "fspId": "greenbank",
+  "partyType": "MSISDN",
+  "currency": "USD"
+},
+{
+  "_id": {
+    "$oid": "64e5cdbb0d1fb4008c85f103"
+  },
+  "partyId": "2224448888",
+  "fspId": "payeefsp",
+  "partyType": "MSISDN",
+  "currency": "USD"
+},
+{
+  "_id": {
+    "$oid": "64e5d38e0d1fb4008c85f105"
+  },
+  "partyId": "27713803066",
+  "fspId": "bluebank",
+  "partyType": "MSISDN",
+  "currency": "USD"
+},
+{
+  "_id": {
+    "$oid": "64e5d5c0e9f76693c1b125bf"
+  },
+  "partyId": "27713803912",
+  "fspId": "greenbank",
+  "partyType": "ACCOUNT_ID",
+  "currency": "USD"
+},
+{
+  "_id": {
+    "$oid": "64e6b57644324bb044da6806"
+  },
+  "partyId": "27713803912",
+  "fspId": "payeefsp",
+  "partyType": "MSISDN",
+  "currency": "USD"
+},
+{
+  "_id": {
+    "$oid": "64ec3954d2f273ebba7114be"
+  },
+  "partyId": "123123213213213213",
+  "fspId": "payeefsp",
+  "partyType": "MSISDN",
+  "currency": "USD"
+},
+{
+  "_id": {
+    "$oid": "64ec3b99d2f273ebba7114bf"
+  },
+  "partyId": "277138039121",
+  "fspId": "payeefsp",
+  "partyType": "MSISDN",
+  "currency": "USD"
+},
+{
+  "_id": {
+    "$oid": "64ec3bc0d2f273ebba7114c0"
+  },
+  "partyId": "277138039122",
+  "fspId": "testingtoolkitdfsp",
+  "partyType": "MSISDN",
+  "currency": "USD"
+},
+{
+  "_id": {
+    "$oid": "64ec3d46d2f273ebba7114c2"
+  },
+  "partyId": "27713803912",
+  "fspId": "testingtoolkitdfsp",
+  "partyType": "MSISDN",
+  "currency": "USD"
+},
+{
+  "_id": {
+    "$oid": "64ec40fed2f273ebba7114c5"
+  },
+  "partyId": "2771380391222",
+  "fspId": "testingtoolkitdfsp",
+  "partyType": "MSISDN",
+  "currency": "USD"
+},
+{
+  "_id": {
+    "$oid": "64ec4b80d2f273ebba7114c6"
+  },
+  "partyId": "2224448888",
+  "fspId": "greenbank",
+  "partyType": "MSISDN",
+  "currency": "USD"
+},
+{
+  "_id": {
+    "$oid": "64f0eadcd2f273ebba7114ce"
+  },
+  "partyId": "2771380391222",
+  "fspId": "bluebank",
+  "partyType": "MSISDN",
+  "currency": "USD"
+},
+{
+  "_id": {
+    "$oid": "64f11857e45ff8f09f375e25"
+  },
+  "partyId": "27713803912",
+  "fspId": "greenbank",
+  "partyType": "MSISDN",
+  "currency": "31"
+},
+{
+  "_id": {
+    "$oid": "64f11e93e45ff8f09f375e26"
+  },
+  "partyId": "27713803912",
+  "fspId": "greenbank",
+  "partyType": "MSISDN",
+  "currency": null
+},
+{
+  "_id": {
+    "$oid": "64f11ec0e45ff8f09f375e27"
+  },
+  "partyId": "27713803912",
+  "fspId": "greenbank",
+  "partyType": "MSISDN",
+  "currency": "30"
+},
+{
+  "_id": {
+    "$oid": "64f11ec9e45ff8f09f375e28"
+  },
+  "partyId": "97039819999",
+  "fspId": "greenbank",
+  "partyType": "MSISDN",
+  "currency": null
+},
+{
+  "_id": {
+    "$oid": "64f11ed3e45ff8f09f375e29"
+  },
+  "partyId": "2224448888",
+  "fspId": "greenbank",
+  "partyType": "MSISDN",
+  "currency": null
+},
+{
+  "_id": {
+    "$oid": "64f11f97e45ff8f09f375e2a"
+  },
+  "partyId": "17039811902",
+  "fspId": "greenbank",
+  "partyType": "MSISDN",
+  "currency": null
+},
+{
+  "_id": {
+    "$oid": "64f12755e45ff8f09f375e2b"
+  },
+  "partyId": "27713803912",
+  "fspId": "payeefsp",
+  "partyType": "MSISDN",
+  "currency": "20"
+},
+{
+  "_id": {
+    "$oid": "64f16deee45ff8f09f375e32"
+  },
+  "partyId": "2771380391222",
+  "fspId": "bluebank",
+  "partyType": "MSISDN",
+  "currency": null
+}]
