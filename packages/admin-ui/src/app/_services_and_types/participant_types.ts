@@ -135,7 +135,6 @@ export declare type ParticipantAccount = {
   creditBalance?: string; // output only, we don't store this here
   balance: string | null; // output only, we don't store this here
   editing?:boolean;
-  creating?:boolean;
 };
 
 export declare type ParticipantAccountChangeRequest = {
