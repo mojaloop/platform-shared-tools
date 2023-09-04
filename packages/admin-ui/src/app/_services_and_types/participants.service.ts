@@ -302,7 +302,7 @@ export class ParticipantsService {
     return new Observable<void>((subscriber) => {
       this._http
         .post(
-          `${SVC_BASEURL}/participants/${participantId}/account/${requestId}/approve`,
+          `${SVC_BASEURL}/participants/${participantId}/accountchangerequests/${requestId}/approve`,
           {}
         )
         .subscribe(
