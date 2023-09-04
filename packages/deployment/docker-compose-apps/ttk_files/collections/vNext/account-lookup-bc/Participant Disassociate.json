@@ -1,0 +1,165 @@
+{
+  "name": "multi",
+  "test_cases": [
+    {
+      "id": 1,
+      "name": "Remove participant",
+      "meta": {
+        "info": "This is a happy path to test the removal of a participant."
+      },
+      "fileInfo": {
+        "path": "",
+        "labels": [
+          ""
+        ]
+      },
+      "requests": [
+        {
+          "id": 1,
+          "meta": {
+            "info": "This request allows us to remove participant to the Account Lookup BC."
+          },
+          "description": "Delete Participant",
+          "apiVersion": {
+            "minorVersion": 1,
+            "majorVersion": 1,
+            "type": "fspiop",
+            "asynchronous": true
+          },
+          "operationPath": "/participants/{Type}/{ID}?currency=USD",
+          "path": "/participants/{$inputs.toIdType}/2771380391222",
+          "method": "delete",
+          "params": {
+            "Type": "{$inputs.toIdType}",
+            "ID": "2771380391222"
+          },
+          "headers": {
+            "FSPIOP-Source": "{$inputs.fromFspId}",
+            "Authorization": "{$inputs.PAYEE_BEARER_TOKEN}",
+            "Accept": "{$inputs.acceptParticipants}",
+            "Content-Type": "{$inputs.contentTypeParticipants}",
+            "Date": "{$function.generic.curDate}"
+          },
+          "body": {
+            "fspId": "{$inputs.fromFspId}",
+            "currency": "{$inputs.currency}"
+          },
+          "tests": {
+            "assertions": [
+              {
+                "id": 1,
+                "description": "Response status to be 202",
+                "exec": [
+                  "expect(response.status).to.equal(202)"
+                ]
+              },
+              {
+                "id": 2,
+                "description": "Response statusText be Accepted",
+                "exec": [
+                  "expect(response.statusText).to.equal('Accepted')"
+                ]
+              }
+            ]
+          },
+          "url": "{$inputs.HOST_ACCOUNT_LOOKUP_SERVICE}",
+          "ignoreCallbacks": false
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "name": "Add participant",
+      "meta": {
+        "info": "This is a happy path to test an addition of a new participant."
+      },
+      "fileInfo": {
+        "path": "",
+        "labels": [
+          ""
+        ]
+      },
+      "requests": [
+        {
+          "id": 1,
+          "meta": {
+            "info": "This request allows us to add a new participant to the Account Lookup BC."
+          },
+          "description": "Add Participant",
+          "apiVersion": {
+            "minorVersion": 1,
+            "majorVersion": 1,
+            "type": "fspiop",
+            "asynchronous": true
+          },
+          "operationPath": "/participants/{Type}/{ID}",
+          "path": "/participants/{$inputs.toIdType}/2771380391222",
+          "method": "post",
+          "params": {
+            "Type": "{$inputs.toIdType}",
+            "ID": "2771380391222"
+          },
+          "headers": {
+            "FSPIOP-Source": "{$inputs.fromFspId}",
+            "Authorization": "{$inputs.PAYEE_BEARER_TOKEN}",
+            "Accept": "{$inputs.acceptParticipants}",
+            "Content-Type": "{$inputs.contentTypeParticipants}",
+            "Date": "{$function.generic.curDate}"
+          },
+          "body": {
+            "fspId": "{$inputs.fromFspId}",
+            "currency": "{$inputs.currency}"
+          },
+          "tests": {
+            "assertions": [
+              {
+                "id": 1,
+                "description": "Response status to be 202",
+                "exec": [
+                  "expect(response.status).to.equal(202)"
+                ]
+              },
+              {
+                "id": 2,
+                "description": "Response statusText be Accepted",
+                "exec": [
+                  "expect(response.statusText).to.equal('Accepted')"
+                ]
+              },
+              {
+                "id": 3,
+                "description": "Callback Content Length not 0",
+                "exec": [
+                  "expect(callback.headers['Content-Length']).to.not.equal('0')"
+                ]
+              },
+              {
+                "id": 4,
+                "description": "Callback FSP Destination equal to request FSP Source",
+                "exec": [
+                  "expect(callback.headers['fspiop-destination']).to.equal(undefined)"
+                ]
+              },
+              {
+                "id": 5,
+                "description": "Callback to match partyType",
+                "exec": [
+                  "expect(callback.body.party.partyIdInfo.partyIdType).to.equal('{$inputs.toIdType}')"
+                ]
+              },
+              {
+                "id": 6,
+                "description": "Callback to match partyId",
+                "exec": [
+                  "expect(callback.body.party.partyIdInfo.partyIdentifier).to.equal('2771380391222')"
+                ]
+              }
+            ]
+          },
+          "url": "{$inputs.HOST_ACCOUNT_LOOKUP_SERVICE}",
+          "ignoreCallbacks": false
+        }
+      ]
+    }
+  ]
+}

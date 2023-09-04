@@ -1,0 +1,16 @@
+{
+  "order": [
+    {
+      "name": "provisioning",
+      "type": "folder"
+    },
+    {
+      "name": "golden_path",
+      "type": "folder"
+    },
+    {
+      "name": "additional-tests",
+      "type": "folder"
+    }
+  ]
+}

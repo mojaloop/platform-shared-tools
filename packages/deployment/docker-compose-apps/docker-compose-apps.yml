@@ -397,6 +397,12 @@ services:
       - sh
       - /usr/share/nginx/start.sh
 
+  mongo_seed:
+    image: mongo
+    volumes:
+      - ./ttk_files:/ttk_files
+    command:
+      /ttk_files/mongodb/import.sh
   # green bank TTK
   ttk_2:
     image: mojaloop/ml-testing-toolkit:v15.0.0

@@ -290,7 +290,7 @@
       "path": "/parties/{Type}/{ID}",
       "params": {
         "headers": {
-          "Content-Type": "application/vnd.interoperability.parties+json;version=1.0",
+          "Content-Type": "application/vnd.interoperability.parties+json;version=1.1",
           "FSPIOP-Source": "greenbankfsp"
         },
         "body": {
@@ -348,7 +348,7 @@
       "path": "/parties/{Type}/{ID}",
       "params": {
         "headers": {
-          "Content-Type": "application/vnd.interoperability.parties+json;version=1.0"
+          "Content-Type": "application/vnd.interoperability.parties+json;version=1.1"
         },
         "body": {
           "party": {
@@ -710,9 +710,7 @@
     }
   },
   {
-    "type": "callback",
-    "version": 1,
-    "ruleId": 11,
+    "ruleId": 1,
     "priority": 1,
     "description": "get /parties/{Type}/{ID}/{SubId}",
     "apiVersion": {
@@ -738,10 +736,24 @@
     "event": {
       "method": "put",
       "path": "/parties/{Type}/{ID}/{SubId}",
-      "params": {},
-      "delay": 0,
+      "params": {
+        "headers": {
+          "Content-Type": "application/vnd.interoperability.parties+json;version=1.1"
+        },
+        "body": {
+          "party": {
+            "partyIdInfo": {
+              "partySubIdOrType": null
+            },
+            "name": "John"
+          }
+        },
+        "scripts": {}
+      },
       "type": "MOCK_CALLBACK"
-    }
+    },
+    "type": "callback",
+    "version": 1
   },
   {
     "type": "callback",

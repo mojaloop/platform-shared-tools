@@ -1,0 +1,145 @@
+{
+  "name": "multi",
+  "test_cases": [
+    {
+      "id": 1,
+      "name": "Calculate Quote",
+      "meta": {
+        "info": "Calculate Quote"
+      },
+      "requests": [
+        {
+          "id": 1,
+          "meta": {
+            "info": "Send Quote"
+          },
+          "description": "Send Quote",
+          "apiVersion": {
+            "minorVersion": 1,
+            "majorVersion": 1,
+            "type": "fspiop",
+            "asynchronous": true
+          },
+          "operationPath": "/quotes",
+          "path": "/quotes",
+          "method": "post",
+          "url": "{$inputs.HOST_QUOTING_SERVICE}",
+          "scriptingEngine": "javascript",
+          "headers": {
+            "Accept": "{$inputs.acceptQuotes}",
+            "Content-Type": "{$inputs.contentTypeQuotes}",
+            "FSPIOP-Source": "{$inputs.fromFspId}",
+            "Authorization": "{$inputs.TTK_BEARER_TOKEN}",
+            "FSPIOP-Destination": "{$inputs.SIMPAYEE_NAME}",
+            "FSPIOP-HTTP-Method": "POST",
+            "FSPIOP-URI": "/quotes",
+            "Date": "{$function.generic.curDate}"
+          },
+          "body": {
+            "quoteId": "{$requestVariables.quoteId}",
+            "transactionId": "{$requestVariables.transactionId}",
+            "payer": {
+              "partyIdInfo": {
+                "partyIdType": "MSISDN",
+                "partyIdentifier": "{$inputs.fromIdValue}",
+                "fspId": "{$inputs.fromFspId}"
+              },
+              "personalInfo": {
+                "complexName": {
+                  "firstName": "Mats",
+                  "lastName": "Hagman"
+                },
+                "dateOfBirth": "1983-10-25"
+              }
+            },
+            "payee": {
+              "partyIdInfo": {
+                "partyIdType": "MSISDN",
+                "partyIdentifier": "{$inputs.SIMPAYEE_MSISDN}",
+                "fspId": "{$inputs.SIMPAYEE_NAME}"
+              }
+            },
+            "amountType": "RECEIVE",
+            "amount": {
+              "amount": "{$inputs.amount}",
+              "currency": "{$inputs.SIMPAYEE_CURRENCY}"
+            },
+            "transactionType": {
+              "scenario": "TRANSFER",
+              "initiator": "PAYER",
+              "initiatorType": "CONSUMER"
+            },
+            "note": "hej"
+          },
+          "tests": {
+            "assertions": [
+              {
+                "id": 1,
+                "description": "Status code is 202",
+                "exec": [
+                  "expect(response.status).to.equal(202)"
+                ]
+              },
+              {
+                "id": 9,
+                "description": "Payer FSP Callback: 'fspiop-source' is 'payeefsp'",
+                "exec": [
+                  "expect(callback.headers['fspiop-source']).to.equal(environment.SIMPAYEE_NAME)"
+                ]
+              },
+              {
+                "id": 10,
+                "description": "Payer FSP Callback: 'fspiop-destination' is 'testingtoolkitdfsp'",
+                "exec": [
+                  "expect(callback.headers['fspiop-destination']).to.equal(environment.fromFspId)"
+                ]
+              },
+              {
+                "id": 12,
+                "description": "Payer FSP Callback: 'accept' is empty",
+                "exec": [
+                  "expect(callback.headers['accept']).to.equal(undefined)"
+                ]
+              },
+              {
+                "id": 13,
+                "description": "Payer FSP Callback: 'content-type' is same as sent in the request",
+                "exec": [
+                  "expect(callback.headers['content-type']).to.equal(\"application/vnd.interoperability.quotes+json;version={$inputs.expectedQuotesVersion}\")"
+                ]
+              },
+              {
+                "id": 14,
+                "description": "Payer FSP Callback: 'fspiop-uri' is /quotes/{quoteId}",
+                "exec": [
+                  "expect(callback.headers['fspiop-uri']).to.equal(\"/quotes/{$request.body.quoteId}\")"
+                ]
+              },
+              {
+                "id": 15,
+                "description": "Payer FSP Callback: 'fspiop-http-method' is 'PUT'",
+                "exec": [
+                  "expect(callback.headers['fspiop-http-method']).to.equal(\"PUT\")"
+                ]
+              }
+            ]
+          },
+          "scripts": {
+            "preRequest": {
+              "exec": [
+                "requestVariables.quoteId = \"{$function.generic.generateUUID}\"",
+                "",
+                "requestVariables.transactionId = \"{$function.generic.generateUUID}\"",
+                "",
+                ""
+              ]
+            },
+            "postRequest": {
+              "exec": []
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

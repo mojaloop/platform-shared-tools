@@ -1,0 +1,129 @@
+{
+  "name": "multi",
+  "test_cases": [
+    {
+      "id": 1,
+      "name": "GET Parties SubId",
+      "meta": {
+        "info": "GET Parties SubId"
+      },
+      "requests": [
+        {
+          "id": 3,
+          "meta": {
+            "info": "SubID"
+          },
+          "description": "SubID",
+          "apiVersion": {
+            "minorVersion": 1,
+            "majorVersion": 1,
+            "type": "fspiop",
+            "asynchronous": true
+          },
+          "operationPath": "/parties/{Type}/{ID}/{SubId}",
+          "path": "/parties/{$inputs.toIdType}/{$inputs.toIdValue}/20",
+          "method": "get",
+          "params": {
+            "Type": "{$inputs.toIdType}",
+            "ID": "{$inputs.toIdValue}",
+            "SubId": "20"
+          },
+          "scripts": {
+            "preRequest": {
+              "exec": [
+                "\r",
+                "const curDate = (new Date()).toUTCString()\r",
+                "const alsAddParticipant = {\r",
+                "    url: pm.environment.get(\"HOST_ACCOUNT_LOOKUP_SERVICE\") + '/participants/' + pm.environment.get(\"toIdType\") + '/' + pm.environment.get(\"toIdValue\") + '/20',\r",
+                "    method: 'POST',\r",
+                "    header: {\r",
+                "        'FSPIOP-Source': 'payeefsp',\r",
+                "        'Accept': 'application/vnd.interoperability.participants+json;version=1.0',\r",
+                "        'Content-Type': 'application/vnd.interoperability.participants+json;version=1.0',\r",
+                "        'Date': curDate\r",
+                "    },\r",
+                "    body: {\r",
+                "      mode: 'raw',\r",
+                "      raw: JSON.stringify({\r",
+                "        \"fspId\": \"payeefsp\",\r",
+                "        \"currency\": \"USD\"\r",
+                "      })\r",
+                "    }\r",
+                "}\r",
+                "  \r",
+                "pm.sendRequest(alsAddParticipant, function (err, response) {\r",
+                "    if(err) {\r",
+                "      console.log(err)\r",
+                "    }\r",
+                "    console.log(response.status, JSON.stringify(response.json()))\r",
+                "});\r",
+                "\r",
+                "const simulatorAddParty = {\r",
+                "\r",
+                "    url: pm.environment.get(\"PAYEEFSP_BACKEND_TESTAPI_URL\") + '/repository/parties',\r",
+                "    method: 'POST',\r",
+                "    header: {\r",
+                "        \"Content-Type\": \"application/json\"\r",
+                "    },\r",
+                "    body: {\r",
+                "      mode: 'raw',\r",
+                "      raw: JSON.stringify({\r",
+                "        \"displayName\": \"Test PayeeFSP\",\r",
+                "        \"firstName\": \"Test\",\r",
+                "        \"middleName\": \"Test\",\r",
+                "        \"lastName\": \"Test\",\r",
+                "        \"dateOfBirth\": \"1984-01-01\",\r",
+                "        \"idType\": pm.environment.get(\"toIdType\"),\r",
+                "        \"idValue\": pm.environment.get(\"toIdValue\"),\r",
+                "        \"subIdValue\": 20\r",
+                "      })\r",
+                "    }\r",
+                "}\r",
+                "\r",
+                "  \r",
+                "pm.sendRequest(simulatorAddParty, function (err, response) {\r",
+                "  console.log(err)\r",
+                "});"
+              ]
+            }
+          },
+          "url": "{$inputs.HOST_ACCOUNT_LOOKUP_SERVICE}",
+          "headers": {
+            "Accept": "{$inputs.accept}",
+            "Content-Type": "{$inputs.contentType}",
+            "Date": "{$function.generic.curDate}",
+            "FSPIOP-Source": "{$inputs.fromFspId}"
+          }
+        },
+        {
+          "id": 4,
+          "meta": {
+            "info": "get participant"
+          },
+          "description": "get participant",
+          "apiVersion": {
+            "minorVersion": 1,
+            "majorVersion": 1,
+            "type": "fspiop",
+            "asynchronous": true
+          },
+          "operationPath": "/participants/{Type}/{ID}/{SubId}",
+          "path": "/participants/{$inputs.toIdType}/{$inputs.toIdValue}/20",
+          "method": "get",
+          "params": {
+            "Type": "{$inputs.toIdType}",
+            "ID": "{$inputs.toIdValue}",
+            "SubId": "20"
+          },
+          "url": "{$inputs.HOST_ACCOUNT_LOOKUP_SERVICE}",
+          "headers": {
+            "Accept": "application/vnd.interoperability.participants+json;version=1.0",
+            "Content-Type": "application/vnd.interoperability.participants+json;version=1.0",
+            "Date": "{$function.generic.curDate}",
+            "FSPIOP-Source": "{$inputs.fromFspId}"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+#! /bin/bash
+
+mongoimport --host mongo:27017 --username=root --password=mongoDbPas42 --db account-lookup --collection builtinOracleParties --type json --file /ttk_files/mongodb/account-lookup.builtinOracleParties.json --authenticationDatabase=admin --jsonArray
+mongoimport --host mongo:27017 --username=root --password=mongoDbPas42 --db account-lookup --collection oracles --type json --file /ttk_files/mongodb/account-lookup.oracles.json --authenticationDatabase=admin --jsonArray
+mongoimport --host mongo:27017 --username=root --password=mongoDbPas42 --db accounts_and_balances_bc_builtin_ledger --collection oracles --type json --file /ttk_files/mongodb/accounts_and_balances_bc_builtin_ledger.accounts --authenticationDatabase=admin --jsonArray
+mongoimport --host mongo:27017 --username=root --password=mongoDbPas42 --db accounts_and_balances_bc_builtin_ledger --collection oracles --type json --file /ttk_files/mongodb/accounts_and_balances_bc_builtin_ledger.journal_entries.json --authenticationDatabase=admin --jsonArray
+mongoimport --host mongo:27017 --username=root --password=mongoDbPas42 --db accounts_and_balances_bc_coa --collection oracles --type json --file /ttk_files/mongodb/accounts_and_balances_bc_coa.chart_of_accounts.json --authenticationDatabase=admin --jsonArray
+mongoimport --host mongo:27017 --username=root --password=mongoDbPas42 --db participants --collection oracles --type json --file /ttk_files/mongodb/participants.participant.json --authenticationDatabase=admin --jsonArray
+mongoimport --host mongo:27017 --username=root --password=mongoDbPas42 --db participants --collection oracles --type json --file /ttk_files/mongodb/participants.participantApproval.json --authenticationDatabase=admin --jsonArray
+mongoimport --host mongo:27017 --username=root --password=mongoDbPas42 --db quoting --collection oracles --type json --file /ttk_files/mongodb/quoting.quotes.json --authenticationDatabase=admin --jsonArray
+mongoimport --host mongo:27017 --username=root --password=mongoDbPas42 --db settlements --collection oracles --type json --file /ttk_files/mongodb/settlements.batches.json --authenticationDatabase=admin --jsonArray
+mongoimport --host mongo:27017 --username=root --password=mongoDbPas42 --db settlements --collection oracles --type json --file /ttk_files/mongodb/settlements.configs.json --authenticationDatabase=admin --jsonArray
+mongoimport --host mongo:27017 --username=root --password=mongoDbPas42 --db settlements --collection oracles --type json --file /ttk_files/mongodb/settlements.matrices.json --authenticationDatabase=admin --jsonArray
+mongoimport --host mongo:27017 --username=root --password=mongoDbPas42 --db settlements --collection oracles --type json --file /ttk_files/mongodb/settlements.transfers.json --authenticationDatabase=admin --jsonArray
+mongoimport --host mongo:27017 --username=root --password=mongoDbPas42 --db transfers --collection oracles --type json --file /ttk_files/mongodb/transfers.transfers.json --authenticationDatabase=admin --jsonArray

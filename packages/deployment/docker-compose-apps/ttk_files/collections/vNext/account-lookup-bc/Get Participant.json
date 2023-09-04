@@ -1,0 +1,50 @@
+{
+  "name": "multi",
+  "test_cases": [
+    {
+      "id": 1,
+      "name": "Add participant",
+      "meta": {
+        "info": "This is a happy path to test an addition of a new participant."
+      },
+      "fileInfo": {
+        "path": "",
+        "labels": [
+          ""
+        ]
+      },
+      "requests": [
+        {
+          "id": 1,
+          "meta": {
+            "info": "This request allows us to get a participant from the Account Lookup BC."
+          },
+          "description": "Add Participant",
+          "apiVersion": {
+            "minorVersion": 1,
+            "majorVersion": 1,
+            "type": "fspiop",
+            "asynchronous": true
+          },
+          "operationPath": "/participants/{Type}/{ID}",
+          "path": "/participants/{$inputs.toIdType}/{$$inputs.toIdValue}",
+          "method": "post",
+          "params": {
+            "Type": "{$inputs.toIdType}",
+            "ID": "{$$inputs.toIdValue}"
+          },
+          "headers": {
+            "FSPIOP-Source": "{$inputs.fromFspId}",
+            "Authorization": "{$inputs.PAYEE_BEARER_TOKEN}",
+            "Accept": "{$inputs.acceptParticipants}",
+            "Content-Type": "{$inputs.contentTypeParticipants}",
+            "Date": "{$function.generic.curDate}"
+          },
+          "body": {
+            "fspId": "{$inputs.fromFspId}",
+            "currency": "{$inputs.currency}"
+          }
+      ]
+    }
+  ]
+}
