@@ -14,6 +14,7 @@ const DEFAULT_TIME_FILTER_HOURS = 8;
 	templateUrl: './settlements.batches.component.html'
 })
 export class SettlementsBatchesComponent implements OnInit, OnDestroy {
+	readonly ALL_STR_ID = "(All)";
 	batches: BehaviorSubject<ISettlementBatch[]> = new BehaviorSubject<ISettlementBatch[]>([]);
 	batchesSubs?: Subscription;
 
@@ -24,8 +25,8 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 	batchSelPrefix = "batchSel_";
 	selectedBatchIds: string[] = [];
 
-	public criteriaCurrencyCode: string = "USD";
-	public criteriaSettlementModel: string = "DEFAULT";
+	public criteriaCurrencyCode: string = this.ALL_STR_ID;
+	public criteriaSettlementModel: string = this.ALL_STR_ID;
 	public criteriaFromDate = "";
 	public criteriaToDate = ""
 	public criteriaBatchId = "";
@@ -55,22 +56,27 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 
 	applyCriteria(){
 		const criteriaModel = (document.getElementById("criteriaSettlementModel") as HTMLSelectElement).value;
-		const criteriaCurrencyCode = (document.getElementById("criteriaCurrencyCode") as HTMLSelectElement).value;
+
+		const criteriaCurrencyCodeElemVal = (document.getElementById("criteriaCurrencyCode") as HTMLSelectElement).value;
+		const criteriaCurrencyCodes = criteriaCurrencyCodeElemVal != this.ALL_STR_ID ? [criteriaCurrencyCodeElemVal] : [];
+
+		const criteriaBatchStateElemVal = (document.getElementById("criteriaBatchState") as HTMLSelectElement).value;
+		const criteriaBatchStates = criteriaBatchStateElemVal != this.ALL_STR_ID ? [criteriaBatchStateElemVal] : [];
+
 		const criteriaFromStr = (document.getElementById("criteriaFromDate") as HTMLInputElement).value;
 		const criteriaFrom = new Date(criteriaFromStr);
 		const criteriaToStr = (document.getElementById("criteriaToDate") as HTMLInputElement).value;
 		const criteriaTo = new Date(criteriaToStr);
-		const criteriaIncludeSettled = (document.getElementById("criteriaIncludeSettled") as HTMLInputElement).checked;
+
+
+
 		const criteriaBatchId = (document.getElementById("criteriaBatchId") as HTMLInputElement).value;
 
 		this.batchesSubs = this._settlementsService.getBatchesByCriteria(
-			criteriaModel, criteriaCurrencyCode,
-			criteriaFrom.valueOf(), criteriaTo.valueOf()
+			criteriaFrom.valueOf(), criteriaTo.valueOf(),
+			criteriaModel, criteriaCurrencyCodes, criteriaBatchStates
 		).subscribe(list => {
 			const filtered = list.filter(value => {
-				if(!criteriaBatchId && !criteriaIncludeSettled && value.state==="SETTLED")
-					return false;
-
 				if(criteriaBatchId && value.id.toUpperCase() !==criteriaBatchId.toUpperCase())
 					return false;
 
@@ -88,11 +94,14 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 
 	createDynamicMatrix(){
 		const criteriaModel = (document.getElementById("criteriaSettlementModel") as HTMLSelectElement).value;
-		const criteriaCurrencyCode = (document.getElementById("criteriaCurrencyCode") as HTMLSelectElement).value;
+
 		const criteriaFromStr = (document.getElementById("criteriaFromDate") as HTMLInputElement).value;
 		const criteriaFrom = new Date(criteriaFromStr).valueOf();
 		const criteriaToStr = (document.getElementById("criteriaToDate") as HTMLInputElement).value;
 		const criteriaTo = new Date(criteriaToStr).valueOf();
+
+		const criteriaCurrencyCodeElemVal = (document.getElementById("criteriaCurrencyCode") as HTMLSelectElement).value;
+		const criteriaCurrencyCodes = criteriaCurrencyCodeElemVal != this.ALL_STR_ID ? [criteriaCurrencyCodeElemVal] : [];
 
 	/*	const openBatches = (this.batches.value || []).filter(value => !value.);
 		if(openBatches.length<=0){
@@ -102,7 +111,7 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 		this._settlementsService.createDynamicMatrix(
 			uuid.v4(),
 			criteriaModel,
-			criteriaCurrencyCode,
+			criteriaCurrencyCodes,
 			criteriaFrom,
 			criteriaTo
 		).subscribe(matrixId => {

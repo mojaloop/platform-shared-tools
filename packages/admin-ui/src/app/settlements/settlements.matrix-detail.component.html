@@ -1,16 +1,15 @@
-<div class="row">
+<div class=" row"> <!--	Top header-->
 	<div class="col-md-8 align-self-center">
-		<h2>{{(matrix | async)?.settlementModel}}</h2>
+		<h2 *ngIf="(matrix | async)?.state!=='OUT_OF_SYNC'">Matrix Details</h2>
+		<h2 *ngIf="(matrix | async)?.state==='OUT_OF_SYNC'">Matrix Details <span class="text-danger">(Out of Sync, please recalculate<i class="bi bi-exclamation-triangle-fill"></i>)</span></h2>
 	</div>
 
 	<div class="col-md-4 align-self-center">
-		<small><strong>ID: </strong> {{(matrix | async)?.id}}
-			<a (click)="copyIdToClipboard()"
-			   ngbTooltip="Copy ID to clipboard"><i class="bi bi-clipboard-plus"></i></a></small>
+		<small><strong>ID: </strong>  {{(matrix | async)?.id}}<a ngbTooltip="Copy ID to clipboard"><i class="bi bi-clipboard-plus"></i></a></small>
 	</div>
-</div>
-<hr>
+</div> <!--	Top header-->
 
+<hr>
 
 
 <div class="row">
@@ -20,6 +19,7 @@
 				<div class="mb-2">
 					<label class="col-form-label text-secondary">State</label>
 					<div>{{(matrix | async)?.state}}
+
 						<!--<span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"
 							  *ngIf="(matrix | async)?.state === 'BUSY'"></span>-->
 					</div>
@@ -45,8 +45,8 @@
 		<div class="row">
 			<div class="col-4">
 				<div class="mb-2">
-					<label class="col-form-label text-secondary">Currency</label>
-					<div>{{(matrix | async)?.currencyCode}}</div>
+					<label class="col-form-label text-secondary">Currencies</label>
+					<div style="color: red;">TO BE FIXED</div>
 				</div>
 			</div>
 			<div class="col-4">
@@ -76,13 +76,15 @@
 			<div class="col-4">
 				<div class="mb-2">
 					<label class="col-form-label text-secondary">Total Debit Balance</label>
-					<div>{{(matrix | async)?.totalDebitBalance}}</div>
+					<div style="color: red;">TO BE FIXED</div>
+<!--					<div>{{(matrix | async)?.totalDebitBalance}}</div>-->
 				</div>
 			</div>
 			<div class="col-4">
 				<div class="mb-2">
 					<label class="col-form-label text-secondary">Total Credit Balance</label>
-					<div>{{(matrix | async)?.totalCreditBalance}}</div>
+					<div>TO BE FIXED</div>
+<!--					<div>{{(matrix | async)?.totalCreditBalance}}</div>-->
 				</div>
 			</div>
 		</div>
@@ -98,29 +100,45 @@
 			</div>
 		</ng-container>
 
+		<ng-container *ngIf="(matrix | async)?.state === 'FINALIZED'">
+			<div class=" text-primary" role="status" style="width: 3rem; height: 3rem;">
+				<span class="sr-only">No actions allowed</span>
+			</div>
+		</ng-container>
+
+		<ng-container *ngIf="(matrix | async)?.state === 'OUT_OF_SYNC'">
+			<button class="btn btn-success btn-block" (click)="recalculate()">Recalculate</button>
+		</ng-container>
+
 		<ng-container *ngIf="(matrix | async)?.state === 'IDLE'">
 			<button class="btn btn-success btn-block" (click)="recalculate()">Recalculate</button>
 			<button class="btn btn-warning btn-block" (click)="dispute()">Dispute</button>
 			<button class="btn btn-warning btn-block" (click)="close()">Close</button>
-			<!--<button class="btn btn-warning btn-block" (click)="settle()">Settle</button>-->
+			<button class="btn btn-warning btn-block" (click)="lock()">Lock</button>
 		</ng-container>
 
-		<ng-container *ngIf="(matrix | async)?.state === 'CLOSED'">
+		<ng-container *ngIf="(matrix | async)?.state === 'LOCKED'">
+			<button class="btn btn-warning btn-block" (click)="settle()">Settle</button>
+			<button class="btn btn-warning btn-block" (click)="unlock()">Unlock</button>
+		</ng-container>
+
+
+		<!--<ng-container *ngIf="(matrix | async)?.state === 'CLOSED'">
 			<button class="btn btn-success btn-block" (click)="recalculate()">Recalculate</button>
 			<button class="btn btn-warning btn-block" (click)="dispute()">Dispute</button>
 			<button class="btn btn-warning btn-block" (click)="lock()">Lock</button>
-			<!--<button class="btn btn-warning btn-block" (click)="settle()">Settle</button>-->
+			&lt;!&ndash;<button class="btn btn-warning btn-block" (click)="settle()">Settle</button>&ndash;&gt;
 		</ng-container>
 
 		<ng-container *ngIf="(matrix | async)?.state === 'DISPUTED'">
-			<!--<button class="btn btn-success btn-block" (click)="recalculate()">Recalculate</button>-->
+			&lt;!&ndash;<button class="btn btn-success btn-block" (click)="recalculate()">Recalculate</button>&ndash;&gt;
 			<button class="btn btn-warning btn-block" (click)="close()">Undispute (Close)</button>
 		</ng-container>
 
 		<ng-container *ngIf="(matrix | async)?.state === 'AWAITING_SETTLEMENT'">
 			<button class="btn btn-warning btn-block" (click)="unlock()">Unlock</button>
 			<button class="btn btn-warning btn-block" (click)="settle()">Settle</button>
-		</ng-container>
+		</ng-container>-->
 
 <!--		<ng-container *ngIf="(matrix | async)?.state !== 'IDLE'">
 			<button class="btn btn-primary btn-block" [disabled]="editing || (matrix | async)?.isActive"
@@ -133,7 +151,6 @@
 
 <ul ngbNav #nav="ngbNav" class="mt-4 nav-tabs" (navChange)="tabChange($event)">
 
-
 	<li ngbNavItem="batches" > <!-- batches -->
 		<a ngbNavLink>Batches</a>
 		<ng-template ngbNavContent>
@@ -142,7 +159,6 @@
 				<thead class="thead-light">
 				<tr>
 					<th scope="col">Batch ID</th>
-					<th scope="col">Name</th>
 					<th scope="col">Debit Balance</th>
 					<th scope="col">Credit Balance</th>
 <!--					<th scope="col">Accounts</th>-->
@@ -157,8 +173,7 @@
 					</tr>
 				</ng-container>
 				<tr *ngFor="let item of (matrix | async)?.batches">
-					<td><a routerLink="/settlements/batches/{{item.id}}">{{item.id}}</a></td>
-					<td>{{item.name}}</td>
+					<td>{{item.id}}</td>
 					<td>{{item.batchDebitBalance}}</td>
 					<td>{{item.batchCreditBalance}}</td>
 <!--					<td>{{item.batchAccounts?.length}}</td>-->
@@ -170,20 +185,24 @@
 	</li> <!-- Batches -->
 
 	<li ngbNavItem="perParticipantTotals" > <!-- per participant totals -->
-		<a ngbNavLink>Participants</a>
+		<a ngbNavLink>Balances by Participants</a>
 		<ng-template ngbNavContent>
-			<h4 class="mt-3">Per participant totals</h4>
+			<h4 class="mt-3">Per participant balances</h4>
 			<table class="table table-hover mt-3">
 				<thead class="thead-light">
 				<tr>
 					<th scope="col">Participant Id</th>
+					<th scope="col">State</th>
+					<th scope="col">Currency</th>
 					<th scope="col">Credit Balance</th>
 					<th scope="col">Debit Balance</th>
 				</tr>
 				</thead>
 				<tbody>
-				<tr *ngFor="let item of (matrix | async)?.participantBalances">
+				<tr *ngFor="let item of (matrix | async)?.balancesByParticipant">
 					<td><a routerLink="/participants/{{item.participantId}}">{{item.participantId}}</a></td>
+					<td>{{item.state}}</td>
+					<td>{{item.currencyCode}}</td>
 					<td>{{item.creditBalance}}</td>
 					<td>{{item.debitBalance}}</td>
 				</tr>
@@ -191,6 +210,55 @@
 			</table>
 		</ng-template>
 	</li> <!-- Per participant totals -->
+
+	<li ngbNavItem="perStateTotals" > <!-- per state totals -->
+		<a ngbNavLink>Balances by State</a>
+		<ng-template ngbNavContent>
+			<h4 class="mt-3">Per State balances</h4>
+			<table class="table table-hover mt-3">
+				<thead class="thead-light">
+				<tr>
+					<th scope="col">State</th>
+					<th scope="col">Currency</th>
+					<th scope="col">Credit Balance</th>
+					<th scope="col">Debit Balance</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr *ngFor="let item of (matrix | async)?.balancesByStateAndCurrency">
+					<td>{{item.state}}</td>
+					<td>{{item.currencyCode}}</td>
+					<td>{{item.creditBalance}}</td>
+					<td>{{item.debitBalance}}</td>
+				</tr>
+				</tbody>
+			</table>
+		</ng-template>
+	</li> <!-- Per state totals -->
+
+	<li ngbNavItem="perCurrencyTotals" > <!-- per Currency totals -->
+		<a ngbNavLink>Balances by Currency</a>
+		<ng-template ngbNavContent>
+			<h4 class="mt-3">Per Currency balances</h4>
+			<table class="table table-hover mt-3">
+				<thead class="thead-light">
+				<tr>
+					<th scope="col">Currency</th>
+					<th scope="col">Credit Balance</th>
+					<th scope="col">Debit Balance</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr *ngFor="let item of (matrix | async)?.balancesByCurrency">
+					<td>{{item.currencyCode}}</td>
+					<td>{{item.creditBalance}}</td>
+					<td>{{item.debitBalance}}</td>
+				</tr>
+				</tbody>
+			</table>
+		</ng-template>
+	</li> <!-- Per Currency totals -->
+
 
 	<li ngbNavItem="transfers" > <!-- transfers -->
 		<a ngbNavLink>Transfers</a>
@@ -219,7 +287,7 @@
 				</tbody>
 			</table>
 		</ng-template>
-	</li> <!-- Per participant totals -->
+	</li> <!-- transfers -->
 </ul>
 
 

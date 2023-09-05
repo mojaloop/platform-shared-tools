@@ -22,6 +22,8 @@ export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 	private _reloadRequested: boolean = false;
 	private _reloadCount = 0;
 
+
+
 	matrix: BehaviorSubject<ISettlementMatrix | null> = new BehaviorSubject<ISettlementMatrix|null>(null);
 	matrixSubs?: Subscription;
 

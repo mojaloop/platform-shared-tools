@@ -81,17 +81,27 @@ export class SettlementsService {
 		});
 	}
 
-	getBatchesByCriteria(settlementModel: string, currencyCode: string, fromDate: number, toDate: number): Observable<ISettlementBatch[]>{
+	getBatchesByCriteria(fromDate: number, toDate: number, settlementModel: string, currencyCodes: string[], batchStatuses:string[]): Observable<ISettlementBatch[]>{
 		return new Observable<ISettlementBatch[]>(subscriber => {
-			const url = `${SVC_BASEURL}/batches?settlementModel=${settlementModel}&currencyCode=${currencyCode}&fromDate=${fromDate}&toDate=${toDate}`;
+
+			let searchParams = new URLSearchParams();
+			// mandatory
+			searchParams.append("fromDate", fromDate.toString());
+			searchParams.append("toDate", toDate.toString());
+			searchParams.append("settlementModel", settlementModel);
+
+			// optional
+			if(currencyCodes && currencyCodes.length>0) searchParams.append("currencyCodes", encodeURIComponent(JSON.stringify(currencyCodes)));
+			if(batchStatuses && batchStatuses.length>0) searchParams.append("batchStatuses", encodeURIComponent(JSON.stringify(batchStatuses)));
+
+			const url = `${SVC_BASEURL}/batches?${searchParams.toString()}`;
 			this._http.get<ISettlementBatch[]>(url).subscribe(
 				(result: ISettlementBatch[]) => {
 					console.log(`got response: ${result}`);
 
 					subscriber.next(result);
 					return subscriber.complete();
-				},
-				error => {
+				},error => {
 					if (error && error.status===403) {
 						console.warn("Access forbidden received on getBatchesByCriteria");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
@@ -312,12 +322,12 @@ export class SettlementsService {
 	}
 
 
-	createDynamicMatrix(matrixId: string, settlementModel: string, currencyCode: string, fromDate: number, toDate: number): Observable<string> {
+	createDynamicMatrix(matrixId: string, settlementModel: string, currencyCodes: string[], fromDate: number, toDate: number): Observable<string> {
 		return new Observable<string>(subscriber => {
 			const createMatrixCmdPayload = {
 				matrixId: matrixId,
 				settlementModel: settlementModel,
-				currencyCode: currencyCode,
+				currencyCodes: currencyCodes,
 				fromDate: fromDate,
 				toDate: toDate,
 				type: "DYNAMIC"

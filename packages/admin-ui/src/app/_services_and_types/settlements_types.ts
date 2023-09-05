@@ -32,44 +32,46 @@
 
 //TODO use settlements-public-lib instead
 
+/**
+ * @todo Rename to ISettlementModel
+ */
 export interface ISettlementConfig {
 	id: string;
-    /**
-     * Settlement model name, should be unique.
-     * @todo rename to modelName
-     */
-    settlementModel: string;
-    /**
-     * Batch duration interval in seconds
-     * @todo rename to batchCreateIntervalSecs
-     */
-    batchCreateInterval: number;
-    // isAutoClose: boolean;
-    // settlementTime: string | null;
-    isActive: boolean;
-    // remove custom customSettlementField
-    //customSettlementField: ICustomSettlementField[] | null;
+	/**
+	 * Settlement model name, should be unique.
+	 * @todo rename to modelName
+	 */
+	settlementModel: string;
+	/**
+	 * Batch duration interval in seconds
+	 * @todo rename to batchCreateIntervalSecs
+	 */
+	batchCreateInterval: number;
+	// isAutoClose: boolean;
+	// settlementTime: string | null;
+	isActive: boolean;
+	// remove custom customSettlementField
+	//customSettlementField: ICustomSettlementField[] | null;
 
-    // // will put fixed matching field temporary and will replace with flexibility later
-    // matchingPayeeFspId: string | null;
-    // matchingPayerFspId: string | null;
-    // matchingCurrency: string | null;
-    // matchingAmount: number | null;
-    // // matchingTransactionType: string | null;
-    // // matchingExtensionList: [];
+	// // will put fixed matching field temporary and will replace with flexibility later
+	// matchingPayeeFspId: string | null;
+	// matchingPayerFspId: string | null;
+	// matchingCurrency: string | null;
+	// matchingAmount: number | null;
+	// // matchingTransactionType: string | null;
+	// // matchingExtensionList: [];
 
-    createdBy: string;
-    createdDate: number;
-    changeLog: ISettlementModelActivityLogEntry[];
+	createdBy: string;
+	createdDate: number;
+	changeLog: ISettlementModelActivityLogEntry[];
 }
 
 export declare interface ISettlementModelActivityLogEntry {
-    changeType: "CREATE" | "APPROVE" | "ACTIVATE" | "DEACTIVATE" | "UPDATE";
-    user: string;
-    timestamp: number;
-    notes: string | null;
+	changeType: "CREATE" | "APPROVE" | "ACTIVATE" | "DEACTIVATE" | "UPDATE";
+	user: string;
+	timestamp: number;
+	notes: string | null;
 }
-
 
 export interface ISettlementBatch {
 	id: string; // FX.XOF:RWF.2021.08.23.00.00.001
@@ -105,12 +107,14 @@ export interface ISettlementBatchTransfer {
 	batchId: string;
 	batchName: string;
 	journalEntryId: string;
-	settled: boolean;
 	matrixId: string | null;
 }
 
 
 
+/*******************
+ * Settlement Matrix
+ ********************/
 export interface ISettlementMatrix {
 	id: string;
 	createdAt: number;
@@ -119,22 +123,38 @@ export interface ISettlementMatrix {
 	// criteria
 	dateFrom: number | null;
 	dateTo: number | null;
-	currencyCode: string;
+	currencyCodes: string[];
 	settlementModel: string | null;
+	batchStatuses: string[];
 	batches: ISettlementMatrixBatch[];
-	participantBalances: ISettlementMatrixParticipantBalance[];
-	participantBalancesDisputed: ISettlementMatrixParticipantBalance[];
-	state: "IDLE" | "BUSY" | "DISPUTED" | "CLOSED" | "AWAITING_SETTLEMENT" | "SETTLED";
+	state: "IDLE" | "BUSY" | "FINALIZED" | "OUT_OF_SYNC" | "LOCKED";
 	type: "STATIC" | "DYNAMIC";
 	generationDurationSecs: number | null;
-	totalDebitBalance: string;
-	totalCreditBalance: string;
-	totalDebitBalanceDisputed: string;
-	totalCreditBalanceDisputed: string;
+
+	balancesByCurrency: ISettlementMatrixBalanceByCurrency[];
+	balancesByStateAndCurrency: ISettlementMatrixBalanceByStateAndCurrency[];
+	balancesByParticipant: ISettlementMatrixParticipantBalance[];
+
+	areBatchesOutOfSync: boolean;
+}
+
+export interface ISettlementMatrixBalanceByCurrency {
+	currencyCode: string;
+	debitBalance: string;
+	creditBalance: string;
+}
+
+export interface ISettlementMatrixBalanceByStateAndCurrency {
+	currencyCode: string;
+	state: string;
+	debitBalance: string;
+	creditBalance: string;
 }
 
 export interface ISettlementMatrixParticipantBalance {
 	participantId: string;
+	currencyCode: string;
+	state: string;
 	debitBalance: string;
 	creditBalance: string;
 }
@@ -142,6 +162,7 @@ export interface ISettlementMatrixParticipantBalance {
 export interface ISettlementMatrixBatch {
 	id: string;
 	name: string;
+	currencyCode: string;
 	batchDebitBalance: string;
 	batchCreditBalance: string;
 	state: "OPEN" | "DISPUTED" | "SETTLED" | "CLOSED" | "AWAITING_SETTLEMENT";
@@ -155,4 +176,6 @@ export interface ISettlementMatrixBatchAccount {
 	debitBalance: string;
 	creditBalance: string;
 }
+
+/* ISettlementModelClient for settlement-model-lib */
 

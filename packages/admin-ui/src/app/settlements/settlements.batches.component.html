@@ -17,6 +17,7 @@
 				<label for="criteriaCurrencyCode">Currency:</label>
 				<select class="form-control" id="criteriaCurrencyCode" [ngModel]="criteriaCurrencyCode"
 						[ngModelOptions]="{standalone: true}">
+					<option value="{{ALL_STR_ID}}">{{ALL_STR_ID}}</option>
 					<option value="USD">USD</option>
 					<option value="EUR">EUR</option>
 				</select>
@@ -37,20 +38,35 @@
 					   [ngModelOptions]="{standalone: true}">
 			</div>
 
-			<div class="form-group col-md-1">
+<!--			<div class="form-group col-md-1">
 				<label for="criteriaToDate">Settled?</label>
 				<input class="form-control" type="checkbox" id="criteriaIncludeSettled"
 					   [ngModel]="criteriaIncludeSettled" [ngModelOptions]="{standalone: true}">
-			</div>
+			</div>-->
 
 			<div class="form-group col-md-2">
+				<label for="criteriaBatchState">Batch State:</label>
+				<select class="form-control" id="criteriaBatchState">
+					<option value="{{ALL_STR_ID}}">{{ALL_STR_ID}}</option>
+					<option value="OPEN">OPEN</option>
+					<option value="CLOSED">CLOSED</option>
+					<option value="DISPUTED">DISPUTED</option>
+					<option value="AWAITING_SETTLEMENT">AWAITING_SETTLEMENT</option>
+					<option value="SETTLED">SETTLED</option>
+				</select>
+			</div>
+
+			<div class="form-group col-md-3">
 				<label for="criteriaToDate">Batch Id</label>
 				<input class="form-control" type="text" id="criteriaBatchId"
 					   [ngModel]="criteriaBatchId" [ngModelOptions]="{standalone: true}">
 			</div>
-
-
-			<div class="form-group col-md-2">
+		</tr>
+		<tr class="form-row">
+			<div class="form-group col-md-10">
+				&nbsp;
+			</div>
+			<div class="form-group col-md-2 ">
 				<label for="filterBtn">&nbsp;</label>
 					<button type="submit" class="form-control btn btn-primary" id="filterBtn" (click)="applyCriteria()">Search&nbsp;&nbsp;<i class="bi bi-search"></i></button>
 			</div>
@@ -95,7 +111,6 @@
 			<th scope="col">Seq#</th>
 			<th scope="col">Name</th>
 			<th scope="col">State</th>
-
 		</tr>
 		</thead>
 		<tbody>
@@ -106,7 +121,8 @@
 		</ng-container>
 		<tr *ngFor="let item of (batches | async)">
 			<td>
-				<input type="checkbox" class="form-control" *ngIf="item.state!=='SETTLED' && item.state!=='DISPUTED'" (change)="batchSelectionChanged($event)" [id]="batchSelPrefix+item.id">
+				<input type="checkbox" class="form-control" *ngIf="item.state!=='SETTLED'"
+					   (change)="batchSelectionChanged($event)" [id]="batchSelPrefix+item.id">
 			</td>
 			<td><a (click)="selectBatch(item.id);" class="link">{{item.id}}</a></td>
 			<td>{{item.settlementModel}}</td>
