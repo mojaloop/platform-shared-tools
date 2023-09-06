@@ -3,7 +3,7 @@ import {BehaviorSubject, Subscription} from "rxjs";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
 import {MessageService} from "src/app/_services_and_types/message.service";
 import {SettlementsService} from "src/app/_services_and_types/settlements.service";
-import {ISettlementBatch, ISettlementBatchTransfer} from "src/app/_services_and_types/settlements_types";
+import {ISettlementBatch, ISettlementBatchTransfer} from "@mojaloop/settlements-bc-public-types-lib";
 import * as uuid from "uuid";
 import {ActivatedRoute, Router} from "@angular/router";
 

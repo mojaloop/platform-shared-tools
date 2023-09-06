@@ -40,7 +40,7 @@ import {
 	ISettlementBatch,
 	ISettlementBatchTransfer, ISettlementConfig,
 	ISettlementMatrix
-} from "src/app/_services_and_types/settlements_types";
+} from "@mojaloop/settlements-bc-public-types-lib";
 import * as uuid from "uuid";
 
 const SVC_BASEURL = "/_settlements";

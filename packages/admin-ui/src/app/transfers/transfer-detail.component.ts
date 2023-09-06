@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { Transfer } from "src/app/_services_and_types/transfer_types";
 import { TransfersService } from "src/app/_services_and_types/transfers.service";
 import { BehaviorSubject } from "rxjs";
-import { ISettlementBatchTransfer } from "src/app/_services_and_types/settlements_types";
+import { ISettlementBatchTransfer } from "@mojaloop/settlements-bc-public-types-lib";
 import { SettlementsService } from "src/app/_services_and_types/settlements.service";
 import { MessageService } from "src/app/_services_and_types/message.service";
 import { ParticipantsService } from "../_services_and_types/participants.service";

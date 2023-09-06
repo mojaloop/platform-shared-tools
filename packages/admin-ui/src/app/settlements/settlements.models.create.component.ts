@@ -5,8 +5,8 @@ import {
 	FormGroup,
 	Validators,
 } from '@angular/forms';
-import {SettlementsService} from '../_services_and_types/settlements.service';
-import {ISettlementConfig} from '../_services_and_types/settlements_types';
+import {SettlementsService} from "../_services_and_types/settlements.service";
+import {ISettlementConfig} from "@mojaloop/settlements-bc-public-types-lib";
 
 @Component({
 	selector: 'app-settlements',

@@ -7,7 +7,7 @@ import {
 	ISettlementBatch,
 	ISettlementBatchTransfer,
 	ISettlementMatrix
-} from "src/app/_services_and_types/settlements_types";
+} from "@mojaloop/settlements-bc-public-types-lib";
 import {ActivatedRoute} from "@angular/router";
 
 
