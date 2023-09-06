@@ -43,7 +43,7 @@ services:
     restart: unless-stopped
 
   auditing-svc:
-    image: mojaloop/auditing-bc-auditing-svc:alpha-latest
+    image: mojaloop/auditing-bc-auditing-svc:0.1.5
     volumes:
       - auditing-svc_data:/app/data
     environment:
@@ -57,7 +57,7 @@ services:
     restart: unless-stopped
 
   logging-svc:
-    image: mojaloop/logging-bc-logging-svc:alpha-latest
+    image: mojaloop/logging-bc-logging-svc:0.1.8
     volumes:
       - logging-svc_data:/app/data
     environment:
