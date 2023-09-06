@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/vnext-admin-ui-svc",
-  "version": "0.1.22",
+  "version": "0.1.23",
   "scripts": {
     "ng": "NODE_OPTIONS=--openssl-legacy-provider ng",
     "start": "NODE_OPTIONS=--openssl-legacy-provider ng serve --proxy-config proxy.conf.json --no-live-reload",
@@ -28,7 +28,7 @@
     "@mojaloop/platform-configuration-bc-public-types-lib": "~0.3.3",
     "@mojaloop/auditing-bc-public-types-lib": "~0.0.15",
     "@mojaloop/security-bc-public-types-lib": "~0.2.1",
-	"@mojaloop/settlements-bc-public-types-lib": "~0.2.2",
+    "@mojaloop/settlements-bc-public-types-lib": "~0.2.2",
     "@ng-bootstrap/ng-bootstrap": "^10.0.0",
     "bootstrap": "^4.5.3",
     "buffer": "^6.0.3",
