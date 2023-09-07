@@ -302,6 +302,7 @@ export class ParticipantDetailComponent implements OnInit {
           
         },
         (error) => {
+          
           this._messageService.addError(error);
         }
       );
@@ -320,7 +321,7 @@ export class ParticipantDetailComponent implements OnInit {
           if (this.depositWithdrawalModalRef)
             this.depositWithdrawalModalRef!.close();
           this._messageService.addError(
-            `Account changes request approval failed with error: ${error.message}`
+            `Account changes request approval failed with: ${error}`
           );
         }
       );
@@ -434,7 +435,7 @@ export class ParticipantDetailComponent implements OnInit {
         (error) => {
           this.depositWithdrawalModalRef!.close();
           this._messageService.addError(
-            `Funds movement creation failed with error: ${error.message}`
+            `Funds movement creation failed with error: ${error}`
           );
         }
       );
