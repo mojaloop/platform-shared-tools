@@ -1,9 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {BehaviorSubject, Observable, Subscription} from "rxjs";
+import {BehaviorSubject, Subscription} from "rxjs";
 import {AuditingService} from "../_services_and_types/auditing.service";
 import {SignedCentralAuditEntry} from "../_services_and_types/auditing_types";
 import {UnauthorizedError} from "../_services_and_types/errors";
 import {MessageService} from "../_services_and_types/message.service";
+import {paginate, PaginateResult} from "../_utils";
 
 @Component({
 	selector: "app-security",
@@ -19,15 +20,25 @@ export class AuditingComponent implements OnInit, OnDestroy {
 	keywordSourceAppName: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordsSubs?: Subscription;
 
+	paginateResult:BehaviorSubject<PaginateResult|null> = new BehaviorSubject<PaginateResult|null>(null);
+
+	public criteriaFromDate = "";
+
 	constructor(private _auditingSvc: AuditingService, private _messageService: MessageService) {
+		this.criteriaFromDate = new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString()
+		this.criteriaFromDate = this.criteriaFromDate.substring(0, this.criteriaFromDate.length-8); // remove Z, ms and secs
+
 	}
 
 	async ngOnInit(): Promise<void> {
 		console.log("SecurityComponent ngOnInit");
 
 		await this.getSearchKeywords();
-		this.search();
 
+		// wait for the page components to layout
+		setTimeout(()=>{
+			this.search();
+		}, 50);
 	}
 
 	getSearchKeywords() {
@@ -46,7 +57,7 @@ export class AuditingComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	search() {
+	search(pageIndex:number = 0) {
 
 		// const filterText = (document.getElementById("filterText") as HTMLInputElement).value || null;
 		const filterSourceBcName = (document.getElementById("filterSourceBcName") as HTMLSelectElement).value || null;
@@ -65,11 +76,16 @@ export class AuditingComponent implements OnInit, OnDestroy {
 			(filterActionType === this.ALL_STR_ID ? null : filterActionType),
 			null,
 			filterStartDate,
-			filterEndDate
-		).subscribe((list) => {
-			console.log("TransfersComponent search - got searchTransfers");
+			filterEndDate,
+			pageIndex
+		).subscribe((result) => {
+			console.log("AuditingComponent search - got AuditSearchResults");
 
-			this.entries.next(list);
+			this.entries.next(result.items);
+
+			const pageRes = paginate(result.pageIndex, result.totalPages);
+			console.log(pageRes)
+			this.paginateResult.next(pageRes);
 		}, error => {
 			if (error && error instanceof UnauthorizedError) {
 				this._messageService.addError(error.message);

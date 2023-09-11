@@ -22,3 +22,11 @@ export declare type CentralAuditEntry = SignedSourceAuditEntry & {
 export declare type SignedCentralAuditEntry = CentralAuditEntry & {
 	auditingSvcSignature: string;
 }
+
+
+export declare type AuditSearchResults = {
+	pageSize: number;
+	totalPages: number;
+	pageIndex: number;
+	items: SignedCentralAuditEntry[];
+}
