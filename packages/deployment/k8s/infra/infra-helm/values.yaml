@@ -49,6 +49,8 @@ kafka:
       value: SettlementsBcRequests
     - name: TransfersBcErrors
       value: TransfersBcErrors
+    - name: TransfersBcTimeouts
+      value: TransfersBcTimeouts
     - name: TransfersBcEvents
       value: TransfersBcEvents
     - name: TransfersBcRequests
