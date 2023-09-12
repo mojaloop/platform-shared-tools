@@ -256,44 +256,44 @@
           </tr>
           <tr *ngIf="accountCreateModeEnabled">
             <td>
-              <select [(ngModel)]="newAccount.type" class="form-control">
+              <select [(ngModel)]="newParticipantAccount.type" class="form-control">
                 <ng-container *ngIf="(participant | async)?.type === 'HUB'; else nonHub">
-                  <option [selected]="newAccount.type === 'HUB_ASSET'">
+                  <option [selected]="newParticipantAccount.type === 'HUB_ASSET'">
                     HUB_ASSET
                   </option>
                 </ng-container>
                 <ng-template #nonHub>
-                  <option [selected]="newAccount.type === 'POSITION'">
+                  <option [selected]="newParticipantAccount.type === 'POSITION'">
                     POSITION
                   </option>
-                  <option [selected]="newAccount.type === 'SETTLEMENT'">
+                  <option [selected]="newParticipantAccount.type === 'SETTLEMENT'">
                     SETTLEMENT
                   </option>
                 </ng-template>
               </select>
             </td>
             <td>
-              <input type="text" class="form-control" [id]="'externalBankAccountId_' + newAccount.id"
-                *ngIf="newAccount.type == 'SETTLEMENT'" [(ngModel)]="newAccount.externalBankAccountId">
+              <input type="text" class="form-control" [id]="'externalBankAccountId_' + newParticipantAccount.id"
+                *ngIf="newParticipantAccount.type == 'SETTLEMENT'" [(ngModel)]="newParticipantAccount.externalBankAccountId">
             </td>
             <td>
-              <input type="text" class="form-control" [id]="'externalBankAccountName_' + newAccount.id"
-                *ngIf="newAccount.type == 'SETTLEMENT'" [(ngModel)]="newAccount.externalBankAccountName">
+              <input type="text" class="form-control" [id]="'externalBankAccountName_' + newParticipantAccount.id"
+                *ngIf="newParticipantAccount.type == 'SETTLEMENT'" [(ngModel)]="newParticipantAccount.externalBankAccountName">
             </td>
             <td>
-              <select class="form-control" [(ngModel)]="newAccount.currencyCode" value="{{ newAccount.currencyCode }}">
-                <option [selected]="newAccount.currencyCode === 'EUR'">EUR</option>
-                <option [selected]="newAccount.currencyCode === 'USD'">USD</option>
-                <option [selected]="newAccount.currencyCode === 'TZS'">TZS</option>
+              <select class="form-control" [(ngModel)]="newParticipantAccount.currencyCode" value="{{ newParticipantAccount.currencyCode }}">
+                <option [selected]="newParticipantAccount.currencyCode === 'EUR'">EUR</option>
+                <option [selected]="newParticipantAccount.currencyCode === 'USD'">USD</option>
+                <option [selected]="newParticipantAccount.currencyCode === 'TZS'">TZS</option>
               </select>
             </td>
-            <td>{{ newAccount.balance }}</td>
+            <td>{{ newParticipantAccount.balance }}</td>
             <td>
               <div class="btn-group btn-group-sm" role="group" aria-label="">
-                <button type="button" class="btn btn-success" (click)="saveEditAccount(newAccount)">
+                <button type="button" class="btn btn-success" (click)="saveEditAccount(newParticipantAccount)">
                   <span class="bi bi-check-lg"></span>
                 </button>
-                <button type="button" class="btn btn-danger" (click)="onCancelEditClick(newAccount)">
+                <button type="button" class="btn btn-danger" (click)="onCancelEditClick(newParticipantAccount)">
                   <span class="bi bi-x-lg"></span>
                 </button>
               </div>

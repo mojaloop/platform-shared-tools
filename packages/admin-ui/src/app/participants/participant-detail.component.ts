@@ -34,7 +34,8 @@ export class ParticipantDetailComponent implements OnInit {
 
   accountCreateModeEnabled = false;
   accountEditModeEnabled = false;
-  newAccount: any;
+  newParticipantAccount: any;
+  editingParticipantAccountOriginalData?: ParticipantAccount;
 
   ndcCreateModeEnabled = false;
   ndcEditModeEnabled = false;
@@ -242,22 +243,26 @@ export class ParticipantDetailComponent implements OnInit {
 
   onEditAccountClick(account: ParticipantAccount): void {
     account.editing = true;
+    this.accountEditModeEnabled = true;
+    this.editingParticipantAccountOriginalData = {...account};
   }
 
   onCancelEditClick(account: ParticipantAccount): void {
-    account.editing = false;
     this.accountCreateModeEnabled = false;
+    this.accountEditModeEnabled = false;
+
+    Object.assign(account, this.editingParticipantAccountOriginalData);
+    account.editing = false;
+    
   }
 
   onAddAccountClick(): void {
     this.accountCreateModeEnabled = true;
-    this.newAccount = this._participantsSvc.createEmptyAccount();
+    this.newParticipantAccount = this._participantsSvc.createEmptyAccount();
   }
 
   saveEditAccount(account: ParticipantAccount): void {
     // Implement logic to save changes to the account
-
-    account.editing = false;
 
     let participantAccountChangeRequest: ParticipantAccountChangeRequest = {
       id: uuid.v4(),
@@ -266,10 +271,12 @@ export class ParticipantDetailComponent implements OnInit {
       currencyCode: account.currencyCode,
       externalBankAccountId: account.externalBankAccountId,
       externalBankAccountName: account.externalBankAccountName,
+      requestType: "ADD_ACCOUNT"
     }
 
     // check overlaps
     if (this.accountCreateModeEnabled) {
+      participantAccountChangeRequest.requestType = "ADD_ACCOUNT";
       const duplicateAccount = this.participant.value?.participantAccounts.find(
         (item) =>
           item.type === account.type &&
@@ -284,6 +291,9 @@ export class ParticipantDetailComponent implements OnInit {
         account.editing = false;
         return;
       }
+    }
+    else{
+      participantAccountChangeRequest.requestType = "CHANGE_ACCOUNT_BANK_DETAILS";
     }
 
     this._participantsSvc
