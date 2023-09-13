@@ -16,4 +16,4 @@ spec:
     mojaloop.service: auditing-svc
     mojaloop.layer: crosscut
 status:
-  loadBalancer: {}
+  loadBalancer: { }
