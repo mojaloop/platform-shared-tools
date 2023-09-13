@@ -4,14 +4,9 @@
   </div>
 
   <div class="col-md-4 align-self-center">
-    <small
-      ><strong>ID: </strong> {{ (participant | async)?.id }}
-      <a
-        [hidden]="(participant | async)?.type === 'HUB'"
-        (click)="copyParticipantIdToClipboard()"
-        ngbTooltip="Copy ID to clipboard"
-        ><i class="bi bi-clipboard-plus"></i></a
-    ></small>
+    <small><strong>ID: </strong> {{ (participant | async)?.id }}
+      <a [hidden]="(participant | async)?.type === 'HUB'" (click)="copyParticipantIdToClipboard()"
+        ngbTooltip="Copy ID to clipboard"><i class="bi bi-clipboard-plus"></i></a></small>
   </div>
 </div>
 <hr />
@@ -52,38 +47,22 @@
       <ng-container *ngIf="(participant | async)?.type !== 'HUB'">
         <!--<button class="btn btn-primary btn-block" [hidden]="editing || (participant | async)?.isActive">Activate</button>
         <button class="btn btn-primary btn-block" [hidden]="editing || !(participant | async)?.isActive">Deactivate</button>-->
-        <button
-          class="btn btn-primary btn-block"
-          [disabled]="editing"
-          (click)="showDeposit()"
-        >
+        <button class="btn btn-primary btn-block" [disabled]="editing" (click)="showDeposit()">
           Deposit
         </button>
-        <button
-          class="btn btn-primary btn-block"
-          [disabled]="editing"
-          (click)="showWithdrawal()"
-        >
+        <button class="btn btn-primary btn-block" [disabled]="editing" (click)="showWithdrawal()">
           Withdrawal
         </button>
       </ng-container>
 
-      <button
-        class="btn btn-primary btn-block"
-        [disabled]="editing"
-        (click)="updateAccounts()"
-      >
+      <button class="btn btn-primary btn-block" [disabled]="editing" (click)="updateAccounts()">
         Refresh Account Balances
       </button>
     </ng-container>
 
     <ng-container *ngIf="!(participant | async)?.approved">
-      <button
-        class="btn btn-primary btn-block"
-        [disabled]="editing || (participant | async)?.isActive"
-        (click)="approve()"
-        [hidden]="(participant | async)?.type === 'HUB'"
-      >
+      <button class="btn btn-primary btn-block" [disabled]="editing || (participant | async)?.isActive"
+        (click)="approve()" [hidden]="(participant | async)?.type === 'HUB'">
         Approve
       </button>
     </ng-container>
@@ -139,18 +118,12 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of (participant | async)?.participantEndpoints">
-            <ng-container
-              *ngIf="
+            <ng-container *ngIf="
                 endpointEditModeEnabled && item.id === endpointEditingId;
                 else editNotEnabled
-              "
-            >
+              ">
               <td>
-                <select
-                  class="form-control"
-                  [id]="'endpointType_' + item.id"
-                  value="{{ item.type }}"
-                >
+                <select class="form-control" [id]="'endpointType_' + item.id" value="{{ item.type }}">
                   <option [selected]="item.type === 'FSPIOP'">FSPIOP</option>
                   <option [selected]="item.type === 'ISO20022'">
                     ISO20022
@@ -158,39 +131,22 @@
                 </select>
               </td>
               <td>
-                <select
-                  class="form-control"
-                  [id]="'endpointProtocol_' + item.id"
-                  value="{{ item.protocol }}"
-                >
+                <select class="form-control" [id]="'endpointProtocol_' + item.id" value="{{ item.protocol }}">
                   <option [selected]="item.protocol === 'HTTPs/REST'">
                     HTTPs/REST
                   </option>
                 </select>
               </td>
               <td>
-                <input
-                  [id]="'endpointValue_' + item.id"
-                  type="text"
-                  class="form-control"
-                  placeholder=""
-                  value="{{ item.value }}"
-                />
+                <input [id]="'endpointValue_' + item.id" type="text" class="form-control" placeholder=""
+                  value="{{ item.value }}" />
               </td>
               <td>
                 <div class="btn-group btn-group-sm" role="group" aria-label="">
-                  <button
-                    type="button"
-                    class="btn btn-success"
-                    (click)="endpointSaveEdit(item.id)"
-                  >
+                  <button type="button" class="btn btn-success" (click)="endpointSaveEdit(item.id)">
                     <span class="bi bi-check-lg"></span>
                   </button>
-                  <button
-                    type="button"
-                    class="btn btn-danger"
-                    (click)="endpointStopEdit()"
-                  >
+                  <button type="button" class="btn btn-danger" (click)="endpointStopEdit()">
                     <span class="bi bi-x-lg"></span>
                   </button>
                 </div>
@@ -203,20 +159,12 @@
               <td>{{ item.value }}</td>
               <td>
                 <div class="btn-group btn-group-sm" role="group" aria-label="">
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    [hidden]="endpointEditModeEnabled"
-                    (click)="endpointStartEdit(item.id)"
-                  >
+                  <button type="button" class="btn btn-primary" [hidden]="endpointEditModeEnabled"
+                    (click)="endpointStartEdit(item.id)">
                     <span class="bi bi-pencil"></span>
                   </button>
-                  <button
-                    type="button"
-                    class="btn btn-danger"
-                    [hidden]="endpointEditModeEnabled"
-                    (click)="endpointRemote(item.id)"
-                  >
+                  <button type="button" class="btn btn-danger" [hidden]="endpointEditModeEnabled"
+                    (click)="endpointRemote(item.id)">
                     <span class="bi bi-trash"></span>
                   </button>
                 </div>
@@ -230,11 +178,7 @@
 
       <div class="form-row d-flex mb-3">
         <div class="p-2">
-          <button
-            class="btn btn-secondary"
-            (click)="endpointAddNew()"
-            [disabled]="endpointEditModeEnabled"
-          >
+          <button class="btn btn-secondary" (click)="endpointAddNew()" [disabled]="endpointEditModeEnabled">
             Add Endpoint
           </button>
         </div>
@@ -251,89 +195,171 @@
     <a ngbNavLink>Accounts</a>
     <ng-template ngbNavContent>
       <h4 class="mt-3">Registered Accounts for this Participant</h4>
+
       <table class="table table-hover mt-3">
         <thead class="thead-light">
           <tr>
             <th scope="col">Type</th>
+            <th scope="col">External Back Account ID</th>
+            <th scope="col">External Bank Account Name</th>
             <th scope="col">Currency</th>
-<!--            <th scope="col">Debit Balance</th>-->
-<!--            <th scope="col">Credit Balance</th>-->
             <th scope="col">Balance</th>
             <th scope="col" style="width: 90px">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of (participant | async)?.participantAccounts">
-            <ng-container *ngIf="accountEditModeEnabled && item.id === accountEditingId; else editNotEnabled">
-              <td>
-                <select  class="form-control" [id]="'accountType_' + item.id" value="{{ item.type }}" >
-                  <ng-container *ngIf="(participant | async)?.type === 'HUB'; else nonHub">
-                    <option [selected]="item.type === 'HUB_ASSET'">
-                      HUB_ASSET
-                    </option>
-                  </ng-container>
-                  <ng-template #nonHub>
-                    <option [selected]="item.type === 'POSITION'">
-                      POSITION
-                    </option>
-                    <option [selected]="item.type === 'SETTLEMENT'">
-                      SETTLEMENT
-                    </option>
-                  </ng-template>
-                </select>
-              </td>
-              <td>
-                <select class="form-control" [id]="'accountCurrency_' + item.id" value="{{ item.currencyCode }}" >
-                  <option [selected]="item.currencyCode === 'EUR'">EUR</option>
-                  <option [selected]="item.currencyCode === 'USD'">USD</option>
-                  <option [selected]="item.currencyCode === 'TZS'">TZS</option>
-                </select>
-              </td>
-              <td></td>
+          <tr *ngFor="let item of (participant | async)?.participantAccounts; let i = index">
+            <ng-container *ngIf="!item.editing; else editRow">
+              <td>{{ item.type }}</td>
+              <td>{{ item.externalBankAccountId }}</td>
+              <td>{{ item.externalBankAccountName }}</td>
+              <td>{{ item.currencyCode }}</td>
+              <td>{{ item.balance }}</td>
               <td>
                 <div class="btn-group btn-group-sm" role="group" aria-label="">
-                  <button type="button" class="btn btn-success" (click)="accountSaveEdit(item.id)">
+                  <button *ngIf="item.type === 'SETTLEMENT'" type="button" class="btn btn-primary"
+                    (click)="onEditAccountClick(item)">
+                    <span class="bi bi-pencil"></span>
+                  </button>
+                </div>
+
+              </td>
+            </ng-container>
+
+            <ng-template #editRow>
+              <td>
+                {{item.type}}
+              </td>
+              <td>
+                <input type="text" class="form-control" [id]="'externalBankAccountId_' + item.id"
+                  *ngIf="item.type == 'SETTLEMENT'" [(ngModel)]="item.externalBankAccountId">
+              </td>
+              <td>
+                <input type="text" class="form-control" [id]="'externalBankAccountName_' + item.id"
+                  *ngIf="item.type == 'SETTLEMENT'" [(ngModel)]="item.externalBankAccountName">
+              </td>
+              <td>
+                {{item.currencyCode}}
+              </td>
+              <td>{{ item.balance }}</td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group" aria-label="">
+                  <button type="button" class="btn btn-success" (click)="saveEditAccount(item)">
                     <span class="bi bi-check-lg"></span>
                   </button>
-                  <button type="button" class="btn btn-danger" (click)="accountStopEdit()" >
+                  <button type="button" class="btn btn-danger" (click)="onCancelEditClick(item)">
                     <span class="bi bi-x-lg"></span>
                   </button>
                 </div>
               </td>
-            </ng-container>
-
-            <ng-template #editNotEnabled>
-              <td>{{ item.type }}</td>
-              <td>{{ item.currencyCode }}</td>
-<!--              <td>{{ item.debitBalance }}</td>-->
-<!--              <td>{{ item.creditBalance }}</td>-->
-              <td>{{ item.balance }}</td>
-              <td>
-                <div class="btn-group btn-group-sm" role="group" aria-label="">
-<!--                  <button type="button" class="btn btn-danger" [hidden]="accountEditModeEnabled" ngbTooltip="Disable account">-->
-<!--                    <span class="bi bi-dash-circle"></span>-->
-<!--                  </button>-->
-                </div>
-              </td>
             </ng-template>
+          </tr>
+          <tr *ngIf="accountCreateModeEnabled">
+            <td>
+              <select [(ngModel)]="newParticipantAccount.type" class="form-control">
+                <ng-container *ngIf="(participant | async)?.type === 'HUB'; else nonHub">
+                  <option [selected]="newParticipantAccount.type === 'HUB_ASSET'">
+                    HUB_ASSET
+                  </option>
+                </ng-container>
+                <ng-template #nonHub>
+                  <option [selected]="newParticipantAccount.type === 'POSITION'">
+                    POSITION
+                  </option>
+                  <option [selected]="newParticipantAccount.type === 'SETTLEMENT'">
+                    SETTLEMENT
+                  </option>
+                </ng-template>
+              </select>
+            </td>
+            <td>
+              <input type="text" class="form-control" [id]="'externalBankAccountId_' + newParticipantAccount.id"
+                *ngIf="newParticipantAccount.type == 'SETTLEMENT'" [(ngModel)]="newParticipantAccount.externalBankAccountId">
+            </td>
+            <td>
+              <input type="text" class="form-control" [id]="'externalBankAccountName_' + newParticipantAccount.id"
+                *ngIf="newParticipantAccount.type == 'SETTLEMENT'" [(ngModel)]="newParticipantAccount.externalBankAccountName">
+            </td>
+            <td>
+              <select class="form-control" [(ngModel)]="newParticipantAccount.currencyCode" value="{{ newParticipantAccount.currencyCode }}">
+                <option [selected]="newParticipantAccount.currencyCode === 'EUR'">EUR</option>
+                <option [selected]="newParticipantAccount.currencyCode === 'USD'">USD</option>
+                <option [selected]="newParticipantAccount.currencyCode === 'TZS'">TZS</option>
+              </select>
+            </td>
+            <td>{{ newParticipantAccount.balance }}</td>
+            <td>
+              <div class="btn-group btn-group-sm" role="group" aria-label="">
+                <button type="button" class="btn btn-success" (click)="saveEditAccount(newParticipantAccount)">
+                  <span class="bi bi-check-lg"></span>
+                </button>
+                <button type="button" class="btn btn-danger" (click)="onCancelEditClick(newParticipantAccount)">
+                  <span class="bi bi-x-lg"></span>
+                </button>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
 
       <hr />
-
       <div class="form-row d-flex mb-3">
         <div class="p-2">
-          <button class="btn btn-secondary" (click)="accountAddNew()" [disabled]="accountEditModeEnabled">
+          <button class="btn btn-secondary" (click)="onAddAccountClick()" [disabled]="accountCreateModeEnabled || accountEditModeEnabled">
             Add Account
           </button>
         </div>
-        <div class="ml-auto p-2">
-          <!--          <input id="depositValue" type="number" class="form-control" placeholder="100" value="100">-->
-          <!--          <button class="btn btn-secondary" (click)="showDeposit()" [disabled]="accountEditModeEnabled">Deposit</button>-->
-          <!--          <button class="btn btn-outline-primary" (click)="updateAccounts()">Refresh Account Balances</button>-->
-        </div>
       </div>
+
+      <hr />
+      <h4 class="mt-3">Account Change Requests</h4>
+      <table class="table table-hover mt-3">
+        <thead class="thead-light">
+          <tr>
+			<th scope="col">Change Type</th>
+			<th scope="col">Account Type</th>
+            <th scope="col">External Back Account ID</th>
+            <th scope="col">External Bank Account Name</th>
+            <th scope="col">Currency</th>
+            <th scope="col">Created</th>
+            <th scope="col">Approved</th>
+            <th scope="col" style="width: 90px">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let accChangeReq of (participant | async)?.participantAccountsChangeRequest">
+            <td>{{ accChangeReq.requestType }}</td>
+            <td>{{ accChangeReq.type }}</td>
+            <td>{{ accChangeReq.externalBankAccountId }}</td>
+            <td>{{ accChangeReq.externalBankAccountName }}</td>
+            <td>{{ accChangeReq.currencyCode }}</td>
+            <td>
+              {{ accChangeReq.createdBy }} on
+              {{ accChangeReq.createdDate | date : "medium" }}
+            </td>
+            <td *ngIf="!accChangeReq.approved" class="text-danger">
+              (Not yet approved)
+            </td>
+            <td *ngIf="accChangeReq.approved">
+              {{ accChangeReq.approvedBy }} on
+              {{ accChangeReq.approvedDate | date : "medium" }}
+            </td>
+
+            <td>
+              <div class="btn-group btn-group-sm" role="group" aria-label="">
+                <button type="button" class="btn btn-success" *ngIf="!accChangeReq.approved"
+                  (click)="approveAccountChangeRequest(accChangeReq.id)" ngbTooltip="Approve">
+                  <span class="bi bi-check-lg"></span>
+                </button>
+                <button type="button" class="btn btn-danger" *ngIf="!accChangeReq.approved"
+                  (click)="rejectAccountChangeRequest(accChangeReq.id)" ngbTooltip="Reject">
+                  <span class="bi bi-x-lg"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </ng-template>
   </li>
   <!-- Accounts -->
@@ -379,22 +405,12 @@
               <td>{{ fundsMov.note }}</td>
               <td>
                 <div class="btn-group btn-group-sm" role="group" aria-label="">
-                  <button
-                    type="button"
-                    class="btn btn-success"
-                    *ngIf="!fundsMov.approved"
-                    (click)="approveFundsMov(fundsMov.id)"
-                    ngbTooltip="Approve"
-                  >
+                  <button type="button" class="btn btn-success" *ngIf="!fundsMov.approved"
+                    (click)="approveFundsMov(fundsMov.id)" ngbTooltip="Approve">
                     <span class="bi bi-check-lg"></span>
                   </button>
-                  <button
-                    type="button"
-                    class="btn btn-danger"
-                    *ngIf="!fundsMov.approved"
-                    (click)="rejectFundsMov(fundsMov.id)"
-                    ngbTooltip="Reject"
-                  >
+                  <button type="button" class="btn btn-danger" *ngIf="!fundsMov.approved"
+                    (click)="rejectFundsMov(fundsMov.id)" ngbTooltip="Reject">
                     <span class="bi bi-x-lg"></span>
                   </button>
                 </div>
@@ -431,7 +447,7 @@
               <td>{{ netDebitCaps.currentValue }}</td>
               <td>
                 {{
-                  netDebitCaps.percentage ? netDebitCaps.percentage + "%" : "-"
+                netDebitCaps.percentage ? netDebitCaps.percentage + "%" : "-"
                 }}
               </td>
               <td>{{ netDebitCaps.currencyCode }}</td>
@@ -447,24 +463,12 @@
                 </select>
               </td>
               <td>
-                <input
-                  class="form-control"
-                  type="number"
-                  min="100"
-                  id="ndcAmount"
-                  value="{{ newNDC?.fixedValue }}"
-                  [disabled]="newNDC?.type === 'PERCENTAGE'"
-                />
+                <input class="form-control" type="number" min="100" id="ndcAmount" value="{{ newNDC?.fixedValue }}"
+                  [disabled]="newNDC?.type === 'PERCENTAGE'" />
               </td>
               <td>
-                <input
-                  class="form-control"
-                  type="number"
-                  max="100"
-                  id="ndcPercentage"
-                  value="{{ newNDC?.percentage }}"
-                  [disabled]="newNDC?.type === 'ABSOLUTE'"
-                />
+                <input class="form-control" type="number" max="100" id="ndcPercentage" value="{{ newNDC?.percentage }}"
+                  [disabled]="newNDC?.type === 'ABSOLUTE'" />
               </td>
               <td>
                 <select class="form-control" id="ndcCurrency" value="EUR">
@@ -491,11 +495,7 @@
 
       <div class="form-row d-flex mb-3">
         <div class="p-2">
-          <button
-            class="btn btn-secondary"
-            (click)="ndcAddNew()"
-            [disabled]="ndcEditModeEnabled"
-          >
+          <button class="btn btn-secondary" (click)="ndcAddNew()" [disabled]="ndcEditModeEnabled">
             Create Net Debit Cap Request
           </button>
         </div>
@@ -522,11 +522,9 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            *ngFor="
+          <tr *ngFor="
               let ndcReq of (participant | async)?.netDebitCapChangeRequests
-            "
-          >
+            ">
             <td>{{ ndcReq.type }}</td>
             <td>{{ ndcReq.fixedValue }}</td>
             <td>{{ ndcReq.percentage ? ndcReq.percentage + "%" : "-" }}</td>
@@ -545,22 +543,12 @@
 
             <td>
               <div class="btn-group btn-group-sm" role="group" aria-label="">
-                <button
-                  type="button"
-                  class="btn btn-success"
-                  *ngIf="!ndcReq.approved"
-                  (click)="approveNDCRequest(ndcReq.id)"
-                  ngbTooltip="Approve"
-                >
+                <button type="button" class="btn btn-success" *ngIf="!ndcReq.approved"
+                  (click)="approveNDCRequest(ndcReq.id)" ngbTooltip="Approve">
                   <span class="bi bi-check-lg"></span>
                 </button>
-                <button
-                  type="button"
-                  class="btn btn-danger"
-                  *ngIf="!ndcReq.approved"
-                  (click)="rejectNDCRequest(ndcReq.id)"
-                  ngbTooltip="Reject"
-                >
+                <button type="button" class="btn btn-danger" *ngIf="!ndcReq.approved"
+                  (click)="rejectNDCRequest(ndcReq.id)" ngbTooltip="Reject">
                   <span class="bi bi-x-lg"></span>
                 </button>
               </div>
@@ -583,10 +571,7 @@
   </li>
   <!-- Source IPs -->
 
-  <li
-    ngbNavItem="certificates"
-    [hidden]="(participant | async)?.type === 'HUB'"
-  >
+  <li ngbNavItem="certificates" [hidden]="(participant | async)?.type === 'HUB'">
     <!-- Certificates -->
     <a ngbNavLink>Certificates</a>
     <ng-template ngbNavContent>
@@ -595,10 +580,7 @@
   </li>
   <!-- Certificates -->
 
-  <li
-    ngbNavItem="certificateAuthority"
-    [hidden]="(participant | async)?.type !== 'HUB'"
-  >
+  <li ngbNavItem="certificateAuthority" [hidden]="(participant | async)?.type !== 'HUB'">
     <!-- Certificates -->
     <a ngbNavLink>Certificate Authority</a>
     <ng-template ngbNavContent>
@@ -613,25 +595,14 @@
 <!-- Deposit/Withdrawal Modal -->
 <ng-template #depositWithdrawalModal let-modal>
   <div class="modal-header">
-    <h4
-      *ngIf="depositWithdrawalModalMode === 'FUNDS_DEPOSIT'"
-      class="modal-title"
-    >
+    <h4 *ngIf="depositWithdrawalModalMode === 'FUNDS_DEPOSIT'" class="modal-title">
       Deposit Funds
     </h4>
-    <h4
-      *ngIf="depositWithdrawalModalMode === 'FUNDS_WITHDRAWAL'"
-      class="modal-title"
-    >
+    <h4 *ngIf="depositWithdrawalModalMode === 'FUNDS_WITHDRAWAL'" class="modal-title">
       Withdrawal Funds
     </h4>
 
-    <button
-      type="button"
-      class="close"
-      aria-label="Close"
-      (click)="modal.dismiss('Cross click')"
-    >
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -639,13 +610,7 @@
     <form class="">
       <div class="form-group">
         <label class="ml-2 mr-2" for="depositAmount">Amount</label>
-        <input
-          type="number"
-          class="form-control"
-          id="depositAmount"
-          min="0"
-          required
-        />
+        <input type="number" class="form-control" id="depositAmount" min="0" required />
         <div class="invalid-feedback">Invalid amount</div>
       </div>
 
@@ -675,11 +640,7 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-success"
-      (click)="createFundsMov($event, 'FUNDS_DEPOSIT')"
-    >
+    <button type="button" class="btn btn-success" (click)="createFundsMov($event, 'FUNDS_DEPOSIT')">
       Save
     </button>
     <button type="button" class="btn btn-danger" (click)="modal.dismiss()">

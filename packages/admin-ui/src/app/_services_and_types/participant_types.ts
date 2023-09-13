@@ -54,12 +54,15 @@ export declare type Participant = {
   participantAllowedSourceIps: ParticipantAllowedSourceIps[];
   participantEndpoints: ParticipantEndpoint[];
   participantAccounts: ParticipantAccount[];
+  participantAccountsChangeRequest: ParticipantAccountChangeRequest[];
 
   fundsMovements: ParticipantFundsMovement[];
   changeLog: ParticipantActivityLogEntry[];
   netDebitCaps: IParticipantNetDebitCap[];
   netDebitCapChangeRequests: IParticipantNetDebitCapChangeRequest[];
 };
+
+
 export declare interface IParticipantNetDebitCap {
   currencyCode: string;
   type: "ABSOLUTE" | "PERCENTAGE";
@@ -122,14 +125,35 @@ export declare type ParticipantEndpoint = {
 };
 
 export declare type ParticipantAccount = {
-  id: string; // uuid of the account (from the external accounts and balances system)
-  type: string;
+  id: string | null; // uuid of the account (from the external accounts and balances system)
+  type: "FEE" | "POSITION" | "SETTLEMENT" | "HUB_MULTILATERAL_SETTLEMENT" | "HUB_RECONCILIATION";
   //isActive: boolean                                     //TODO do we need this?
+  externalBankAccountId?: string,
+  externalBankAccountName?: string,
   currencyCode: string; //TODO move
   debitBalance?: string; // output only, we don't store this here
   creditBalance?: string; // output only, we don't store this here
   balance: string | null; // output only, we don't store this here
+  editing?:boolean;
 };
+
+export declare type ParticipantAccountChangeRequest = {
+  id: string;
+  accountId: string | null;
+  type: "FEE" | "POSITION" | "SETTLEMENT" | "HUB_MULTILATERAL_SETTLEMENT" | "HUB_RECONCILIATION";
+  currencyCode: string;
+  debitBalance?: string | null;
+  creditBalance?: string | null;
+  balance?: string | null;
+  externalBankAccountId?: string;
+  externalBankAccountName?: string;
+  createdBy?: string;
+  createdDate?: number;
+  approved?: boolean;
+  approvedBy?: string | null;
+  approvedDate?: number | null;
+  requestType: "ADD_ACCOUNT" | "CHANGE_ACCOUNT_BANK_DETAILS";
+}
 
 export declare type ParticipantChangeType =
   | "CREATE"

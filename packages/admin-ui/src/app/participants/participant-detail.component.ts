@@ -6,12 +6,12 @@ import {
   IParticipantNetDebitCapChangeRequest,
   Participant,
   ParticipantAccount,
+  ParticipantAccountChangeRequest,
   ParticipantFundsMovement,
   ParticipantFundsMovementDirection,
 } from "src/app/_services_and_types/participant_types";
 import { ParticipantsService } from "src/app/_services_and_types/participants.service";
 import { BehaviorSubject } from "rxjs";
-import { installTempPackage } from "@angular/cli/utilities/install-package";
 import {
   ModalDismissReasons,
   NgbModal,
@@ -34,7 +34,8 @@ export class ParticipantDetailComponent implements OnInit {
 
   accountCreateModeEnabled = false;
   accountEditModeEnabled = false;
-  accountEditingId: string = "";
+  newParticipantAccount: any;
+  editingParticipantAccountOriginalData?: ParticipantAccount;
 
   ndcCreateModeEnabled = false;
   ndcEditModeEnabled = false;
@@ -52,7 +53,7 @@ export class ParticipantDetailComponent implements OnInit {
     private _participantsSvc: ParticipantsService,
     private _messageService: MessageService,
     private _modalService: NgbModal
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     console.log(this._route.snapshot.routeConfig?.path);
@@ -69,7 +70,7 @@ export class ParticipantDetailComponent implements OnInit {
     }
 
     await this._fetchParticipant(this._participantId);
-	this.updateAccounts();
+    this.updateAccounts();
   }
 
   private async _fetchParticipant(id: string): Promise<void> {
@@ -240,91 +241,106 @@ export class ParticipantDetailComponent implements OnInit {
    * Accounts
    * */
 
-  accountStartEdit(id: string) {
+  onEditAccountClick(account: ParticipantAccount): void {
+    account.editing = true;
     this.accountEditModeEnabled = true;
-    this.accountEditingId = id;
-    console.log(`accountStartEdit id: ${id}`);
+    this.editingParticipantAccountOriginalData = {...account};
   }
 
-  async accountSaveEdit(id: string) {
-    console.log("accountSaveEdit() called");
+  onCancelEditClick(account: ParticipantAccount): void {
+    this.accountCreateModeEnabled = false;
+    this.accountEditModeEnabled = false;
 
-    const accountObj = this.participant.value?.participantAccounts.find(
-      (item) => item.id === id
-    );
+    Object.assign(account, this.editingParticipantAccountOriginalData);
+    account.editing = false;
+    
+  }
 
-    if (!accountObj) {
-      throw new Error(`can't find account with id: ${id} on accountSaveEdit()`);
-    }
+  onAddAccountClick(): void {
+    this.accountCreateModeEnabled = true;
+    this.newParticipantAccount = this._participantsSvc.createEmptyAccount();
+  }
 
-    const typeElement: HTMLSelectElement | null = document.getElementById(
-      `accountType_${id}`
-    ) as HTMLSelectElement;
+  saveEditAccount(account: ParticipantAccount): void {
+    // Implement logic to save changes to the account
 
-    if (typeElement) {
-      accountObj.type = typeElement.value;
-    } else {
-      accountObj.type = "POSITION"; // default
-    }
-
-    const currencyElement: HTMLSelectElement | null = document.getElementById(
-      `accountCurrency_${id}`
-    ) as HTMLSelectElement;
-
-    if (currencyElement) {
-      accountObj.currencyCode = currencyElement.value;
-    } else {
-      accountObj.currencyCode = "EUR"; // default
+    let participantAccountChangeRequest: ParticipantAccountChangeRequest = {
+      id: uuid.v4(),
+      accountId: account.id,
+      type: account.type,
+      currencyCode: account.currencyCode,
+      externalBankAccountId: account.externalBankAccountId,
+      externalBankAccountName: account.externalBankAccountName,
+      requestType: "ADD_ACCOUNT"
     }
 
     // check overlaps
-    const duplicateAccount = this.participant.value?.participantAccounts.find(
-      (item) =>
-        item.id !== accountObj.id &&
-        item.type === accountObj.type &&
-        item.currencyCode === accountObj.currencyCode
-    );
-    if (duplicateAccount) {
-      this._messageService.addWarning(
-        "Cannot add a second account of the same type and currency"
+    if (this.accountCreateModeEnabled) {
+      participantAccountChangeRequest.requestType = "ADD_ACCOUNT";
+      const duplicateAccount = this.participant.value?.participantAccounts.find(
+        (item) =>
+          item.type === account.type &&
+          item.currencyCode === account.currencyCode
       );
-      return;
+
+      if (duplicateAccount) {
+        this._messageService.addWarning(
+          "Cannot add a second account of the same type and currency"
+        );
+        this.accountCreateModeEnabled = false;
+        account.editing = false;
+        return;
+      }
+    }
+    else{
+      participantAccountChangeRequest.requestType = "CHANGE_ACCOUNT_BANK_DETAILS";
     }
 
     this._participantsSvc
-      .createAccount(this.participant.value!.id, accountObj)
+      .createAccount(this.participant.value!.id, participantAccountChangeRequest)
       .subscribe(
         (value) => {
-          this.accountCreateModeEnabled = false;
-          this.accountEditModeEnabled = false;
-          this.accountEditingId = "";
-
           this._fetchParticipant(this.participant.value!.id);
           this.updateAccounts();
+          this.accountCreateModeEnabled = false;
+          this.accountEditModeEnabled = false;
+          account.editing = false;
+
+          this._messageService.addSuccess(
+            "Account change request created!"
+          );
+          
         },
         (error) => {
-          this._messageService.addError(error.message);
+          
+          this._messageService.addError(error);
         }
       );
   }
 
-  accountStopEdit() {
-    if (this.accountCreateModeEnabled) {
-      this.participant.value?.participantAccounts.pop();
-    }
-    this.accountCreateModeEnabled = false;
-    this.accountEditModeEnabled = false;
-    this.accountEditingId = "";
+  approveAccountChangeRequest(reqId: string) {
+    this._participantsSvc
+      .approveAccountChangeRequest(this.participant.value!.id, reqId)
+      .subscribe(
+        async () => {
+          this._messageService.addSuccess("Successfully approved account change request.");
+
+          await this._fetchParticipant(this.participant.value!.id);
+        },
+        (error) => {
+          if (this.depositWithdrawalModalRef)
+            this.depositWithdrawalModalRef!.close();
+          this._messageService.addError(
+            `Account changes request approval failed with: ${error}`
+          );
+        }
+      );
   }
 
-  accountAddNew() {
-    const newAccount = this._participantsSvc.createEmptyAccount();
-
-    this.participant.value?.participantAccounts.push(newAccount);
-    this.accountEditingId = newAccount.id;
-    this.accountCreateModeEnabled = true;
-    this.accountEditModeEnabled = true;
+  rejectAccountChangeRequest(reqId: string) {
+    this._messageService.addError("Not implemented (rejectAccountChangeRequest)");
   }
+
 
   /*  accountRemote(id: string) {
     console.log("accountSaveEdit() called");
@@ -429,7 +445,7 @@ export class ParticipantDetailComponent implements OnInit {
         (error) => {
           this.depositWithdrawalModalRef!.close();
           this._messageService.addError(
-            `Funds movement creation failed with error: ${error.message}`
+            `Funds movement creation failed with error: ${error}`
           );
         }
       );
@@ -481,49 +497,49 @@ export class ParticipantDetailComponent implements OnInit {
       throw new Error("newNDC is empty to create");
     }
 
-	if(this.newNDC.type === "ABSOLUTE"){
-		const fixedValue = document.getElementById("ndcAmount") as HTMLInputElement;
-		this.newNDC.fixedValue = Number(fixedValue.value);
-	}else if(this.newNDC.type === "PERCENTAGE"){
-		const percentage = document.getElementById("ndcPercentage") as HTMLInputElement;
-		this.newNDC.percentage = Number(percentage.value);
-	}else{
-		this._messageService.addWarning("Invalid Net Debit Cap Type");
-		return;
-	}
+    if (this.newNDC.type === "ABSOLUTE") {
+      const fixedValue = document.getElementById("ndcAmount") as HTMLInputElement;
+      this.newNDC.fixedValue = Number(fixedValue.value);
+    } else if (this.newNDC.type === "PERCENTAGE") {
+      const percentage = document.getElementById("ndcPercentage") as HTMLInputElement;
+      this.newNDC.percentage = Number(percentage.value);
+    } else {
+      this._messageService.addWarning("Invalid Net Debit Cap Type");
+      return;
+    }
 
     const currencyElement = document.getElementById("ndcCurrency") as HTMLSelectElement;
 
     if (!currencyElement) {
-		this._messageService.addWarning("Invalid Net Debit Cap Currency");
-		return;
-	}
-	this.newNDC.currencyCode = currencyElement.value;
+      this._messageService.addWarning("Invalid Net Debit Cap Currency");
+      return;
+    }
+    this.newNDC.currencyCode = currencyElement.value;
 
     // // check overlaps
-	// if(this.participant.value?.netDebitCaps) {
-	// 	const duplicateNDC = this.participant.value.netDebitCaps.find(
-	// 		(item) =>
-	// 			item.currencyCode === this.newNDC!.currencyCode
-	// 	);
-	// 	if (duplicateNDC) {
-	// 		this._messageService.addWarning("An Net Debit Cap already exists for that currency");
-	// 		return;
-	// 	}
-	// }
-	// TODO check duplicates also in requests (pending approval)
+    // if(this.participant.value?.netDebitCaps) {
+    // 	const duplicateNDC = this.participant.value.netDebitCaps.find(
+    // 		(item) =>
+    // 			item.currencyCode === this.newNDC!.currencyCode
+    // 	);
+    // 	if (duplicateNDC) {
+    // 		this._messageService.addWarning("An Net Debit Cap already exists for that currency");
+    // 		return;
+    // 	}
+    // }
+    // TODO check duplicates also in requests (pending approval)
 
-    this._participantsSvc.createNDC(this.participant.value!.id, this.newNDC).subscribe(async(value) => {
-          this.ndcCreateModeEnabled = false;
-          this.ndcEditModeEnabled = false;
-          this.newNDC = null;
+    this._participantsSvc.createNDC(this.participant.value!.id, this.newNDC).subscribe(async (value) => {
+      this.ndcCreateModeEnabled = false;
+      this.ndcEditModeEnabled = false;
+      this.newNDC = null;
 
-          await this._fetchParticipant(this.participant.value!.id);
-        },
-        (error) => {
-          this._messageService.addError(error.message);
-        }
-      );
+      await this._fetchParticipant(this.participant.value!.id);
+    },
+      (error) => {
+        this._messageService.addError(error.message);
+      }
+    );
   }
 
   ndcStopEdit() {
