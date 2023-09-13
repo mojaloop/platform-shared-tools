@@ -9,7 +9,7 @@ kafka:
   fullnameOverride: "kafka"
 
   persistence:
-    enabled: false
+    enabled: true
 
   ## https://github.com/bitnami/charts/blob/main/bitnami/zookeeper/values.yaml
   zookeeper:
@@ -112,7 +112,7 @@ mongodb:
     replicaSetKey: ""
     existingSecret: ""
   persistence:
-    enabled: false
+    enabled: true
 
 ############### Mongo Express ####################
 # mongo express config
@@ -138,7 +138,7 @@ redis:
   master:
     disableCommands: []
     persistence:
-      enabled: false
+      enabled: true
 
 ############### Elasticsearch and Kibana  ####################
 elasticsearch:
@@ -156,12 +156,12 @@ elasticsearch:
   master:
     replicaCount: 1
     persistence:
-      enabled: false
+      enabled: true
 
   data:
     replicaCount: 1
     persistence:
-      enabled: false
+      enabled: true
 
   ingest:
     replicaCount: 1
