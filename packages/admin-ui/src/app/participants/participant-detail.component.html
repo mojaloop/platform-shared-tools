@@ -301,7 +301,7 @@
           </tr>
         </tbody>
       </table>
-      
+
       <hr />
       <div class="form-row d-flex mb-3">
         <div class="p-2">
@@ -316,7 +316,8 @@
       <table class="table table-hover mt-3">
         <thead class="thead-light">
           <tr>
-            <th scope="col">Type</th>
+			<th scope="col">Change Type</th>
+			<th scope="col">Account Type</th>
             <th scope="col">External Back Account ID</th>
             <th scope="col">External Bank Account Name</th>
             <th scope="col">Currency</th>
@@ -327,6 +328,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let accChangeReq of (participant | async)?.participantAccountsChangeRequest">
+            <td>{{ accChangeReq.requestType }}</td>
             <td>{{ accChangeReq.type }}</td>
             <td>{{ accChangeReq.externalBankAccountId }}</td>
             <td>{{ accChangeReq.externalBankAccountName }}</td>
