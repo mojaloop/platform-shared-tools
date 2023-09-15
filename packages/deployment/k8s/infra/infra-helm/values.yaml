@@ -142,8 +142,7 @@ redis:
 
 ############### Elasticsearch and Kibana  ####################
 elasticsearch:
-  enabled: false
-  # fullnameOverride: "elastic"
+  enabled: true
 
   security:
     elasticPassword: elasticSearchPas42
@@ -168,4 +167,3 @@ elasticsearch:
 
   ingress:
     enabled: true
-    # hostname: es01
