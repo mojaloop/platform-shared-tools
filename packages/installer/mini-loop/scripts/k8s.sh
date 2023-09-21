@@ -1,23 +1,7 @@
 #!/usr/bin/env bash
-# k8s-install-current.sh 
-# based on the older k8s-install.sh this script will only install current versions of kubernetes
+# k8s.sh : install kubernetes k3s or microk8s on local os 
 # Author:  Tom Daly 
-# Date : July 2022 
-#  -- April 2023 : updated for Mojaloop v15 and also kubernetes 1.24 and 1.25, 1.26
-
-
-# Updates for release notes 
-# - updated helm to 3.12.0 
-# - updated kubernetes to 1.26 and 1.27 
-
-# todo for vNext: 
-#
-#   
-# 
-
-# TODO in the future : add command line params to enable selection of which ML release etc 
-#       - improve logging so that this is easier to run from CI/CD 
-#       - put this into circle-ci and merge with k8s-versions-test.sh in charts repo so that little/no code is duplicated
+# Date :   Sept 2023 
 
 function check_pi {
     # this is to enable experimentation on raspberry PI which is WIP
