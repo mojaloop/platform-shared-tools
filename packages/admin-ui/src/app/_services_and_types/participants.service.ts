@@ -12,8 +12,10 @@ import {
   Participant,
   ParticipantAccount,
   ParticipantAccountChangeRequest,
+  ParticipantAllowedSourceIp,
   ParticipantEndpoint,
   ParticipantFundsMovement,
+  participantSourceIpChangeRequest,
 } from "src/app/_services_and_types/participant_types";
 import { AuthenticationService } from "src/app/_services_and_types/authentication.service";
 import * as uuid from "uuid";
@@ -50,6 +52,7 @@ export class ParticipantsService {
       approvedDate: null,
       lastUpdated: now,
       participantAllowedSourceIps: [],
+      participantSourceIpChangeRequests: [],
       participantEndpoints: [],
       participantAccounts: [],
       participantAccountsChangeRequest: [],
@@ -73,10 +76,20 @@ export class ParticipantsService {
     return {
       id: null,
       externalBankAccountId: "",
-      externalBankAccountName:"",
+      externalBankAccountName: "",
       type: "POSITION",
       currencyCode: "EUR",
       balance: null
+    };
+  }
+
+  createEmptySourceIp(): ParticipantAllowedSourceIp {
+    return {
+      id: uuid.v4(),
+      cidr: "",
+      portMode: "ANY",
+      ports: "",
+      portRange: { rangeFirst: null, rangeLast: null }
     };
   }
 
@@ -204,7 +217,7 @@ export class ParticipantsService {
       this._http
         .put<void>(
           SVC_BASEURL +
-            `/participants/${participantId}/${enable ? "enable" : "disable"}`,
+          `/participants/${participantId}/${enable ? "enable" : "disable"}`,
           {}
         )
         .subscribe(
@@ -217,8 +230,7 @@ export class ParticipantsService {
           (error) => {
             if (error && error.status === 403) {
               console.warn(
-                `UnauthorizedError received on ${
-                  enable ? "enable" : "disable"
+                `UnauthorizedError received on ${enable ? "enable" : "disable"
                 } participant`
               );
               subscriber.error(new UnauthorizedError(error.error?.msg));
@@ -321,6 +333,71 @@ export class ParticipantsService {
             }
             if (error && error.status === 403) {
               console.warn("Forbidden received on participantAccountChangeRequest");
+              subscriber.error(new Error(error.error?.msg));
+            } else {
+              console.error(error);
+              subscriber.error(error.error?.msg);
+            }
+            return subscriber.complete();
+          }
+        );
+    });
+  }
+
+  createSourceIp(
+    participantId: string,
+    sourceIp: participantSourceIpChangeRequest
+  ): Observable<string> {
+    return new Observable<string>((subscriber) => {
+      this._http
+        .post<{ id: string }>(
+          `${SVC_BASEURL}/participants/${participantId}/sourceIpChangeRequests`,
+          sourceIp
+        )
+        .subscribe(
+          (resp: { id: string }) => {
+            console.log(`got response - accountId: ${resp.id}`);
+
+            subscriber.next(resp.id);
+            return subscriber.complete();
+          },
+          (error) => {
+            if (error && error.status === 401) {
+              console.warn("UnauthorizedError received on createSourceIp");
+              subscriber.error(new UnauthorizedError(error.error?.msg));
+            } else {
+              console.error(error);
+              subscriber.error(error.error?.msg);
+            }
+            return subscriber.complete();
+          }
+        );
+    });
+  }
+
+  approveSourceIpChangeRequest(participantId: string, requestId: string): Observable<void> {
+    return new Observable<void>((subscriber) => {
+      this._http
+        .post(
+          `${SVC_BASEURL}/participants/${participantId}/SourceIpChangeRequests/${requestId}/approve`,
+          {}
+        )
+        .subscribe(
+          () => {
+            console.log(`got success response from participantSourceIpChangeRequest`);
+
+            subscriber.next();
+            return subscriber.complete();
+          },
+          (error) => {
+            if (error && error.status === 401) {
+              console.warn(
+                "UnauthorizedError received on participantSourceIpChangeRequest"
+              );
+              subscriber.error(new UnauthorizedError(error.error?.msg));
+            }
+            if (error && error.status === 403) {
+              console.warn("Forbidden received on participantSourceIpChangeRequest");
               subscriber.error(new Error(error.error?.msg));
             } else {
               console.error(error);
