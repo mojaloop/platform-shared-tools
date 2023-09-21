@@ -8,16 +8,8 @@
 ################################################################################
 # Function: showUsage
 ################################################################################
-# Description:		Display usage message
-# Arguments:		none
-# Return values:	none
-#
 function showUsage {
-	if [ $# -lt 1 ] ; then
-		echo "Incorrect number of arguments passed to function $0"
-		exit 1
-	else
-echo  "USAGE: $0 -a <action> -m <mode> 
+echo  "USAGE: $0  -m <mode> 
 Example 1 : $0 -m install_ml  # install mojaloop (vnext) in mini-loop mode
 Example 2 : $0 -m delete_ml   # delete  mojaloop (vnext) in mini-loop mode
 Example 3 : $0 -m install_eks # install mojaloop (vnext) in EKS mode
@@ -35,7 +27,7 @@ Options:
 ################################################################################
 
 # Process command line options as required
-while getopts "fd:m:t:l:o:hH" OPTION ; do
+while getopts "m:hH" OPTION ; do
    case "${OPTION}" in
         m)  mode="${OPTARG}"
         ;;

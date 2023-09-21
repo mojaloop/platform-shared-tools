@@ -13,10 +13,12 @@
 # Return values:	none
 #
 function showUsage {
-	if [ $# -lt 1 ] ; then
-		echo "Incorrect number of arguments passed to function $0"
-		exit 1
-	else
+  # echo "$#"
+	# if [ $# -lt 1 ] ; then
+
+	# 	echo "Incorrect number of arguments passed to function $0"
+	# 	exit 1
+	# else
 echo  "USAGE: $0 -a <action> -m <mode> 
 Example 1 : $0 -m install_ml  # install kubernetes mini-loop mode (k3s) 
 Example 2 : $0 -m delete_ml   # delete kubernetes mini-loop mode (k3s) 
@@ -27,7 +29,7 @@ Options:
 -m mode ............ install_ml|delete_ml|install_eks|delete_eks 
 -h|H ............... display this message
 "
-	fi
+#	fi
 }
 
 ################################################################################
@@ -50,7 +52,7 @@ while getopts "m:hH" OPTION ; do
 done
 
 if [[ "$mode" == "install_ml" ]]; then
-  echo "install mini-loop k3s "
+  echo "install local k8s cluster i.e. setup for mini-loop mode "
 elif [[ "$mode" == "delete_ml" ]]; then
   echo "delete mini-loop k3s" 
 elif [[ "$mode" == "install_eks" ]]; then
