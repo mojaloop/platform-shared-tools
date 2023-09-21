@@ -2,22 +2,26 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { MessageService } from "src/app/_services_and_types/message.service";
 import * as uuid from "uuid";
+import { cloneDeep } from 'lodash';
+
 import {
   IParticipantNetDebitCapChangeRequest,
   Participant,
   ParticipantAccount,
   ParticipantAccountChangeRequest,
+  ParticipantAllowedSourceIp,
   ParticipantFundsMovement,
   ParticipantFundsMovementDirection,
+  participantSourceIpChangeRequest,
 } from "src/app/_services_and_types/participant_types";
 import { ParticipantsService } from "src/app/_services_and_types/participants.service";
 import { BehaviorSubject } from "rxjs";
 import {
-  ModalDismissReasons,
   NgbModal,
   NgbModalRef,
   NgbNav,
 } from "@ng-bootstrap/ng-bootstrap";
+import { validateCIDR, validatePortRange, validatePorts } from "../_utils";
 
 @Component({
   selector: "app-participant-detail",
@@ -36,6 +40,11 @@ export class ParticipantDetailComponent implements OnInit {
   accountEditModeEnabled = false;
   newParticipantAccount: any;
   editingParticipantAccountOriginalData?: ParticipantAccount;
+
+  sourceIpCreateModeEnabled = false;
+  sourceIpEditModeEnabled = false;
+  newSourceIp: any;
+  editingSourceIpOriginalData?: ParticipantAllowedSourceIp;
 
   ndcCreateModeEnabled = false;
   ndcEditModeEnabled = false;
@@ -71,6 +80,8 @@ export class ParticipantDetailComponent implements OnInit {
 
     await this._fetchParticipant(this._participantId);
     this.updateAccounts();
+    
+
   }
 
   private async _fetchParticipant(id: string): Promise<void> {
@@ -241,22 +252,24 @@ export class ParticipantDetailComponent implements OnInit {
    * Accounts
    * */
 
-  onEditAccountClick(account: ParticipantAccount): void {
+  onEditAccount(account: ParticipantAccount): void {
+    //debugger
     account.editing = true;
     this.accountEditModeEnabled = true;
-    this.editingParticipantAccountOriginalData = {...account};
+    this.editingParticipantAccountOriginalData = { ...account };
   }
 
-  onCancelEditClick(account: ParticipantAccount): void {
+  onCancelEditingAccount(account: ParticipantAccount): void {
+    //debugger
     this.accountCreateModeEnabled = false;
     this.accountEditModeEnabled = false;
 
     Object.assign(account, this.editingParticipantAccountOriginalData);
     account.editing = false;
-    
+
   }
 
-  onAddAccountClick(): void {
+  onAddAccount(): void {
     this.accountCreateModeEnabled = true;
     this.newParticipantAccount = this._participantsSvc.createEmptyAccount();
   }
@@ -292,7 +305,7 @@ export class ParticipantDetailComponent implements OnInit {
         return;
       }
     }
-    else{
+    else {
       participantAccountChangeRequest.requestType = "CHANGE_ACCOUNT_BANK_DETAILS";
     }
 
@@ -309,10 +322,10 @@ export class ParticipantDetailComponent implements OnInit {
           this._messageService.addSuccess(
             "Account change request created!"
           );
-          
+
         },
         (error) => {
-          
+
           this._messageService.addError(error);
         }
       );
@@ -341,25 +354,6 @@ export class ParticipantDetailComponent implements OnInit {
     this._messageService.addError("Not implemented (rejectAccountChangeRequest)");
   }
 
-
-  /*  accountRemote(id: string) {
-    console.log("accountSaveEdit() called");
-    const accountObj = this.participant.value?.participantAccounts.find(item => item.id===id);
-    if (!accountObj) {
-      throw new Error(`can't find account with id: ${id} on accountRemote()`);
-    }
-
-    if (!confirm("Are you sure you want to remove this account?")) return;
-
-    this._participantsSvc.removeAccount(this.participant.value!.id, accountObj.id).subscribe(value => {
-        //this.participant.value!.participantaccounts = this.participant.value!.participantaccounts.filter(value => value.id!==id);
-        this._fetchParticipant(this.participant.value!.id);
-      }, error => {
-        this._messageService.addError(error);
-      }
-    );
-  }*/
-
   updateAccounts() {
     if (!this._participantId) {
       throw new Error("invalid participant id");
@@ -376,6 +370,178 @@ export class ParticipantDetailComponent implements OnInit {
       });
 
     this.navBar.select("accounts");
+  }
+
+  /*
+   * Source IPs
+   * */
+
+  onEditSourceIp(sourceIp: ParticipantAllowedSourceIp): void {
+    debugger
+    sourceIp.editing = true;
+    this.sourceIpEditModeEnabled = true;
+
+    this.editingSourceIpOriginalData = cloneDeep(sourceIp);
+  }
+
+  onCancelEditingSourceIp(sourceIP: ParticipantAllowedSourceIp): void {
+    debugger
+    this.sourceIpEditModeEnabled = false;
+    this.sourceIpCreateModeEnabled = false;
+    Object.assign(sourceIP, this.editingSourceIpOriginalData);
+    sourceIP.editing = false;
+
+  }
+
+  onAddSourceIp(): void {
+    this.sourceIpCreateModeEnabled = true;
+    this.newSourceIp = this._participantsSvc.createEmptySourceIp();
+  }
+
+  onPortModeChange() {
+
+    switch (this.newSourceIp.portMode) {
+      case "ANY":
+        this.newSourceIp.ports = "";
+        break;
+      case "SPECIFIC":
+        this.newSourceIp.portRange.rangeFirst = null;
+        this.newSourceIp.portRange.rangeLast = null;
+        break;
+      case "RANGE":
+        this.newSourceIp.ports = "";
+        break;
+      default:
+        break;
+    }
+  }
+
+  validateData(sourceIp: ParticipantAllowedSourceIp): boolean {
+
+    if (sourceIp.cidr.trim().length === 0) {
+      this._messageService.addError("CIDR cannot be empty.");
+      return false;
+    }
+
+    if (!validateCIDR(sourceIp.cidr.trim())) {
+      this._messageService.addError("Invalid CIDR format.");
+      return false;
+    }
+
+
+    if (sourceIp.portMode === "RANGE") {
+      if (Number(sourceIp.portRange.rangeFirst) === 0 || Number(sourceIp.portRange.rangeFirst) === 0) {
+        this._messageService.addError("Invalid Port Range values.");
+        return false;
+      }
+
+      if (!validatePortRange(Number(sourceIp.portRange.rangeFirst), Number(sourceIp.portRange.rangeLast))) {
+        this._messageService.addError("Invalid Port Range values.");
+        return false;
+      }
+    }
+
+    if (sourceIp.portMode === "SPECIFIC") {
+      if (!validatePorts(sourceIp.ports)) {
+        this._messageService.addError("Invalid Port value.");
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  saveEditSourceIp(sourceIp: ParticipantAllowedSourceIp): void {
+    // Implement logic to save changes
+
+    if (!this.validateData(sourceIp)) {
+      return;
+    }
+
+    let sourceIpChangeRequest: participantSourceIpChangeRequest = {
+      id: uuid.v4(),
+      allowedSourceIpId: sourceIp.id,
+      cidr: sourceIp.cidr,
+      portMode: sourceIp.portMode,
+      ports: sourceIp.portMode === "SPECIFIC" ? sourceIp.ports?.split(",").map(Number) : [],
+      portRange: sourceIp.portMode === "RANGE" ? {
+        rangeFirst: sourceIp.portRange.rangeFirst || 0,
+        rangeLast: sourceIp.portRange.rangeLast || 0
+      } :
+        { rangeFirst: 0, rangeLast: 0 },
+      requestType: "ADD_SOURCE_IP"
+    }
+
+    console.log(sourceIpChangeRequest);
+
+    // check overlaps
+    if (this.sourceIpCreateModeEnabled) {
+      sourceIpChangeRequest.requestType = "ADD_SOURCE_IP";
+      const duplicateSourceIp = this.participant.value?.participantSourceIpChangeRequests?.find(
+        (item) =>
+          item.cidr.split('/')[0] === sourceIp.cidr.split('/')[0]
+        /* && item.portMode === sourceIp.portMode ||
+        item.ports === sourceIp.ports &&
+        item.portRange === sourceIp.portRange */
+      );
+
+      if (duplicateSourceIp) {
+        this._messageService.addWarning(
+          "Cannot add a second sourceIP of the same values."
+        );
+
+        this.sourceIpCreateModeEnabled = false;
+        sourceIp.editing = false;
+        return;
+      }
+    }
+    else {
+      sourceIpChangeRequest.requestType = "CHANGE_SOURCE_IP";
+    }
+
+    this._participantsSvc
+      .createSourceIp(this.participant.value!.id, sourceIpChangeRequest)
+      .subscribe(
+        (value) => {
+          this._fetchParticipant(this.participant.value!.id);
+          this.updateAccounts();
+          this.sourceIpCreateModeEnabled = false;
+          this.sourceIpEditModeEnabled = false;
+          sourceIp.editing = false;
+
+          this._messageService.addSuccess(
+            "SourceIP change request created!"
+          );
+
+        },
+        (error: any) => {
+
+          this._messageService.addError(error);
+        }
+      );
+  }
+
+  approveSourceIpChangeRequest(reqId: string) {
+    this._participantsSvc
+      .approveSourceIpChangeRequest(this.participant.value!.id, reqId)
+      .subscribe(
+        async () => {
+          this._messageService.addSuccess("Successfully approved SourceIP change request.");
+
+          await this._fetchParticipant(this.participant.value!.id);
+        },
+        (error) => {
+          if (this.depositWithdrawalModalRef)
+            this.depositWithdrawalModalRef!.close();
+          this._messageService.addError(
+            `SourceIP changes request approval failed with: ${error}`
+          );
+        }
+      );
+  }
+
+  rejectSourceIpChangeRequest(reqId: string) {
+    this._messageService.addError("Not implemented (rejectSourceIpChangeRequest)");
   }
 
   createFundsMov(e: Event, direction: ParticipantFundsMovementDirection) {
