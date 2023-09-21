@@ -139,3 +139,8 @@ Chart.lock
 
 # Helm Publish Repo
 repo/**
+
+# Terraform
+.terraform*
+terraform*zip
+*tfstate*
