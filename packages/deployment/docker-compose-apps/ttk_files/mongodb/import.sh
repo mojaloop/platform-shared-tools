@@ -10,5 +10,5 @@ FILENAME="${col##*/}"
 
 readarray -d . -t FILE_CONTENT <<< "$FILENAME"
 
-mongoimport --host mongo --username ${MONGO_USERNAME:0:4} --password ${MONGO_PASSWORD:0:12} --db "${FILE_CONTENT[0]}" --collection "${FILE_CONTENT[1]}" --file /ttk_files/mongodb/$FILENAME.json --authenticationDatabase=admin --jsonArray
+mongoimport --host mongo --username ${MONGO_USERNAME:0:4} --password ${MONGO_PASSWORD:0:12} --db "${FILE_CONTENT[0]}" --collection "${FILE_CONTENT[1]::-1}" --file /ttk_files/mongodb/$FILENAME.json --authenticationDatabase=admin --jsonArray
 done

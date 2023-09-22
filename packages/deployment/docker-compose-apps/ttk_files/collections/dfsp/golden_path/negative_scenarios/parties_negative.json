@@ -341,7 +341,7 @@
                 "id": 3,
                 "description": "Request content-type to be parties",
                 "exec": [
-                  "expect('{$request.headers['Content-Type']}').to.equal('application/vnd.interoperability.parties+json;version=1.0')"
+                  "expect('{$request.headers['Content-Type']}').to.equal('application/vnd.interoperability.parties+json;version=1.1')"
                 ]
               },
               {
@@ -427,7 +427,7 @@
                 "id": 3,
                 "description": "Request content-type to be parties",
                 "exec": [
-                  "expect('{$request.headers['Content-Type']}').to.equal('application/vnd.interoperability.parties+json;version=1.0')"
+                  "expect('{$request.headers['Content-Type']}').to.equal('application/vnd.interoperability.parties+json;version=1.1')"
                 ]
               },
               {
