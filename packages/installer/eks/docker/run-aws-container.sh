@@ -10,8 +10,15 @@ AWS_PROFILE="vnext"    # the aws user you are going to authenticate with , shoul
 TERRAFORM_CLUSTER_DIR="active"  # this is the name of the directory containing the terraform to create the cluster 
 ################################################################################################
 
+#TODO move the above to the top level install-mojaloop.sh and make them env vars which are read here ??
+#TODO: verify the above settings 
+#TODO: are there other ways to authenticate to AWS for terraform ? 
+
 SCRIPT_DIR=$( cd $(dirname "$0") ; pwd )
-BASE_DIR=$( cd $(dirname "$0")/../.. ; pwd ) 
+INSTALLER_DIR=$( cd $(dirname "$0")/../.. ; pwd )
+EKS_DIR=$( cd $(dirname "$0")/.. ; pwd )  # this is the installer/eks directory 
+
+echo "installer dir is $INSTALLER_DIR"
 
 # point to the docker image that results from running build.sh 
 DOCKER_IMAGE_NAME=`grep DOCKER_IMAGE_NAME= $SCRIPT_DIR/build.sh | cut -d "\"" -f2 | awk '{print $1}'`
@@ -19,31 +26,46 @@ DOCKER_IMAGE_NAME=`grep DOCKER_IMAGE_NAME= $SCRIPT_DIR/build.sh | cut -d "\"" -f
 USER_NAME=$(whoami)
 USER_ID=$(id -u $USER_NAME)
 # terraform directory for AWS 
-HOST_TERRAFORM_DIR=$BASE_DIR/terraform/aws-eks
-MOJALOOP_BIN_DIR=$BASE_DIR/bin
-MOJALOOP_ETC_DIR=$BASE_DIR/etc
+HOST_TERRAFORM_DIR=$EKS_DIR/terraform
+# MOJALOOP_BIN_DIR=$EKS_DIR/bin
+# MOJALOOP_ETC_DIR=$EKS_DIR/etc
 
 if [ ! -d "$HOME/.kube" ]; then 
   mkdir "$HOME/.kube"
 fi 
 
-if [ ! -d "$HOME/tmp" ]; then 
-  mkdir "$HOME/tmp"  # used by the Mojaloop install script 
+if [ ! -d "$HOME/logs" ]; then 
+  mkdir "$HOME/logs"  # used for logfiles from Mojaloop vNext install  
 fi 
 
-echo "RUN_DIR : $RUN_DIR"
 printf "Mounting TERRAFORM from [%s] to /terraform \n" "$HOST_TERRAFORM_DIR"
 echo "Running $DOCKER_IMAGE_NAME container"
 docker run \
   --interactive --tty --rm \
   --volume "$AWS_CREDENTIALS_DIR":/home/${USER_NAME}/.aws \
-  --env AWS_PROFILE="$AWS_PROFILE" \
-  --env TERRAFORM_CLUSTER_DIR="$TERRAFORM_CLUSTER_DIR" \
-  --volume "$HOST_TERRAFORM_DIR":/terraform \
-  --volume "$MOJALOOP_BIN_DIR":/mojaloop_cloud/bin \
-  --volume "$MOJALOOP_ETC_DIR":/mojaloop_cloud/etc \
-  --volume "$HOME/tmp":/home/${USER_NAME}/tmp \
   --volume "$HOME/.kube":/home/${USER_NAME}/.kube \
+  --volume "$INSTALLER_DIR":/installer \
+  --volume "$HOME/logs":/logs \ 
+  --env AWS_PROFILE="$AWS_PROFILE" \
+  --env TERRAFORM_CLUSTER_DIR="/installer/eks/terraform/$TERRAFORM_CLUSTER_DIR" \
   --hostname "container-vnext-eks" \
   --entrypoint=/bin/bash $DOCKER_IMAGE_NAME $@
+
+
+
+
+# printf "Mounting TERRAFORM from [%s] to /terraform \n" "$HOST_TERRAFORM_DIR"
+# echo "Running $DOCKER_IMAGE_NAME container"
+# docker run \
+#   --interactive --tty --rm \
+#   --volume "$AWS_CREDENTIALS_DIR":/home/${USER_NAME}/.aws \
+#   --env AWS_PROFILE="$AWS_PROFILE" \
+#   --env TERRAFORM_CLUSTER_DIR="$TERRAFORM_CLUSTER_DIR" \
+#   --volume "$HOST_TERRAFORM_DIR":/terraform \
+#   --volume "$MOJALOOP_BIN_DIR":/mojaloop_cloud/bin \
+#   --volume "$MOJALOOP_ETC_DIR":/mojaloop_cloud/etc \
+#   --volume "$HOME/tmp":/home/${USER_NAME}/tmp \
+#   --volume "$HOME/.kube":/home/${USER_NAME}/.kube \
+#   --hostname "container-vnext-eks" \
+#   --entrypoint=/bin/bash $DOCKER_IMAGE_NAME $@
 
