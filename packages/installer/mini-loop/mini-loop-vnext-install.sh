@@ -7,7 +7,7 @@
 # Author Tom Daly 
 # Date Sept 2023
 
-source ../../scripts-common/common.sh 
+source ../scripts/common.sh 
 ################################################################################
 # Function: showUsage
 ################################################################################
@@ -39,6 +39,24 @@ Options:
 ################################################################################
 # MAIN
 ################################################################################
+
+# Mini-loop specific global vars 
+MINI_LOOP_SCRIPTS_DIR="$( cd $(dirname "$0") ; pwd )"
+echo "DBG> MINI_LOOP_SCRIPTS_DIR X = $MINI_LOOP_SCRIPTS_DIR"
+SCRIPTS_DIR="$( cd $(dirname "$0")/../scripts ; pwd )"
+echo "DBG> SCRIPTS_DIR X = $SCRIPTS_DIR"
+ETC_DIR="$( cd $(dirname "$0")/../etc ; pwd )"
+echo "DBG> ETC_DIR X = $ETC_DIR"
+REPO_BASE_DIR="$( cd $(dirname "$0")/../../.. ; pwd )"
+echo "DBG> REPO_BASE_DIR = $REPO_BASE_DIR"
+MANIFESTS_DIR=$REPO_BASE_DIR/packages/installer/manifests
+MOJALOOP_CONFIGURE_FLAGS_STR=" -d $MANIFESTS_DIR " 
+echo "DBG> MANIFESTS_DIR = $MANIFESTS_DIR"
+INFRA_DIR=$MANIFESTS_DIR/infra
+CROSSCUT_DIR=$MANIFESTS_DIR/crosscut
+APPS_DIR=$MANIFESTS_DIR/apps
+TTK_DIR=$MANIFESTS_DIR/ttk
+
 record_memory_use "at_start"
 
 # Process command line options as required
@@ -76,7 +94,7 @@ set_k8s_distro  # mini-loop only
 set_k8s_version 
 check_k8s_version_is_current 
 set_logfiles 
-set_and_create_namespace
+set_and_create_namespace 
 set_mojaloop_timeout
 printf "\n"
 
@@ -91,7 +109,7 @@ elif [[ "$mode" == "install_ml" ]]; then
   tstart=$(date +%s)
   printf "start :  Mojaloop (vNext) install utility [%s]\n" "`date`" >> $LOGFILE
   #configure_extra_options 
-  modify_local_mojaloop_yaml_and_charts
+  modify_local_mojaloop_yaml_and_charts "$MINI_LOOP_SCRIPTS_DIR/mini-loop-vnext-configure.py"
   install_infra_from_local_chart
   install_mojaloop_layer "crosscut" $CROSSCUT_DIR 
   install_mojaloop_layer "apps" $APPS_DIR

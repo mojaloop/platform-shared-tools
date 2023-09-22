@@ -173,6 +173,15 @@ function set_and_create_namespace {
 # }
 
 function modify_local_mojaloop_yaml_and_charts {
+  if [[ "$#" -ne 1 ]]; then 
+      printf "\n** Error: the required yaml files configuration script was not specified in  [%s] \n" "$0"
+      exit 1
+  fi 
+  config_script=$1
+  if [[ ! -f "$config_script" ]]; then 
+      printf "\n** Error: can't find yaml files configuration script [%s] \n" "$config_script"
+      exit 1
+  fi 
   printf "==> configuring Mojaloop vNext yaml and helm chart values \n" 
   if [ ! -z ${domain_name+x} ]; then 
     printf "==> setting domain name to <%s> \n " $domain_name 
@@ -180,8 +189,8 @@ function modify_local_mojaloop_yaml_and_charts {
   fi
 
   # TODO We want to avoid running the helm repackage when we don't need to 
-  printf "     executing $SCRIPTS_DIR/vnext_configure.py $MOJALOOP_CONFIGURE_FLAGS_STR  \n" 
-  $SCRIPTS_DIR/vnext_configure.py $MOJALOOP_CONFIGURE_FLAGS_STR 
+  printf "     executing %s $MOJALOOP_CONFIGURE_FLAGS_STR  \n" "$config_script"
+  $config_script $MOJALOOP_CONFIGURE_FLAGS_STR 
   if [[ $? -ne 0  ]]; then 
       printf " [ failed ] \n"
       exit 1 
@@ -529,20 +538,7 @@ DEFAULT_NAMESPACE="default"
 K8S_CURRENT_RELEASE_LIST=( "1.26" "1.27" )
 LOGFILE="/tmp/miniloop-install.log"
 ERRFILE="/tmp/miniloop-install.err"
-
-SCRIPTS_DIR="$( cd $(dirname "$0")/../scripts ; pwd )"
-echo "SCRIPTS_DIR X = $SCRIPTS_DIR"
-ETC_DIR="$( cd $(dirname "$0")/../etc ; pwd )"
-echo "ETC_DIR X = $ETC_DIR"
-REPO_BASE_DIR="$( cd $(dirname "$0")/../../../../ ; pwd )"
-echo "REPO_BASE_DIR = $REPO_BASE_DIR"
-MANIFESTS_DIR=$REPO_BASE_DIR/packages/installer/manifests
-INFRA_DIR=$MANIFESTS_DIR/infra
-CROSSCUT_DIR=$MANIFESTS_DIR/crosscut
-APPS_DIR=$MANIFESTS_DIR/apps
-TTK_DIR=$MANIFESTS_DIR/ttk
 NEED_TO_REPACKAGE="true"
-MOJALOOP_CONFIGURE_FLAGS_STR=" -d $REPO_BASE_DIR " 
 EXTERNAL_ENDPOINTS_LIST=( vnextadmin bluebank.local greenbank.local ) 
 LOGGING_ENDPOINTS_LIST=( elasticsearch.local )
 declare -A timer_array

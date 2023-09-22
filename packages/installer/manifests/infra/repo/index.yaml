@@ -4,7 +4,7 @@ entries:
   - apiVersion: v2
     appVersion: 'kafka: 19.0.2; console: 0.6.6; mongodb: 13.3.1; mongo-express: 3.1.1;
       elasticsearch:19.9.2; redis: 17.11.6'
-    created: "2023-09-21T11:34:20.620785948Z"
+    created: "2023-09-22T06:06:09.992443307Z"
     dependencies:
     - alias: kafka
       condition: kafka.enabled
@@ -68,7 +68,7 @@ entries:
       - elasticsearch
       version: 19.9.2
     description: Helm chart for mojaloop vNext infrastructure services
-    digest: f3c54b14082a8fb724763e03f24d6821476455797a889e574995a63b48a802e8
+    digest: 56b7c4e07fe0a6f4b6033222a01c94f57adfe70dc2067ce46d32fc28d64e7d2e
     home: http://mojaloop.io
     icon: http://mojaloop.io/images/logo.png
     maintainers:
@@ -81,4 +81,4 @@ entries:
     urls:
     - https://mojaloop.github.io/helm/repo/vnext-infra-15.0.0.tgz
     version: 15.0.0
-generated: "2023-09-21T11:34:20.582299818Z"
+generated: "2023-09-22T06:06:09.944701095Z"
