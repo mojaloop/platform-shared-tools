@@ -36,16 +36,16 @@
             "assertions": [
               {
                 "id": 1,
-                "description": "Response should be 400",
+                "description": "Response should be 202",
                 "exec": [
-                  "expect(callback.status).to.equal(400)"
+                  "expect(response.status).to.equal(202)"
                 ]
               },
               {
                 "id": 2,
                 "description": "Response statusText be Bad Request",
                 "exec": [
-                  "expect(callback.statusText).to.equal('Bad Request')"
+                  "expect(response.statusText).to.equal('Accepted')"
                 ]
               },
               {

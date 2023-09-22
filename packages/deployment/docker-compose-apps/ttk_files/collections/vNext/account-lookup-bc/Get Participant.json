@@ -44,6 +44,7 @@
             "fspId": "{$inputs.fromFspId}",
             "currency": "{$inputs.currency}"
           }
+        }
       ]
     }
   ]
