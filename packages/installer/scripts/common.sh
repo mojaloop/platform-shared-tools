@@ -536,7 +536,6 @@ ETC_DIR="$( cd $(dirname "$0")/../etc ; pwd )"
 echo "ETC_DIR X = $ETC_DIR"
 REPO_BASE_DIR="$( cd $(dirname "$0")/../../../../ ; pwd )"
 echo "REPO_BASE_DIR = $REPO_BASE_DIR"
-#REPO_DIR=$REPO_BASE_DIR/platform-shared-tools
 MANIFESTS_DIR=$REPO_BASE_DIR/packages/installer/manifests
 INFRA_DIR=$MANIFESTS_DIR/infra
 CROSSCUT_DIR=$MANIFESTS_DIR/crosscut

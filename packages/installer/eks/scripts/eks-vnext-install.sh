@@ -42,7 +42,15 @@ Options:
 ##
 # Environment Config & global vars (see common.sh vars section for common Global Vars)
 ##
-
+echo "OLD MANIFESTS_DIR = $MANIFESTS_DIR"
+REPO_BASE_DIR="$( cd $(dirname "$0")/../.. ; pwd )"
+echo "REPO_BASE_DIR = $REPO_BASE_DIR"
+MANIFESTS_DIR="$( cd $(dirname "$0")/../../manifests ; pwd )"
+echo "MANIFESTS_DIR = $MANIFESTS_DIR"
+INFRA_DIR=$MANIFESTS_DIR/infra
+CROSSCUT_DIR=$MANIFESTS_DIR/crosscut
+APPS_DIR=$MANIFESTS_DIR/apps
+TTK_DIR=$MANIFESTS_DIR/ttk
 record_memory_use "at_start"
 
 # Process command line options as required
