@@ -101,7 +101,7 @@ def enable_or_disable_logging(p,yaml,verbose=False,deploy_logging=False):
     print(f"     <vnext_configure.py>  : modify helm values and yaml files to {deploy_logging_str} logging and auditing functions for vNext ")
 
     # configure the helm chart values.yaml in the k8s infra-helm directory 
-    vf = p /  "platform-shared-tools" / "packages" / "deployment" / "k8s" / "infra" / "infra-helm" / "values.yaml"
+    vf = p / "infra" / "infra-helm" / "values.yaml"
     with open(vf) as f:
         if (verbose): 
             print(f"===> Processing file < {vf.parent}/{vf.name} > ")

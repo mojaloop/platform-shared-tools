@@ -25,42 +25,42 @@ kafka:
     replicationFactor: 1
 
     topics:
-    - name: KAFKA_AUDITS_TOPIC
-      value: audits
-    - name: KAFKA_LOGS_TOPIC
-      value: logs
-    - name: AccountLookupBcRequests
-      value: AccountLookupBcRequests
-    - name: AccountLookupBcEvents
-      value: AccountLookupBcEvents
-    - name: AccountLookupBcResponses
-      value: AccountLookupBcResponses
-    - name: AccountLookupBcErrors
-      value: AccountLookupBcErrors
-    - name: OperatorBcErrors
-      value: OperatorBcErrors
-    - name: QuotingBcErrors
-      value: QuotingBcErrors
-    - name: QuotingBcEvents
-      value: QuotingBcEvents
-    - name: QuotingBcRequests
-      value: QuotingBcRequests
-    - name: SettlementsBcRequests
-      value: SettlementsBcRequests
-    - name: TransfersBcErrors
-      value: TransfersBcErrors
-    - name: TransfersBcTimeouts
-      value: TransfersBcTimeouts
-    - name: TransfersBcEvents
-      value: TransfersBcEvents
-    - name: TransfersBcRequests
-      value: TransfersBcRequests
-    - name: SettlementsBcEvents
-      value: SettlementsBcEvents
-    - name: SettlementsBcCommands
-      value: SettlementsBcCommands
-    - name: PlatformConfigurationBcEvents
-      value: PlatformConfigurationBcEvents
+      -   name: KAFKA_AUDITS_TOPIC
+          value: audits
+      -   name: KAFKA_LOGS_TOPIC
+          value: logs
+      -   name: AccountLookupBcRequests
+          value: AccountLookupBcRequests
+      -   name: AccountLookupBcEvents
+          value: AccountLookupBcEvents
+      -   name: AccountLookupBcResponses
+          value: AccountLookupBcResponses
+      -   name: AccountLookupBcErrors
+          value: AccountLookupBcErrors
+      -   name: OperatorBcErrors
+          value: OperatorBcErrors
+      -   name: QuotingBcErrors
+          value: QuotingBcErrors
+      -   name: QuotingBcEvents
+          value: QuotingBcEvents
+      -   name: QuotingBcRequests
+          value: QuotingBcRequests
+      -   name: SettlementsBcRequests
+          value: SettlementsBcRequests
+      -   name: TransfersBcErrors
+          value: TransfersBcErrors
+      -   name: TransfersBcTimeouts
+          value: TransfersBcTimeouts
+      -   name: TransfersBcEvents
+          value: TransfersBcEvents
+      -   name: TransfersBcRequests
+          value: TransfersBcRequests
+      -   name: SettlementsBcEvents
+          value: SettlementsBcEvents
+      -   name: SettlementsBcCommands
+          value: SettlementsBcCommands
+      -   name: PlatformConfigurationBcEvents
+          value: PlatformConfigurationBcEvents
 
     nodeSelector: {}
     tolerations: []
@@ -78,16 +78,16 @@ redpanda-console:
     config:
       kafka:
         brokers:
-          - kafka:9092
+          -   kafka:9092
 
   ingress:
     enabled: true
     className: nginx
     hosts:
-      - host: redpanda-console.local
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
+      -   host: redpanda-console.local
+          paths:
+            -   path: /
+                pathType: ImplementationSpecific
 
 ############### MongoDB  ####################
 # https://github.com/bitnami/charts/tree/main/bitnami/mongodb
@@ -103,11 +103,11 @@ mongodb:
     rootUser: root
     rootPassword: mongoDbPas42
     usernames:
-    - 'mojaloop'
+      -   'mojaloop'
     passwords:
-    - 'password'
+      -   'password'
     databases:
-    - 'mlos'
+      -   'mlos'
 
     replicaSetKey: ""
     existingSecret: ""
@@ -142,7 +142,7 @@ redis:
 
 ############### Elasticsearch and Kibana  ####################
 elasticsearch:
-  enabled: true
+  enabled: false
 
   security:
     elasticPassword: elasticSearchPas42

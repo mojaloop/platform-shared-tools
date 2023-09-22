@@ -29,6 +29,18 @@ function check_user {
     exit 1
   fi
 }
+function check_access_to_cluster {
+  # check that the cluster is accessible 
+  kubectl get nodes > /dev/null 2>&1 
+  if [[ "$?" -ne 0 ]]; then
+    printf " ** Error: Not connected to the kubernetes cluster \n"
+    printf "           Possible causes are:- \n"
+    printf "           - Cluster has not yet been created => see the README for creating cluster \n"
+    printf "           - if running mini-loop mode, the .bashrc has not yet been sourced or the user logged out/in \n" 
+    printf "           - if using EKS mode then the AWS credentials have likely expired => run aws-mfa \n" 
+    exit 1 
+  fi
+}
 
 function check_manifests_dir_exists  {
   if [[ ! -d "$MANIFESTS_DIR" ]] &&  [[ "$mode" == "delete_ml" ]]; then
@@ -83,7 +95,7 @@ function check_k8s_version_is_current {
       printf "** \n"
       exit 1
   fi 
-  printf "==> the installed kubernetes release or version is detected to be  [%s] \n" "$k8s_version"
+  printf "==> the installed kubernetes release is detected to be  [%s] \n" "$k8s_version"
 }
 
 function set_mojaloop_timeout { 
@@ -202,7 +214,7 @@ function repackage_infra_helm_chart {
   cd $INFRA_DIR
   if [[ "$NEED_TO_REPACKAGE" == "true" ]]; then 
     tstart=$(date +%s)
-    printf "==> running repackage of the all the infrastructure helm chart to incorporate local configuration "
+    printf "==> running repackage of the infrastructure helm chart to incorporate local configuration changes"
     status=`./package.sh >> $LOGFILE 2>>$ERRFILE`
     tstop=$(date +%s)
     telapsed=$(timer $tstart $tstop)
@@ -220,8 +232,22 @@ function repackage_infra_helm_chart {
   cd $current_dir
 }
 
+function add_helm_repos { 
+    printf "==> add the helm repos required to install and run Mojaloop vnext-alpha \n" 
+    helm repo add kiwigrid https://kiwigrid.github.io > /dev/null 2>&1
+    helm repo add kokuwa https://kokuwaio.github.io/helm-charts > /dev/null 2>&1  #fluentd 
+    helm repo add elastic https://helm.elastic.co > /dev/null 2>&1
+    helm repo add codecentric https://codecentric.github.io/helm-charts > /dev/null 2>&1 # keycloak for TTK
+    helm repo add bitnami https://charts.bitnami.com/bitnami > /dev/null 2>&1
+    helm repo add mojaloop http://mojaloop.io/helm/repo/ > /dev/null 2>&1
+    helm repo add cowboysysop https://cowboysysop.github.io/charts/ > /dev/null 2>&1  # mongo-express
+    helm repo add redpanda-data https://charts.redpanda.com/ > /dev/null 2>&1   # kafka console 
+    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx   # nginx 
+    helm repo update 
+}
+
 function delete_mojaloop_infra_release {
-  printf "==> uninstalling Mojaloop (vNext) infrastructure svcs and deleting resources\n" 
+  printf "==> delete resources in the mojaloop [infrastructure] layer " 
   #helm delete %s --namespace %s" "$NAMESPACE" "$HELM_INFRA_RELEASE"
   ml_exists=`helm ls -a --namespace $NAMESPACE | grep $HELM_INFRA_RELEASE | awk '{print $1}' `
   if [ ! -z $ml_exists ] && [ "$ml_exists" == "$HELM_INFRA_RELEASE" ]; then 
@@ -256,8 +282,6 @@ function delete_mojaloop_infra_release {
   # if we get to here then we are reasonably confident infrastructure resources are cleanly deleted
   printf " [ ok ] \n"
 }
-
-
 
 
 function install_infra_from_local_chart  {
@@ -347,9 +371,9 @@ function delete_mojaloop_layer() {
   local app_layer="$1"
   local layer_yaml_dir="$2"
   if [[ "$mode" == "delete_ml" ]]; then
-    printf "==> delete components in the mojaloop [ %s ] application layer " $app_layer
+    printf "==> delete resources  in the mojaloop [ %s ] application layer " $app_layer
   else 
-    printf "    delete components in the mojaloop [ %s ] application layer " $app_layer
+    printf "    delete resources in the mojaloop [ %s ] application layer " $app_layer
   fi 
   current_dir=`pwd`
   cd $layer_yaml_dir
@@ -535,9 +559,12 @@ HELM_INFRA_RELEASE="infra"        # the name of the helm release for all the inf
 DEFAULT_HELM_TIMEOUT_SECS="1200s" # default timeout for deplying helm chart 
 TIMEOUT_SECS=0                    # user override for TIMEOUT
 DEFAULT_NAMESPACE="default"
+INFRA_DIR=$MANIFESTS_DIR/infra
+CROSSCUT_DIR=$MANIFESTS_DIR/crosscut
+APPS_DIR=$MANIFESTS_DIR/apps
+TTK_DIR=$MANIFESTS_DIR/ttk
 K8S_CURRENT_RELEASE_LIST=( "1.26" "1.27" )
-LOGFILE="/tmp/miniloop-install.log"
-ERRFILE="/tmp/miniloop-install.err"
+
 NEED_TO_REPACKAGE="true"
 EXTERNAL_ENDPOINTS_LIST=( vnextadmin bluebank.local greenbank.local ) 
 LOGGING_ENDPOINTS_LIST=( elasticsearch.local )

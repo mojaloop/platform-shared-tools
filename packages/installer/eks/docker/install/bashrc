@@ -17,6 +17,6 @@ complete -F __start_kubectl k
 alias ksetns="kubectl config set-context --current --namespace"
 alias ksetuser="kubectl config set-context --current --user"
 export PS1="\u@\h \[\e[32m\]\w \[\e[91m\]\$(parse_git_branch)\[\e[00m\]$ "
-export PATH=$PATH:/mojaloop_cloud/bin
+export PATH=$PATH:/installer/eks/scripts:/installer/scripts
 alias getkconfig="aws eks --region $(terraform output -raw region) update-kubeconfig --name $(terraform output -raw cluster_name)"
 

@@ -10,6 +10,12 @@ AWS_PROFILE="vnext"    # the aws user you are going to authenticate with , shoul
 TERRAFORM_CLUSTER_DIR="active"  # this is the name of the directory containing the terraform to create the cluster 
 ################################################################################################
 
+if [[ ! -f "$AWS_CREDENTIALS_DIR/credentials" ]]; then
+  printf " ** Error: the aws credentials file is missing \n" 
+  printf "    please refer to AWS documentation on setting up the credentials file and try again ** \n"
+  exit 
+fi 
+
 #TODO move the above to the top level install-mojaloop.sh and make them env vars which are read here ??
 #TODO: verify the above settings 
 #TODO: are there other ways to authenticate to AWS for terraform ? 
@@ -45,7 +51,7 @@ docker run \
   --volume "$AWS_CREDENTIALS_DIR":/home/${USER_NAME}/.aws \
   --volume "$HOME/.kube":/home/${USER_NAME}/.kube \
   --volume "$INSTALLER_DIR":/installer \
-  --volume "$HOME/logs":/logs \ 
+  --volume "$HOME/logs":/logs \
   --env AWS_PROFILE="$AWS_PROFILE" \
   --env TERRAFORM_CLUSTER_DIR="/installer/eks/terraform/$TERRAFORM_CLUSTER_DIR" \
   --hostname "container-vnext-eks" \

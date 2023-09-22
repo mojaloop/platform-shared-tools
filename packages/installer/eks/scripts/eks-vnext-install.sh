@@ -6,7 +6,6 @@
 # Date Sept 2023
 
 
-source ../../scripts/common.sh 
 
 ################################################################################
 # Function: showUsage
@@ -40,17 +39,23 @@ Options:
 ################################################################################
 
 ##
-# Environment Config & global vars (see common.sh vars section for common Global Vars)
+# EKS specif Environment Config & global vars 
 ##
-echo "OLD MANIFESTS_DIR = $MANIFESTS_DIR"
-REPO_BASE_DIR="$( cd $(dirname "$0")/../.. ; pwd )"
-echo "REPO_BASE_DIR = $REPO_BASE_DIR"
+SCRIPTS_DIR="$( cd $(dirname "$0") ; pwd )"
+echo "DBG> SCRIPTS_DIR X = $SCRIPTS_DIR"
+echo "DBG> OLD MANIFESTS_DIR = $MANIFESTS_DIR"
+BASE_DIR="$( cd $(dirname "$0")/../.. ; pwd )"
+echo "DBG> BASE_DIR = $BASE_DIR"
 MANIFESTS_DIR="$( cd $(dirname "$0")/../../manifests ; pwd )"
-echo "MANIFESTS_DIR = $MANIFESTS_DIR"
-INFRA_DIR=$MANIFESTS_DIR/infra
-CROSSCUT_DIR=$MANIFESTS_DIR/crosscut
-APPS_DIR=$MANIFESTS_DIR/apps
-TTK_DIR=$MANIFESTS_DIR/ttk
+echo "DBG> MANIFESTS_DIR = $MANIFESTS_DIR"
+MOJALOOP_CONFIGURE_FLAGS_STR=" -d $MANIFESTS_DIR " 
+LOGFILE="/logs/eks-vnext-install.log"
+ERRFILE="/logs/eks-vnext-install.err"
+
+# read in the functions and common global vars 
+source $BASE_DIR/scripts/common.sh 
+check_access_to_cluster
+
 record_memory_use "at_start"
 
 # Process command line options as required
@@ -101,12 +106,12 @@ elif [[ "$mode" == "install_ml" ]]; then
   printf "start : Mojaloop (vNext) install utility [%s]\n" "`date`" >> $LOGFILE
   add_helm_repos # needed for EKS only 
   #configure_extra_options 
-  modify_local_mojaloop_yaml_and_charts
+  modify_local_mojaloop_yaml_and_charts "$SCRIPTS_DIR/eks-vnext-configure.py"
   install_infra_from_local_chart
   install_mojaloop_layer "crosscut" $CROSSCUT_DIR
   install_mojaloop_layer "apps" $APPS_DIR
   install_mojaloop_layer "ttk" $TTK_DIR
-  restore_data
+  restore_demo_data
   configure_elastic_search
   check_urls
   tstop=$(date +%s)

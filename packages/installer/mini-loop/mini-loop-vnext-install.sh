@@ -47,15 +47,16 @@ SCRIPTS_DIR="$( cd $(dirname "$0")/../scripts ; pwd )"
 echo "DBG> SCRIPTS_DIR X = $SCRIPTS_DIR"
 ETC_DIR="$( cd $(dirname "$0")/../etc ; pwd )"
 echo "DBG> ETC_DIR X = $ETC_DIR"
-REPO_BASE_DIR="$( cd $(dirname "$0")/../../.. ; pwd )"
-echo "DBG> REPO_BASE_DIR = $REPO_BASE_DIR"
-MANIFESTS_DIR=$REPO_BASE_DIR/packages/installer/manifests
+BASE_DIR="$( cd $(dirname "$0")/../../.. ; pwd )"
+echo "DBG> BASE_DIR = $BASE_DIR"
+MANIFESTS_DIR=$BASE_DIR/packages/installer/manifests
 MOJALOOP_CONFIGURE_FLAGS_STR=" -d $MANIFESTS_DIR " 
 echo "DBG> MANIFESTS_DIR = $MANIFESTS_DIR"
-INFRA_DIR=$MANIFESTS_DIR/infra
-CROSSCUT_DIR=$MANIFESTS_DIR/crosscut
-APPS_DIR=$MANIFESTS_DIR/apps
-TTK_DIR=$MANIFESTS_DIR/ttk
+LOGFILE="/tmp/miniloop-install.log"
+ERRFILE="/tmp/miniloop-install.err"
+
+# read in the functions and common global vars 
+source $BASE_DIR/packages/installer/scripts/common.sh 
 
 record_memory_use "at_start"
 
@@ -114,7 +115,7 @@ elif [[ "$mode" == "install_ml" ]]; then
   install_mojaloop_layer "crosscut" $CROSSCUT_DIR 
   install_mojaloop_layer "apps" $APPS_DIR
   install_mojaloop_layer "ttk" $TTK_DIR
-  restore_data
+  restore_demo_data
   configure_elastic_search
   check_urls
 

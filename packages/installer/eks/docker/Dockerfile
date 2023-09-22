@@ -8,7 +8,7 @@ ARG BASHRC_FILE
 ARG HELM_VERSION
 
 RUN cd /tmp && \
-    yum install -y tar python3 curl git unzip wget openssl bash-completion free jq \
+    yum install -y tar python3 curl git unzip wget openssl bash-completion procps jq \
     && pip3 install aws-mfa ruamel.yaml
 
 # create a new user with the provided name and ID
