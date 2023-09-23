@@ -130,26 +130,22 @@ redpanda-console:
 # testing for ARM64 : https://artifacthub.io/packages/helm/groundhog2k/mongodb/0.1.0
 mongodb:
   enabled: true
-  # image:
-  #   tag: 5.0.18-debian-11-r8
-
-  fullnameOverride: "mongodb"
-  auth:
-    enabled: true
-
-    rootUser: root
-    rootPassword: mongoDbPas42
-    usernames:
-      -   'mojaloop'
-    passwords:
-      -   'password'
-    databases:
-      -   'mlos'
-
-    replicaSetKey: ""
-    existingSecret: ""
+# https://github.com/bitnami/charts/tree/main/bitnami/mongodb
+# testing : https://artifacthub.io/packages/helm/groundhog2k/mongodb/0.1.0
+mongodb:
+  enabled: true
   persistence:
     enabled: true
+  # image:
+  #   tag: latest
+
+  fullnameOverride: "mongodb"
+  settings:
+    rootUsername: root
+    rootPassword: mongoDbPas42
+
+  initUserDatabase:
+    dbname: mlos
 
 ############### Mongo Express ####################
 # mongo express config
@@ -179,7 +175,7 @@ redis:
 
 ############### Elasticsearch and Kibana  ####################
 elasticsearch:
-  enabled: false
+  enabled: true
 
   security:
     elasticPassword: elasticSearchPas42
