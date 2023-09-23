@@ -110,7 +110,7 @@ elif [[ "$mode" == "install_ml" ]]; then
   tstart=$(date +%s)
   printf "start :  Mojaloop (vNext) install utility [%s]\n" "`date`" >> $LOGFILE
   #configure_extra_options 
-  modify_local_mojaloop_yaml_and_charts "$MINI_LOOP_SCRIPTS_DIR/mini-loop-vnext-configure.py"
+  modify_local_mojaloop_yaml_and_charts "$SCRIPTS_DIR/vnext-configure.py"
   install_infra_from_local_chart
   install_mojaloop_layer "crosscut" $CROSSCUT_DIR 
   install_mojaloop_layer "apps" $APPS_DIR

@@ -437,7 +437,7 @@ check_status() {
   fi
 }
 
-function restore_data {
+function restore_demo_data {
   error_message=" restoring the mongo database data failed "
   trap 'handle_error $LINENO "$error_message"' ERR
   printf "==> restoring demonstration and test data  \n"

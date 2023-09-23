@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # eks-vnext-install.sh
-#    - install mojaloop vnext version in EKS
+#    - install mojaloop vnext to a running  EKS cluster 
 #       
 # Author Tom Daly 
 # Date Sept 2023
@@ -25,7 +25,7 @@ Example 2 : $0 -m install_ml -n namespace1  # install mojaloop (vnext) into name
 Example 3 : $0 -m delete_ml  # delete mojaloop  (vnext)  
 
 Options:
--m mode ............ install_ml|delete_ml|cleanup
+-m mode ............ install_ml|delete_ml
 -d domain name ..... domain name for ingress hosts e.g mydomain.com 
 -n namespace ....... the kubernetes namespace to deploy mojaloop into 
 -t secs ............ number of seconds (timeout) to wait for pods to all be reach running state
@@ -41,8 +41,8 @@ Options:
 ##
 # EKS specif Environment Config & global vars 
 ##
-SCRIPTS_DIR="$( cd $(dirname "$0") ; pwd )"
-echo "DBG> SCRIPTS_DIR X = $SCRIPTS_DIR"
+EKS_SCRIPTS_DIR="$( cd $(dirname "$0") ; pwd )"
+echo "DBG> EKS SCRIPTS_DIR X = $EKS_SCRIPTS_DIR"
 echo "DBG> OLD MANIFESTS_DIR = $MANIFESTS_DIR"
 BASE_DIR="$( cd $(dirname "$0")/../.. ; pwd )"
 echo "DBG> BASE_DIR = $BASE_DIR"
@@ -106,7 +106,7 @@ elif [[ "$mode" == "install_ml" ]]; then
   printf "start : Mojaloop (vNext) install utility [%s]\n" "`date`" >> $LOGFILE
   add_helm_repos # needed for EKS only 
   #configure_extra_options 
-  modify_local_mojaloop_yaml_and_charts "$SCRIPTS_DIR/eks-vnext-configure.py"
+  modify_local_mojaloop_yaml_and_charts "$BASE_DIR/scripts/vnext-configure.py"
   install_infra_from_local_chart
   install_mojaloop_layer "crosscut" $CROSSCUT_DIR
   install_mojaloop_layer "apps" $APPS_DIR
