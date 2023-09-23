@@ -265,14 +265,14 @@ function delete_mojaloop_infra_release {
       exit 1
   fi
   # now check that the persistent volumes got cleaned up
-  pvc_exists=`kubectl get pvc --namespace "$NAMESPACE"  2>>$ERRFILE | grep $HELM_INFRA_RELEASE` >> $LOGFILE 2>>$ERRFILE
+  pvc_exists=`kubectl get pvc --namespace "$NAMESPACE"  2>>$ERRFILE | grep -v NAME ` >> $LOGFILE 2>>$ERRFILE
   if [ ! -z "$pvc_exists" ]; then 
     kubectl get pvc --namespace "$NAMESPACE" | cut -d " " -f1 | xargs kubectl delete pvc >> $LOGFILE 2>>$ERRFILE
     kubectl get pv  --namespace "$NAMESPACE" | cut -d " " -f1 | xargs kubectl delete pv >> $LOGFILE 2>>$ERRFILE
     sleep 5 
   fi 
   # and check the pvc and pv are gone 
-  pvc_exists=`kubectl get pvc --namespace "$NAMESPACE" 2>>$ERRFILE | grep $HELM_INFRA_RELEASE 2>>$ERRFILE`
+  pvc_exists=`kubectl get pvc --namespace "$NAMESPACE" 2>>$ERRFILE |  grep -v NAME 2>>$ERRFILE`
   if [ ! -z "$pvc_exists" ]; then
     printf "** Error: the backend persistent volume resources may not have deleted properly  \n" 
     printf "   please try running the delete again or use helm and kubectl to remove manually  \n"

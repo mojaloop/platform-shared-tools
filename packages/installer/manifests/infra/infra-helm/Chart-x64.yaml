@@ -2,7 +2,7 @@ apiVersion: v2
 description: Helm chart for mojaloop vNext infrastructure services
 name: vnext-infra
 version: 15.0.0
-appVersion: "kafka: 3.5.1; console: 2.3.2; mongodb: 6.0.9; mongo-express: 0.54.0; elasticsearch:19.9.2; redis: 17.11.6"
+appVersion: "kafka: 3.5.1; console: 2.3.2; mongodb: 6.0.8; mongo-express: 0.54.0; elasticsearch:19.9.2; redis: 17.11.6"
 home: http://mojaloop.io
 icon: http://mojaloop.io/images/logo.png
 sources:
@@ -39,13 +39,13 @@ dependencies:
 - name: mongodb
   alias: mongodb
   condition: mongodb.enabled
-  repository: https://groundhog2k.github.io/helm-charts/
+  repository: https://charts.bitnami.com/bitnami
   tags:
   - mojaloop
   - dependency
   - vNext
   - mongodb
-  version: 0.5.17
+  version: 13.3.1
 ## Mongo-express
 - name: mongo-express
   alias: mongo-express
@@ -56,7 +56,7 @@ dependencies:
   - dependency
   - vNext
   - mongodb
-  version: 5.2.0
+  version: 3.1.1
 ## redis 
 - name: redis
   alias: redis 

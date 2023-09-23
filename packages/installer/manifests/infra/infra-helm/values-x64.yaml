@@ -6,55 +6,17 @@ global:
 ## Reference: https://github.com/bitnami/charts/blob/main/bitnami/kafka/values.yaml
 kafka:
   enabled: true
-  fullnameOverride: kafka
-
-  # image:
-  #   tag: 3.5.1-debian-11-r21
+  fullnameOverride: "kafka"
 
   persistence:
-    enabled: false
-
-  auth:
-    clientProtocol: PLAINTEXT
-    interBrokerProtocol: PLAINTEXT
-
-  listeners:
-    client:
-      protocol: PLAINTEXT
-    controller:
-      protocol: PLAINTEXT
-    interbroker:
-      protocol: PLAINTEXT
-    external:
-      protocol: PLAINTEXT
-
-  kraft:
-    enabled: false
-
-  broker:
-    replicaCount: 3
-    persistence:
-      enabled: false
-
-  controller:
-    replicaCount: 0
-
-  extraConfig:
-    offsetsTopicReplicationFactor: 1
-    defaultReplicationFactor: 1
+    enabled: true
 
   ## https://github.com/bitnami/charts/blob/main/bitnami/zookeeper/values.yaml
   zookeeper:
-    enabled: true
-
     persistence:
-      enabled: false
+      enabled: true
 
-    auth:
-      client:
-        enabled: false
-
-    fullnameOverride: zookeeper
+    fullnameOverride: "zookeeper"
 
   ## Kafka provisioning
   provisioning:
@@ -87,6 +49,8 @@ kafka:
           value: SettlementsBcRequests
       -   name: TransfersBcErrors
           value: TransfersBcErrors
+      -   name: TransfersBcTimeouts
+          value: TransfersBcTimeouts
       -   name: TransfersBcEvents
           value: TransfersBcEvents
       -   name: TransfersBcRequests
@@ -126,12 +90,11 @@ redpanda-console:
                 pathType: ImplementationSpecific
 
 ############### MongoDB  ####################
-# X64 only => https://github.com/bitnami/charts/tree/main/bitnami/mongodb
-# testing for ARM64 : https://artifacthub.io/packages/helm/groundhog2k/mongodb/0.1.0
+# https://github.com/bitnami/charts/tree/main/bitnami/mongodb
 mongodb:
   enabled: true
-  # image:
-  #   tag: 5.0.18-debian-11-r8
+  image:
+    tag: 5.0.18-debian-11-r8
 
   fullnameOverride: "mongodb"
   auth:
