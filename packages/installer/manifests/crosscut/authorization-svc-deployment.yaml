@@ -32,7 +32,10 @@ spec:
               value: kafka:9092
             - name: PLATFORM_CONFIG_BASE_SVC_URL
               value: http://platform-configuration-svc:3100
+            - name: MONGO_URL
+              value: mongodb://root:mongoDbPas42@mongodb:27017/
           image: mojaloop/security-bc-authorization-svc:snapshot
+          
           name: authorization-svc
           ports:
             - containerPort: 3202

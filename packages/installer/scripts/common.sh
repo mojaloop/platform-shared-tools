@@ -14,8 +14,8 @@ handle_error() {
 
 function check_arch {
   ## check architecture Mojaloop deploys on x64 only today arm is coming  
-  arch=`uname -p`
-  if [[ ! "$arch" == "x86_64" ]]; then 
+  ARCH=`uname -p`
+  if [[ ! "$ARCH" == "x86_64" ]]; then 
     printf " ** Error: Mojaloop is only running on x86_64 today and not yet running on ARM cpus \n"
     printf "    please see https://github.com/mojaloop/project/issues/2317 for ARM status \n"
     printf " ** \n"
@@ -555,6 +555,7 @@ function print_success_message {
 
 ## Common Environment Config & global vars 
 ##
+ARCH=""
 HELM_INFRA_RELEASE="infra"        # the name of the helm release for all the infrastructure services, mongodb, kafka etc
 DEFAULT_HELM_TIMEOUT_SECS="1200s" # default timeout for deplying helm chart 
 TIMEOUT_SECS=0                    # user override for TIMEOUT

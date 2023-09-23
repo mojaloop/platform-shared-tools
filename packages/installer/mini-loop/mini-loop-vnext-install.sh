@@ -114,7 +114,10 @@ elif [[ "$mode" == "install_ml" ]]; then
   install_infra_from_local_chart
   install_mojaloop_layer "crosscut" $CROSSCUT_DIR 
   install_mojaloop_layer "apps" $APPS_DIR
-  install_mojaloop_layer "ttk" $TTK_DIR
+  if [[ "$ARCH" == "x86_64" ]]; then 
+    # for now only install TTK on intel i.e. not arm64 yet 
+    install_mojaloop_layer "ttk" $TTK_DIR
+  fi 
   restore_demo_data
   configure_elastic_search
   check_urls
