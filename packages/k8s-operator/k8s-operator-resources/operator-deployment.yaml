@@ -23,7 +23,7 @@ spec:
         - env:
             - name: DEV_MODE
               value: 'true'
-          image: mojaloop/mojaloop-vnext-k8s-operator-svc:0.0.1
+          image: mojaloop/mojaloop-vnext-k8s-operator-svc:0.0.3
           imagePullPolicy: IfNotPresent
           name: vnext-operator
       serviceAccountName: vnext-operator-sa
