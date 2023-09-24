@@ -32,7 +32,6 @@
 import * as yaml from "js-yaml";
 import { join } from "node:path";
 import * as fs from "fs";
-import * as fsPromises from "fs/promises";
 import * as k8s from "@kubernetes/client-node";
 import {
     MojaloopVNextInstall, MojaloopVNextInstallConfigOverride,
@@ -43,7 +42,6 @@ import {
     RESOURCE_PLURAL,
     RESOURCE_VERSION
 } from "./types";
-import {configs} from "@typescript-eslint/eslint-plugin";
 
 
 
@@ -98,7 +96,7 @@ export class MojaloopVNextInstallOperatorController {
 
     private async _watchInstallResource(): Promise<any> {
         //watch my custom resource
-        let url = `/apis/${RESOURCE_GROUP}/${RESOURCE_VERSION}/namespaces/${NAMESPACE}/${RESOURCE_PLURAL}`;
+        const url = `/apis/${RESOURCE_GROUP}/${RESOURCE_VERSION}/namespaces/${NAMESPACE}/${RESOURCE_PLURAL}`;
         await this._k8sWatch.watch(
             url,
             {},
