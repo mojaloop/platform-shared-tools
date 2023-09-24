@@ -25,7 +25,7 @@ services:
     restart: unless-stopped
 
   authorization-svc:
-    image: mojaloop/security-bc-authorization-svc_v0.1.22
+    image: mojaloop/security-bc-authorization-svc_v0.1.23
     volumes:
       - authorization-svc_data:/app/data
     environment:
