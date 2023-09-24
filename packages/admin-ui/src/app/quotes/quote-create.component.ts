@@ -1,16 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MessageService} from "src/app/_services_and_types/message.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Quote} from "src/app/_services_and_types/quote_types";
 import {QuotesService} from "src/app/_services_and_types/quotes.service";
-import {InteropService} from '../_services_and_types/interop-service';
-import {BehaviorSubject, Subscription} from 'rxjs';
-import {UnauthorizedError} from '../_services_and_types/errors';
-import {Participant} from '../_services_and_types/participant_types';
-import {ParticipantsService} from '../_services_and_types/participants.service';
+import {InteropService} from "../_services_and_types/interop-service";
+import {BehaviorSubject, Subscription} from "rxjs";
+import {UnauthorizedError} from "../_services_and_types/errors";
+import {IParticipant} from "@mojaloop/participant-bc-public-types-lib";
+import {ParticipantsService} from "../_services_and_types/participants.service";
 import * as uuid from "uuid";
-import { removeEmpty } from '../_utils';
+import {removeEmpty} from "../_utils";
 
 @Component({
 	selector: 'app-quote-create',
@@ -25,11 +25,11 @@ export class QuoteCreateComponent implements OnInit {
 	partyIdTypeList = ["MSISDN", "PERSONAL_ID", "BUSINESS", "DEVICE", "ACCOUNT_ID", "IBAN", "ALIAS"];
 	amountTypeList = ["SEND", "RECEIVE"];
 	currencyCodeList = ["EUR", "USD", "TZS"];
-	scenarioList = ["DEPOSIT", "WITHDRAWAL", "REFUND"]
-	initiatorList = ["PAYER", "PAYEE"]
-	initiatorTypeList = ["CONSUMER", "AGENT", "BUSINESS"]
+	scenarioList = ["DEPOSIT", "WITHDRAWAL", "REFUND"];
+	initiatorList = ["PAYER", "PAYEE"];
+	initiatorTypeList = ["CONSUMER", "AGENT", "BUSINESS"];
 
-	participants: BehaviorSubject<Participant[]> = new BehaviorSubject<Participant[]>([]);
+	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
 	participantsSubs?: Subscription;
 
 	constructor(private _router: Router, private _route: ActivatedRoute, private _quotesSvc: QuotesService, private _interopSvc: InteropService, private _participantsSvc: ParticipantsService, private _messageService: MessageService) {
@@ -39,7 +39,7 @@ export class QuoteCreateComponent implements OnInit {
 		this.participantsSubs = this._participantsSvc.getAllParticipants().subscribe((list) => {
 			console.log("TransferCreateComponent ngOnInit - got getAllParticipants");
 
-			list = list.filter(value => value.id!=="hub");
+			list = list.filter(value => value.id !== "hub");
 
 			this.form.controls["payeeFspId"].setValue(list[0].id);
 			this.form.controls["payerFspId"].setValue(list[0].id);
@@ -107,7 +107,7 @@ export class QuoteCreateComponent implements OnInit {
 				"partySubIdOrType": this.form.controls["payeePartySubIdOrType"].value,
 				"fspId": this.form.controls["payeeFspId"].value,
 			}
-		}
+		};
 		this.activeQuote.payer = {
 			"partyIdInfo": {
 				"partyIdType": this.form.controls["payerPartyIdType"].value,
@@ -115,7 +115,7 @@ export class QuoteCreateComponent implements OnInit {
 				"partySubIdOrType": this.form.controls["payerPartySubIdOrType"].value,
 				"fspId": this.form.controls["payerFspId"].value,
 			}
-		}
+		};
 		this.activeQuote.amountType = this.form.controls["amountType"].value;
 		this.activeQuote.amount = {
 			"currency": this.form.controls["currency"].value,
@@ -125,13 +125,13 @@ export class QuoteCreateComponent implements OnInit {
 			"scenario": this.form.controls["scenario"].value,
 			"initiator": this.form.controls["initiator"].value,
 			"initiatorType": this.form.controls["initiatorType"].value
-		}
+		};
 
 		const quote = removeEmpty(this.activeQuote) as Quote;
 
 		this._interopSvc.createQuoteRequest(quote).subscribe(success => {
 			this._messageService.addSuccess("Quote Created");
-			setTimeout(()=>{
+			setTimeout(() => {
 				this._router.navigateByUrl(`/quotes/${this.activeQuote!.quoteId}?live`);
 			}, 500);
 		}, error => {
@@ -172,7 +172,7 @@ export class QuoteCreateComponent implements OnInit {
 				initiator: "PAYER",
 				initiatorType: "BUSINESS"
 			}
-		}
+		};
 
 		this.form.controls["quoteId"].setValue(exampleQuote.quoteId);
 		this.form.controls["transactionId"].setValue(exampleQuote.transactionId);

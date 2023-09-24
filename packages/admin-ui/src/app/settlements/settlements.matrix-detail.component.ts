@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {BehaviorSubject, Subscription} from "rxjs";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
 import {MessageService} from "src/app/_services_and_types/message.service";
@@ -9,7 +9,6 @@ import {
 	ISettlementMatrix
 } from "@mojaloop/settlements-bc-public-types-lib";
 import {ActivatedRoute} from "@angular/router";
-
 
 
 @Component({
@@ -31,7 +30,7 @@ export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 	canClose: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 
-	matrix: BehaviorSubject<ISettlementMatrix | null> = new BehaviorSubject<ISettlementMatrix|null>(null);
+	matrix: BehaviorSubject<ISettlementMatrix | null> = new BehaviorSubject<ISettlementMatrix | null>(null);
 	matrixSubs?: Subscription;
 
 	transfers: BehaviorSubject<ISettlementBatchTransfer[]> = new BehaviorSubject<ISettlementBatchTransfer[]>([]);
@@ -52,7 +51,8 @@ export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 
 		this._fetchMatrix(this._matrixId);
 	}
-	private async _fetchMatrix(id: string):Promise<void> {
+
+	private async _fetchMatrix(id: string): Promise<void> {
 
 		this._settlementsService.getMatrix(id).subscribe(matrix => {
 			this.matrix.next(matrix);
@@ -70,16 +70,16 @@ export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 				this._messageService.addSuccess("Matrix reloaded");
 			}
 
-			if(matrix){
+			if (matrix) {
 				// check possible actions
 				let includesNotDisputed = false;
 				let includesNotClosed = false;
 				let includesAwaitingSettlement = false;
 
 				matrix.batches.forEach(batch => {
-					if(batch.state !== "DISPUTED") includesNotDisputed = true;
-					if(batch.state !== "CLOSED") includesNotClosed = true;
-					if(batch.state === "AWAITING_SETTLEMENT") includesAwaitingSettlement = true;
+					if (batch.state !== "DISPUTED") includesNotDisputed = true;
+					if (batch.state !== "CLOSED") includesNotClosed = true;
+					if (batch.state === "AWAITING_SETTLEMENT") includesAwaitingSettlement = true;
 				});
 				this.canLock.next(includesNotDisputed);
 				this.canSettle.next(includesAwaitingSettlement);
@@ -88,21 +88,21 @@ export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 
 
 				this._settlementsService.getTransfersByMatrixId(matrix.id).subscribe(transfers => {
-					this.transfers.next(transfers)
+					this.transfers.next(transfers);
 				});
 			}
 		});
 
 	}
 
-	refresh(){
+	refresh() {
 		this._fetchMatrix(this._matrixId!);
 	}
 
-	recalculate(){
+	recalculate() {
 		this._settlementsService.recalculateMatrix(this._matrixId!).subscribe(value => {
 			this.refresh();
-		},error => {
+		}, error => {
 			throw error;
 		});
 	}
@@ -115,18 +115,18 @@ export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	close(){
+	close() {
 		this._settlementsService.closeMatrix(this._matrixId!).subscribe(value => {
 			this.refresh();
-		},error => {
+		}, error => {
 			throw error;
 		});
 	}
 
-	settle(){
+	settle() {
 		this._settlementsService.settleMatrix(this._matrixId!).subscribe(value => {
 			this.refresh();
-		},error => {
+		}, error => {
 			throw error;
 		});
 	}
@@ -147,7 +147,7 @@ export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	async copyIdToClipboard(){
+	async copyIdToClipboard() {
 		await navigator.clipboard.writeText(this._matrixId || "");
 	}
 

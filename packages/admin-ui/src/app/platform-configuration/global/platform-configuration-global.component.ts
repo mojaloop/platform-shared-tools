@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {PlatformConfigService} from "src/app/_services_and_types/platform-config.service";
 import {BehaviorSubject, Subscription} from "rxjs";
 import semver from "semver";
@@ -7,10 +7,9 @@ import {
 	GlobalConfigurationSet,
 	ConfigParameter,
 	ConfigSecret,
-	ConfigParameterTypes
+
 } from "@mojaloop/platform-configuration-bc-public-types-lib";
-import {NgbModal, NgbModalRef, NgbNav} from "@ng-bootstrap/ng-bootstrap";
-import {ParticipantFundsMovementDirection} from "../../_services_and_types/participant_types";
+import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 
 export type BaseListItem = {
 	schemaVersion?: string;
@@ -46,9 +45,9 @@ export class PlatformConfigurationGlobalComponent implements OnInit, OnDestroy {
 	editConfigItemModal!: NgbModal;
 	editConfigItemModalRef?: NgbModalRef;
 
-	private _editing:boolean = false;
+	private _editing: boolean = false;
 
-	constructor(private _platformConfigsSvc: PlatformConfigService,private _modalService: NgbModal) {
+	constructor(private _platformConfigsSvc: PlatformConfigService, private _modalService: NgbModal) {
 
 	}
 
@@ -104,7 +103,7 @@ export class PlatformConfigurationGlobalComponent implements OnInit, OnDestroy {
 						iterationNumber: configSet.iterationNumber,
 						...featureflag
 					});
-				})
+				});
 
 				configSet.secrets.forEach(secret => {
 					secrets.push({
@@ -120,7 +119,7 @@ export class PlatformConfigurationGlobalComponent implements OnInit, OnDestroy {
 				latestSchemaVersion: latestSchemaVersion,
 				currentIteration: currentIteration,
 				distinctVersionCount: distinctVersions.length
-			}
+			};
 
 			this.globalConfigStatus.next(globalConfigStatus);
 			this.params.next(params);
@@ -143,9 +142,8 @@ export class PlatformConfigurationGlobalComponent implements OnInit, OnDestroy {
 		this.editConfigItemModalRef = this._modalService.open(this.editConfigItemModal, {centered: true});
 	}
 
-	saveConfigItem(e:Event){
+	saveConfigItem(e: Event) {
 		console.log(e);
-		debugger;
 	}
 
 }

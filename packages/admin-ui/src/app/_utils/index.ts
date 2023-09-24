@@ -26,29 +26,30 @@ export const deserializeIlpPacket = (base64IlpPacket: any): any => {
 	}
 
 	return decodedIlpPacketDataJsonString ? decodedIlpPacketDataJsonString : base64IlpPacket;
-}
+};
 
 // ref https://www.zacfukuda.com/blog/pagination-algorithm
 export type PaginateResult = {
 	next: number | null;
 	current: number;
 	prev: number | null;
-	items: (number|null)[]
+	items: (number | null)[]
 }
-export function paginate(current:number, max:number): PaginateResult | null{
+
+export function paginate(current: number, max: number): PaginateResult | null {
 	// this alg is 1 based, so increaing current by one
 	current++;
 
 	if (!current || !max) return null;
 
-	let prev: null | number = current === 1 ? null : current - 1,
+	const prev: null | number = current === 1 ? null : current - 1,
 		next: null | number = current === max ? null : current + 1,
-		items: (number|null)[] = [1];
+		items: (number | null)[] = [1];
 
 	if (current === 1 && max === 1) return {current, prev, next, items};
 	if (current > 4) items.push(null);
 
-	let r = 2, r1 = current - r, r2 = current + r;
+	const r = 2, r1 = current - r, r2 = current + r;
 
 	for (let i = r1 > 2 ? r1 : 2; i <= Math.min(max, r2); i++) items.push(i);
 
@@ -57,7 +58,8 @@ export function paginate(current:number, max:number): PaginateResult | null{
 
 	return {current, prev, next, items};
 }
-export const validateCIDR = (input: string): boolean => {
+
+export function validateCIDR(input: string): boolean {
 	// Regular expression for CIDR notation validation
 	const cidrRegex = /^(?:\d{1,3}\.){3}\d{1,3}\/\d{1,2}$/;
 
@@ -65,23 +67,21 @@ export const validateCIDR = (input: string): boolean => {
 	return cidrRegex.test(input);
 }
 
-export const validatePortRange = (rangeFirst?: number | null, rangeLast?: number | null): boolean => {
-	// Check if either both `rangeFirst` and `rangeLast` are null, or both are valid numbers
-	if (
-	  !(rangeFirst === null && rangeLast === null) &&
-	  !(rangeFirst === 0 && rangeLast === 0) && // Updated this line
-	  (!(typeof rangeFirst === 'number' && typeof rangeLast === 'number') ||
-		rangeFirst >= rangeLast)
+export function validatePortRange(rangeFirst?: number | null, rangeLast?: number | null): boolean {
+// Check if either both `rangeFirst` and `rangeLast` are null, or both are valid numbers
+	if (!(rangeFirst === null && rangeLast === null) &&
+		!(rangeFirst === 0 && rangeLast === 0) && // Updated this line
+		(!(typeof rangeFirst === 'number' && typeof rangeLast === 'number') ||
+			rangeFirst >= rangeLast)
 	) {
-	  // Invalid port range
-	  return false;
+		// Invalid port range
+		return false;
 	}
-	// Valid port range
+// Valid port range
 	return true;
-  };
-  
+}
 
-export const validatePorts = (portString: string | undefined): boolean => {
+export function validatePorts(portString: string | undefined): boolean {
 	if (typeof portString !== 'string') {
 		// Port input should be a string
 		return false;

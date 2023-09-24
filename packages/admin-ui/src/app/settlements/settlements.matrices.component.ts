@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {BehaviorSubject, Subscription} from "rxjs";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
 import {MessageService} from "src/app/_services_and_types/message.service";
@@ -9,7 +9,6 @@ import {
 	ISettlementMatrix
 } from "@mojaloop/settlements-bc-public-types-lib";
 import {ActivatedRoute} from "@angular/router";
-
 
 
 @Component({
@@ -31,7 +30,7 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 		this._fetchMatrices();
 	}
 
-	private async _fetchMatrices(state?: string):Promise<void> {
+	private async _fetchMatrices(state?: string): Promise<void> {
 		return new Promise(resolve => {
 			this._settlementsService.getMatrices(state).subscribe(matrix => {
 				this.matrices.next(matrix);

@@ -38,171 +38,170 @@ import * as uuid from "uuid";
 import {SettingsService} from "./settings.service";
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
 import {UnauthorizedError} from "./errors";
-import {Association, Oracle, OracleType} from "./account-lookup_types";
+import {Association, Oracle} from "./account-lookup_types";
 
 const SVC_BASEURL = "/_account-lookup";
 
 @Injectable({
-  providedIn: "root",
+	providedIn: "root",
 })
 export class AccountLookupService {
 
-  constructor(private _settings: SettingsService, private _http: HttpClient, private _authentication: AuthenticationService) {
-    // this._http.
-  }
+	constructor(private _settings: SettingsService, private _http: HttpClient, private _authentication: AuthenticationService) {
+		// this._http.
+	}
 
-  createEmptyOracle():Oracle{
-    const newOracle:Oracle = {
-      id: uuid.v4(),
-      name: "",
-      type: "builtin",
-      partyType: "MSISDN",
-      partySubType: null,
-      endpoint: ""
-    };
-    return newOracle;
-  }
+	createEmptyOracle(): Oracle {
+		const newOracle: Oracle = {
+			id: uuid.v4(),
+			name: "",
+			type: "builtin",
+			partyType: "MSISDN",
+			partySubType: null,
+			endpoint: ""
+		};
+		return newOracle;
+	}
 
-  getRegisteredOracles():Observable<Oracle[]>{
-    return new Observable<Oracle[]>(subscriber => {
-      this._http.get<Oracle[]>(SVC_BASEURL + "/admin/oracles/").subscribe(
-        (result: Oracle[]) => {
-          console.log(`got response: ${result}`);
+	getRegisteredOracles(): Observable<Oracle[]> {
+		return new Observable<Oracle[]>(subscriber => {
+			this._http.get<Oracle[]>(SVC_BASEURL + "/admin/oracles/").subscribe(
+				(result: Oracle[]) => {
+					console.log(`got response: ${result}`);
 
-          subscriber.next(result);
-          return subscriber.complete();
-        },
-        error => {
-          if (error && error.status===403) {
-            console.warn("Access forbidden received on getRegisteredOracles");
-            subscriber.error(new UnauthorizedError(error.error?.msg));
-          } else {
-            console.error(error);
-            subscriber.error(error);
-          }
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on getRegisteredOracles");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error);
+					}
 
-          return subscriber.complete();
-        }
-      );
-    });
-  }
+					return subscriber.complete();
+				}
+			);
+		});
+	}
 
-  getRegisteredOracleById(id: string):Observable<Oracle|null>{
-    return new Observable<Oracle|null>(subscriber => {
-      this._http.get<Oracle|null>(SVC_BASEURL + `/admin/oracles/${id}`).subscribe(
-        (result: Oracle|null) => {
-          console.log(`got response: ${result}`);
+	getRegisteredOracleById(id: string): Observable<Oracle | null> {
+		return new Observable<Oracle | null>(subscriber => {
+			this._http.get<Oracle | null>(SVC_BASEURL + `/admin/oracles/${id}`).subscribe(
+				(result: Oracle | null) => {
+					console.log(`got response: ${result}`);
 
-          subscriber.next(result);
-          return subscriber.complete();
-        },
-        error => {
-          if (error && error.status===403) {
-            console.warn("Access forbidden received on getRegisteredOracles");
-            subscriber.error(new UnauthorizedError(error.error?.msg));
-          } else {
-            console.error(error);
-            subscriber.error(error);
-          }
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on getRegisteredOracles");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error);
+					}
 
-          return subscriber.complete();
-        }
-      );
-    });
-  }
+					return subscriber.complete();
+				}
+			);
+		});
+	}
 
-  deleteOracle(id: string):Observable<null>{
-    return new Observable<null>(subscriber => {
-      this._http.delete<null>(SVC_BASEURL + `/admin/oracles/${id}`).subscribe(
-        (result: null) => {
-          subscriber.next(result);
-          return subscriber.complete();
-        },
-        error => {
-          if (error && error.status===403) {
-            console.warn("Access forbidden received on getRegisteredOracles");
-            subscriber.error(new UnauthorizedError(error.error?.msg));
-          } else {
-            console.error(error);
-            subscriber.error(error);
-          }
-          return subscriber.complete();
-        }
-      );
-    });
-  }
+	deleteOracle(id: string): Observable<null> {
+		return new Observable<null>(subscriber => {
+			this._http.delete<null>(SVC_BASEURL + `/admin/oracles/${id}`).subscribe(
+				(result: null) => {
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on getRegisteredOracles");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error);
+					}
+					return subscriber.complete();
+				}
+			);
+		});
+	}
 
 
+	registerOracle(oracle: Oracle): Observable<string | null> {
+		return new Observable<string>(subscriber => {
 
-  registerOracle(oracle:Oracle):Observable<string | null>{
-    return new Observable<string>(subscriber => {
+			this._http.post<Oracle>(SVC_BASEURL + "/admin/oracles/", oracle).subscribe(
+				(resp: { id: string }) => {
+					console.log(`got registerOracle response - oracleId: ${resp.id}`);
 
-      this._http.post<Oracle>(SVC_BASEURL + "/admin/oracles/", oracle).subscribe(
-        (resp: { id: string }) => {
-          console.log(`got registerOracle response - oracleId: ${resp.id}`);
+					subscriber.next(resp.id);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on registerOracle");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error);
+					}
+					return subscriber.complete();
+				}
+			);
+		});
+	}
 
-          subscriber.next(resp.id);
-          return subscriber.complete();
-        },
-        error => {
-          if (error && error.status===403) {
-            console.warn("Access forbidden received on registerOracle");
-            subscriber.error(new UnauthorizedError(error.error?.msg));
-          } else {
-            console.error(error);
-            subscriber.error(error);
-          }
-          return subscriber.complete();
-        }
-      );
-    });
-  }
+	healthCheck(oracleId: string): Observable<boolean> {
+		return new Observable<boolean>(subscriber => {
+			this._http.get<boolean>(SVC_BASEURL + `/admin/oracles/health/${oracleId}`).subscribe(
+				(result: boolean) => {
+					console.log(`got response: ${result}`);
 
-  healthCheck(oracleId:string):Observable<boolean>{
-    return new Observable<boolean>(subscriber => {
-      this._http.get<boolean>(SVC_BASEURL + `/admin/oracles/health/${oracleId}`).subscribe(
-        (result: boolean) => {
-          console.log(`got response: ${result}`);
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on healthCheck");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error);
+					}
 
-          subscriber.next(result);
-          return subscriber.complete();
-        },
-        error => {
-          if (error && error.status===403) {
-            console.warn("Access forbidden received on healthCheck");
-            subscriber.error(new UnauthorizedError(error.error?.msg));
-          } else {
-            console.error(error);
-            subscriber.error(error);
-          }
+					return subscriber.complete();
+				}
+			);
+		});
+	}
 
-          return subscriber.complete();
-        }
-      );
-    });
-  }
+	getRegisteredAssociations(): Observable<Association[]> {
+		return new Observable<Association[]>(subscriber => {
+			this._http.get<Association[]>(SVC_BASEURL + "/admin/oracles/builtin-associations/").subscribe(
+				(result: Association[]) => {
+					console.log(`got response: ${result}`);
 
-  getRegisteredAssociations():Observable<Association[]>{
-    return new Observable<Association[]>(subscriber => {
-      this._http.get<Association[]>(SVC_BASEURL + "/admin/oracles/builtin-associations/").subscribe(
-        (result: Association[]) => {
-          console.log(`got response: ${result}`);
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on getRegisteredOracleAssociations");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error);
+					}
 
-          subscriber.next(result);
-          return subscriber.complete();
-        },
-        error => {
-          if (error && error.status===403) {
-            console.warn("Access forbidden received on getRegisteredOracleAssociations");
-            subscriber.error(new UnauthorizedError(error.error?.msg));
-          } else {
-            console.error(error);
-            subscriber.error(error);
-          }
-
-          return subscriber.complete();
-        }
-      );
-    });
-  }
+					return subscriber.complete();
+				}
+			);
+		});
+	}
 }

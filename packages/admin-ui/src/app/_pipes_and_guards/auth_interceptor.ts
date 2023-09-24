@@ -28,9 +28,9 @@
  --------------
  ******/
 
-"use strict"
+"use strict";
 
-import { Injectable } from "@angular/core";
+import {Injectable} from "@angular/core";
 import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
@@ -38,26 +38,25 @@ import {AuthenticationService} from "src/app/_services_and_types/authentication.
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor(private _authentication:AuthenticationService) {
+	constructor(private _authentication: AuthenticationService) {
 
-  }
+	}
 
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if(!this._authentication.isLoggedIn())
-      return next.handle(req);
+	intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+		if (!this._authentication.isLoggedIn())
+			return next.handle(req);
 
-    const token = this._authentication.accessToken;
+		const token = this._authentication.accessToken;
 
-    if (token) {
-      const cloned = req.clone({
-        headers: req.headers.set("Authorization", "Bearer " + token)
-      });
+		if (token) {
+			const cloned = req.clone({
+				headers: req.headers.set("Authorization", "Bearer " + token)
+			});
 
-      return next.handle(cloned);
-    }
-    else {
-      return next.handle(req);
-    }
-  }
+			return next.handle(cloned);
+		} else {
+			return next.handle(req);
+		}
+	}
 }
