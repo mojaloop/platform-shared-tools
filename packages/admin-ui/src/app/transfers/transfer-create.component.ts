@@ -62,8 +62,8 @@ export class TransferCreateComponent implements OnInit {
 				this.applyQuote(this.inputQuoteId);
 			}
 
-		}catch(error){
-			this._messageService.addError(error.message);
+		}catch(error:any){
+			this._messageService.addError(error.message || error);
 		}
 
 

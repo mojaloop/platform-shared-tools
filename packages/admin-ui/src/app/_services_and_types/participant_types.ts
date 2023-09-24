@@ -51,10 +51,13 @@ export declare type Participant = {
 
   lastUpdated: number;
 
-  participantAllowedSourceIps: ParticipantAllowedSourceIps[];
+  participantAllowedSourceIps: ParticipantAllowedSourceIp[];
+  participantSourceIpChangeRequests: participantSourceIpChangeRequest[];
+
   participantEndpoints: ParticipantEndpoint[];
   participantAccounts: ParticipantAccount[];
   participantAccountsChangeRequest: ParticipantAccountChangeRequest[];
+
 
   fundsMovements: ParticipantFundsMovement[];
   changeLog: ParticipantActivityLogEntry[];
@@ -105,14 +108,33 @@ export declare type ParticipantFundsMovement = {
   note: string | null;
 };
 
-export declare type ParticipantAllowedSourceIps = {
+export declare type ParticipantAllowedSourceIp = {
   id: string; // uuid of the source IP
   cidr: string; // proper cidr format
   // ANY to only use the cidr, allow traffic from any ports, SPECIFIC to use ports array, RANGE to use portRange
   portMode: "ANY" | "SPECIFIC" | "RANGE";
-  ports?: number[]; // using a single or multiple ports
-  portRange?: { rangeFirst: number; rangeLast: number }; // port range
+  ports?: string; // using a single or multiple ports
+  portRange: { rangeFirst: number | null; rangeLast?: number | null }; // port range
+  editing?: boolean;
 };
+
+export declare type participantSourceIpChangeRequest = {
+  id: string;
+  allowedSourceIpId: string | null;
+  cidr: string;
+  portMode: "ANY" | "SPECIFIC" | "RANGE";
+  ports?: number[];
+  portRange?: {
+    rangeFirst: number;
+    rangeLast: number;
+  };
+  createdBy?: string;
+  createdDate?: number;
+  approved?: boolean;
+  approvedBy?: string | null;
+  approvedDate?: number | null;
+  requestType?: "ADD_SOURCE_IP" | "CHANGE_SOURCE_IP";
+}
 
 export declare type PartipantEndpointType = "FSPIOP" | "ISO20022";
 export declare type PartipantEndpointProtocol = "HTTPs/REST";
@@ -134,7 +156,7 @@ export declare type ParticipantAccount = {
   debitBalance?: string; // output only, we don't store this here
   creditBalance?: string; // output only, we don't store this here
   balance: string | null; // output only, we don't store this here
-  editing?:boolean;
+  editing?: boolean;
 };
 
 export declare type ParticipantAccountChangeRequest = {

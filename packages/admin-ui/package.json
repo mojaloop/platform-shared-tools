@@ -9,7 +9,9 @@
     "build:prod": "NODE_OPTIONS=--openssl-legacy-provider ng build",
     "watch": "NODE_OPTIONS=--openssl-legacy-provider ng build --watch --configuration development",
     "test": "NODE_OPTIONS=--openssl-legacy-provider ng test",
-    "docker:build": "echo 'NOTE: use circleci CI/CD pipeline'"
+    "docker:build": "echo 'NOTE: use circleci CI/CD pipeline'",
+	"lint": "eslint ./src",
+	"lint:fix": "eslint ./src --fix"
   },
   "private": true,
   "mojaloop": {

@@ -2,29 +2,32 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { MessageService } from "src/app/_services_and_types/message.service";
 import * as uuid from "uuid";
+
 import {
-  IParticipantNetDebitCapChangeRequest,
-  Participant,
-  ParticipantAccount,
-  ParticipantAccountChangeRequest,
-  ParticipantFundsMovement,
-  ParticipantFundsMovementDirection,
+	IParticipantNetDebitCapChangeRequest,
+	Participant,
+	ParticipantAccount,
+	ParticipantAccountChangeRequest,
+	ParticipantAllowedSourceIp, ParticipantEndpoint,
+	ParticipantFundsMovement,
+	ParticipantFundsMovementDirection,
+	participantSourceIpChangeRequest,
 } from "src/app/_services_and_types/participant_types";
 import { ParticipantsService } from "src/app/_services_and_types/participants.service";
-import { BehaviorSubject } from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {
-  ModalDismissReasons,
   NgbModal,
   NgbModalRef,
   NgbNav,
 } from "@ng-bootstrap/ng-bootstrap";
+import { validateCIDR, validatePortRange, validatePorts } from "../_utils";
 
 @Component({
   selector: "app-participant-detail",
   templateUrl: "./participant-detail.component.html",
 })
 export class ParticipantDetailComponent implements OnInit {
-  private _participantId: string | null = null;
+  private _participantId!: string;
   public participant: BehaviorSubject<Participant | null> =
     new BehaviorSubject<Participant | null>(null);
 
@@ -34,8 +37,13 @@ export class ParticipantDetailComponent implements OnInit {
 
   accountCreateModeEnabled = false;
   accountEditModeEnabled = false;
-  newParticipantAccount: any;
+  newParticipantAccount: ParticipantAccount | null = null;
   editingParticipantAccountOriginalData?: ParticipantAccount;
+
+  sourceIpCreateModeEnabled = false;
+  sourceIpEditModeEnabled = false;
+  newSourceIp: any;
+  editingSourceIpOriginalData?: ParticipantAllowedSourceIp;
 
   ndcCreateModeEnabled = false;
   ndcEditModeEnabled = false;
@@ -57,25 +65,25 @@ export class ParticipantDetailComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     console.log(this._route.snapshot.routeConfig?.path);
-    if (
-      this._route.snapshot.routeConfig?.path === this._participantsSvc.hubId
-    ) {
+    if (this._route.snapshot.routeConfig?.path === this._participantsSvc.hubId) {
       this._participantId = this._participantsSvc.hubId;
     } else {
-      this._participantId = this._route.snapshot.paramMap.get("id");
+	  const id = this._route.snapshot.paramMap.get("id");
+	  if(!id) throw new Error("Invalid id param in participant detail");
+      this._participantId = id;
     }
 
     if (!this._participantId) {
       throw new Error("invalid participant id");
     }
 
-    await this._fetchParticipant(this._participantId);
+    await this._fetchParticipant();
     this.updateAccounts();
   }
 
-  private async _fetchParticipant(id: string): Promise<void> {
+  private async _fetchParticipant(): Promise<void> {
     return new Promise((resolve) => {
-      this._participantsSvc.getParticipant(id).subscribe((participant) => {
+      this._participantsSvc.getParticipant(this._participantId).subscribe((participant) => {
         this.participant.next(participant);
         resolve();
       });
@@ -93,18 +101,18 @@ export class ParticipantDetailComponent implements OnInit {
 
   // any editing going on this page?
   get editing(): boolean {
-    return this.endpointCreateModeEnabled || this.endpointEditModeEnabled;
+    return this.endpointCreateModeEnabled || this.endpointEditModeEnabled ||
+		this.sourceIpCreateModeEnabled || this.sourceIpEditModeEnabled ||
+		this.ndcCreateModeEnabled || this.ndcEditModeEnabled ||
+		this.accountCreateModeEnabled ||  this.accountEditModeEnabled;
   }
 
   approve() {
-    this._participantsSvc
-      .approveParticipant(this.participant.value?.id!)
-      .subscribe(
-        (value) => {
+    this._participantsSvc.approveParticipant(this.participant.value?.id!)
+      .subscribe(async() => {
           this._messageService.addSuccess("Participant Approved");
-          this.ngOnInit();
-        },
-        (error) => {
+		  await this._fetchParticipant();
+        }, (error) => {
           this._messageService.addError(error.message);
         }
       );
@@ -128,9 +136,7 @@ export class ParticipantDetailComponent implements OnInit {
     );
 
     if (!endpointObj) {
-      throw new Error(
-        `can't find endpoint with id: ${id} on endpointSaveEdit()`
-      );
+      throw new Error(`can't find endpoint with id: ${id} on endpointSaveEdit()`);
     }
 
     const typeElement: HTMLSelectElement | null = document.getElementById(
@@ -162,37 +168,21 @@ export class ParticipantDetailComponent implements OnInit {
       endpointObj.value = ""; // default
     }
 
-    const complete = () => {
-      this.endpointCreateModeEnabled = false;
-      this.endpointEditModeEnabled = false;
-      this.endpointEditingId = "";
+	// select and bind correct function
+	const createOrUpdateEndpoint: (participantId: string, endpoint: ParticipantEndpoint ) => Observable<string | void>=
+		  this.endpointCreateModeEnabled ? this._participantsSvc.createEndpoint.bind(this) : this._participantsSvc.changeEndpoint.bind(this);
 
-      this._fetchParticipant(this.participant.value!.id);
-    };
+	createOrUpdateEndpoint(this._participantId, endpointObj).subscribe(async ()=> {
+		this.endpointCreateModeEnabled = false;
+		this.endpointEditModeEnabled = false;
+		this.endpointEditingId = "";
 
-    if (this.endpointCreateModeEnabled) {
-      this._participantsSvc
-        .createEndpoint(this.participant.value!.id, endpointObj)
-        .subscribe(
-          (value) => {
-            complete();
-          },
-          (error) => {
-            this._messageService.addError(error);
-          }
-        );
-    } else {
-      this._participantsSvc
-        .changeEndpoint(this.participant.value!.id, endpointObj)
-        .subscribe(
-          (value) => {
-            complete();
-          },
-          (error) => {
-            this._messageService.addError(error);
-          }
-        );
-    }
+		await this._fetchParticipant();
+	  },(error) => {
+		this._messageService.addError(error);
+	  }
+	);
+
   }
 
   endpointStopEdit() {
@@ -224,14 +214,10 @@ export class ParticipantDetailComponent implements OnInit {
 
     if (!confirm("Are you sure you want to remove this endpoint?")) return;
 
-    this._participantsSvc
-      .removeEndpoint(this.participant.value!.id, endpointObj.id)
-      .subscribe(
-        (value) => {
-          //this.participant.value!.participantEndpoints = this.participant.value!.participantEndpoints.filter(value => value.id!==id);
-          this._fetchParticipant(this.participant.value!.id);
-        },
-        (error) => {
+    this._participantsSvc.removeEndpoint(this._participantId, endpointObj.id)
+      .subscribe( () => {
+          this._fetchParticipant();
+        },(error) => {
           this._messageService.addError(error);
         }
       );
@@ -241,22 +227,24 @@ export class ParticipantDetailComponent implements OnInit {
    * Accounts
    * */
 
-  onEditAccountClick(account: ParticipantAccount): void {
+  onEditAccount(account: ParticipantAccount): void {
+    //debugger
     account.editing = true;
     this.accountEditModeEnabled = true;
-    this.editingParticipantAccountOriginalData = {...account};
+    this.editingParticipantAccountOriginalData = { ...account };
   }
 
-  onCancelEditClick(account: ParticipantAccount): void {
+  onCancelEditingAccount(account: ParticipantAccount): void {
+    //debugger
     this.accountCreateModeEnabled = false;
     this.accountEditModeEnabled = false;
 
     Object.assign(account, this.editingParticipantAccountOriginalData);
     account.editing = false;
-    
+
   }
 
-  onAddAccountClick(): void {
+  onAddAccount(): void {
     this.accountCreateModeEnabled = true;
     this.newParticipantAccount = this._participantsSvc.createEmptyAccount();
   }
@@ -274,7 +262,7 @@ export class ParticipantDetailComponent implements OnInit {
       requestType: "ADD_ACCOUNT"
     }
 
-    // check overlaps
+    // check duplicates
     if (this.accountCreateModeEnabled) {
       participantAccountChangeRequest.requestType = "ADD_ACCOUNT";
       const duplicateAccount = this.participant.value?.participantAccounts.find(
@@ -291,16 +279,13 @@ export class ParticipantDetailComponent implements OnInit {
         account.editing = false;
         return;
       }
-    }
-    else{
+    } else {
       participantAccountChangeRequest.requestType = "CHANGE_ACCOUNT_BANK_DETAILS";
     }
 
-    this._participantsSvc
-      .createAccount(this.participant.value!.id, participantAccountChangeRequest)
-      .subscribe(
-        (value) => {
-          this._fetchParticipant(this.participant.value!.id);
+    this._participantsSvc.createAccount(this._participantId, participantAccountChangeRequest)
+      .subscribe(async () => {
+          await this._fetchParticipant();
           this.updateAccounts();
           this.accountCreateModeEnabled = false;
           this.accountEditModeEnabled = false;
@@ -309,23 +294,21 @@ export class ParticipantDetailComponent implements OnInit {
           this._messageService.addSuccess(
             "Account change request created!"
           );
-          
-        },
-        (error) => {
-          
+
+        }, (error) => {
+
           this._messageService.addError(error);
         }
       );
   }
 
   approveAccountChangeRequest(reqId: string) {
-    this._participantsSvc
-      .approveAccountChangeRequest(this.participant.value!.id, reqId)
+    this._participantsSvc.approveAccountChangeRequest(this._participantId, reqId)
       .subscribe(
         async () => {
           this._messageService.addSuccess("Successfully approved account change request.");
 
-          await this._fetchParticipant(this.participant.value!.id);
+          await this._fetchParticipant();
         },
         (error) => {
           if (this.depositWithdrawalModalRef)
@@ -341,32 +324,12 @@ export class ParticipantDetailComponent implements OnInit {
     this._messageService.addError("Not implemented (rejectAccountChangeRequest)");
   }
 
-
-  /*  accountRemote(id: string) {
-    console.log("accountSaveEdit() called");
-    const accountObj = this.participant.value?.participantAccounts.find(item => item.id===id);
-    if (!accountObj) {
-      throw new Error(`can't find account with id: ${id} on accountRemote()`);
-    }
-
-    if (!confirm("Are you sure you want to remove this account?")) return;
-
-    this._participantsSvc.removeAccount(this.participant.value!.id, accountObj.id).subscribe(value => {
-        //this.participant.value!.participantaccounts = this.participant.value!.participantaccounts.filter(value => value.id!==id);
-        this._fetchParticipant(this.participant.value!.id);
-      }, error => {
-        this._messageService.addError(error);
-      }
-    );
-  }*/
-
   updateAccounts() {
     if (!this._participantId) {
       throw new Error("invalid participant id");
     }
 
-    this._participantsSvc
-      .getParticipantAccounts(this._participantId)
+    this._participantsSvc.getParticipantAccounts(this._participantId)
       .subscribe((accounts: ParticipantAccount[]) => {
         if (!accounts) return;
 
@@ -376,6 +339,142 @@ export class ParticipantDetailComponent implements OnInit {
       });
 
     this.navBar.select("accounts");
+  }
+
+  /*
+   * Source IPs
+   * */
+
+  onEditSourceIp(sourceIp: ParticipantAllowedSourceIp): void {
+    sourceIp.editing = true;
+    this.sourceIpEditModeEnabled = true;
+
+    this.editingSourceIpOriginalData = JSON.parse(JSON.stringify(sourceIp));
+  }
+
+  onCancelEditingSourceIp(sourceIP: ParticipantAllowedSourceIp): void {
+    this.sourceIpEditModeEnabled = false;
+    this.sourceIpCreateModeEnabled = false;
+    Object.assign(sourceIP, this.editingSourceIpOriginalData);
+    sourceIP.editing = false;
+
+  }
+
+  onAddSourceIp(): void {
+    this.sourceIpCreateModeEnabled = true;
+    this.newSourceIp = this._participantsSvc.createEmptySourceIp();
+  }
+
+  onPortModeChange() {
+	  if (this.newSourceIp.portMode === "ANY") {
+		  this.newSourceIp.ports = "";
+	  } else if (this.newSourceIp.portMode === "SPECIFIC") {
+		  this.newSourceIp.portRange.rangeFirst = null;
+		  this.newSourceIp.portRange.rangeLast = null;
+	  } else if (this.newSourceIp.portMode === "RANGE") {
+		  this.newSourceIp.ports = "";
+	  }
+  }
+
+  isSourceIpValid(sourceIp: ParticipantAllowedSourceIp): boolean {
+    if (sourceIp.cidr.trim().length === 0) {
+      this._messageService.addError("CIDR cannot be empty.");
+      return false;
+    }
+
+    if (!validateCIDR(sourceIp.cidr.trim())) {
+      this._messageService.addError("Invalid CIDR format.");
+      return false;
+    }
+
+    if (sourceIp.portMode === "RANGE") {
+      if (Number(sourceIp.portRange.rangeFirst) === 0 || Number(sourceIp.portRange.rangeFirst) === 0) {
+        this._messageService.addError("Invalid Port Range values.");
+        return false;
+      }
+
+      if (!validatePortRange(Number(sourceIp.portRange.rangeFirst), Number(sourceIp.portRange.rangeLast))) {
+        this._messageService.addError("Invalid Port Range values.");
+        return false;
+      }
+    }
+
+    if (sourceIp.portMode === "SPECIFIC") {
+      if (!validatePorts(sourceIp.ports)) {
+        this._messageService.addError("Invalid Port value.");
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  saveEditSourceIp(sourceIp: ParticipantAllowedSourceIp): void {
+    // Implement logic to save changes
+
+    if (!this.isSourceIpValid(sourceIp)) {
+      return;
+    }
+
+    let sourceIpChangeRequest: participantSourceIpChangeRequest = {
+      id: uuid.v4(),
+      allowedSourceIpId: sourceIp.id,
+      cidr: sourceIp.cidr,
+      portMode: sourceIp.portMode,
+      ports: sourceIp.portMode === "SPECIFIC" ? sourceIp.ports?.split(",").map(Number) : [],
+      portRange: sourceIp.portMode === "RANGE" ? {
+        rangeFirst: sourceIp.portRange.rangeFirst || 0,
+        rangeLast: sourceIp.portRange.rangeLast || 0
+      } : undefined,
+      requestType: (this.sourceIpEditModeEnabled ?  "CHANGE_SOURCE_IP" : "ADD_SOURCE_IP")
+    }
+
+	// check for duplicates
+	const duplicateCidr = this.participant.value?.participantSourceIpChangeRequests.find(
+	 item => item.cidr === sourceIp.cidr && item.id !==sourceIp.id
+	);
+
+	if (duplicateCidr){
+	  this._messageService.addWarning("Another SourceIP with the same CIDR already exists.");
+	  return;
+    }
+
+    this._participantsSvc.createSourceIp(this._participantId, sourceIpChangeRequest).subscribe(async () => {
+          await this._fetchParticipant();
+
+          this.sourceIpCreateModeEnabled = this.sourceIpEditModeEnabled = false;
+          sourceIp.editing = false;
+
+          this._messageService.addSuccess("SourceIP change request created!");
+
+        }, (error: any) => {
+		  console.error(error);
+          this._messageService.addError(error.message || error);
+        }
+      );
+  }
+
+  approveSourceIpChangeRequest(reqId: string) {
+    this._participantsSvc
+      .approveSourceIpChangeRequest(this._participantId, reqId)
+      .subscribe(
+        async () => {
+          this._messageService.addSuccess("Successfully approved SourceIP change request.");
+
+          await this._fetchParticipant();
+        },
+        (error) => {
+          if (this.depositWithdrawalModalRef)
+            this.depositWithdrawalModalRef!.close();
+          this._messageService.addError(
+            `SourceIP changes request approval failed with: ${error}`
+          );
+        }
+      );
+  }
+
+  rejectSourceIpChangeRequest(reqId: string) {
+    this._messageService.addError("Not implemented (rejectSourceIpChangeRequest)");
   }
 
   createFundsMov(e: Event, direction: ParticipantFundsMovementDirection) {
@@ -432,14 +531,14 @@ export class ParticipantDetailComponent implements OnInit {
     };
 
     this._participantsSvc
-      .createFundsMovement(this.participant.value!.id, fundsMov)
+      .createFundsMovement(this._participantId, fundsMov)
       .subscribe(
         async () => {
           this.depositWithdrawalModalRef!.close();
           this._messageService.addSuccess(
             "Funds movement created with success!"
           );
-          await this._fetchParticipant(this.participant.value!.id);
+          await this._fetchParticipant();
           this.navBar.select("fundsMovs");
         },
         (error) => {
@@ -453,13 +552,13 @@ export class ParticipantDetailComponent implements OnInit {
 
   approveFundsMov(fundsMovId: string) {
     this._participantsSvc
-      .approveFundsMovement(this.participant.value!.id, fundsMovId)
+      .approveFundsMovement(this._participantId, fundsMovId)
       .subscribe(
         async () => {
           this._messageService.addSuccess(
             "Funds movement approved with success!"
           );
-          await this._fetchParticipant(this.participant.value!.id);
+          await this._fetchParticipant();
           this.updateAccounts();
         },
         (error) => {
@@ -529,12 +628,12 @@ export class ParticipantDetailComponent implements OnInit {
     // }
     // TODO check duplicates also in requests (pending approval)
 
-    this._participantsSvc.createNDC(this.participant.value!.id, this.newNDC).subscribe(async (value) => {
+    this._participantsSvc.createNDC(this._participantId, this.newNDC).subscribe(async (value) => {
       this.ndcCreateModeEnabled = false;
       this.ndcEditModeEnabled = false;
       this.newNDC = null;
 
-      await this._fetchParticipant(this.participant.value!.id);
+      await this._fetchParticipant();
     },
       (error) => {
         this._messageService.addError(error.message);
@@ -552,12 +651,12 @@ export class ParticipantDetailComponent implements OnInit {
 
   approveNDCRequest(reqId: string) {
     this._participantsSvc
-      .approveNDC(this.participant.value!.id, reqId)
+      .approveNDC(this._participantId, reqId)
       .subscribe(
         async () => {
           this._messageService.addSuccess("NDC Request approved with success!");
 
-          await this._fetchParticipant(this.participant.value!.id);
+          await this._fetchParticipant();
         },
         (error) => {
           if (this.depositWithdrawalModalRef)
@@ -590,6 +689,6 @@ export class ParticipantDetailComponent implements OnInit {
   }
 
   async copyParticipantIdToClipboard() {
-    await navigator.clipboard.writeText(this.participant.value!.id || "");
+    await navigator.clipboard.writeText(this._participantId || "");
   }
 }
