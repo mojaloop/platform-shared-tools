@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/mojaloop-vnext-k8s-operator-svc",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "mojaloop mojaloop vnext operator",
   "license": "Apache-2.0",
   "homepage": "https://github.com/mojaloop/platform-shared-tools/packages/k8s-operator",
