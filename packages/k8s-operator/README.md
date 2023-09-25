@@ -11,6 +11,14 @@ TBD
 - k8s-vnext-install-resources - resources required by the operator to install the services for both cross-cutting and applications
 
 
+## make sure correct node version is used
+Requires nvm installed - https://github.com/nvm-sh/nvm#installing-and-updating
+
+```bash
+#in the k8s-operator directory
+nvm use
+```
+
 ## install
 
 ```bash

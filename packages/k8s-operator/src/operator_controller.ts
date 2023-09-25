@@ -235,6 +235,10 @@ export class MojaloopVNextInstallOperatorController {
         this._log(`\t - Trying to create deployment '${serviceDefinition.svcName}'...`);
 
         try {
+            //TODO change the k8s-vnext-install-resources resource files to include all related
+            // resources for a single service and in here, open the file and checking if it includes
+            // multiple resource definitions (deployment, service or ingress)
+
             // TODO create deployment from cross-cutting and apps layers
 
             // Read deployment file and create deploy it
@@ -363,8 +367,10 @@ export class MojaloopVNextInstallOperatorController {
 
     // Call the API to destroy the resource, happens when the CRD instance is deleted.
     private async _deleteResource(obj: MojaloopVNextInstall) {
+        // TODO this is wrong, it should delete the multiple services as per spec (same as reconcile)
+        this._k8sApi.deleteNamespacedDeployment(obj.metadata.name!, NAMESPACE);
         this._log(`Deleted ${obj.metadata.name}`);
-        return this._k8sApi.deleteNamespacedDeployment(obj.metadata.name!, NAMESPACE);
+
     }
 
 
