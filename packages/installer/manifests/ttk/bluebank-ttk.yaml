@@ -346,7 +346,7 @@ spec:
       initContainers: null
       containers:
         - name: ml-bluebank-frontend
-          image: mojaloop/ml-testing-toolkit-ui:v15.3.0
+          image: mojaloop/ml-testing-toolkit-ui:v15.0.0
           imagePullPolicy: IfNotPresent
           command:
             - sh
@@ -387,7 +387,7 @@ spec:
       initContainers: null
       containers:
       - name: ml-bluebank-backend
-        image: mojaloop/ml-testing-toolkit:v16.1.1
+        image: mojaloop/ml-testing-toolkit:v15.0.0
         imagePullPolicy: IfNotPresent
         securityContext:
           runAsUser: 1001
