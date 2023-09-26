@@ -16,8 +16,7 @@ function check_arch {
   ## check architecture Mojaloop deploys on x64 only today arm is coming  
   ARCH=`uname -p`
   if [[ ! "$ARCH" == "x86_64" ]]; then 
-    printf " ** Error: Mojaloop is only running on x86_64 today and not yet running on ARM cpus \n"
-    printf "    please see https://github.com/mojaloop/project/issues/2317 for ARM status \n"
+    printf " ** Warning: Mojaloop vNext is only running confidently on x86_64 today. ARM64 is experimental  \n"
     printf " ** \n"
   fi
 }
@@ -139,7 +138,7 @@ function set_logfiles {
 }
 
 function update_k8s_images_from_docker_files {
-  printf "==> updating kubernets image versions from docker-compose files   "
+  printf "==> updating kubernetes image versions in %s from docker-compose files   " $MANIFESTS_DIR
   local yaml_files=("path/to/file1.yaml" "path/to/file2.yaml")  # Replace with your YAML file paths
   compose_dir=$BASE_DIR/packages/deployment  
   CURRENT_IMAGES_FROM_DOCKER_FILES=($(grep image $compose_dir/**/docker*yml | grep -v infra | grep mojaloop | cut -d ":" -f3,4))
@@ -167,6 +166,18 @@ function update_k8s_images_from_docker_files {
   printf " [ ok ] \n"
 }
 
+function copy_k8s_yaml_files_to_tmp {
+  printf "==> copying kubernetes manifest directory from %s to /tmp/manifests   " "$MANIFESTS_DIR"
+  # do this so that any dynamic local changes to the kubernetes manifest (*yaml) files won't
+  # accidentally be written to the vNext git repo
+  # echo "before copy MANIFESTS_DIR=$MANIFESTS_DIR"
+  # rm -rf /tmp/$MANIFESTS_DIR 
+  cp -r $MANIFESTS_DIR /tmp
+  # and update the location of the manifests 
+  MANIFESTS_DIR="/tmp/manifests" 
+  #echo "after copy MANIFESTS_DIR=$MANIFESTS_DIR"
+  printf " [ ok ] \n"
+}
 
 function configure_extra_options {
   printf "==> configuring which Mojaloop vNext options to install   \n"
@@ -215,24 +226,30 @@ function set_and_create_namespace {
 # }
 
 function modify_local_mojaloop_yaml_and_charts {
-  if [[ "$#" -ne 1 ]]; then 
-      printf "\n** Error: the required yaml files configuration script was not specified in  [%s] \n" "$0"
+  if [[ "$#" -ne 2 ]]; then 
+      printf "\n** Error: insufficient params passed to [%s] \n" "$0"
       exit 1
   fi 
-  config_script=$1
+  local config_script=$1
+  local k8s_yamls_dir=$2
   if [[ ! -f "$config_script" ]]; then 
       printf "\n** Error: can't find yaml files configuration script [%s] \n" "$config_script"
       exit 1
   fi 
+  if [[ ! -d "$k8s_yamls_dir" ]]; then 
+      printf "\n** Error: can't find the directory with the kubernetes manifests (yaml files)  [%s] \n" "$k8s_yamls_dir"
+      exit 1
+  fi 
   printf "==> configuring Mojaloop vNext yaml and helm chart values \n" 
-  if [ ! -z ${domain_name+x} ]; then 
-    printf "==> setting domain name to <%s> \n " $domain_name 
-    MOJALOOP_CONFIGURE_FLAGS_STR+="--domain_name $domain_name " 
-  fi
+  # TODO implement domain names insertion into the ingress.yamls 
+  # if [ ! -z ${domain_name+x} ]; then 
+  #   printf "==> setting domain name to <%s> \n " $domain_name 
+  #   MOJALOOP_CONFIGURE_FLAGS_STR+="--domain_name $domain_name " 
+  # fi
 
   # TODO We want to avoid running the helm repackage when we don't need to 
-  printf "     executing %s $MOJALOOP_CONFIGURE_FLAGS_STR  \n" "$config_script"
-  $config_script $MOJALOOP_CONFIGURE_FLAGS_STR 
+  printf "     executing %s -d %s   \n" "$config_script" "$k8s_yamls_dir"
+  $config_script $MOJALOOP_CONFIGURE_FLAGS_STR -d $k8s_yamls_dir
   if [[ $? -ne 0  ]]; then 
       printf " [ failed ] \n"
       exit 1 
@@ -240,8 +257,9 @@ function modify_local_mojaloop_yaml_and_charts {
 }
 
 function repackage_infra_helm_chart {
+  local infra_dir=$1
   current_dir=`pwd`
-  cd $INFRA_DIR
+  cd $infra_dir
   if [[ "$NEED_TO_REPACKAGE" == "true" ]]; then 
     tstart=$(date +%s)
     printf "==> running repackage of the infrastructure helm chart to incorporate local configuration changes"
@@ -254,7 +272,7 @@ function repackage_infra_helm_chart {
       NEED_TO_REPACKAGE="false"
     else
       printf " [ failed ] \n"
-      printf "** please try running $INFRA_DIR/package.sh manually to determine the problem **  \n" 
+      printf "** please try running $infra_dir/package.sh manually to determine the problem **  \n" 
       cd $current_dir
       exit 1
     fi  
@@ -315,14 +333,15 @@ function delete_mojaloop_infra_release {
 
 
 function install_infra_from_local_chart  {
+  local infra_dir=$1
   printf "start : mini-loop Mojaloop vNext install infrastructure services [%s]\n" "`date`" 
   delete_mojaloop_infra_release
-  repackage_infra_helm_chart
+  repackage_infra_helm_chart $infra_dir
   # install the chart
   printf  "==> deploy Mojaloop vNext infrastructure via %s helm chart and wait for upto %s  secs for it to be ready \n" "$ML_RELEASE_NAME" "$TIMEOUT_SECS"
-  printf  "    executing helm install $HELM_INFRA_RELEASE --wait --timeout $TIMEOUT_SECS $INFRA_DIR/infra-helm  \n "
+  printf  "    executing helm install $HELM_INFRA_RELEASE --wait --timeout $TIMEOUT_SECS $infra_dir/infra-helm  \n "
   tstart=$(date +%s)
-  helm install $HELM_INFRA_RELEASE --wait --timeout $TIMEOUT_SECS  --namespace "$NAMESPACE" $INFRA_DIR/infra-helm  >> $LOGFILE 2>>$ERRFILE
+  helm install $HELM_INFRA_RELEASE --wait --timeout $TIMEOUT_SECS  --namespace "$NAMESPACE" $infra_dir/infra-helm  >> $LOGFILE 2>>$ERRFILE
   tstop=$(date +%s)
   telapsed=$(timer $tstart $tstop)
   if [[ `helm status $HELM_INFRA_RELEASE  --namespace "$NAMESPACE" | grep "^STATUS:" | awk '{ print $2 }' ` = "deployed" ]] ; then 
@@ -425,7 +444,7 @@ function delete_mojaloop_layer() {
 function install_mojaloop_layer() { 
   local app_layer="$1"
   local layer_yaml_dir="$2"
-  printf "==> installing components in the mojaloop [ %s ] application layer  \n" $app_layer
+  printf "==> installing the mojaloop [ %s ] application layer using yamls from [ %s ] \n" $app_layer $layer_yaml_dir
   delete_mojaloop_layer $app_layer $layer_yaml_dir
   current_dir=`pwd`
   cd $layer_yaml_dir
@@ -590,9 +609,9 @@ HELM_INFRA_RELEASE="infra"        # the name of the helm release for all the inf
 DEFAULT_HELM_TIMEOUT_SECS="1200s" # default timeout for deplying helm chart 
 TIMEOUT_SECS=0                    # user override for TIMEOUT
 DEFAULT_NAMESPACE="default"
-INFRA_DIR=$MANIFESTS_DIR/infra
-CROSSCUT_DIR=$MANIFESTS_DIR/crosscut
-APPS_DIR=$MANIFESTS_DIR/apps
+# INFRA_DIR=$MANIFESTS_DIR/infra
+# CROSSCUT_DIR=$MANIFESTS_DIR/crosscut
+# APPS_DIR=$MANIFESTS_DIR/apps
 TTK_DIR=$MANIFESTS_DIR/ttk
 K8S_CURRENT_RELEASE_LIST=( "1.26" "1.27" )
 CURRENT_IMAGES_FROM_DOCKER_FILES=[]

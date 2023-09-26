@@ -141,24 +141,25 @@ set_mojaloop_timeout
 printf "\n"
 
 if [[ "$mode" == "delete_ml" ]]; then
-  check_manifests_dir_exists
-  delete_mojaloop_layer "ttk" $TTK_DIR
-  delete_mojaloop_layer "apps" $APPS_DIR
-  delete_mojaloop_layer "crosscut" $CROSSCUT_DIR
+  #check_manifests_dir_exists
+  delete_mojaloop_layer "ttk" $MANIFESTS_DIR/ttk
+  delete_mojaloop_layer "apps" $MANIFESTS_DIR/apps
+  delete_mojaloop_layer "crosscut" $MANIFESTS_DIR/crosscut
   delete_mojaloop_infra_release  
   print_end_banner "mini-loop"
 elif [[ "$mode" == "install_ml" ]]; then
   tstart=$(date +%s)
   printf "start :  Mojaloop (vNext) install utility [%s]\n" "`date`" >> $LOGFILE
   #configure_extra_options 
+  copy_k8s_yaml_files_to_tmp
+  modify_local_mojaloop_yaml_and_charts  "$SCRIPTS_DIR/vnext-configure.py" "$MANIFESTS_DIR"
   update_k8s_images_from_docker_files # during development enable sync image versions for k8s  from docker-compose 
-  modify_local_mojaloop_yaml_and_charts "$SCRIPTS_DIR/vnext-configure.py"
-  install_infra_from_local_chart
-  install_mojaloop_layer "crosscut" $CROSSCUT_DIR 
-  install_mojaloop_layer "apps" $APPS_DIR
+  install_infra_from_local_chart $MANIFESTS_DIR/infra
+  install_mojaloop_layer "crosscut" $MANIFESTS_DIR/crosscut
+  install_mojaloop_layer "apps" $MANIFESTS_DIR/apps
   if [[ "$ARCH" == "x86_64" ]]; then 
     # for now only install TTK on intel i.e. not arm64 yet 
-    install_mojaloop_layer "ttk" $TTK_DIR
+    install_mojaloop_layer "ttk" $MANIFESTS_DIR/ttk
   fi 
   restore_demo_data
   configure_elastic_search
