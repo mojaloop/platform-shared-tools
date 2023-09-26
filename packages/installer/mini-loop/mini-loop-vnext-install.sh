@@ -151,7 +151,7 @@ elif [[ "$mode" == "install_ml" ]]; then
   tstart=$(date +%s)
   printf "start :  Mojaloop (vNext) install utility [%s]\n" "`date`" >> $LOGFILE
   #configure_extra_options 
-  #update_k8s_images_from_docker_files # during development enable sync image versions for k8s  from docker-compose 
+  update_k8s_images_from_docker_files # during development enable sync image versions for k8s  from docker-compose 
   modify_local_mojaloop_yaml_and_charts "$SCRIPTS_DIR/vnext-configure.py"
   install_infra_from_local_chart
   install_mojaloop_layer "crosscut" $CROSSCUT_DIR 
