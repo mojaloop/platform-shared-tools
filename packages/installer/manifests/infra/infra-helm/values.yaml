@@ -91,12 +91,15 @@ kafka:
           value: TransfersBcEvents
       -   name: TransfersBcRequests
           value: TransfersBcRequests
+      -   name: TransfersBcTimeouts
+          value: TransfersBcTimeouts
       -   name: SettlementsBcEvents
           value: SettlementsBcEvents
       -   name: SettlementsBcCommands
           value: SettlementsBcCommands
       -   name: PlatformConfigurationBcEvents
           value: PlatformConfigurationBcEvents
+      
 
     nodeSelector: {}
     tolerations: []
