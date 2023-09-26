@@ -138,6 +138,37 @@ function set_logfiles {
   printf "==> logfiles can be found at %s and %s \n" "$LOGFILE" "$ERRFILE"
 }
 
+function update_k8s_images_from_docker_files {
+  printf "==> updating kubernets image versions from docker-compose files   "
+  local yaml_files=("path/to/file1.yaml" "path/to/file2.yaml")  # Replace with your YAML file paths
+  compose_dir=$BASE_DIR/packages/deployment  
+  CURRENT_IMAGES_FROM_DOCKER_FILES=($(grep image $compose_dir/**/docker*yml | grep -v infra | grep mojaloop | cut -d ":" -f3,4))
+  MANIFESTS_DIR1="/tmp/manifests"
+  k8s_yaml_files=($(ls $MANIFESTS_DIR1/**/*yaml))
+  # for element in "${k8s_yaml_files[@]}"; do
+  #   echo "$element"
+  # done
+  for ((i=0; i<${#CURRENT_IMAGES_FROM_DOCKER_FILES[@]}; i++)); do
+    local image="${CURRENT_IMAGES_FROM_DOCKER_FILES[$i]}"
+    local image_name="${image%%:*}"  # Extract the image name
+    local image_tag="${image#*:}"    # Extract the image tag
+    
+    # echo "i : $i"
+    # echo "image: $image"
+    # echo "image_name: $image_name"
+    # echo "image_tag: $image_tag"
+
+    for yaml_file in "${k8s_yaml_files[@]}"; do
+      if grep -q "image: $image_name" "$yaml_file"; then
+        sed -i "s|image: $image_name:.*|image: $image_name:$image_tag|g" "$yaml_file"
+        #echo "Updated image in $image_name:$image_tag in $yaml_file "
+      fi 
+    done
+  done
+  printf " [ ok ] \n"
+}
+
+
 function configure_extra_options {
   printf "==> configuring which Mojaloop vNext options to install   \n"
   printf "    ** INFO: no extra options implemented or required for mini-loop vNext at this time ** \n"
@@ -565,6 +596,7 @@ CROSSCUT_DIR=$MANIFESTS_DIR/crosscut
 APPS_DIR=$MANIFESTS_DIR/apps
 TTK_DIR=$MANIFESTS_DIR/ttk
 K8S_CURRENT_RELEASE_LIST=( "1.26" "1.27" )
+CURRENT_IMAGES_FROM_DOCKER_FILES=[]
 
 NEED_TO_REPACKAGE="true"
 EXTERNAL_ENDPOINTS_LIST=( vnextadmin bluebank.local greenbank.local ) 
