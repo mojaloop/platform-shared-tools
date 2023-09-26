@@ -1,10 +1,6 @@
 {
   "order": [
     {
-      "name": "provisioning",
-      "type": "folder"
-    },
-    {
       "name": "golden_path",
       "type": "folder"
     },

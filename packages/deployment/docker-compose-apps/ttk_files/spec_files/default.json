@@ -355,7 +355,15 @@
             "partyIdInfo": {
               "partySubIdOrType": null
             },
-            "name": "John"
+            "name": "John",
+            "personalInfo": {
+              "dateOfBirth": "1968-10-22",
+              "complexName": {
+                "firstName": "Paul",
+                "middleName": "P",
+                "lastName": "Lopez"
+              }
+            }
           }
         },
         "scripts": {}
@@ -395,6 +403,10 @@
       "method": "put",
       "path": "/quotes/{ID}",
       "params": {
+        "headers": {
+          "Content-Type": "application/vnd.interoperability.quotes+json;version=1.1",
+          "FSPIOP-URI":"/quotes/{$request.body.quoteId}"
+        },
         "body": {
           "transferAmount": {
             "currency": "{$request.body.amount.currency}",
@@ -462,7 +474,12 @@
     "event": {
       "method": "put",
       "path": "/transfers/{ID}",
-      "params": {},
+      "params": {
+        "headers": {
+          "Content-Type": "application/vnd.interoperability.quotes+json;version=1.1",
+          "FSPIOP-URI":"/transfers/{$request.body.transferId}"
+        }
+      },
       "delay": 0,
       "type": "MOCK_CALLBACK"
     }
@@ -738,14 +755,23 @@
       "path": "/parties/{Type}/{ID}/{SubId}",
       "params": {
         "headers": {
-          "Content-Type": "application/vnd.interoperability.parties+json;version=1.1"
+          "Content-Type": "application/vnd.interoperability.parties+json;version=1.1",
+          "FSPIOP-URI": "/parties/MSISDN/27713803912/30"
         },
         "body": {
           "party": {
             "partyIdInfo": {
               "partySubIdOrType": null
             },
-            "name": "John"
+            "name": "John",
+            "personalInfo": {
+              "dateOfBirth": "1968-10-22",
+              "complexName": {
+                "firstName": "Paul",
+                "middleName": "P",
+                "lastName": "Lopez"
+              }
+            }
           }
         },
         "scripts": {}

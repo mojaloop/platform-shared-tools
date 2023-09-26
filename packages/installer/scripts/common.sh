@@ -143,8 +143,7 @@ function update_k8s_images_from_docker_files {
   local yaml_files=("path/to/file1.yaml" "path/to/file2.yaml")  # Replace with your YAML file paths
   compose_dir=$BASE_DIR/packages/deployment  
   CURRENT_IMAGES_FROM_DOCKER_FILES=($(grep image $compose_dir/**/docker*yml | grep -v infra | grep mojaloop | cut -d ":" -f3,4))
-  MANIFESTS_DIR1="/tmp/manifests"
-  k8s_yaml_files=($(ls $MANIFESTS_DIR1/**/*yaml))
+  k8s_yaml_files=($(ls $MANIFESTS_DIR/**/*yaml))
   # for element in "${k8s_yaml_files[@]}"; do
   #   echo "$element"
   # done

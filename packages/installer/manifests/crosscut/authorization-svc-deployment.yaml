@@ -35,17 +35,9 @@ spec:
             - name: MONGO_URL
               value: mongodb://root:mongoDbPas42@mongodb:27017/
           image: mojaloop/security-bc-authorization-svc:snapshot
-          
           name: authorization-svc
           ports:
             - containerPort: 3202
           resources: {}
-          volumeMounts:
-            - mountPath: /app/data
-              name: authorization-svc-data
       restartPolicy: Always
-      volumes:
-        - name: authorization-svc-data
-          persistentVolumeClaim:
-            claimName: authorization-svc-data
 status: {}

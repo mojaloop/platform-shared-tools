@@ -1,0 +1,24 @@
+{
+  "order": [
+    {
+      "name": "Get Participant",
+      "type": "file"
+    },
+    {
+      "name": "Get Party",
+      "type": "file"
+    },
+    {
+      "name": "non_happy_paths",
+      "type": "file"
+    },
+    {
+      "name": "Participant Associate",
+      "type": "file"
+    },
+    {
+      "name": "Participant Disassociate",
+      "type": "file"
+    }
+  ]
+}
