@@ -36,3 +36,4 @@ rm -f $tarfile
 su - $k8s_user -c "docker save --output $tarfile fspiop-api:$local_version"
 
 ctr images import "$tarfile"
+rm -f $tarfile
