@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {BehaviorSubject, Subscription} from "rxjs";
 import {AuditingService} from "../_services_and_types/auditing.service";
 import {SignedCentralAuditEntry} from "../_services_and_types/auditing_types";
@@ -20,13 +20,13 @@ export class AuditingComponent implements OnInit, OnDestroy {
 	keywordSourceAppName: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordsSubs?: Subscription;
 
-	paginateResult:BehaviorSubject<PaginateResult|null> = new BehaviorSubject<PaginateResult|null>(null);
+	paginateResult: BehaviorSubject<PaginateResult | null> = new BehaviorSubject<PaginateResult | null>(null);
 
 	public criteriaFromDate = "";
 
 	constructor(private _auditingSvc: AuditingService, private _messageService: MessageService) {
-		this.criteriaFromDate = new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString()
-		this.criteriaFromDate = this.criteriaFromDate.substring(0, this.criteriaFromDate.length-8); // remove Z, ms and secs
+		this.criteriaFromDate = new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString();
+		this.criteriaFromDate = this.criteriaFromDate.substring(0, this.criteriaFromDate.length - 8); // remove Z, ms and secs
 
 	}
 
@@ -36,7 +36,7 @@ export class AuditingComponent implements OnInit, OnDestroy {
 		await this.getSearchKeywords();
 
 		// wait for the page components to layout
-		setTimeout(()=>{
+		setTimeout(() => {
 			this.search();
 		}, 50);
 	}
@@ -57,7 +57,7 @@ export class AuditingComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	search(pageIndex:number = 0) {
+	search(pageIndex: number = 0) {
 
 		// const filterText = (document.getElementById("filterText") as HTMLInputElement).value || null;
 		const filterSourceBcName = (document.getElementById("filterSourceBcName") as HTMLSelectElement).value || null;
@@ -84,7 +84,7 @@ export class AuditingComponent implements OnInit, OnDestroy {
 			this.entries.next(result.items);
 
 			const pageRes = paginate(result.pageIndex, result.totalPages);
-			console.log(pageRes)
+			console.log(pageRes);
 			this.paginateResult.next(pageRes);
 		}, error => {
 			if (error && error instanceof UnauthorizedError) {

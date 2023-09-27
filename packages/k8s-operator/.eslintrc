@@ -1,0 +1,5 @@
+{
+    "root": true,
+    "extends": ["../../.eslintrc"],
+    "ignorePatterns": [ "file_to_ignore_in_this_package.ts", "other_file_to_ignore_in_this_package.ts" ]
+}

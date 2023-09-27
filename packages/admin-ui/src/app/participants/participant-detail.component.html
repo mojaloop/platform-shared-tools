@@ -55,7 +55,7 @@
         </button>
       </ng-container>
 
-      <button class="btn btn-primary btn-block" [disabled]="editing" (click)="updateAccounts()">
+      <button class="btn btn-primary btn-block" [disabled]="editing" (click)="updateAccounts(true)">
         Refresh Account Balances
       </button>
     </ng-container>
@@ -200,7 +200,7 @@
         <thead class="thead-light">
           <tr>
             <th scope="col">Type</th>
-            <th scope="col">External Back Account ID</th>
+            <th scope="col">External Bank Account ID</th>
             <th scope="col">External Bank Account Name</th>
             <th scope="col">Currency</th>
             <th scope="col">Balance</th>
@@ -209,57 +209,63 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of (participant | async)?.participantAccounts; let i = index">
-            <ng-container *ngIf="!item.editing; else editRow">
-              <td>{{ item.type }}</td>
-              <td>{{ item.externalBankAccountId }}</td>
-              <td>{{ item.externalBankAccountName }}</td>
-              <td>{{ item.currencyCode }}</td>
-              <td>{{ item.balance }}</td>
-              <td>
-                <div class="btn-group btn-group-sm" role="group" aria-label="">
-                  <button *ngIf="item.type === 'SETTLEMENT'" type="button" class="btn btn-primary"
-                    (click)="onEditAccountClick(item)">
-                    <span class="bi bi-pencil"></span>
-                  </button>
-                </div>
-
-              </td>
+            <ng-container *ngIf="accountEditModeEnabled && editingParticipantAccountOriginalData && item.id===editingParticipantAccountOriginalData.id; else readOnlyAccountRow">
+				<td>
+					{{item.type}}
+				</td>
+				<td>
+					<input type="text" class="form-control" [id]="'externalBankAccountId_' + item.id"
+						   *ngIf="item.type == 'SETTLEMENT'" [(ngModel)]="item.externalBankAccountId">
+				</td>
+				<td>
+					<input type="text" class="form-control" [id]="'externalBankAccountName_' + item.id"
+						   *ngIf="item.type == 'SETTLEMENT'" [(ngModel)]="item.externalBankAccountName">
+				</td>
+				<td>
+					{{item.currencyCode}}
+				</td>
+				<td>{{ item.balance }}</td>
+				<td>
+					<div class="btn-group btn-group-sm" role="group" aria-label="">
+						<button type="button" class="btn btn-success" (click)="saveEditAccount(item)">
+							<span class="bi bi-check-lg"></span>
+						</button>
+						<button type="button" class="btn btn-danger" (click)="onCancelEditingAccount(item)">
+							<span class="bi bi-x-lg"></span>
+						</button>
+					</div>
+				</td>
             </ng-container>
 
-            <ng-template #editRow>
-              <td>
-                {{item.type}}
-              </td>
-              <td>
-                <input type="text" class="form-control" [id]="'externalBankAccountId_' + item.id"
-                  *ngIf="item.type == 'SETTLEMENT'" [(ngModel)]="item.externalBankAccountId">
-              </td>
-              <td>
-                <input type="text" class="form-control" [id]="'externalBankAccountName_' + item.id"
-                  *ngIf="item.type == 'SETTLEMENT'" [(ngModel)]="item.externalBankAccountName">
-              </td>
-              <td>
-                {{item.currencyCode}}
-              </td>
-              <td>{{ item.balance }}</td>
-              <td>
-                <div class="btn-group btn-group-sm" role="group" aria-label="">
-                  <button type="button" class="btn btn-success" (click)="saveEditAccount(item)">
-                    <span class="bi bi-check-lg"></span>
-                  </button>
-                  <button type="button" class="btn btn-danger" (click)="onCancelEditClick(item)">
-                    <span class="bi bi-x-lg"></span>
-                  </button>
-                </div>
-              </td>
+            <ng-template #readOnlyAccountRow>
+				<td>{{ item.type }}</td>
+				<td>{{ item.externalBankAccountId }}</td>
+				<td>{{ item.externalBankAccountName }}</td>
+				<td>{{ item.currencyCode }}</td>
+				<td>{{ item.balance }}</td>
+				<td>
+					<div class="btn-group btn-group-sm" role="group" aria-label="">
+						<button *ngIf="item.type === 'SETTLEMENT'" type="button" class="btn btn-primary"
+								(click)="onEditAccount(item)">
+							<span class="bi bi-pencil"></span>
+						</button>
+					</div>
+
+				</td>
+
             </ng-template>
           </tr>
-          <tr *ngIf="accountCreateModeEnabled">
+
+		  <!-- extra row for new items -->
+          <tr *ngIf="accountCreateModeEnabled && newParticipantAccount !== null">
             <td>
               <select [(ngModel)]="newParticipantAccount.type" class="form-control">
                 <ng-container *ngIf="(participant | async)?.type === 'HUB'; else nonHub">
-                  <option [selected]="newParticipantAccount.type === 'HUB_ASSET'">
-                    HUB_ASSET
+                  <option [selected]="newParticipantAccount.type === 'HUB_MULTILATERAL_SETTLEMENT'">
+					  HUB_MULTILATERAL_SETTLEMENT
+                  </option>
+				  <option [selected]="newParticipantAccount.type === 'HUB_RECONCILIATION'">
+					  HUB_RECONCILIATION
                   </option>
                 </ng-container>
                 <ng-template #nonHub>
@@ -274,14 +280,17 @@
             </td>
             <td>
               <input type="text" class="form-control" [id]="'externalBankAccountId_' + newParticipantAccount.id"
-                *ngIf="newParticipantAccount.type == 'SETTLEMENT'" [(ngModel)]="newParticipantAccount.externalBankAccountId">
+                *ngIf="newParticipantAccount.type == 'SETTLEMENT'"
+                [(ngModel)]="newParticipantAccount.externalBankAccountId">
             </td>
             <td>
               <input type="text" class="form-control" [id]="'externalBankAccountName_' + newParticipantAccount.id"
-                *ngIf="newParticipantAccount.type == 'SETTLEMENT'" [(ngModel)]="newParticipantAccount.externalBankAccountName">
+                *ngIf="newParticipantAccount.type == 'SETTLEMENT'"
+                [(ngModel)]="newParticipantAccount.externalBankAccountName">
             </td>
             <td>
-              <select class="form-control" [(ngModel)]="newParticipantAccount.currencyCode" value="{{ newParticipantAccount.currencyCode }}">
+              <select class="form-control" [(ngModel)]="newParticipantAccount.currencyCode"
+                value="{{ newParticipantAccount.currencyCode }}">
                 <option [selected]="newParticipantAccount.currencyCode === 'EUR'">EUR</option>
                 <option [selected]="newParticipantAccount.currencyCode === 'USD'">USD</option>
                 <option [selected]="newParticipantAccount.currencyCode === 'TZS'">TZS</option>
@@ -293,7 +302,7 @@
                 <button type="button" class="btn btn-success" (click)="saveEditAccount(newParticipantAccount)">
                   <span class="bi bi-check-lg"></span>
                 </button>
-                <button type="button" class="btn btn-danger" (click)="onCancelEditClick(newParticipantAccount)">
+                <button type="button" class="btn btn-danger" (click)="onCancelEditingAccount(newParticipantAccount)">
                   <span class="bi bi-x-lg"></span>
                 </button>
               </div>
@@ -305,7 +314,8 @@
       <hr />
       <div class="form-row d-flex mb-3">
         <div class="p-2">
-          <button class="btn btn-secondary" (click)="onAddAccountClick()" [disabled]="accountCreateModeEnabled || accountEditModeEnabled">
+          <button class="btn btn-secondary" (click)="onAddAccount()"
+            [disabled]="accountCreateModeEnabled || accountEditModeEnabled">
             Add Account
           </button>
         </div>
@@ -316,9 +326,9 @@
       <table class="table table-hover mt-3">
         <thead class="thead-light">
           <tr>
-			<th scope="col">Change Type</th>
-			<th scope="col">Account Type</th>
-            <th scope="col">External Back Account ID</th>
+            <th scope="col">Change Type</th>
+            <th scope="col">Account Type</th>
+            <th scope="col">External Bank Account ID</th>
             <th scope="col">External Bank Account Name</th>
             <th scope="col">Currency</th>
             <th scope="col">Created</th>
@@ -564,9 +574,209 @@
     <!-- Source IPs -->
     <a ngbNavLink>Source IPs</a>
     <ng-template ngbNavContent>
-      <h4 class="mt-3">
-        Source IP Addresses this Participant sends requests from
-      </h4>
+      <h4 class="mt-3">Registered Source IPs for this Participant</h4>
+      <table class="table table-hover mt-3">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">CIDR</th>
+            <th scope="col">Port mode</th>
+            <th scope="col">Ports</th>
+            <th scope="col">Port Range</th>
+            <th scope="col" style="width: 90px">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of (participant | async)?.participantAllowedSourceIps; let i = index">
+            <ng-container *ngIf="sourceIpCreateModeEnabled && editingSourceIpOriginalData && item.id===editingSourceIpOriginalData.id; else readOnlySourceIpRow">
+				<td>
+					<input type="text" class="form-control" [id]="'sourceIpId_' + item.id" [(ngModel)]="item.cidr">
+				</td>
+				<td>
+					<select [(ngModel)]="item.portMode" class="form-control">
+						<option [selected]="item.portMode === 'ANY'">
+							ANY
+						</option>
+						<option [selected]="item.portMode === 'SPECIFIC'">
+							SPECIFIC
+						</option>
+						<option [selected]="item.portMode === 'RANGE'">
+							RANGE
+						</option>
+					</select>
+
+				</td>
+				<td>
+					<input type="text" class="form-control" [id]="'ports_' + item.id"
+						   [disabled]="item.portMode !== 'SPECIFIC'" [(ngModel)]="sourceIpEditingPortsListStr">
+				</td>
+				<td>
+					<div class="row">
+
+						<div style="display: flex;flex-direction: row;">
+							<div style="display: flex; flex-direction: col; flex-wrap: nowrap;">
+								<div style="width: 100px;margin-right: 5px;">
+									<input type="text" class="form-control" [id]="'portRangeFirst_' + item.id" placeholder="From"
+										   [disabled]="item.portMode !== 'RANGE'" [(ngModel)]="sourceIpEditingPortRangeStart">
+								</div>
+								<div style="width: 100px;">
+									<input type="text" class="form-control" [id]="'portRangeLast_' + item.id" placeholder="To"
+										   [disabled]="item.portMode !== 'RANGE'" [(ngModel)]="sourceIpEditingPortRangeEnd">
+								</div>
+							</div>
+						</div>
+					</div>
+				</td>
+
+				<td>
+					<div class="btn-group btn-group-sm" role="group" aria-label="">
+						<button type="button" class="btn btn-success" (click)="saveEditSourceIp(item)">
+							<span class="bi bi-check-lg"></span>
+						</button>
+						<button type="button" class="btn btn-danger" (click)="onCancelEditingSourceIp(item)">
+							<span class="bi bi-x-lg"></span>
+						</button>
+					</div>
+				</td>
+            </ng-container>
+
+            <ng-template #readOnlySourceIpRow>
+				<td>{{ item.cidr }}</td>
+				<td>{{ item.portMode }}</td>
+				<td>
+					<span *ngIf="item.portMode === 'SPECIFIC'">{{ item.ports }}</span>
+				</td>
+				<td>
+					<span *ngIf="item.portMode === 'RANGE' && item.portRange">[{{ item.portRange.rangeFirst}} - {{ item.portRange.rangeLast }}]</span>
+				</td>
+				<td>
+					<div class="btn-group btn-group-sm" role="group" aria-label="">
+						<button type="button" class="btn btn-primary" (click)="onEditSourceIp(item)">
+							<span class="bi bi-pencil"></span>
+						</button>
+					</div>
+
+				</td>
+            </ng-template>
+          </tr>
+
+		  <!-- extra row for new items -->
+          <tr *ngIf="sourceIpCreateModeEnabled">
+            <td>
+              <input type="text" class="form-control" [id]="'sourceIpId_' + newSourceIp.id"
+                [(ngModel)]="newSourceIp.cidr">
+            </td>
+            <td>
+<!--              <select [(ngModel)]="newSourceIp.portMode" class="form-control" (ngModelChange)="onPortModeChange()">-->
+              <select [(ngModel)]="newSourceIp.portMode" class="form-control">
+                <option [selected]="newSourceIp.portMode === 'ANY'">
+                  ANY
+                </option>
+                <option [selected]="newSourceIp.portMode === 'SPECIFIC'">
+                  SPECIFIC
+                </option>
+                <option [selected]="newSourceIp.portMode === 'RANGE'">
+                  RANGE
+                </option>
+              </select>
+            </td>
+            <td>
+              <input type="text" class="form-control" [id]="'ports_' + newSourceIp.id"
+                [disabled]="newSourceIp.portMode !== 'SPECIFIC'" [(ngModel)]="newSourceIp.ports">
+            </td>
+            <td>
+              <div style="display: flex;flex-direction: row;">
+                <div style="display: flex; flex-direction: col; flex-wrap: nowrap;">
+                  <div style="width: 100px;margin-right: 5px;">
+                    <input type="text" class="form-control" [id]="'portRangeFirst_' + newSourceIp.id" placeholder="From"
+                      [disabled]="newSourceIp.portMode !== 'RANGE'" [(ngModel)]="newSourceIp.portRange.rangeFirst">
+                  </div>
+                  <div style="width: 100px;">
+                    <input type="text" class="form-control" [id]="'portRangeLast_' + newSourceIp.id" placeholder="To"
+                      [disabled]="newSourceIp.portMode !== 'RANGE'" [(ngModel)]="newSourceIp.portRange.rangeLast">
+                  </div>
+                </div>
+              </div>
+            </td>
+
+            <td>
+              <div class="btn-group btn-group-sm" role="group" aria-label="">
+                <button type="button" class="btn btn-success m-1" (click)="saveEditSourceIp(newSourceIp)">
+                  <span class="bi bi-check-lg"></span>
+                </button>
+                <button type="button" class="btn btn-danger m-1" (click)="onCancelEditingSourceIp(newSourceIp)">
+                  <span class="bi bi-x-lg"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <hr />
+      <div class="form-row d-flex mb-3">
+        <div class="p-2">
+          <button class="btn btn-secondary" (click)="onAddSourceIp()"
+            [disabled]="sourceIpCreateModeEnabled || sourceIpEditModeEnabled">
+            Add Source IP
+          </button>
+        </div>
+      </div>
+
+      <hr />
+      <h4 class="mt-3">SourceIP Change Requests</h4>
+      <table class="table table-hover mt-3">
+        <thead class="thead-light">
+          <tr>
+			<th scope="col">Request Type</th>
+			<th scope="col">CIDR</th>
+            <th scope="col">Port Mode</th>
+            <th scope="col">Ports</th>
+            <th scope="col">Port Range</th>
+            <th scope="col">Created</th>
+            <th scope="col">Approved</th>
+            <th scope="col" style="width: 90px">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let sourceIpChangeRequest of (participant | async)?.participantSourceIpChangeRequests">
+			<td>{{ sourceIpChangeRequest.requestType }}</td>
+			<td>{{ sourceIpChangeRequest.cidr }}</td>
+            <td>{{ sourceIpChangeRequest.portMode }}</td>
+			  <td>
+				  <span *ngIf="sourceIpChangeRequest.portMode === 'SPECIFIC'">{{ sourceIpChangeRequest.ports }}</span>
+			  </td>
+			  <td>
+				  <span *ngIf="sourceIpChangeRequest.portMode === 'RANGE'">
+					  [{{sourceIpChangeRequest.portRange!.rangeFirst}} - {{ sourceIpChangeRequest.portRange!.rangeLast}}]
+				  </span>
+			  </td>
+            <td>
+              {{ sourceIpChangeRequest.createdBy }} on
+              {{ sourceIpChangeRequest.createdDate | date : "medium" }}
+            </td>
+            <td *ngIf="!sourceIpChangeRequest.approved" class="text-danger">
+              (Not yet approved)
+            </td>
+            <td *ngIf="sourceIpChangeRequest.approved">
+              {{ sourceIpChangeRequest.approvedBy }} on
+              {{ sourceIpChangeRequest.approvedDate | date : "medium" }}
+            </td>
+
+            <td>
+              <div class="btn-group btn-group-sm" role="group" aria-label="">
+                <button type="button" class="btn btn-success" *ngIf="!sourceIpChangeRequest.approved"
+                  (click)="approveSourceIpChangeRequest(sourceIpChangeRequest.id)" ngbTooltip="Approve">
+                  <span class="bi bi-check-lg"></span>
+                </button>
+                <button type="button" class="btn btn-danger" *ngIf="!sourceIpChangeRequest.approved"
+                  (click)="rejectSourceIpChangeRequest(sourceIpChangeRequest.id)" ngbTooltip="Reject">
+                  <span class="bi bi-x-lg"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </ng-template>
   </li>
   <!-- Source IPs -->
@@ -593,12 +803,12 @@
 <div class="mt-6" [ngbNavOutlet]="nav"></div>
 
 <!-- Deposit/Withdrawal Modal -->
-<ng-template #depositWithdrawalModal let-modal>
+<ng-template #fundsMovementModal let-modal>
   <div class="modal-header">
-    <h4 *ngIf="depositWithdrawalModalMode === 'FUNDS_DEPOSIT'" class="modal-title">
+    <h4 *ngIf="fundsMovementModalMode === 'FUNDS_DEPOSIT'" class="modal-title">
       Deposit Funds
     </h4>
-    <h4 *ngIf="depositWithdrawalModalMode === 'FUNDS_WITHDRAWAL'" class="modal-title">
+    <h4 *ngIf="fundsMovementModalMode === 'FUNDS_WITHDRAWAL'" class="modal-title">
       Withdrawal Funds
     </h4>
 
@@ -640,7 +850,7 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-success" (click)="createFundsMov($event, 'FUNDS_DEPOSIT')">
+    <button type="button" class="btn btn-success" (click)="createFundsMov($event)">
       Save
     </button>
     <button type="button" class="btn btn-danger" (click)="modal.dismiss()">

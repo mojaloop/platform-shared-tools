@@ -28,7 +28,7 @@
  --------------
  ******/
 
-"use strict"
+"use strict";
 
 /** Transfers **/
 export declare type Transfer = {
@@ -45,15 +45,15 @@ export declare type Transfer = {
 	condition: string;
 	expiration: number;
 	extensionList: {
-    extension: {
-        key: string;
-        value: string;
-    }[]
-  } | null;
-  transferState?: string;
-  currency: string;
-  payeeFspId?: string;
-  payerFspId?: string;
-  currencyCode?: string;
-  completedTimestamp?: string;
+		extension: {
+			key: string;
+			value: string;
+		}[]
+	} | null;
+	transferState?: string;
+	currency: string;
+	payeeFspId?: string;
+	payerFspId?: string;
+	currencyCode?: string;
+	completedTimestamp?: string;
 }

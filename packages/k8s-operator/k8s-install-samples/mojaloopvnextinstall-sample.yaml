@@ -1,0 +1,15 @@
+apiVersion: vnext.mojaloop.io/v1
+kind: MojaloopVNextInstall
+metadata:
+  name: mojaloop-vnext-install-sample
+  namespace: mojaloop-vnext
+spec:
+  configOverride:
+    KAFKA_URL: 10.0.1.1:9092
+    MONGO_URL: mongodb://root:mongoDbPas42@10.0.1.1:27017/
+  services:
+    - svcName: authentication-svc
+      image: mojaloop/security-bc-authentication-svc:0.1.20
+      bcName: security-bc
+      layer: cross-cutting
+      size: 1

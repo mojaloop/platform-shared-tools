@@ -28,13 +28,13 @@
  --------------
  ******/
 
-"use strict"
+"use strict";
 
 export type AllPrivilegesResp = {
-  id: string;
-  labelName: string;
-  description: string;
-  boundedContextName: string;
-  applicationName: string;
-  applicationVersion: string;
+	id: string;
+	labelName: string;
+	description: string;
+	boundedContextName: string;
+	applicationName: string;
+	applicationVersion: string;
 }

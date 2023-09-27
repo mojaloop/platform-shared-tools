@@ -28,7 +28,7 @@
  --------------
  ******/
 
-"use strict"
+"use strict";
 
 
 /** Quotes **/
@@ -38,100 +38,100 @@ export declare type QuoteType = "HUB" | "DFSP";
 
 /** Quotes **/
 export declare type Quote = {
-  requesterFspId:string;
-  destinationFspId:string;
-  quoteId: string;
-  bulkQuoteId: string;
-  transactionId: string;
-  transactionRequestId: string | null;
-  payee: {
-      partyIdInfo: {
-          partyIdType: string;
-          partyIdentifier: string;
-          partySubIdOrType: string | null;
-          fspId: string | null;
-      };
-      merchantClassificationCode?: string | null,
-      name?: string | null,
-      personalInfo?: {
-          complexName: {
-              firstName: string | null;
-              middleName: string | null;
-              lastName: string | null;
-          } | null,
-          dateOfBirth: string | null
-      } | null
-  } | null;
-  payer:  {
-      partyIdInfo: {
-          partyIdType: string;
-          partyIdentifier: string;
-          partySubIdOrType: string | null;
-          fspId: string | null;
-      };
-      merchantClassificationCode?: string | null,
-      name?: string | null,
-      personalInfo?: {
-          complexName: {
-              firstName: string | null;
-              middleName: string | null;
-              lastName: string | null;
-          } | null,
-          dateOfBirth: string | null
-      } | null
-  } | null;
-  amountType: "SEND" | "RECEIVE";
-  amount: {
-      currency: string;
-      amount: string;
-  } | null;
-  transactionType: {
-      scenario: string
-      subScenario?: string | null
-      initiator: string
-      initiatorType: string
-      refundInfo?: {
-          originalTransactionId: string
-          refundReason: string | null
-      } | null,
-      balanceOfPayments?: string | null
-  } | null;
-  fees?: {
-      currency: string;
-      amount: string;
-  } | null;
-  geoCode?: {
-      latitude: string;
-      longitude: string;
-  } | null;
-  note?: string | null;
-  expiration?: string | null;
-  extensionList: {
-      extension: {
-          key: string;
-          value: string;
-      }[]
-  } | null;
-  status?: string;
-  condition?: string;
-  payeeFspCommission?: {
-    currency: string;
-    amount: string;
-  };
-  payeeFspFee?: {
-    currency: string;
-    amount: string;
-  };
+	requesterFspId: string;
+	destinationFspId: string;
+	quoteId: string;
+	bulkQuoteId: string;
+	transactionId: string;
+	transactionRequestId: string | null;
+	payee: {
+		partyIdInfo: {
+			partyIdType: string;
+			partyIdentifier: string;
+			partySubIdOrType: string | null;
+			fspId: string | null;
+		};
+		merchantClassificationCode?: string | null,
+		name?: string | null,
+		personalInfo?: {
+			complexName: {
+				firstName: string | null;
+				middleName: string | null;
+				lastName: string | null;
+			} | null,
+			dateOfBirth: string | null
+		} | null
+	} | null;
+	payer: {
+		partyIdInfo: {
+			partyIdType: string;
+			partyIdentifier: string;
+			partySubIdOrType: string | null;
+			fspId: string | null;
+		};
+		merchantClassificationCode?: string | null,
+		name?: string | null,
+		personalInfo?: {
+			complexName: {
+				firstName: string | null;
+				middleName: string | null;
+				lastName: string | null;
+			} | null,
+			dateOfBirth: string | null
+		} | null
+	} | null;
+	amountType: "SEND" | "RECEIVE";
+	amount: {
+		currency: string;
+		amount: string;
+	} | null;
+	transactionType: {
+		scenario: string
+		subScenario?: string | null
+		initiator: string
+		initiatorType: string
+		refundInfo?: {
+			originalTransactionId: string
+			refundReason: string | null
+		} | null,
+		balanceOfPayments?: string | null
+	} | null;
+	fees?: {
+		currency: string;
+		amount: string;
+	} | null;
+	geoCode?: {
+		latitude: string;
+		longitude: string;
+	} | null;
+	note?: string | null;
+	expiration?: string | null;
+	extensionList: {
+		extension: {
+			key: string;
+			value: string;
+		}[]
+	} | null;
+	status?: string;
+	condition?: string;
+	payeeFspCommission?: {
+		currency: string;
+		amount: string;
+	};
+	payeeFspFee?: {
+		currency: string;
+		amount: string;
+	};
 
-  payeePartyIdType: string;
-  payeePartyIdentifier: string;
-  payeeFspId: string;
-  payerPartyIdType: string;
-  payerPartyIdentifier: string;
-  payerFspId: string;
-  currency: string;
-  scenario: string;
-  initiator: string;
-  initiatorType: string;
-  ilpPacket: string;
+	payeePartyIdType: string;
+	payeePartyIdentifier: string;
+	payeeFspId: string;
+	payerPartyIdType: string;
+	payerPartyIdentifier: string;
+	payerFspId: string;
+	currency: string;
+	scenario: string;
+	initiator: string;
+	initiatorType: string;
+	ilpPacket: string;
 }

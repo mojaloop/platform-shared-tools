@@ -1,16 +1,15 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {PlatformConfigService} from "src/app/_services_and_types/platform-config.service";
 import {BehaviorSubject, Subscription} from "rxjs";
 import {
 	ConfigFeatureFlag,
 	ConfigParameter,
 	ConfigSecret,
-	ConfigurationSet
-} from "@mojaloop/platform-configuration-bc-public-types-lib"
+} from "@mojaloop/platform-configuration-bc-public-types-lib";
 
 export type BoundedContextListItem = {
 	boundedContextName: string;                     // target bounded context
-	schemaVersion:string;							// config schema version (semver format)
+	schemaVersion: string;							// config schema version (semver format)
 	iterationNumber?: number;                     	// monotonic integer - increases on every configuration/values change
 }
 
@@ -82,7 +81,7 @@ export class PlatformConfigurationBoundedContextComponent implements OnInit, OnD
 						schemaVersion: configSet.schemaVersion,
 						...featureflag
 					});
-				})
+				});
 
 				configSet.secrets.forEach(secret => {
 					secrets.push({

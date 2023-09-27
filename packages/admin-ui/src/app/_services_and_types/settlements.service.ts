@@ -51,7 +51,8 @@ const SVC_BASEURL = "/_settlements";
 
 export class SettlementsService {
 
-	constructor(private _http: HttpClient, private _authentication: AuthenticationService) {}
+	constructor(private _http: HttpClient, private _authentication: AuthenticationService) {
+	}
 
 	getAllModels(): Observable<ISettlementConfig[]> {
 		return new Observable<ISettlementConfig[]>(subscriber => {
@@ -64,13 +65,13 @@ export class SettlementsService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("Access forbidden received on getAllModels");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
-					} else if (error && error.status===404) {
+					} else if (error && error.status === 404) {
 						subscriber.next([]);
 						return subscriber.complete();
-					}else{
+					} else {
 						console.error(error);
 						subscriber.error(error.error?.msg);
 					}
@@ -81,18 +82,18 @@ export class SettlementsService {
 		});
 	}
 
-	getBatchesByCriteria(fromDate: number, toDate: number, settlementModel: string, currencyCodes: string[], batchStatuses:string[]): Observable<ISettlementBatch[]>{
+	getBatchesByCriteria(fromDate: number, toDate: number, settlementModel: string, currencyCodes: string[], batchStatuses: string[]): Observable<ISettlementBatch[]> {
 		return new Observable<ISettlementBatch[]>(subscriber => {
 
-			let searchParams = new URLSearchParams();
+			const searchParams = new URLSearchParams();
 			// mandatory
 			searchParams.append("fromDate", fromDate.toString());
 			searchParams.append("toDate", toDate.toString());
 			searchParams.append("settlementModel", settlementModel);
 
 			// optional
-			if(currencyCodes && currencyCodes.length>0) searchParams.append("currencyCodes", encodeURIComponent(JSON.stringify(currencyCodes)));
-			if(batchStatuses && batchStatuses.length>0) searchParams.append("batchStatuses", encodeURIComponent(JSON.stringify(batchStatuses)));
+			if (currencyCodes && currencyCodes.length > 0) searchParams.append("currencyCodes", encodeURIComponent(JSON.stringify(currencyCodes)));
+			if (batchStatuses && batchStatuses.length > 0) searchParams.append("batchStatuses", encodeURIComponent(JSON.stringify(batchStatuses)));
 
 			const url = `${SVC_BASEURL}/batches?${searchParams.toString()}`;
 			this._http.get<ISettlementBatch[]>(url).subscribe(
@@ -101,11 +102,11 @@ export class SettlementsService {
 
 					subscriber.next(result);
 					return subscriber.complete();
-				},error => {
-					if (error && error.status===403) {
+				}, error => {
+					if (error && error.status === 403) {
 						console.warn("Access forbidden received on getBatchesByCriteria");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
-					} else if (error && error.status===404) {
+					} else if (error && error.status === 404) {
 						subscriber.next([]);
 						return subscriber.complete();
 					} else {
@@ -130,13 +131,13 @@ export class SettlementsService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("Access forbidden received on getTransfersByBatchName");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
-					} else if (error && error.status===404) {
+					} else if (error && error.status === 404) {
 						subscriber.next([]);
 						return subscriber.complete();
-					}else{
+					} else {
 						console.error(error);
 						subscriber.error(error.error?.msg);
 					}
@@ -158,13 +159,13 @@ export class SettlementsService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("Access forbidden received on getTransfersByMatrixId");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
-					} else if (error && error.status===404) {
+					} else if (error && error.status === 404) {
 						subscriber.next([]);
 						return subscriber.complete();
-					}else{
+					} else {
 						console.error(error);
 						subscriber.error(error.error?.msg);
 					}
@@ -176,24 +177,24 @@ export class SettlementsService {
 	}
 
 
-	getTransfersByTransferId(transferId: string): Observable<ISettlementBatchTransfer|null> {
-		return new Observable<ISettlementBatchTransfer|null>(subscriber => {
+	getTransfersByTransferId(transferId: string): Observable<ISettlementBatchTransfer | null> {
+		return new Observable<ISettlementBatchTransfer | null>(subscriber => {
 			const url = `${SVC_BASEURL}/transfers?transferId=${transferId}`;
-			this._http.get<ISettlementBatchTransfer|null>(url).subscribe(
-				(result: ISettlementBatchTransfer|null) => {
+			this._http.get<ISettlementBatchTransfer | null>(url).subscribe(
+				(result: ISettlementBatchTransfer | null) => {
 					console.log(`got response: ${result}`);
 
 					subscriber.next(result);
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("Access forbidden received on getTransfersByTransferId");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
-					} else if (error && error.status===404) {
+					} else if (error && error.status === 404) {
 						subscriber.next(null);
 						return subscriber.complete();
-					}else{
+					} else {
 						console.error(error);
 						subscriber.error(error.error?.msg);
 					}
@@ -205,7 +206,7 @@ export class SettlementsService {
 	}
 
 
-	getTransfersByBatchName(batchName:string):Observable<ISettlementBatchTransfer[]>{
+	getTransfersByBatchName(batchName: string): Observable<ISettlementBatchTransfer[]> {
 		return new Observable<ISettlementBatchTransfer[]>(subscriber => {
 			const url = `${SVC_BASEURL}/transfers?batchName=${batchName}`;
 			this._http.get<ISettlementBatchTransfer[]>(url).subscribe(
@@ -216,10 +217,10 @@ export class SettlementsService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("Access forbidden received on getTransfersByBatchName");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
-					} else if (error && error.status===404) {
+					} else if (error && error.status === 404) {
 						subscriber.next([]);
 						return subscriber.complete();
 					} else {
@@ -245,13 +246,13 @@ export class SettlementsService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("Access forbidden received on getAllTransfers");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
-					} else if (error && error.status===404) {
+					} else if (error && error.status === 404) {
 						subscriber.next([]);
 						return subscriber.complete();
-					}else{
+					} else {
 						console.error(error);
 						subscriber.error(error.error?.msg);
 					}
@@ -262,7 +263,7 @@ export class SettlementsService {
 		});
 	}
 
-	getMatrix(matrixId:string):Observable<ISettlementMatrix|null>{
+	getMatrix(matrixId: string): Observable<ISettlementMatrix | null> {
 		return new Observable<ISettlementMatrix | null>(subscriber => {
 			const url = `${SVC_BASEURL}/matrix/${matrixId}`;
 			this._http.get<ISettlementMatrix>(url).subscribe(
@@ -273,10 +274,10 @@ export class SettlementsService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("Access forbidden received on getMatrix");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
-					} else if (error && error.status===404) {
+					} else if (error && error.status === 404) {
 						subscriber.next(null);
 						return subscriber.complete();
 					} else {
@@ -290,10 +291,10 @@ export class SettlementsService {
 		});
 	}
 
-	getMatrices(state?:string):Observable<ISettlementMatrix[]>{
+	getMatrices(state?: string): Observable<ISettlementMatrix[]> {
 		return new Observable<ISettlementMatrix[]>(subscriber => {
 			let url = `${SVC_BASEURL}/matrix`;
-			if(state)
+			if (state)
 				url += `?state=${state.toUpperCase()}`;
 
 			this._http.get<ISettlementMatrix[]>(url).subscribe(
@@ -304,10 +305,10 @@ export class SettlementsService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("Access forbidden received on getMatrices");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
-					} else if (error && error.status===404) {
+					} else if (error && error.status === 404) {
 						subscriber.next([]);
 						return subscriber.complete();
 					} else {
@@ -331,7 +332,7 @@ export class SettlementsService {
 				fromDate: fromDate,
 				toDate: toDate,
 				type: "DYNAMIC"
-			}
+			};
 
 			this._http.post<{ id: string }>(SVC_BASEURL + "/matrix/", createMatrixCmdPayload).subscribe(
 				(resp: { id: string }) => {
@@ -341,7 +342,7 @@ export class SettlementsService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("UnauthorizedError received on createMatrix");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else {
@@ -354,13 +355,13 @@ export class SettlementsService {
 		});
 	}
 
-	createStaticMatrix(matrixId:string, batchIds: string[]):Observable<string>{
+	createStaticMatrix(matrixId: string, batchIds: string[]): Observable<string> {
 		return new Observable<string>(subscriber => {
-			const createMatrixCmdPayload ={
+			const createMatrixCmdPayload = {
 				matrixId: matrixId,
 				batchIds: batchIds,
 				type: "STATIC"
-			}
+			};
 
 			this._http.post<{ id: string }>(SVC_BASEURL + "/matrix/", createMatrixCmdPayload).subscribe(
 				(resp: { id: string }) => {
@@ -370,7 +371,7 @@ export class SettlementsService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("UnauthorizedError received on createMatrix");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else {
@@ -383,7 +384,7 @@ export class SettlementsService {
 		});
 	}
 
-	recalculateMatrix(matrixId:string):Observable<string>{
+	recalculateMatrix(matrixId: string): Observable<string> {
 		return new Observable<string>(subscriber => {
 
 			const url = `${SVC_BASEURL}/matrix/${matrixId}/recalculate`;
@@ -396,7 +397,7 @@ export class SettlementsService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("UnauthorizedError received on recalculateMatrix");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else {
@@ -409,7 +410,7 @@ export class SettlementsService {
 		});
 	}
 
-	closeMatrix(matrixId:string):Observable<string>{
+	closeMatrix(matrixId: string): Observable<string> {
 		return new Observable<string>(subscriber => {
 			const url = `${SVC_BASEURL}/matrix/${matrixId}/close`;
 
@@ -421,7 +422,7 @@ export class SettlementsService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("UnauthorizedError received on closeMatrix");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else {
@@ -446,7 +447,7 @@ export class SettlementsService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("UnauthorizedError received on disputeMatrix");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else {
@@ -471,7 +472,7 @@ export class SettlementsService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("UnauthorizedError received on disputeMatrix");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else {
@@ -496,7 +497,7 @@ export class SettlementsService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("UnauthorizedError received on disputeMatrix");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else {
@@ -521,7 +522,7 @@ export class SettlementsService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("UnauthorizedError received on settleMatrix");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else {
@@ -543,28 +544,28 @@ export class SettlementsService {
 			createdBy: this._authentication.username!,
 			createdDate: new Date().getTime(),
 			changeLog: []
-		}
+		};
 	}
 
-	createSettlementModel(id:string | null, modelName:string, batchCreateIntervalSecs:number) {
+	createSettlementModel(id: string | null, modelName: string, batchCreateIntervalSecs: number) {
 		return new Observable<string>(subscriber => {
 			const url = `${SVC_BASEURL}/models`;
 
-			const data={
+			const data = {
 				id: id,
 				settlementModel: modelName,
 				batchCreateInterval: batchCreateIntervalSecs,
 				createdBy: this._authentication.username
 			};
 
-			this._http.post<{id: string}>(url, data).subscribe(
-				(resp: {id: string}) => {
+			this._http.post<{ id: string }>(url, data).subscribe(
+				(resp: { id: string }) => {
 					console.log(`got response - model create ${resp.id}`);
 
 					subscriber.next(resp.id);
 					return subscriber.complete();
-				},			error => {
-					if (error && error.status===403) {
+				}, error => {
+					if (error && error.status === 403) {
 						console.warn("UnauthorizedError received on settleMatrix");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else {

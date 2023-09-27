@@ -1,12 +1,11 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 import {SettingsService} from "src/app/_services_and_types/settings.service";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
 
-import {
-} from "@mojaloop/auditing-bc-public-types-lib";
-import {AuditSearchResults, SignedCentralAuditEntry} from "./auditing_types";
+import {} from "@mojaloop/auditing-bc-public-types-lib";
+import {AuditSearchResults} from "./auditing_types";
 
 
 const SVC_BASEURL = "/_auditing";
@@ -24,27 +23,27 @@ export class AuditingService {
 	}
 
 	search(
-		userId:string|null,
-		sourceBcName:string|null,
-		sourceAppName:string|null,
-		actionType:string|null,
-		actionSuccessful:boolean|null,
-		startDate:number|null,
-		endDate:number|null,
-		pageIndex?:number,
-		pageSize:number = DEFAULT_PAGE_SIZE
+		userId: string | null,
+		sourceBcName: string | null,
+		sourceAppName: string | null,
+		actionType: string | null,
+		actionSuccessful: boolean | null,
+		startDate: number | null,
+		endDate: number | null,
+		pageIndex?: number,
+		pageSize: number = DEFAULT_PAGE_SIZE
 	): Observable<AuditSearchResults> {
-		let searchParams = new URLSearchParams();
-		if(userId) searchParams.append("userId", userId);
-		if(sourceBcName) searchParams.append("sourceBcName", sourceBcName);
-		if(sourceAppName) searchParams.append("sourceAppName", sourceAppName);
-		if(actionType) searchParams.append("actionType", actionType);
-		if(actionSuccessful) searchParams.append("actionSuccessful", actionSuccessful.toString());
-		if(startDate) searchParams.append("startDate", startDate.toString());
-		if(endDate) searchParams.append("endDate", endDate.toString());
+		const searchParams = new URLSearchParams();
+		if (userId) searchParams.append("userId", userId);
+		if (sourceBcName) searchParams.append("sourceBcName", sourceBcName);
+		if (sourceAppName) searchParams.append("sourceAppName", sourceAppName);
+		if (actionType) searchParams.append("actionType", actionType);
+		if (actionSuccessful) searchParams.append("actionSuccessful", actionSuccessful.toString());
+		if (startDate) searchParams.append("startDate", startDate.toString());
+		if (endDate) searchParams.append("endDate", endDate.toString());
 
-		if(pageIndex) searchParams.append("pageIndex", pageIndex.toString());
-		if(pageSize) searchParams.append("pageSize", pageSize.toString());
+		if (pageIndex) searchParams.append("pageIndex", pageIndex.toString());
+		if (pageSize) searchParams.append("pageSize", pageSize.toString());
 
 		const url = `${SVC_BASEURL}/entries?${searchParams.toString()}`;
 
@@ -66,10 +65,10 @@ export class AuditingService {
 		});
 	}
 
-	getSearchKeywords():Observable<{fieldName:string, distinctTerms:string[]}[]>{
-		return new Observable<{fieldName:string, distinctTerms:string[]}[]>(subscriber => {
-			this._http.get<{fieldName:string, distinctTerms:string[]}[]>(`${SVC_BASEURL}/searchKeywords`).subscribe(
-				(result: {fieldName:string, distinctTerms:string[]}[]) => {
+	getSearchKeywords(): Observable<{ fieldName: string, distinctTerms: string[] }[]> {
+		return new Observable<{ fieldName: string, distinctTerms: string[] }[]>(subscriber => {
+			this._http.get<{ fieldName: string, distinctTerms: string[] }[]>(`${SVC_BASEURL}/searchKeywords`).subscribe(
+				(result: { fieldName: string, distinctTerms: string[] }[]) => {
 					console.log(`got getSearchKeywords response: ${result}`);
 
 					subscriber.next(result);

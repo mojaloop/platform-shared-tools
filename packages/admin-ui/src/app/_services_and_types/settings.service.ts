@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 import {environment} from '../../environments/environment';
 import packageJson from '../../../package.json';
 
@@ -9,53 +9,53 @@ const DEVELOPMENT_ENV_NAME = "dev";
 const PRODUCTION_ENV_NAME = "prod";
 
 @Injectable({
-  providedIn: 'root',
+	providedIn: 'root',
 })
 export class SettingsService {
-  private _isDevMode: boolean;
+	private readonly _isDevMode: boolean;
 
-  public accessToken: string | null;
-  public username: string | null;
+	public accessToken: string | null;
+	public username: string | null;
 
-  constructor() {
-    this.accessToken = localStorage.getItem(ACCESSTOKEN_KEYNAME);
-    this.username = localStorage.getItem(USERNAME_KEYNAME);
-    this._isDevMode = !environment.production;
-  }
+	constructor() {
+		this.accessToken = localStorage.getItem(ACCESSTOKEN_KEYNAME);
+		this.username = localStorage.getItem(USERNAME_KEYNAME);
+		this._isDevMode = !environment.production;
+	}
 
-  get isDevMode(): boolean {
-    return this._isDevMode;
-  }
+	get isDevMode(): boolean {
+		return this._isDevMode;
+	}
 
-  getVersion():string{
-	  return packageJson.version;
-  }
+	getVersion(): string {
+		return packageJson.version;
+	}
 
-  get envName(): string{
-    if(this._isDevMode){
-      return DEVELOPMENT_ENV_NAME;
-    }
+	get envName(): string {
+		if (this._isDevMode) {
+			return DEVELOPMENT_ENV_NAME;
+		}
 
-    return PRODUCTION_ENV_NAME;
-  }
+		return PRODUCTION_ENV_NAME;
+	}
 
-  save(): boolean {
-    if(this.accessToken)
-      localStorage.setItem(ACCESSTOKEN_KEYNAME, this.accessToken);
+	save(): boolean {
+		if (this.accessToken)
+			localStorage.setItem(ACCESSTOKEN_KEYNAME, this.accessToken);
 
-    if(this.username)
-      localStorage.setItem(USERNAME_KEYNAME, this.username);
+		if (this.username)
+			localStorage.setItem(USERNAME_KEYNAME, this.username);
 
-    return true;
-  }
+		return true;
+	}
 
-  clearToken() {
-    localStorage.removeItem(ACCESSTOKEN_KEYNAME);
-  }
+	clearToken() {
+		localStorage.removeItem(ACCESSTOKEN_KEYNAME);
+	}
 
-  clearAll() {
-    localStorage.removeItem(ACCESSTOKEN_KEYNAME);
-    localStorage.removeItem(USERNAME_KEYNAME);
-  }
+	clearAll() {
+		localStorage.removeItem(ACCESSTOKEN_KEYNAME);
+		localStorage.removeItem(USERNAME_KEYNAME);
+	}
 
 }

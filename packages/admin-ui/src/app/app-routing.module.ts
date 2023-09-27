@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {NgModule} from "@angular/core";
 
 import {RouterModule, Routes} from "@angular/router";
 import {HomeComponent} from "src/app/home/home.component";
@@ -37,7 +37,7 @@ import {SettlementsMatrixDetailComponent} from "src/app/settlements/settlements.
 import {SettlementsMatricesComponent} from "src/app/settlements/settlements.matrices.component";
 import {SettlementsTransfersComponent} from "src/app/settlements/settlements.transfers.component";
 import {SettlementsModelsComponent} from "./settlements/settlements.models.component";
-import {SettlementsModelsCreateComponent} from './settlements/settlements.models.create.component'
+import {SettlementsModelsCreateComponent} from './settlements/settlements.models.create.component';
 import {AuditingComponent} from "./auditing/auditing.component";
 
 const routes: Routes = [
@@ -54,9 +54,21 @@ const routes: Routes = [
 	{path: "participants", component: ParticipantsComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "account-lookup", component: AccountLookupComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "account-lookup-oracles", component: AccountLookupOracleListComponent, canActivate: [CanLoadIsLoggedIn]},
-	{path: "account-lookup-oracles/new", component: AccountLookupOracleCreateComponent, canActivate: [CanLoadIsLoggedIn]},
-	{path: "account-lookup/oracles/:id", component: AccountLookupOracleDetailComponent, canActivate: [CanLoadIsLoggedIn]},
-	{path: "account-lookup-associations", component: AccountLookupAssociationsListComponent, canActivate: [CanLoadIsLoggedIn]},
+	{
+		path: "account-lookup-oracles/new",
+		component: AccountLookupOracleCreateComponent,
+		canActivate: [CanLoadIsLoggedIn]
+	},
+	{
+		path: "account-lookup/oracles/:id",
+		component: AccountLookupOracleDetailComponent,
+		canActivate: [CanLoadIsLoggedIn]
+	},
+	{
+		path: "account-lookup-associations",
+		component: AccountLookupAssociationsListComponent,
+		canActivate: [CanLoadIsLoggedIn]
+	},
 	{path: "quotes", component: QuotesComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "quotes/new", component: QuoteCreateComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "quotes/:id", component: QuoteDetailComponent, canActivate: [CanLoadIsLoggedIn]},
@@ -68,8 +80,16 @@ const routes: Routes = [
 	{path: "transfers/new", component: TransferCreateComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "transfers/:id", component: TransferDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "account-lookup/oracles/:id", component: QuoteDetailComponent, canActivate: [CanLoadIsLoggedIn]},
-	{path: "platform-configuration-global", component: PlatformConfigurationGlobalComponent, canActivate: [CanLoadIsLoggedIn]},
-	{path: "platform-configuration-bc", component: PlatformConfigurationBoundedContextComponent, canActivate: [CanLoadIsLoggedIn]},
+	{
+		path: "platform-configuration-global",
+		component: PlatformConfigurationGlobalComponent,
+		canActivate: [CanLoadIsLoggedIn]
+	},
+	{
+		path: "platform-configuration-bc",
+		component: PlatformConfigurationBoundedContextComponent,
+		canActivate: [CanLoadIsLoggedIn]
+	},
 	{path: "platform-configuration", component: PlatformConfigurationComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/matrix/:id", component: SettlementsMatrixDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/matrix", component: SettlementsMatricesComponent, canActivate: [CanLoadIsLoggedIn]},
