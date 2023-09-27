@@ -130,3 +130,18 @@ devspace*
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Helm
+**/charts
+**/tmpcharts
+requirements.lock
+Chart.lock
+
+# Helm Publish Repo
+repo/**
+**/repo/
+
+# Terraform
+.terraform*
+terraform*zip
+*tfstate*
