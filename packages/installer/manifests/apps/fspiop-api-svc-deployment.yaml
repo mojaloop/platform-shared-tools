@@ -45,6 +45,7 @@ spec:
         - name: PLATFORM_CONFIG_BASE_SVC_URL
           value: http://platform-configuration-svc:3100
         image: mojaloop/interop-apis-bc-fspiop-api-svc:snapshot
+        imagePullPolicy: ifNotPresent
         name: fspiop-api-svc
         ports:
         - containerPort: 4000
