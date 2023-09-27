@@ -116,15 +116,15 @@ elif [[ "$mode" == "install_ml" ]]; then
   #configure_extra_options 
   copy_k8s_yaml_files_to_tmp
   modify_local_mojaloop_yaml_and_charts  "$SCRIPTS_DIR/vnext-configure.py" "$MANIFESTS_DIR"
-  update_k8s_images_from_docker_files # during development enable sync image versions for k8s  from docker-compose 
-  if [[ "$ARCH" == "aarch64" ]]; then  
-    # as of Sept 2023 there is a bug where interop image need building locally 
-    # then we need to adjust interop deployment yaml to deploy the local image
-    export localimage=`grep "^local_image" $MINI_LOOP_SCRIPTS_DIR/interop-interim-fix.sh | cut -d "=" -f2 | tr -d "\""`
-    echo $localimage
-    perl -p -i.bak -e "s/image:.*$/image: $localimage/g" $MANIFESTS_DIR/apps/fspiop-api-svc-deployment.yaml
-    perl -p -i.bak -e "s/imagePullPolicy:.*$/imagePullPolicy: Never/g" $MANIFESTS_DIR/apps/fspiop-api-svc-deployment.yaml
-  fi
+  ### update_k8s_images_from_docker_files # during development enable sync image versions for k8s from docker-compose TODO: maybe move to seperate script 
+  # if [[ "$ARCH" == "aarch64" ]]; then  
+  #   # as of Sept 2023 there is a bug where interop image need building locally 
+  #   # then we need to adjust interop deployment yaml to deploy the local image
+  #   export localimage=`grep "^local_image" $MINI_LOOP_SCRIPTS_DIR/interop-interim-fix.sh | cut -d "=" -f2 | tr -d "\""`
+  #   echo $localimage
+  #   perl -p -i.bak -e "s/image:.*$/image: $localimage/g" $MANIFESTS_DIR/apps/fspiop-api-svc-deployment.yaml
+  #   perl -p -i.bak -e "s/imagePullPolicy:.*$/imagePullPolicy: Never/g" $MANIFESTS_DIR/apps/fspiop-api-svc-deployment.yaml
+  # fi
   install_infra_from_local_chart $MANIFESTS_DIR/infra
   install_mojaloop_layer "crosscut" $MANIFESTS_DIR/crosscut
   install_mojaloop_layer "apps" $MANIFESTS_DIR/apps
