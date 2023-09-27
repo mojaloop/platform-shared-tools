@@ -492,7 +492,7 @@ function restore_demo_data {
   printf "==> restoring demonstration and test data  \n"
   # temporary measure to inject base participants data into switch 
   mongopod=`kubectl get pods --namespace $NAMESPACE | grep -i mongodb |awk '{print $1}'` 
-  mongo_root_pw=`kubectl get secret mongodb -o jsonpath='{.data.mongodb-root-password}'| base64 -d` 
+  mongo_root_pw=`kubectl get secret mongodb -o jsonpath='{.data.MONGO_INITDB_ROOT_PASSWORD}'| base64 -d` 
   printf "      - mongodb data  " 
   kubectl cp $ETC_DIR/mongodata.gz $mongopod:/tmp # copy the demo / test data into the mongodb pod
   # run the mongorestore 

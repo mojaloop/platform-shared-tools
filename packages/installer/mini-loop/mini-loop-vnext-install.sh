@@ -10,39 +10,39 @@
 source ../scripts/common.sh 
 
 
-function update_k8s_images_from_docker_files {
-  local yaml_files=("path/to/file1.yaml" "path/to/file2.yaml")  # Replace with your YAML file paths
-  compose_dir=$BASE_DIR/packages/deployment  
-  CURRENT_IMAGES_FROM_DOCKER_FILES=($(grep image $compose_dir/**/docker*yml | grep -v infra | grep mojaloop | cut -d ":" -f3,4))
-  MANIFESTS_DIR1="/tmp/manifests"
-  k8s_yaml_files=($(ls $MANIFESTS_DIR1/**/*yaml))
-  # for element in "${k8s_yaml_files[@]}"; do
-  #   echo "$element"
-  # done
-  # for element in "${CURRENT_IMAGES_FROM_DOCKER_FILES[@]}"; do
-  #   echo "$element"
-  # done
-  #local image_array=("image1:tag1" "image2:tag2")  # Replace with your array of images
+# function update_k8s_images_from_docker_files {
+#   local yaml_files=("path/to/file1.yaml" "path/to/file2.yaml")  # Replace with your YAML file paths
+#   compose_dir=$BASE_DIR/packages/deployment  
+#   CURRENT_IMAGES_FROM_DOCKER_FILES=($(grep image $compose_dir/**/docker*yml | grep -v infra | grep mojaloop | cut -d ":" -f3,4))
+#   MANIFESTS_DIR1="/tmp/manifests"
+#   k8s_yaml_files=($(ls $MANIFESTS_DIR1/**/*yaml))
+#   # for element in "${k8s_yaml_files[@]}"; do
+#   #   echo "$element"
+#   # done
+#   # for element in "${CURRENT_IMAGES_FROM_DOCKER_FILES[@]}"; do
+#   #   echo "$element"
+#   # done
+#   #local image_array=("image1:tag1" "image2:tag2")  # Replace with your array of images
 
-  for ((i=0; i<${#CURRENT_IMAGES_FROM_DOCKER_FILES[@]}; i++)); do
-    local image="${CURRENT_IMAGES_FROM_DOCKER_FILES[$i]}"
-    local image_name="${image%%:*}"  # Extract the image name
-    local image_tag="${image#*:}"    # Extract the image tag
+#   for ((i=0; i<${#CURRENT_IMAGES_FROM_DOCKER_FILES[@]}; i++)); do
+#     local image="${CURRENT_IMAGES_FROM_DOCKER_FILES[$i]}"
+#     local image_name="${image%%:*}"  # Extract the image name
+#     local image_tag="${image#*:}"    # Extract the image tag
     
-    echo "i : $i"
-    echo "image: $image"
-    echo "image_name: $image_name"
-    echo "image_tag: $image_tag"
+#     echo "i : $i"
+#     echo "image: $image"
+#     echo "image_name: $image_name"
+#     echo "image_tag: $image_tag"
 
-    for yaml_file in "${k8s_yaml_files[@]}"; do
-      if grep -q "image: $image_name" "$yaml_file"; then
-        sed -i "s|image: $image_name:.*|image: $image_name:$image_tag|g" "$yaml_file"
-        #echo "Updated image in $image_name:$image_tag in $yaml_file "
-      fi 
+#     for yaml_file in "${k8s_yaml_files[@]}"; do
+#       if grep -q "image: $image_name" "$yaml_file"; then
+#         sed -i "s|image: $image_name:.*|image: $image_name:$image_tag|g" "$yaml_file"
+#         #echo "Updated image in $image_name:$image_tag in $yaml_file "
+#       fi 
 
-    done
-  done
-}
+#     done
+#   done
+# }
 
 
 
@@ -154,6 +154,14 @@ elif [[ "$mode" == "install_ml" ]]; then
   copy_k8s_yaml_files_to_tmp
   modify_local_mojaloop_yaml_and_charts  "$SCRIPTS_DIR/vnext-configure.py" "$MANIFESTS_DIR"
   update_k8s_images_from_docker_files # during development enable sync image versions for k8s  from docker-compose 
+  if [[ "$ARCH" == "aarch64" ]]; then  
+    # as of Sept 2023 there is a bug where interop image need building locally 
+    # then we need to adjust interop deployment yaml to deploy the local image
+    export localimage=`grep "^local_image" $MINI_LOOP_SCRIPTS_DIR/interop-interim-fix.sh | cut -d "=" -f2 | tr -d "\""`
+    echo $localimage
+    perl -p -i.bak -e "s/image:.*$/image: $localimage/g" $MANIFESTS_DIR/apps/fspiop-api-svc-deployment.yaml
+    perl -p -i.bak -e "s/imagePullPolicy:.*$/imagePullPolicy: Never/g" $MANIFESTS_DIR/apps/fspiop-api-svc-deployment.yaml
+  fi
   install_infra_from_local_chart $MANIFESTS_DIR/infra
   install_mojaloop_layer "crosscut" $MANIFESTS_DIR/crosscut
   install_mojaloop_layer "apps" $MANIFESTS_DIR/apps
