@@ -95,10 +95,10 @@ set_mojaloop_timeout
 printf "\n"
 
 if [[ "$mode" == "delete_ml" ]] ; then
-  check_manifests_dir_exists
-  delete_mojaloop_layer "ttk" $TTK_DIR
-  delete_mojaloop_layer "apps" $APPS_DIR
-  delete_mojaloop_layer "crosscut" $CROSSCUT_DIR
+  #check_manifests_dir_exists
+  delete_mojaloop_layer "ttk" $MANIFESTS_DIR/ttk
+  delete_mojaloop_layer "apps" $MANIFESTS_DIR/apps
+  delete_mojaloop_layer "crosscut" $MANIFESTS_DIR/crosscut
   delete_mojaloop_infra_release  
   print_end_banner "EKS"
 elif [[ "$mode" == "install_ml" ]]; then
@@ -106,12 +106,12 @@ elif [[ "$mode" == "install_ml" ]]; then
   printf "start : Mojaloop (vNext) install utility [%s]\n" "`date`" >> $LOGFILE
   add_helm_repos # needed for EKS only 
   #configure_extra_options 
-  modify_local_mojaloop_yaml_and_charts "$BASE_DIR/scripts/vnext-configure.py"
-  install_infra_from_local_chart
-  install_mojaloop_layer "crosscut" $CROSSCUT_DIR
-  install_mojaloop_layer "apps" $APPS_DIR
-  install_mojaloop_layer "ttk" $TTK_DIR
-  restore_demo_data
+  copy_k8s_yaml_files_to_tmp
+  modify_local_mojaloop_yaml_and_charts $BASE_DIR/scripts/vnext-configure.py $MANIFESTS_DIR
+  install_infra_from_local_chart $MANIFESTS_DIR/infra
+  install_mojaloop_layer "crosscut" $MANIFESTS_DIR/crosscut
+  install_mojaloop_layer "apps" $MANIFESTS_DIR/apps
+  restore_demo_data $BASE_DIR/etc
   configure_elastic_search
   check_urls
   tstop=$(date +%s)

@@ -227,7 +227,7 @@ function set_and_create_namespace {
 
 function modify_local_mojaloop_yaml_and_charts {
   if [[ "$#" -ne 2 ]]; then 
-      printf "\n** Error: insufficient params passed to [%s] \n" "$0"
+      printf "\n** Error: insufficient params passed to [%s] \n" "${FUNCNAME[0]}"
       exit 1
   fi 
   local config_script=$1
@@ -487,6 +487,7 @@ check_status() {
 }
 
 function restore_demo_data {
+  local mongo_data_dir=$1
   error_message=" restoring the mongo database data failed "
   trap 'handle_error $LINENO "$error_message"' ERR
   printf "==> restoring demonstration and test data  \n"
@@ -494,7 +495,7 @@ function restore_demo_data {
   mongopod=`kubectl get pods --namespace $NAMESPACE | grep -i mongodb |awk '{print $1}'` 
   mongo_root_pw=`kubectl get secret mongodb -o jsonpath='{.data.MONGO_INITDB_ROOT_PASSWORD}'| base64 -d` 
   printf "      - mongodb data  " 
-  kubectl cp $ETC_DIR/mongodata.gz $mongopod:/tmp # copy the demo / test data into the mongodb pod
+  kubectl cp $mongo_data_dir/mongodata.gz $mongopod:/tmp # copy the demo / test data into the mongodb pod
   # run the mongorestore 
   kubectl exec --stdin --tty $mongopod -- mongorestore  -u root -p $mongo_root_pw \
                --gzip --archive=/tmp/mongodata.gz --authenticationDatabase admin > /dev/null 2>&1
@@ -612,7 +613,7 @@ DEFAULT_NAMESPACE="default"
 # INFRA_DIR=$MANIFESTS_DIR/infra
 # CROSSCUT_DIR=$MANIFESTS_DIR/crosscut
 # APPS_DIR=$MANIFESTS_DIR/apps
-TTK_DIR=$MANIFESTS_DIR/ttk
+#TTK_DIR=$MANIFESTS_DIR/ttk
 K8S_CURRENT_RELEASE_LIST=( "1.26" "1.27" )
 CURRENT_IMAGES_FROM_DOCKER_FILES=[]
 
