@@ -1,6 +1,6 @@
-import {Component, OnInit, ViewChild} from "@angular/core";
-import {ActivatedRoute} from "@angular/router";
-import {MessageService} from "src/app/_services_and_types/message.service";
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { MessageService } from "src/app/_services_and_types/message.service";
 import * as uuid from "uuid";
 
 import {
@@ -16,16 +16,19 @@ import {
 	IParticipantFundsMovement,
 	IParticipantEndpoint,
 	IParticipantSourceIpChangeRequest,
-	ParticipantAllowedSourceIpsPortModes
+	ParticipantAllowedSourceIpsPortModes,
+	IParticipantContactInfo,
+	IParticipantContactInfoChangeRequest
 } from "@mojaloop/participant-bc-public-types-lib";
-import {ParticipantsService} from "src/app/_services_and_types/participants.service";
-import {BehaviorSubject, Observable} from "rxjs";
+import { ParticipantsService } from "src/app/_services_and_types/participants.service";
+import { BehaviorSubject, Observable } from "rxjs";
 import {
 	NgbModal,
 	NgbModalRef,
 	NgbNav,
 } from "@ng-bootstrap/ng-bootstrap";
-import {validateCIDR, validatePortRange, validatePorts} from "../_utils";
+import { validateCIDR, validatePortRange, validatePorts } from "../_utils";
+import { ValueConverter } from "@angular/compiler/src/render3/view/template";
 
 @Component({
 	selector: "app-participant-detail",
@@ -52,6 +55,11 @@ export class ParticipantDetailComponent implements OnInit {
 	sourceIpEditingPortsListStr: string = "";
 	sourceIpEditingPortRangeStart: number = 0;
 	sourceIpEditingPortRangeEnd: number = 0;
+
+	contactCreateModeEnabled = false;
+	contactEditModeEnabled = false;
+	newContactInfo: any;
+	editingContactOriginalData?: IParticipantContactInfo;
 
 	ndcCreateModeEnabled = false;
 	ndcEditModeEnabled = false;
@@ -119,11 +127,11 @@ export class ParticipantDetailComponent implements OnInit {
 	approve() {
 		this._participantsSvc.approveParticipant(this._participantId)
 			.subscribe(async () => {
-					this._messageService.addSuccess("IParticipant Approved");
-					await this._fetchParticipant();
-				}, (error) => {
-					this._messageService.addError(error.message);
-				}
+				this._messageService.addSuccess("IParticipant Approved");
+				await this._fetchParticipant();
+			}, (error) => {
+				this._messageService.addError(error.message);
+			}
 			);
 	}
 
@@ -182,14 +190,14 @@ export class ParticipantDetailComponent implements OnInit {
 			this.endpointCreateModeEnabled ? this._participantsSvc.createEndpoint.bind(this._participantsSvc) : this._participantsSvc.changeEndpoint.bind(this._participantsSvc);
 
 		createOrUpdateEndpoint(this._participantId, endpointObj).subscribe(async () => {
-				this.endpointCreateModeEnabled = false;
-				this.endpointEditModeEnabled = false;
-				this.endpointEditingId = "";
+			this.endpointCreateModeEnabled = false;
+			this.endpointEditModeEnabled = false;
+			this.endpointEditingId = "";
 
-				await this._fetchParticipant();
-			}, (error) => {
-				this._messageService.addError(error);
-			}
+			await this._fetchParticipant();
+		}, (error) => {
+			this._messageService.addError(error);
+		}
 		);
 
 	}
@@ -225,10 +233,10 @@ export class ParticipantDetailComponent implements OnInit {
 
 		this._participantsSvc.removeEndpoint(this._participantId, endpointObj.id)
 			.subscribe(() => {
-					this._fetchParticipant();
-				}, (error) => {
-					this._messageService.addError(error);
-				}
+				this._fetchParticipant();
+			}, (error) => {
+				this._messageService.addError(error);
+			}
 			);
 	}
 
@@ -239,7 +247,7 @@ export class ParticipantDetailComponent implements OnInit {
 	onEditAccount(account: IParticipantAccount): void {
 		//debugger
 		this.accountEditModeEnabled = true;
-		this.editingParticipantAccountOriginalData = {...account};
+		this.editingParticipantAccountOriginalData = { ...account };
 	}
 
 	onCancelEditingAccount(account: IParticipantAccount): void {
@@ -277,7 +285,7 @@ export class ParticipantDetailComponent implements OnInit {
 		// check duplicates
 		if (this.accountCreateModeEnabled) {
 			participantAccountChangeRequest.requestType = "ADD_ACCOUNT";
-			const duplicateAccount = this.participant.value?.participantAccounts.find(
+			const duplicateAccount = this.participant.value?.participantAccounts?.find(
 				(item) =>
 					item.type === account.type &&
 					item.currencyCode === account.currencyCode
@@ -296,19 +304,19 @@ export class ParticipantDetailComponent implements OnInit {
 
 		this._participantsSvc.createAccount(this._participantId, participantAccountChangeRequest)
 			.subscribe(async () => {
-					await this._fetchParticipant();
-					this.updateAccounts();
-					this.accountCreateModeEnabled = false;
-					this.accountEditModeEnabled = false;
+				await this._fetchParticipant();
+				this.updateAccounts();
+				this.accountCreateModeEnabled = false;
+				this.accountEditModeEnabled = false;
 
-					this._messageService.addSuccess(
-						"Account change request created!"
-					);
+				this._messageService.addSuccess(
+					"Account change request created!"
+				);
 
-				}, (error) => {
+			}, (error) => {
 
-					this._messageService.addError(error);
-				}
+				this._messageService.addError(error);
+			}
 			);
 	}
 
@@ -364,9 +372,16 @@ export class ParticipantDetailComponent implements OnInit {
 		this.updateLocalPortEditingVarsFromObj(sourceIp);
 	}
 
+	onAddSourceIp(): void {
+		this.sourceIpCreateModeEnabled = true;
+		this.newSourceIp = this._participantsSvc.createEmptySourceIp();
+
+		this.updateLocalPortEditingVarsFromObj(this.newSourceIp);
+	}
+
 	updateLocalPortEditingVarsFromObj(sourceIp: IParticipantAllowedSourceIp) {
 		if (sourceIp.portMode === ParticipantAllowedSourceIpsPortModes.SPECIFIC) {
-			this.sourceIpEditingPortsListStr = sourceIp.ports?.join(",") || "";
+			this.sourceIpEditingPortsListStr = sourceIp.ports as any || "";
 		} else if (sourceIp.portMode === ParticipantAllowedSourceIpsPortModes.RANGE) {
 			this.sourceIpEditingPortRangeStart = sourceIp.portRange?.rangeFirst || 0;
 			this.sourceIpEditingPortRangeEnd = sourceIp.portRange?.rangeLast || 0;
@@ -383,12 +398,7 @@ export class ParticipantDetailComponent implements OnInit {
 		Object.assign(sourceIP, this.editingSourceIpOriginalData);
 	}
 
-	onAddSourceIp(): void {
-		this.sourceIpCreateModeEnabled = true;
-		this.newSourceIp = this._participantsSvc.createEmptySourceIp();
 
-		this.updateLocalPortEditingVarsFromObj(this.newSourceIp);
-	}
 
 	// onPortModeChange() {
 	// 	if (this.newSourceIp.portMode === "ANY") {
@@ -413,19 +423,24 @@ export class ParticipantDetailComponent implements OnInit {
 		}
 
 		if (sourceIp.portMode === "RANGE" && sourceIp.portRange) {
-			if (this.sourceIpEditingPortRangeStart === 0 || this.sourceIpEditingPortRangeEnd === 0) {
-				this._messageService.addError("Invalid Port Range values.");
-				return false;
-			}
+			const start = this.sourceIpEditModeEnabled
+				? Number(this.sourceIpEditingPortRangeStart)
+				: Number(sourceIp.portRange.rangeFirst);
+			const end = this.sourceIpEditModeEnabled
+				? Number(this.sourceIpEditingPortRangeEnd)
+				: Number(sourceIp.portRange.rangeLast);
 
-			if (!validatePortRange(this.sourceIpEditingPortRangeStart, this.sourceIpEditingPortRangeEnd)) {
+			if (isNaN(start) || isNaN(end) || start === 0 || end === 0 || !validatePortRange(start, end)) {
 				this._messageService.addError("Invalid Port Range values.");
 				return false;
 			}
 		}
 
+
 		if (sourceIp.portMode === "SPECIFIC" && sourceIp.ports) {
-			if (!validatePorts(this.sourceIpEditingPortsListStr)) {
+			const portValues = this.sourceIpEditModeEnabled ? this.sourceIpEditingPortsListStr : sourceIp.ports as any;
+
+			if (!validatePorts(portValues)) {
 				this._messageService.addError("Invalid Port value.");
 				return false;
 			}
@@ -455,34 +470,51 @@ export class ParticipantDetailComponent implements OnInit {
 		};
 
 		if (sourceIp.portMode === "SPECIFIC") {
-			sourceIpChangeRequest.ports = this.sourceIpEditingPortsListStr.split(",").map(value => Number(value));
+			const portValues = this.sourceIpEditModeEnabled ?
+				this.sourceIpEditingPortsListStr.split(",").map(value => Number(value)) :
+				sourceIp.ports?.toString().split(",").map(value => Number(value));
+
+			sourceIpChangeRequest.ports = portValues;
+
 		} else if (sourceIp.portMode === "RANGE") {
 			sourceIpChangeRequest.portRange = {
-				rangeFirst: this.sourceIpEditingPortRangeStart,
-				rangeLast: this.sourceIpEditingPortRangeEnd
+				rangeFirst: this.sourceIpEditModeEnabled ? this.sourceIpEditingPortRangeStart : sourceIp.portRange?.rangeFirst,
+				rangeLast: this.sourceIpEditModeEnabled ? this.sourceIpEditingPortRangeEnd : sourceIp.portRange?.rangeLast
 			};
 		}
 
 		// check for duplicates
-		const duplicateCidr = this.participant.value?.participantSourceIpChangeRequests.find(
-			item => item.cidr === sourceIp.cidr && item.id !== sourceIp.id
-		);
+		const duplicateCidr = this.participant.value?.participantAllowedSourceIps?.find(item => {
+			if (this.sourceIpEditModeEnabled) {
+				return (
+					item.cidr === sourceIp.cidr &&
+					item.portMode === sourceIp.portMode &&
+					item.portRange?.rangeFirst === this.sourceIpEditingPortRangeStart &&
+					item.portRange?.rangeLast === this.sourceIpEditingPortRangeEnd &&
+					item.ports === sourceIp.ports
+				);
+			} else {
+				return item.cidr === sourceIp.cidr;
+			}
+		});
 
 		if (duplicateCidr) {
 			this._messageService.addWarning("Another SourceIP with the same CIDR already exists.");
 			return;
 		}
 
+
+
 		this._participantsSvc.createSourceIp(this._participantId, sourceIpChangeRequest).subscribe(async () => {
-				await this._fetchParticipant();
+			await this._fetchParticipant();
 
-				this.sourceIpCreateModeEnabled = this.sourceIpEditModeEnabled = false;
-				this._messageService.addSuccess("SourceIP change request created!");
+			this.sourceIpCreateModeEnabled = this.sourceIpEditModeEnabled = false;
+			this._messageService.addSuccess("SourceIP change request created!");
 
-			}, (error: any) => {
-				console.error(error);
-				this._messageService.addError(error.message || error);
-			}
+		}, (error: any) => {
+			console.error(error);
+			this._messageService.addError(error.message || error);
+		}
 		);
 	}
 
@@ -508,6 +540,202 @@ export class ParticipantDetailComponent implements OnInit {
 	rejectSourceIpChangeRequest(reqId: string) {
 		this._messageService.addError("Not implemented (rejectSourceIpChangeRequest)");
 	}
+
+	/*
+	* Contact Information
+	* */
+
+	isContactInfoValid(contact: IParticipantContactInfo): boolean {
+		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+		const phoneNumRegex = /^(\+\d{1,4}\s?)?(\(\d{1,4}\)\s?)?[\d\s\-]+$/;
+
+		const isNameValid = contact.name.trim().length > 0;
+		const isEmailValid = emailRegex.test(contact.email);
+		const isPhoneNumValid = phoneNumRegex.test(contact.phoneNumber);
+
+		if (!isNameValid) {
+			this._messageService.addError("Invalid Name.");
+		}
+
+		if (!isEmailValid) {
+			this._messageService.addError("Invalid Email.");
+		}
+
+		if (!isPhoneNumValid) {
+			this._messageService.addError("Invalid Phone No.");
+		}
+
+		return isNameValid && isEmailValid && isPhoneNumValid;
+	}
+
+	onEditContactInfo(contact: IParticipantContactInfo): void {
+		this.contactEditModeEnabled = true;
+		this.editingContactOriginalData = JSON.parse(JSON.stringify(contact));
+
+		//this.updateLocalPortEditingVarsFromObj(sourceIp);
+	}
+
+	saveEditParticipantContact(contact: IParticipantContactInfo) {
+		if (!this.isContactInfoValid(contact)) {
+			return;
+		}
+
+		const contactInfoChangeRequest: IParticipantContactInfoChangeRequest = {
+			id: uuid.v4(),
+			contactInfoId: contact.id,
+			name: contact.name,
+			email: contact.email,
+			phoneNumber: contact.phoneNumber,
+			role: contact.role,
+			requestType: (this.contactEditModeEnabled ? "CHANGE_PARTICIPANT_CONTACT_INFO" : "ADD_PARTICIPANT_CONTACT_INFO"),
+			approvedBy: null,
+			approved: false,
+			approvedDate: null,
+			createdBy: "",
+			createdDate: Date.now()
+		};
+
+		//Duplicate check
+		if (this.contactCreateModeEnabled && this.participant.value?.participantContactInfoChangeRequests) {
+			let conditionMet = false; // Flag to track if any condition is met
+
+			for (const item of this.participant.value.participantContacts) {
+				if (item.name === contact.name) {
+					this._messageService.addWarning("Same contact name already exists.");
+					conditionMet = true;
+					break;
+				}
+
+				if (item.email === contact.email) {
+					this._messageService.addWarning("Same contact email already exists.");
+					conditionMet = true;
+					break;
+				}
+
+				if (item.phoneNumber === contact.phoneNumber) {
+					this._messageService.addWarning("Same contact phone no. already exists.");
+					conditionMet = true;
+					break;
+				}
+			}
+
+			if (conditionMet) {
+				return; // Return early if any condition is met
+			}
+		} else {
+			const duplicate = this.participant.value?.participantContactInfoChangeRequests?.find((value) =>
+				value.name === contact.name &&
+				value.email === contact.email &&
+				value.phoneNumber === contact.phoneNumber &&
+				value.role === contact.role
+			);
+
+			if (duplicate) {
+				this._messageService.addError("Same contact information already exists.");
+				return;
+			}
+		}
+
+
+		this._participantsSvc.createContactInfo(this._participantId, contactInfoChangeRequest).subscribe(async () => {
+			await this._fetchParticipant();
+
+			this.contactCreateModeEnabled = this.contactEditModeEnabled = false;
+			this._messageService.addSuccess("Contact information change request created!");
+
+		}, (error: any) => {
+			console.error(error);
+			this._messageService.addError(error.message || error);
+		});
+	}
+
+	/* saveEditParticipantContact(contact: IParticipantContactInfo) {
+		if (!this.isContactInfoValid(contact)) return;
+
+		const isNewContact = this.contactCreateModeEnabled &&
+			(this.participant.value?.participantContactInfoChangeRequests || []).some(item =>
+				item.name === contact.name ||
+				item.email === contact.email ||
+				item.phoneNumber === contact.phoneNumber
+			);
+
+		if (isNewContact) {
+			this._messageService.addWarning("Same contact information already exists.");
+			return;
+		}
+
+		const contactInfoChangeRequest: IParticipantContactInfoChangeRequest = {
+			id: uuid.v4(),
+			contactInfoId: contact.id,
+			name: contact.name,
+			email: contact.email,
+			phoneNumber: contact.phoneNumber,
+			role: contact.role,
+			requestType: this.contactEditModeEnabled ? "CHANGE_PARTICIPANT_CONTACT_INFO" : "ADD_PARTICIPANT_CONTACT_INFO",
+			approvedBy: null,
+			approved: false,
+			approvedDate: null,
+			createdBy: "",
+			createdDate: Date.now(),
+		};
+
+		if (!this.contactEditModeEnabled) {
+			this._participantsSvc.createContactInfo(this._participantId, contactInfoChangeRequest).subscribe(
+				async () => {
+					await this._fetchParticipant();
+					this.contactCreateModeEnabled = this.contactEditModeEnabled = false;
+					this._messageService.addSuccess("Contact information change request created!");
+				},
+				(error: any) => {
+					console.error(error);
+					this._messageService.addError(error.message || error);
+				}
+			);
+		} else {
+			// Handle edit mode logic here if needed
+		}
+	} */
+
+
+
+	onCancelEditingParticipantContact(contact: IParticipantContactInfo) {
+		this.contactCreateModeEnabled = false;
+		this.contactEditModeEnabled = false;
+		Object.assign(contact, this.editingContactOriginalData);
+	}
+
+	onAddContactInfo(): void {
+		this.contactCreateModeEnabled = true;
+		this.newContactInfo = this._participantsSvc.createEmptyContactInfo();
+	}
+
+	approveContactInfoChangeRequest(reqId: string) {
+		this._participantsSvc
+			.approveContactInfoChangeRequest(this._participantId, reqId)
+			.subscribe(
+				async () => {
+					this._messageService.addSuccess("Successfully approved contact information change request.");
+
+					await this._fetchParticipant();
+				},
+				(error) => {
+					if (this.fundsMovementModalRef)
+						this.fundsMovementModalRef!.close();
+					this._messageService.addError(
+						`Contact information changes request approval failed with: ${error}`
+					);
+				}
+			);
+	}
+
+	rejectContactInfoChangeRequest(reqId: string) {
+		this._messageService.addError("Not implemented (rejectContactInfoChangeRequest)");
+	}
+
+
+	/*
+	* Funds Movement
+	* */
 
 	createFundsMov(e: Event) {
 		if (!this.fundsMovementModalRef) return;
@@ -661,12 +889,12 @@ export class ParticipantDetailComponent implements OnInit {
 		// TODO check duplicates also in requests (pending approval)
 
 		this._participantsSvc.createNDC(this._participantId, this.newNDC).subscribe(async (value) => {
-				this.ndcCreateModeEnabled = false;
-				this.ndcEditModeEnabled = false;
-				this.newNDC = null;
+			this.ndcCreateModeEnabled = false;
+			this.ndcEditModeEnabled = false;
+			this.newNDC = null;
 
-				await this._fetchParticipant();
-			},
+			await this._fetchParticipant();
+		},
 			(error) => {
 				this._messageService.addError(error.message);
 			}
@@ -708,7 +936,7 @@ export class ParticipantDetailComponent implements OnInit {
 		this.fundsMovementModalMode = ParticipantFundsMovementDirections.FUNDS_DEPOSIT;
 		this.fundsMovementModalRef = this._modalService.open(
 			this.fundsMovementModal,
-			{centered: true}
+			{ centered: true }
 		);
 	}
 
@@ -716,7 +944,7 @@ export class ParticipantDetailComponent implements OnInit {
 		this.fundsMovementModalMode = ParticipantFundsMovementDirections.FUNDS_WITHDRAWAL;
 		this.fundsMovementModalRef = this._modalService.open(
 			this.fundsMovementModal,
-			{centered: true}
+			{ centered: true }
 		);
 	}
 

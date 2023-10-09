@@ -17,6 +17,7 @@ import {
 	ParticipantAccountTypes,
 	ParticipantAllowedSourceIpsPortModes,
 	ParticipantNetDebitCapTypes,
+	IParticipantContactInfo,
 } from "@mojaloop/participant-bc-public-types-lib";
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
 import * as uuid from "uuid";
@@ -61,6 +62,8 @@ export class ParticipantsService {
 			changeLog: [],
 			netDebitCapChangeRequests: [],
 			netDebitCaps: [],
+			participantContacts:[],
+			participantContactInfoChangeRequests: []
 		};
 	}
 
@@ -91,7 +94,21 @@ export class ParticipantsService {
 			id: uuid.v4(),
 			cidr: "",
 			portMode: ParticipantAllowedSourceIpsPortModes.ANY,
-			ports: []
+			ports: [],
+			portRange: {
+				rangeFirst: 0,
+				rangeLast: 0
+			}
+		};
+	}
+
+	createEmptyContactInfo(): IParticipantContactInfo {
+		return {
+			id: uuid.v4(),
+			name: "",
+			email: "",
+			phoneNumber: "",
+			role: ""
 		};
 	}
 
@@ -338,7 +355,7 @@ export class ParticipantsService {
 					sourceIp
 				).subscribe(
 					(resp: { id: string }) => {
-						console.log(`got response - accountId: ${resp.id}`);
+						console.log(`got response - sourceIpId: ${resp.id}`);
 
 						subscriber.next(resp.id);
 						return subscriber.complete();
@@ -633,6 +650,66 @@ export class ParticipantsService {
 			);
 		});
 	}
+
+	createContactInfo(
+		participantId: string,
+		contactInfo: IParticipantContactInfo
+	): Observable<string> {
+		return new Observable<string>((subscriber) => {
+			this._http.post<{ id: string }>(
+					`${SVC_BASEURL}/participants/${participantId}/contactInfoChangeRequests`,
+					contactInfo
+				).subscribe(
+					(resp: { id: string }) => {
+						console.log(`got response - contactId: ${resp.id}`);
+
+						subscriber.next(resp.id);
+						return subscriber.complete();
+					},(error) => {
+						if (error && error.status === 401) {
+							console.warn("UnauthorizedError received on createContactInfo");
+							subscriber.error(new UnauthorizedError(error.error?.msg));
+						} else {
+							console.error(error);
+							subscriber.error(error.error?.msg);
+						}
+						return subscriber.complete();
+					}
+				);
+		});
+	}
+
+	approveContactInfoChangeRequest(participantId: string, requestId: string): Observable<void> {
+		return new Observable<void>((subscriber) => {
+			this._http.post(
+					`${SVC_BASEURL}/participants/${participantId}/contactInfoChangeRequests/${requestId}/approve`,
+					{}
+				).subscribe(
+					() => {
+						console.log(`got success response from contactInfoChangeRequests`);
+
+						subscriber.next();
+						return subscriber.complete();
+					},(error) => {
+						if (error && error.status === 401) {
+							console.warn(
+								"UnauthorizedError received on contactInfoChangeRequests"
+							);
+							subscriber.error(new UnauthorizedError(error.error?.msg));
+						}
+						if (error && error.status === 403) {
+							console.warn("Forbidden received on contactInfoChangeRequests");
+							subscriber.error(new Error(error.error?.msg));
+						} else {
+							console.error(error);
+							subscriber.error(error.error?.msg);
+						}
+						return subscriber.complete();
+					}
+				);
+		});
+	}
+
 
 	/* TESTS */
 	simulateTransfer(

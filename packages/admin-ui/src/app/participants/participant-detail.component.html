@@ -209,63 +209,64 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of (participant | async)?.participantAccounts; let i = index">
-            <ng-container *ngIf="accountEditModeEnabled && editingParticipantAccountOriginalData && item.id===editingParticipantAccountOriginalData.id; else readOnlyAccountRow">
-				<td>
-					{{item.type}}
-				</td>
-				<td>
-					<input type="text" class="form-control" [id]="'externalBankAccountId_' + item.id"
-						   *ngIf="item.type == 'SETTLEMENT'" [(ngModel)]="item.externalBankAccountId">
-				</td>
-				<td>
-					<input type="text" class="form-control" [id]="'externalBankAccountName_' + item.id"
-						   *ngIf="item.type == 'SETTLEMENT'" [(ngModel)]="item.externalBankAccountName">
-				</td>
-				<td>
-					{{item.currencyCode}}
-				</td>
-				<td>{{ item.balance }}</td>
-				<td>
-					<div class="btn-group btn-group-sm" role="group" aria-label="">
-						<button type="button" class="btn btn-success" (click)="saveEditAccount(item)">
-							<span class="bi bi-check-lg"></span>
-						</button>
-						<button type="button" class="btn btn-danger" (click)="onCancelEditingAccount(item)">
-							<span class="bi bi-x-lg"></span>
-						</button>
-					</div>
-				</td>
+            <ng-container
+              *ngIf="accountEditModeEnabled && editingParticipantAccountOriginalData && item.id===editingParticipantAccountOriginalData.id; else readOnlyAccountRow">
+              <td>
+                {{item.type}}
+              </td>
+              <td>
+                <input type="text" class="form-control" [id]="'externalBankAccountId_' + item.id"
+                  *ngIf="item.type == 'SETTLEMENT'" [(ngModel)]="item.externalBankAccountId">
+              </td>
+              <td>
+                <input type="text" class="form-control" [id]="'externalBankAccountName_' + item.id"
+                  *ngIf="item.type == 'SETTLEMENT'" [(ngModel)]="item.externalBankAccountName">
+              </td>
+              <td>
+                {{item.currencyCode}}
+              </td>
+              <td>{{ item.balance }}</td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group" aria-label="">
+                  <button type="button" class="btn btn-success" (click)="saveEditAccount(item)">
+                    <span class="bi bi-check-lg"></span>
+                  </button>
+                  <button type="button" class="btn btn-danger" (click)="onCancelEditingAccount(item)">
+                    <span class="bi bi-x-lg"></span>
+                  </button>
+                </div>
+              </td>
             </ng-container>
 
             <ng-template #readOnlyAccountRow>
-				<td>{{ item.type }}</td>
-				<td>{{ item.externalBankAccountId }}</td>
-				<td>{{ item.externalBankAccountName }}</td>
-				<td>{{ item.currencyCode }}</td>
-				<td>{{ item.balance }}</td>
-				<td>
-					<div class="btn-group btn-group-sm" role="group" aria-label="">
-						<button *ngIf="item.type === 'SETTLEMENT'" type="button" class="btn btn-primary"
-								(click)="onEditAccount(item)">
-							<span class="bi bi-pencil"></span>
-						</button>
-					</div>
+              <td>{{ item.type }}</td>
+              <td>{{ item.externalBankAccountId }}</td>
+              <td>{{ item.externalBankAccountName }}</td>
+              <td>{{ item.currencyCode }}</td>
+              <td>{{ item.balance }}</td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group" aria-label="">
+                  <button *ngIf="item.type === 'SETTLEMENT'" type="button" class="btn btn-primary"
+                    (click)="onEditAccount(item)">
+                    <span class="bi bi-pencil"></span>
+                  </button>
+                </div>
 
-				</td>
+              </td>
 
             </ng-template>
           </tr>
 
-		  <!-- extra row for new items -->
+          <!-- extra row for new items -->
           <tr *ngIf="accountCreateModeEnabled && newParticipantAccount !== null">
             <td>
               <select [(ngModel)]="newParticipantAccount.type" class="form-control">
                 <ng-container *ngIf="(participant | async)?.type === 'HUB'; else nonHub">
                   <option [selected]="newParticipantAccount.type === 'HUB_MULTILATERAL_SETTLEMENT'">
-					  HUB_MULTILATERAL_SETTLEMENT
+                    HUB_MULTILATERAL_SETTLEMENT
                   </option>
-				  <option [selected]="newParticipantAccount.type === 'HUB_RECONCILIATION'">
-					  HUB_RECONCILIATION
+                  <option [selected]="newParticipantAccount.type === 'HUB_RECONCILIATION'">
+                    HUB_RECONCILIATION
                   </option>
                 </ng-container>
                 <ng-template #nonHub>
@@ -587,86 +588,91 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of (participant | async)?.participantAllowedSourceIps; let i = index">
-            <ng-container *ngIf="sourceIpCreateModeEnabled && editingSourceIpOriginalData && item.id===editingSourceIpOriginalData.id; else readOnlySourceIpRow">
-				<td>
-					<input type="text" class="form-control" [id]="'sourceIpId_' + item.id" [(ngModel)]="item.cidr">
-				</td>
-				<td>
-					<select [(ngModel)]="item.portMode" class="form-control">
-						<option [selected]="item.portMode === 'ANY'">
-							ANY
-						</option>
-						<option [selected]="item.portMode === 'SPECIFIC'">
-							SPECIFIC
-						</option>
-						<option [selected]="item.portMode === 'RANGE'">
-							RANGE
-						</option>
-					</select>
+            <ng-container
+              *ngIf="sourceIpEditModeEnabled && editingSourceIpOriginalData && item.id===editingSourceIpOriginalData.id; else readOnlySourceIpRow">
+              <td>
+                <input type="text" class="form-control" [id]="'sourceIpId_' + item.id" [(ngModel)]="item.cidr">
+              </td>
+              <td>
+                <select [(ngModel)]="item.portMode" class="form-control">
+                  <option [selected]="item.portMode === 'ANY'">
+                    ANY
+                  </option>
+                  <option [selected]="item.portMode === 'SPECIFIC'">
+                    SPECIFIC
+                  </option>
+                  <option [selected]="item.portMode === 'RANGE'">
+                    RANGE
+                  </option>
+                </select>
 
-				</td>
-				<td>
-					<input type="text" class="form-control" [id]="'ports_' + item.id"
-						   [disabled]="item.portMode !== 'SPECIFIC'" [(ngModel)]="sourceIpEditingPortsListStr">
-				</td>
-				<td>
-					<div class="row">
+              </td>
+              <td>
+                <input type="text" class="form-control" [id]="'ports_' + item.id"
+                  [disabled]="item.portMode !== 'SPECIFIC'" [(ngModel)]="sourceIpEditingPortsListStr">
+              </td>
+              <td>
+                <div class="row">
 
-						<div style="display: flex;flex-direction: row;">
-							<div style="display: flex; flex-direction: col; flex-wrap: nowrap;">
-								<div style="width: 100px;margin-right: 5px;">
-									<input type="text" class="form-control" [id]="'portRangeFirst_' + item.id" placeholder="From"
-										   [disabled]="item.portMode !== 'RANGE'" [(ngModel)]="sourceIpEditingPortRangeStart">
-								</div>
-								<div style="width: 100px;">
-									<input type="text" class="form-control" [id]="'portRangeLast_' + item.id" placeholder="To"
-										   [disabled]="item.portMode !== 'RANGE'" [(ngModel)]="sourceIpEditingPortRangeEnd">
-								</div>
-							</div>
-						</div>
-					</div>
-				</td>
+                  <div style="display: flex;flex-direction: row;">
+                    <div style="display: flex; flex-direction: col; flex-wrap: nowrap;">
+                      <div style="width: 100px;margin-right: 5px;">
+                        <input type="text" class="form-control" [id]="'portRangeFirst_' + item.id" placeholder="From"
+                          [disabled]="item.portMode !== 'RANGE'" pattern="[0-9]*"
+                          [(ngModel)]="sourceIpEditingPortRangeStart">
+                      </div>
+                      <div style="width: 100px;">
+                        <input type="text" class="form-control" [id]="'portRangeLast_' + item.id" placeholder="To"
+                          [disabled]="item.portMode !== 'RANGE'" pattern="[0-9]*"
+                          [(ngModel)]="sourceIpEditingPortRangeEnd">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
 
-				<td>
-					<div class="btn-group btn-group-sm" role="group" aria-label="">
-						<button type="button" class="btn btn-success" (click)="saveEditSourceIp(item)">
-							<span class="bi bi-check-lg"></span>
-						</button>
-						<button type="button" class="btn btn-danger" (click)="onCancelEditingSourceIp(item)">
-							<span class="bi bi-x-lg"></span>
-						</button>
-					</div>
-				</td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group" aria-label="">
+                  <button type="button" class="btn btn-success" (click)="saveEditSourceIp(item)">
+                    <span class="bi bi-check-lg"></span>
+                  </button>
+                  <button type="button" class="btn btn-danger" (click)="onCancelEditingSourceIp(item)">
+                    <span class="bi bi-x-lg"></span>
+                  </button>
+                </div>
+              </td>
             </ng-container>
 
             <ng-template #readOnlySourceIpRow>
-				<td>{{ item.cidr }}</td>
-				<td>{{ item.portMode }}</td>
-				<td>
-					<span *ngIf="item.portMode === 'SPECIFIC'">{{ item.ports }}</span>
-				</td>
-				<td>
-					<span *ngIf="item.portMode === 'RANGE' && item.portRange">[{{ item.portRange.rangeFirst}} - {{ item.portRange.rangeLast }}]</span>
-				</td>
-				<td>
-					<div class="btn-group btn-group-sm" role="group" aria-label="">
-						<button type="button" class="btn btn-primary" (click)="onEditSourceIp(item)">
-							<span class="bi bi-pencil"></span>
-						</button>
-					</div>
+              <td>{{ item.cidr }}</td>
+              <td>{{ item.portMode }}</td>
+              <td>
+                <span *ngIf="item.portMode === 'SPECIFIC'">{{ item.ports }}</span>
+              </td>
+              <td>
+                <span *ngIf="item.portMode === 'RANGE' && item.portRange">[{{ item.portRange.rangeFirst}} - {{
+                  item.portRange.rangeLast }}]</span>
+              </td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group" aria-label="">
+                  <button type="button" class="btn btn-primary" (click)="onEditSourceIp(item)"
+                    [disabled]="sourceIpCreateModeEnabled">
+                    <span class="bi bi-pencil"></span>
+                  </button>
+                </div>
 
-				</td>
+              </td>
             </ng-template>
           </tr>
 
-		  <!-- extra row for new items -->
+          <!-- extra row for new items -->
           <tr *ngIf="sourceIpCreateModeEnabled">
             <td>
               <input type="text" class="form-control" [id]="'sourceIpId_' + newSourceIp.id"
                 [(ngModel)]="newSourceIp.cidr">
             </td>
             <td>
-<!--              <select [(ngModel)]="newSourceIp.portMode" class="form-control" (ngModelChange)="onPortModeChange()">-->
+              <!--              <select [(ngModel)]="newSourceIp.portMode" class="form-control" (ngModelChange)="onPortModeChange()">-->
               <select [(ngModel)]="newSourceIp.portMode" class="form-control">
                 <option [selected]="newSourceIp.portMode === 'ANY'">
                   ANY
@@ -688,11 +694,11 @@
                 <div style="display: flex; flex-direction: col; flex-wrap: nowrap;">
                   <div style="width: 100px;margin-right: 5px;">
                     <input type="text" class="form-control" [id]="'portRangeFirst_' + newSourceIp.id" placeholder="From"
-                      [disabled]="newSourceIp.portMode !== 'RANGE'" [(ngModel)]="newSourceIp.portRange.rangeFirst">
+                      [disabled]="newSourceIp.portMode !== 'RANGE'"  pattern="[0-9]*" [(ngModel)]="newSourceIp.portRange.rangeFirst">
                   </div>
                   <div style="width: 100px;">
                     <input type="text" class="form-control" [id]="'portRangeLast_' + newSourceIp.id" placeholder="To"
-                      [disabled]="newSourceIp.portMode !== 'RANGE'" [(ngModel)]="newSourceIp.portRange.rangeLast">
+                      [disabled]="newSourceIp.portMode !== 'RANGE'"  pattern="[0-9]*" [(ngModel)]="newSourceIp.portRange.rangeLast">
                   </div>
                 </div>
               </div>
@@ -727,8 +733,8 @@
       <table class="table table-hover mt-3">
         <thead class="thead-light">
           <tr>
-			<th scope="col">Request Type</th>
-			<th scope="col">CIDR</th>
+            <th scope="col">Request Type</th>
+            <th scope="col">CIDR</th>
             <th scope="col">Port Mode</th>
             <th scope="col">Ports</th>
             <th scope="col">Port Range</th>
@@ -739,17 +745,17 @@
         </thead>
         <tbody>
           <tr *ngFor="let sourceIpChangeRequest of (participant | async)?.participantSourceIpChangeRequests">
-			<td>{{ sourceIpChangeRequest.requestType }}</td>
-			<td>{{ sourceIpChangeRequest.cidr }}</td>
+            <td>{{ sourceIpChangeRequest.requestType }}</td>
+            <td>{{ sourceIpChangeRequest.cidr }}</td>
             <td>{{ sourceIpChangeRequest.portMode }}</td>
-			  <td>
-				  <span *ngIf="sourceIpChangeRequest.portMode === 'SPECIFIC'">{{ sourceIpChangeRequest.ports }}</span>
-			  </td>
-			  <td>
-				  <span *ngIf="sourceIpChangeRequest.portMode === 'RANGE'">
-					  [{{sourceIpChangeRequest.portRange!.rangeFirst}} - {{ sourceIpChangeRequest.portRange!.rangeLast}}]
-				  </span>
-			  </td>
+            <td>
+              <span *ngIf="sourceIpChangeRequest.portMode === 'SPECIFIC'">{{ sourceIpChangeRequest.ports }}</span>
+            </td>
+            <td>
+              <span *ngIf="sourceIpChangeRequest.portMode === 'RANGE'">
+                [{{sourceIpChangeRequest.portRange!.rangeFirst}} - {{ sourceIpChangeRequest.portRange!.rangeLast}}]
+              </span>
+            </td>
             <td>
               {{ sourceIpChangeRequest.createdBy }} on
               {{ sourceIpChangeRequest.createdDate | date : "medium" }}
@@ -798,6 +804,163 @@
     </ng-template>
   </li>
   <!-- Certificates -->
+
+  <li ngbNavItem="contacts" [hidden]="(participant | async)?.type === 'HUB'">
+    <!-- Source IPs -->
+    <a ngbNavLink>Contacts</a>
+    <ng-template ngbNavContent>
+      <h4 class="mt-3">Contact Information for this Participant</h4>
+      <table class="table table-hover mt-3">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">Name <span style="color:red"> *</span></th>
+            <th scope="col">Email<span style="color:red"> *</span></th>
+            <th scope="col">Phone No.<span style="color:red"> *</span></th>
+            <th scope="col">Role</th>
+            <th scope="col" style="width: 90px">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of (participant | async)?.participantContacts; let i = index">
+            <ng-container
+              *ngIf="contactEditModeEnabled && editingContactOriginalData && item.id===editingContactOriginalData.id; else readOnlyContactRow">
+              <td>
+                <input type="text" class="form-control" [id]="'contactName_' + item.id" [(ngModel)]="item.name">
+              </td>
+              <td>
+                <input type="text" class="form-control" [id]="'contactEmail_' + item.id" [(ngModel)]="item.email">
+              </td>
+              <td>
+                <input type="text" class="form-control" [id]="'contactPh_' + item.id" [(ngModel)]="item.phoneNumber">
+              </td>
+              <td>
+                <input type="text" class="form-control" [id]="'contactRole_' + item.id" [(ngModel)]="item.role">
+              </td>
+
+              <td>
+                <div class="btn-group btn-group-sm" role="group" aria-label="">
+                  <button type="button" class="btn btn-success" (click)="saveEditParticipantContact(item)">
+                    <span class="bi bi-check-lg"></span>
+                  </button>
+                  <button type="button" class="btn btn-danger" (click)="onCancelEditingParticipantContact(item)">
+                    <span class="bi bi-x-lg"></span>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-template #readOnlyContactRow>
+              <td>{{ item.name }}</td>
+              <td>{{ item.email }}</td>
+              <td>{{ item.phoneNumber }}</td>
+              <td>{{ item.role }}</td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group" aria-label="">
+                  <button type="button" class="btn btn-primary" (click)="onEditContactInfo(item)"
+                    [disabled]="contactCreateModeEnabled">
+                    <span class="bi bi-pencil"></span>
+                  </button>
+                </div>
+              </td>
+            </ng-template>
+          </tr>
+
+          <!-- extra row for new items -->
+          <tr *ngIf="contactCreateModeEnabled">
+            <td>
+              <input type="text" class="form-control" [id]="'contactName_' + newContactInfo.id"
+                [(ngModel)]="newContactInfo.name">
+            </td>
+            <td>
+              <input type="text" class="form-control" [id]="'contactEmail_' + newContactInfo.id"
+                [(ngModel)]="newContactInfo.email">
+            </td>
+            <td>
+              <input type="text" class="form-control" [id]="'contactPhoneNumber_' + newContactInfo.id"
+                [(ngModel)]="newContactInfo.phoneNumber">
+            </td>
+            <td>
+              <input type="text" class="form-control" [id]="'contactRole_' + newContactInfo.id"
+                [(ngModel)]="newContactInfo.role">
+            </td>
+
+            <td>
+              <div class="btn-group btn-group-sm" role="group" aria-label="">
+                <button type="button" class="btn btn-success m-1" (click)="saveEditParticipantContact(newContactInfo)">
+                  <span class="bi bi-check-lg"></span>
+                </button>
+                <button type="button" class="btn btn-danger m-1"
+                  (click)="onCancelEditingParticipantContact(newContactInfo)">
+                  <span class="bi bi-x-lg"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <hr />
+      <div class="form-row d-flex mb-3">
+        <div class="p-2">
+          <button class="btn btn-secondary" (click)="onAddContactInfo()"
+            [disabled]="contactCreateModeEnabled || contactEditModeEnabled">
+            Add Contact Info
+          </button>
+        </div>
+      </div>
+
+      <hr />
+      <h4 class="mt-3">Contact Information Change Requests</h4>
+      <table class="table table-hover mt-3">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">Request Type</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone No.</th>
+            <th scope="col">Role</th>
+            <th scope="col">Created</th>
+            <th scope="col">Approved</th>
+            <th scope="col" style="width: 90px">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let contactInfoChangeRequest of (participant | async)?.participantContactInfoChangeRequests">
+            <td>{{ contactInfoChangeRequest.requestType }}</td>
+            <td>{{ contactInfoChangeRequest.name }}</td>
+            <td>{{ contactInfoChangeRequest.email }}</td>
+            <td>{{ contactInfoChangeRequest.phoneNumber }}</td>
+            <td>{{ contactInfoChangeRequest.role }}</td>
+            <td>
+              {{ contactInfoChangeRequest.createdBy }} on
+              {{ contactInfoChangeRequest.createdDate | date : "medium" }}
+            </td>
+            <td *ngIf="!contactInfoChangeRequest.approved" class="text-danger">
+              (Not yet approved)
+            </td>
+            <td *ngIf="contactInfoChangeRequest.approved">
+              {{ contactInfoChangeRequest.approvedBy }} on
+              {{ contactInfoChangeRequest.approvedDate | date : "medium" }}
+            </td>
+
+            <td>
+              <div class="btn-group btn-group-sm" role="group" aria-label="">
+                <button type="button" class="btn btn-success" *ngIf="!contactInfoChangeRequest.approved"
+                  (click)="approveContactInfoChangeRequest(contactInfoChangeRequest.id)" ngbTooltip="Approve">
+                  <span class="bi bi-check-lg"></span>
+                </button>
+                <button type="button" class="btn btn-danger" *ngIf="!contactInfoChangeRequest.approved"
+                  (click)="rejectContactInfoChangeRequest(contactInfoChangeRequest.id)" ngbTooltip="Reject">
+                  <span class="bi bi-x-lg"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-template>
+  </li>
+
 </ul>
 
 <div class="mt-6" [ngbNavOutlet]="nav"></div>
