@@ -289,6 +289,7 @@ export class ParticipantDetailComponent implements OnInit {
 				(item) =>
 					item.type === account.type &&
 					item.currencyCode === account.currencyCode
+					
 			);
 
 			if (duplicateAccount) {
