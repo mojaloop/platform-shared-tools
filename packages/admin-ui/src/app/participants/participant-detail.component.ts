@@ -289,7 +289,7 @@ export class ParticipantDetailComponent implements OnInit {
 				(item) =>
 					item.type === account.type &&
 					item.currencyCode === account.currencyCode
-					
+
 			);
 
 			if (duplicateAccount) {
@@ -478,10 +478,14 @@ export class ParticipantDetailComponent implements OnInit {
 			sourceIpChangeRequest.ports = portValues;
 
 		} else if (sourceIp.portMode === "RANGE") {
-			sourceIpChangeRequest.portRange = {
-				rangeFirst: this.sourceIpEditModeEnabled ? this.sourceIpEditingPortRangeStart : sourceIp.portRange?.rangeFirst,
-				rangeLast: this.sourceIpEditModeEnabled ? this.sourceIpEditingPortRangeEnd : sourceIp.portRange?.rangeLast
-			};
+			if(this.sourceIpEditModeEnabled){
+				sourceIpChangeRequest.portRange = {
+					rangeFirst: this.sourceIpEditingPortRangeStart,
+					rangeLast: this.sourceIpEditingPortRangeEnd
+				};
+			}else{
+				sourceIpChangeRequest.portRange = sourceIp.portRange;
+			}
 		}
 
 		// check for duplicates
@@ -548,7 +552,7 @@ export class ParticipantDetailComponent implements OnInit {
 
 	isContactInfoValid(contact: IParticipantContactInfo): boolean {
 		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-		const phoneNumRegex = /^(\+\d{1,4}\s?)?(\(\d{1,4}\)\s?)?[\d\s\-]+$/;
+		const phoneNumRegex = /^(\+\d{1,4}\s?)?(\(\d{1,4}\)\s?)?[\d\s-]+$/;
 
 		const isNameValid = contact.name.trim().length > 0;
 		const isEmailValid = emailRegex.test(contact.email);
