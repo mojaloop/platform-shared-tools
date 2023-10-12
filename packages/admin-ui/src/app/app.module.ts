@@ -49,6 +49,8 @@ import {SettlementsTransfersComponent} from "src/app/settlements/settlements.tra
 import {SettlementsModelsComponent} from "./settlements/settlements.models.component";
 import {SettlementsModelsCreateComponent} from './settlements/settlements.models.create.component';
 import {AuditingComponent} from "./auditing/auditing.component";
+import { DFSPSettlementReport } from "./report/dfsp-settlement-report.component";
+import { DFSPSettlementDetailsReport } from "./report/dfsp-settlement-details-report.component";
 
 @NgModule({
 	declarations: [
@@ -86,7 +88,9 @@ import {AuditingComponent} from "./auditing/auditing.component";
 		SettlementsTransfersComponent,
 		SettlementsModelsComponent,
 		SettlementsModelsCreateComponent,
-		AuditingComponent
+		AuditingComponent,
+		DFSPSettlementReport,
+		DFSPSettlementDetailsReport,
 	],
 	imports: [
 		BrowserModule,

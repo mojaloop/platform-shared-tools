@@ -1,0 +1,153 @@
+<h2 class="mb-4">DFSP Settlement Report</h2>
+
+<div class="filterbox">
+	<form
+		[formGroup]="dfspFilterForm"
+		(ngSubmit)="searchSettlementId()"
+		class="d-flex justify-content-between align-items-end mx-3"
+	>
+		<div class="d-flex" style="gap: 30px;">
+			<div class="form-group" style="width: 250px;">
+				<label for="dfspName">DFSP Name:</label>
+				<select
+					id="dfspName"
+					formControlName="dfspName"
+					class="form-control"
+				>
+					<option value="DFSP 1">DFSP 1</option>
+					<option value="DFSP 2">DFSP 2</option>
+					<option value="DFSP 3">DFSP 3</option>
+				</select>
+			</div>
+
+			<div class="form-group" style="width: 250px;">
+				<label for="startDate">Start Date:</label>
+				<input
+					id="startDate"
+					type="datetime-local"
+					formControlName="startDate"
+					class="form-control"
+				/>
+			</div>
+
+			<div class="form-group" style="width: 250px;">
+				<label for="endDate">End Date:</label>
+				<input
+					id="endDate"
+					type="datetime-local"
+					formControlName="endDate"
+					class="form-control"
+				/>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<button
+				type="submit"
+				class="form-control btn btn-primary d-flex align-items-center px-3"
+			>
+				Search<i class="bi bi-search ml-2" style="font-size: 14px;"></i>
+			</button>
+		</div>
+	</form>
+
+	<form
+		*ngIf="showSettlementIdForm"
+		[formGroup]="settlementIdForm"
+		(ngSubmit)="searchReports()"
+		class="d-flex align-items-end mx-3"
+		style="gap: 30px;"
+	>
+		<div class="form-group" style="width: 250px;">
+			<label for="dfspName">Settlement ID:</label>
+			<select
+				id="settlementId"
+				formControlName="settlementId"
+				class="form-control"
+			>
+				<option value="44">44</option>
+				<option value="45">45</option>
+				<option value="46">46</option>
+			</select>
+		</div>
+
+		<div class="form-group">
+			<button type="submit" class="form-control btn btn-primary px-3">
+				Run
+			</button>
+		</div>
+	</form>
+</div>
+
+<div *ngIf="true" class="px-3 d-flex flex-column" style="margin-top: 30px; gap: 6px;">
+	<div class="d-flex justify-content-between">
+    <h3 style="font-size: 22px; margin-bottom: 15px;">VisionFund</h3>
+
+    <button class="btn btn-primary">Export</button>
+  </div>
+
+	<div class="d-flex">
+		<p style="min-width: 250px;">Settlement ID</p>
+		<p>44</p>
+	</div>
+
+	<div class="d-flex">
+		<p style="min-width: 250px;">Settlement Created Date</p>
+		<p>01-Mar-2023 10:25:08 AM</p>
+	</div>
+
+  <div class="d-flex">
+		<p style="min-width: 250px;">DFSP ID</p>
+		<p>thitsawallet1/ 005</p>
+	</div>
+
+  <div class="d-flex">
+		<p style="min-width: 250px;">DFSP Name</p>
+		<p>Thitsa Wallet</p>
+	</div>
+  
+  <div class="d-flex">
+		<p style="min-width: 250px;">Currency</p>
+		<p>MMK</p>
+	</div>
+
+  <div class="d-flex">
+		<p style="min-width: 250px;">Time Zone OffSet</p>
+		<p>+06:30</p>
+	</div>
+</div>
+
+<table class="table mb-0" style="display: block; overflow-x: auto; margin-top: 30px;">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col" style="min-width: 160px;">DFSP ID</th>
+      <th scope="col" style="min-width: 160px;">DFSP Name</th>
+      <th scope="col" style="min-width: 160px;">Sent to FSP Volume</th>
+      <th scope="col" style="min-width: 160px;">Sent to FSP Value</th>
+      <th scope="col" style="min-width: 160px;">Received from FSP Volume</th>
+      <th scope="col" style="min-width: 160px;">Received from FSP Value</th>
+      <th scope="col" style="min-width: 160px;">Total Transaction Volume</th>
+      <th scope="col" style="min-width: 160px;">Total Value of All Transactions</th>
+      <th scope="col" style="min-width: 160px;">Net Position vs. Each DFSP</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let report of reports">
+      <td>{{ report.dfspId }}</td>
+      <td>{{ report.dfspName }}</td>
+      <td>{{ report.sentVolume }}</td>
+      <td>{{ report.sentValue }}</td>
+      <td>{{ report.receivedVolume }}</td>
+      <td>{{ report.receivedValue }}</td>
+      <td>{{ report.totalTransactionVolume }}</td>
+      <td>{{ report.totalValue }}</td>
+      <td>{{ report.netPoition }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="d-flex justify-content-between border-top border-bottom mb-5">
+  <p class="p-3">Aggregated Net Positions</p>
+  <p class="p-3">500</p>
+</div>

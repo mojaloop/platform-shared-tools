@@ -39,6 +39,8 @@ import {SettlementsTransfersComponent} from "src/app/settlements/settlements.tra
 import {SettlementsModelsComponent} from "./settlements/settlements.models.component";
 import {SettlementsModelsCreateComponent} from './settlements/settlements.models.create.component';
 import {AuditingComponent} from "./auditing/auditing.component";
+import { DFSPSettlementReport } from "./report/dfsp-settlement-report.component";
+import { DFSPSettlementDetailsReport } from "./report/dfsp-settlement-details-report.component";
 
 const routes: Routes = [
 	{path: "", redirectTo: "/home", pathMatch: "full"},
@@ -97,6 +99,8 @@ const routes: Routes = [
 	{path: "settlements/transfers", component: SettlementsTransfersComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/models", component: SettlementsModelsComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/models/new", component: SettlementsModelsCreateComponent},
+	{path: "report/dfsp-settlement-report", component: DFSPSettlementReport},
+	{path: "report/dfsp-settlement-details-report", component: DFSPSettlementDetailsReport},
 	{path: "auditing", component: AuditingComponent},
 ];
 

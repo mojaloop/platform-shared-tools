@@ -19,6 +19,9 @@ body, input[text] {
 a {
   cursor: pointer;
 }
+p {
+	margin-bottom: 0;
+}
 pre {
   background-color: whitesmoke;
   padding: 15px;
