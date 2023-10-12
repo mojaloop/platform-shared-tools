@@ -6,7 +6,6 @@
 # Date Sept 2023
 
 
-
 ################################################################################
 # Function: showUsage
 ################################################################################
@@ -39,21 +38,26 @@ Options:
 ################################################################################
 
 ##
-# EKS specif Environment Config & global vars 
+# EKS specific Environment Config & global vars 
 ##
+
 EKS_SCRIPTS_DIR="$( cd $(dirname "$0") ; pwd )"
 echo "DBG> EKS SCRIPTS_DIR X = $EKS_SCRIPTS_DIR"
-echo "DBG> OLD MANIFESTS_DIR = $MANIFESTS_DIR"
-BASE_DIR="$( cd $(dirname "$0")/../.. ; pwd )"
-echo "DBG> BASE_DIR = $BASE_DIR"
-MANIFESTS_DIR="$( cd $(dirname "$0")/../../manifests ; pwd )"
+REPO_BASE_DIR="$( cd $(dirname "$EKS_SCRIPTS_DIR")/../../.. ; pwd )"
+echo "DBG> REPO_BASE_DIR = $REPO_BASE_DIR"
+COMMON_SCRIPTS_DIR=$REPO_BASE_DIR/packages/installer/scripts
+echo "DBG> COMMON SCRIPTS_DIR X = $COMMON_SCRIPTS_DIR"
+MANIFESTS_DIR=$REPO_BASE_DIR/packages/installer/manifests
 echo "DBG> MANIFESTS_DIR = $MANIFESTS_DIR"
+ETC_DIR=$REPO_BASE_DIR/packages/installer/etc
+echo "DBG> ETC_DIR X = $ETC_DIR"
 MOJALOOP_CONFIGURE_FLAGS_STR=" -d $MANIFESTS_DIR " 
 LOGFILE="/logs/eks-vnext-install.log"
 ERRFILE="/logs/eks-vnext-install.err"
 
+
 # read in the functions and common global vars 
-source $BASE_DIR/scripts/common.sh 
+source $REPO_BASE_DIR/packages/installer/scripts/common.sh 
 check_access_to_cluster
 
 record_memory_use "at_start"
@@ -95,7 +99,6 @@ set_mojaloop_timeout
 printf "\n"
 
 if [[ "$mode" == "delete_ml" ]] ; then
-  #check_manifests_dir_exists
   delete_mojaloop_layer "ttk" $MANIFESTS_DIR/ttk
   delete_mojaloop_layer "apps" $MANIFESTS_DIR/apps
   delete_mojaloop_layer "crosscut" $MANIFESTS_DIR/crosscut
@@ -104,16 +107,21 @@ if [[ "$mode" == "delete_ml" ]] ; then
 elif [[ "$mode" == "install_ml" ]]; then
   tstart=$(date +%s)
   printf "start : Mojaloop (vNext) install utility [%s]\n" "`date`" >> $LOGFILE
+  # configure_elastic_search $REPO_BASE_DIR
+  # #restore_demo_data $ETC_DIR $REPO_BASE_DIR/packages/deployment/docker-compose-apps/ttk_files
+  # exit 1 
+
   add_helm_repos # needed for EKS only 
   #configure_extra_options 
   copy_k8s_yaml_files_to_tmp
-  modify_local_mojaloop_yaml_and_charts $BASE_DIR/scripts/vnext-configure.py $MANIFESTS_DIR
+  modify_local_mojaloop_yaml_and_charts $COMMON_SCRIPTS_DIR/vnext-configure.py $MANIFESTS_DIR
   install_infra_from_local_chart $MANIFESTS_DIR/infra
   install_mojaloop_layer "crosscut" $MANIFESTS_DIR/crosscut
   install_mojaloop_layer "apps" $MANIFESTS_DIR/apps
-  restore_demo_data $BASE_DIR/etc
-  configure_elastic_search
-  check_urls
+  install_mojaloop_layer "ttk" $MANIFESTS_DIR/ttk
+  restore_demo_data $ETC_DIR $REPO_BASE_DIR/packages/deployment/docker-compose-apps/ttk_files
+  configure_elastic_search 
+  check_urls 
   tstop=$(date +%s)
   telapsed=$(timer $tstart $tstop)
   timer_array[install_ml]=$telapsed

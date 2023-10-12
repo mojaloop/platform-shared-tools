@@ -23,7 +23,8 @@ fi
 SCRIPT_DIR=$( cd $(dirname "$0") ; pwd )
 INSTALLER_DIR=$( cd $(dirname "$0")/../.. ; pwd )
 EKS_DIR=$( cd $(dirname "$0")/.. ; pwd )  # this is the installer/eks directory 
-
+REPO_DIR=$( cd $(dirname "$0")/../../../.. ; pwd )
+echo "REPO_DIR is $REPO_DIR"
 echo "installer dir is $INSTALLER_DIR"
 
 # point to the docker image that results from running build.sh 
@@ -50,12 +51,25 @@ docker run \
   --interactive --tty --rm \
   --volume "$AWS_CREDENTIALS_DIR":/home/${USER_NAME}/.aws \
   --volume "$HOME/.kube":/home/${USER_NAME}/.kube \
-  --volume "$INSTALLER_DIR":/installer \
+  --volume "$REPO_DIR":/home/${USER_NAME}/vnext/platform-shared-tools \
   --volume "$HOME/logs":/logs \
   --env AWS_PROFILE="$AWS_PROFILE" \
-  --env TERRAFORM_CLUSTER_DIR="/installer/eks/terraform/$TERRAFORM_CLUSTER_DIR" \
+  --env TERRAFORM_CLUSTER_DIR="/home/${USER_NAME}/vnext/platform-shared-tools/packages/installer/eks/terraform/$TERRAFORM_CLUSTER_DIR" \
   --hostname "container-vnext-eks" \
   --entrypoint=/bin/bash $DOCKER_IMAGE_NAME $@
+
+# printf "Mounting TERRAFORM from [%s] to /terraform \n" "$HOST_TERRAFORM_DIR"
+# echo "Running $DOCKER_IMAGE_NAME container"
+# docker run \
+#   --interactive --tty --rm \
+#   --volume "$AWS_CREDENTIALS_DIR":/home/${USER_NAME}/.aws \
+#   --volume "$HOME/.kube":/home/${USER_NAME}/.kube \
+#   --volume "$INSTALLER_DIR":/installer \
+#   --volume "$HOME/logs":/logs \
+#   --env AWS_PROFILE="$AWS_PROFILE" \
+#   --env TERRAFORM_CLUSTER_DIR="/installer/eks/terraform/$TERRAFORM_CLUSTER_DIR" \
+#   --hostname "container-vnext-eks" \
+#   --entrypoint=/bin/bash $DOCKER_IMAGE_NAME $@
 
 
 

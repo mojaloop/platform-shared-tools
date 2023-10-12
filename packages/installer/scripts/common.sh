@@ -21,6 +21,10 @@ function check_arch {
   fi
 }
 
+function get_arch_of_nodes { 
+  NODE_ARCH=` kubectl get nodes -o yaml | grep architecture | head -1 | cut -d ":" -f2 | head | tr -d " "`
+}
+
 function check_user {
   # ensure that the user is not root
   if [ "$EUID" -eq 0 ]; then 
@@ -208,23 +212,6 @@ function set_and_create_namespace {
   printf "==> Setting NAMESPACE to [ %s ] \n" "$NAMESPACE"
 }
 
-# function clone_mojaloop_repo { 
-#   #force=$1 
-#   printf "==> cloning mojaloop vNext branch [%s] to directory [%s]  " $MOJALOOP_BRANCH $REPO_BASE_DIR
-#   if [[ "$force" == "true" ]]; then
-#     rm -rf  "$REPO_BASE_DIR" >> $LOGFILE 2>>$ERRFILE
-#   fi 
-#   if [ ! -d "$REPO_BASE_DIR" ]; then 
-#     mkdir "$REPO_BASE_DIR"
-#     git clone --branch $MOJALOOP_BRANCH https://github.com/mojaloop/platform-shared-tools.git $REPO_DIR > /dev/null 2>&1
-#     NEED_TO_REPACKAGE="true"
-#     printf " [ done ] \n"
-#   else 
-#     printf "\n    ** INFO: vnext  repo is not cloned as there is an existing $REPO_DIR directory\n"
-#     printf "    to get a fresh clone of the repo , either delete $REPO_DIR of use the -f flag **\n"
-#   fi
-# }
-
 function modify_local_mojaloop_yaml_and_charts {
   if [[ "$#" -ne 2 ]]; then 
       printf "\n** Error: insufficient params passed to [%s] \n" "${FUNCNAME[0]}"
@@ -371,8 +358,8 @@ function check_pods_are_running() {
   local wait_secs=90
   local seconds=0 
   local end_time=$((seconds + $wait_secs )) 
-  iterations=0
-  steady_count=3
+  local iterations=0
+  local steady_count=3
   printf "    waiting for all pods in [%s] layer to come to running state ... " $app_layer
   while [ $seconds -lt $end_time ]; do
       local pods_not_running=$(kubectl get pods --selector="mojaloop.layer=$app_layer" | grep -v NAME | grep -v Running | wc -l)
@@ -488,23 +475,36 @@ check_status() {
 
 function restore_demo_data {
   local mongo_data_dir=$1
+  local ttk_data_dir=$2
+
   error_message=" restoring the mongo database data failed "
   trap 'handle_error $LINENO "$error_message"' ERR
-  printf "==> restoring demonstration and test data  \n"
+  printf "==> restoring demonstration and test data into mongodb "
   # temporary measure to inject base participants data into switch 
   mongopod=`kubectl get pods --namespace $NAMESPACE | grep -i mongodb |awk '{print $1}'` 
   mongo_root_pw=`kubectl get secret mongodb -o jsonpath='{.data.MONGO_INITDB_ROOT_PASSWORD}'| base64 -d` 
-  printf "      - mongodb data  " 
-  kubectl cp $mongo_data_dir/mongodata.gz $mongopod:/tmp # copy the demo / test data into the mongodb pod
+  #printf "      - mongodb data  " 
+  kubectl cp $mongo_data_dir/mongodata.gz $mongopod:/tmp >/dev/null 2>&1 # copy the demo / test data into the mongodb pod
   # run the mongorestore 
   kubectl exec --stdin --tty $mongopod -- mongorestore  -u root -p $mongo_root_pw \
                --gzip --archive=/tmp/mongodata.gz --authenticationDatabase admin > /dev/null 2>&1
   printf " [ ok ] \n"
   error_message=" restoring the testing toolkit data failed  "
-  printf "      - testing toolkit data and environment config   " 
+  #printf "      - testing toolkit data and environment config   " 
 
-  # copy in the bluebank TTK environment data 
+
+# cp ./ttk_files/spec_files/user_config_bluebank.json ./exec/data/ttk1_data/spec_files
+# cp ./ttk_files/spec_files/default.json ./exec/data/ttk1_data/spec_files/rules_callback
+# cp ./ttk_files/environment/hub_local_environment.json ./exec/data/ttk1_data/examples/environments
+# cp ./ttk_files/environment/dfsp_local_environment.json ./exec/data/ttk1_data/examples/environments
+# cp ./ttk_files/spec_files/user_config_greenbank.json ./exec/data/ttk2_data/spec_files
+# cp ./ttk_files/spec_files/default.json ./exec/data/ttk2_data/spec_files/rules_callback
+# cp ./ttk_files/environment/hub_local_environment.json ./exec/data/ttk2_data/examples/environments
+# cp ./ttk_files/environment/dfsp_local_environment.json ./exec/data/ttk2_data/examples/environments
+#   # copy in the bluebank TTK environment data 
   # only need bluebank as we run the TTK from there.
+
+
   ## TODO: this neeeds fixing 
   # file_base="$ETC_DIR/ttk/bluebank"
   # file1="dfsp_local_environment.json"
@@ -518,22 +518,62 @@ function restore_demo_data {
 }
 
 function configure_elastic_search {
-  printf "==> configure elastic search "
+  local repo_base_dir=$1
+  local wait_secs=30
+  local seconds=0 
+  local end_time=$((seconds + $wait_secs )) 
+  local warn=false
+
+  printf "==> configure elastic search \n "
   # see https://github.com/mojaloop/platform-shared-tools/tree/alpha-1.1/packages/deployment/docker-compose-infra
-  if [[ "$MOJALOOP_CONFIGURE_FLAGS_STR" == *"logging"* ]]; then
-    audit_json="$REPO_DIR/packages/deployment/docker-compose-infra/es_mappings_logging.json"
-    logging_json=$REPO_DIR/packages/deployment/docker-compose-infra/es_mappings_auditing.json
-    elastic_password=`grep ES_ELASTIC_PASSWORD $REPO_DIR/packages/deployment/docker-compose-infra/.env.sample | cut -d "=" -f2`
-
-    curl -i --insecure -X PUT "http://elasticsearch.local/ml-logging/" \
-        -u elastic:$elastic_password \
-        -H "Content-Type: application/json" --data-binary @$logging_json
-
-    curl -i --insecure -X PUT "http://elasticsearch.local/ml-auditing/" \
-        -u elastic:$elastic_password \
-        -H "Content-Type: application/json" --data-binary @$audit_json
+  config_path="$repo_base_dir/packages/deployment/docker-compose-infra"
+  logging_json="es_mappings_logging.json"
+  audit_json="es_mappings_auditing.json"
+  elastic_password=`grep ES_ELASTIC_PASSWORD $repo_base_dir/packages/deployment/docker-compose-infra/.env.sample | cut -d "=" -f2`
+  curlpod="curl"
+  curlpodstatus=`kubectl get pods $curlpod --namespace $NAMESPACE  --no-headers 2>/dev/null | awk '{print $3}' `
+  if [[ "$curlpodstatus" != "Running" ]]; then
+    kubectl --namespace $NAMESPACE  run curl --image=curlimages/curl:latest -- sleep 1200 > /dev/null 2>&1
+    while [ $seconds -lt $end_time ]; do
+      curlpodstatus=`kubectl get pods $curlpod --namespace $NAMESPACE  --no-headers | awk '{print $3}' `
+      if [[  "$curlpodstatus" == "Running" ]]; then
+        break 
+      else 
+        sleep 5 
+        ((seconds+=5))
+      fi 
+      # echo "curlpod=$curlpod: $seconds: $end_time"
+    done 
   fi
-  printf " [ ok ] \n"
+  # copy the mappings into the curl pod
+  kubectl cp $config_path/$audit_json $curlpod:/tmp > /dev/null 2>&1
+  kubectl cp $config_path/$logging_json $curlpod:/tmp  > /dev/null 2>&1
+  # kubectl exec curl -- ls /tmp/$logging_json
+  # kubectl exec curl -- ls /tmp/$audit_json
+   
+  ## TODO: the url for the logging has been made temporarily ml-logging1 to avoid a clash
+  ##       need to figure out why the http://infra-elasticsearch:9200/ml-logging already exists at this 
+  ##       point in the deployment 
+  result=`kubectl exec curl -- curl -i --insecure -X PUT "http://infra-elasticsearch:9200/ml-logging1/" \
+      -u elastic:$elastic_password \
+      -H "Content-Type: application/json" --data-binary @/tmp/$logging_json 2>&1 `
+  echo $result | grep -i error #> /dev/null 2>&1
+  if [[ "$?" -ne 1 ]]; then 
+    printf "   ** Warning: looks like the elastic search logging configuration failed\n" 
+    warn=true
+  fi 
+  result=`kubectl exec curl -- curl -i --insecure -X PUT "http://infra-elasticsearch:9200/ml-auditing/" \
+      -u elastic:$elastic_password \
+      -H "Content-Type: application/json" --data-binary @"/tmp/$audit_json" 2>&1 `
+  echo $result | grep -i error #> /dev/null 2>&1 
+  if [[ "$?" -ne 1 ]]; then 
+    printf "   ** Warning: looks like the elastic search auditing configuration failed\n" 
+    warn=true
+  fi
+  #kubectl delete pod $curlpod  > /dev/null 2>&1 & 
+  if [[ "$warn" == false ]]; then 
+    printf " [ ok ] \n"
+  fi 
 }
 
 function check_urls {
