@@ -99,8 +99,7 @@ kafka:
           value: SettlementsBcCommands
       -   name: PlatformConfigurationBcEvents
           value: PlatformConfigurationBcEvents
-      
-
+  
     nodeSelector: {}
     tolerations: []
     waitForKafka: true
@@ -108,7 +107,6 @@ kafka:
 ############### RedPanda Console for Kafka  ####################
 # https://artifacthub.io/packages/helm/redpanda-data/console?modal=values
 # redpanda kakfa console config
-
 redpanda-console:
   enabled: true
   fullnameOverride: rpconsole
@@ -133,22 +131,18 @@ redpanda-console:
 # testing for ARM64 : https://artifacthub.io/packages/helm/groundhog2k/mongodb/0.1.0
 mongodb:
   enabled: true
-# https://github.com/bitnami/charts/tree/main/bitnami/mongodb
-# testing : https://artifacthub.io/packages/helm/groundhog2k/mongodb/0.1.0
-mongodb:
-  enabled: true
   persistence:
     enabled: true
-  # image:
-  #   tag: latest
+  image:
+    tag: 7.0
 
-  fullnameOverride: "mongodb"
+  fullnameOverride: mongodb
   settings:
     rootUsername: root
     rootPassword: mongoDbPas42
 
-  initUserDatabase:
-    dbname: mlos
+  # initUserDatabase:
+  #   dbname: mlos
 
 ############### Mongo Express ####################
 # mongo express config
@@ -156,13 +150,22 @@ mongo-express:
   fullnameOverride: mongo-express
   enabled: true
 
+  image:
+    tag: 1.0.0
+
   ingress:
     enabled: true
     ingressClassName: nginx
 
   mongodbEnableAdmin: true
   mongodbAdminPassword: mongoDbPas42
+  mongodbAdminUsername: root
 
+  livenessProbe:
+    enabled: false
+  readinessProbe:
+    enabled: false 
+    
 ############### Redis  ####################
 ## Reference: https://github.com/bitnami/charts/blob/main/bitnami/redis/values.yaml
 redis:
@@ -203,3 +206,4 @@ elasticsearch:
 
   ingress:
     enabled: true
+

@@ -110,7 +110,6 @@ set_mojaloop_timeout
 printf "\n"
 
 if [[ "$mode" == "delete_ml" ]]; then
-  #check_manifests_dir_exists
   delete_mojaloop_layer "ttk" $MANIFESTS_DIR/ttk
   delete_mojaloop_layer "apps" $MANIFESTS_DIR/apps
   delete_mojaloop_layer "crosscut" $MANIFESTS_DIR/crosscut

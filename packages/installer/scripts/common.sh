@@ -475,7 +475,7 @@ check_status() {
 
 function restore_demo_data {
   local mongo_data_dir=$1
-  local ttk_data_dir=$2
+  local ttk_files_dir=$2
 
   error_message=" restoring the mongo database data failed "
   trap 'handle_error $LINENO "$error_message"' ERR
@@ -490,31 +490,31 @@ function restore_demo_data {
                --gzip --archive=/tmp/mongodata.gz --authenticationDatabase admin > /dev/null 2>&1
   printf " [ ok ] \n"
   error_message=" restoring the testing toolkit data failed  "
-  #printf "      - testing toolkit data and environment config   " 
+  printf "      - testing toolkit data and environment config   " 
 
-
-# cp ./ttk_files/spec_files/user_config_bluebank.json ./exec/data/ttk1_data/spec_files
-# cp ./ttk_files/spec_files/default.json ./exec/data/ttk1_data/spec_files/rules_callback
-# cp ./ttk_files/environment/hub_local_environment.json ./exec/data/ttk1_data/examples/environments
-# cp ./ttk_files/environment/dfsp_local_environment.json ./exec/data/ttk1_data/examples/environments
-# cp ./ttk_files/spec_files/user_config_greenbank.json ./exec/data/ttk2_data/spec_files
-# cp ./ttk_files/spec_files/default.json ./exec/data/ttk2_data/spec_files/rules_callback
-# cp ./ttk_files/environment/hub_local_environment.json ./exec/data/ttk2_data/examples/environments
-# cp ./ttk_files/environment/dfsp_local_environment.json ./exec/data/ttk2_data/examples/environments
-#   # copy in the bluebank TTK environment data 
+  # copy in the bluebank TTK environment data 
   # only need bluebank as we run the TTK from there.
-
-
-  ## TODO: this neeeds fixing 
-  # file_base="$ETC_DIR/ttk/bluebank"
-  # file1="dfsp_local_environment.json"
-  # file2="hub_local_environment.json"
-  # pod_dest="/opt/app/examples/environments" 
+  # pod_dest="/opt/app/examples/environments"
+  # kubectl cp $ttk_files_dir/environment/hub_local_environment.json ./exec/data/ttk1_data/examples/environments/hub_local_environment.json
+  # file_base="$ttk_files_dir/ttk/bluebank"
+  # envfile1="dfsp_local_environment.json"
+  # envfile2="hub_local_environment.json"
+ 
   # pod="bluebank-backend-0" 
   # kubectl cp "$file_base/$file1" "$pod:$pod_dest"
   # kubectl cp "$file_base/$file2" "$pod:$pod_dest"
   # kubectl cp "$file_base/$file3" "$pod:$pod_dest"
   # printf " [ ok ] \n"
+
+# p ./ttk_files/spec_files/user_config_bluebank.json ./exec/data/ttk1_data/spec_files/user_config.json
+# cp ./ttk_files/spec_files/default.json ./exec/data/ttk1_data/spec_files/rules_callback/default.json
+# cp ./ttk_files/environment/hub_local_environment.json ./exec/data/ttk1_data/examples/environments/hub_local_environment.json
+# cp ./ttk_files/environment/dfsp_local_environment.json ./exec/data/ttk1_data/examples/environments/dfsp_local_environment.json
+# cp ./ttk_files/spec_files/user_config_greenbank.json ./exec/data/ttk2_data/spec_files/user_config.json
+# cp ./ttk_files/spec_files/default.json ./exec/data/ttk2_data/spec_files/rules_callback/default.json
+# cp ./ttk_files/environment/hub_local_environment.json ./exec/data/ttk2_data/examples/environments/hub_local_environment.json
+# cp ./ttk_files/environment/dfsp_local_environment.json ./exec/data/ttk2_data/examples/environments/dfsp_local_environment.json
+
 }
 
 function configure_elastic_search {
@@ -570,7 +570,7 @@ function configure_elastic_search {
     printf "   ** Warning: looks like the elastic search auditing configuration failed\n" 
     warn=true
   fi
-  #kubectl delete pod $curlpod  > /dev/null 2>&1 & 
+  kubectl delete pod $curlpod  > /dev/null 2>&1 & 
   if [[ "$warn" == false ]]; then 
     printf " [ ok ] \n"
   fi 
