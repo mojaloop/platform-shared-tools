@@ -498,33 +498,41 @@ function restore_demo_data {
   kubectl exec --stdin --tty $mongopod -- mongorestore  -u root -p $mongo_root_pw \
                --gzip --archive=/tmp/mongodata.gz --authenticationDatabase admin > /dev/null 2>&1
   printf " [ ok ] \n"
-  error_message=" restoring some testing toolkit configuration data failed  "
-  printf "    - testing toolkit data and environment config   " 
 
-  # copy in the TTK environment data 
-  ####   bluebank  ###
-  ttk_pod_env_dest="/opt/app/examples/environments"
-  ttk_pod_spec_dest="/opt/app/spec_files"
-  kubectl cp $ttk_files_dir/environment/hub_local_environment.json bluebank-backend-0:$ttk_pod_env_dest/hub_local_environment.json 
-  kubectl cp $ttk_files_dir/environment/dfsp_local_environment.json bluebank-backend-0:$ttk_pod_env_dest/dfsp_local_environment.json
-  kubectl cp $ttk_files_dir/spec_files/user_config_bluebank.json bluebank-backend-0:$ttk_pod_spec_dest/user_config.json
-  kubectl cp $ttk_files_dir/spec_files/default.json bluebank-backend-0:$ttk_pod_spec_dest/rules_callback/default.json
+  # copy in the TTK environment data if bluebank pod exists and is running 
+  # TODO remove the if then test and do all the time once TTK works on arm64 
+  bb_pod_status=`kubectl get pods bluebank-backend-0 --namespace $NAMESPACE  --no-headers 2>/dev/null | awk '{print $3}' `
+  if [[ "$bb_pod_status" == "Running" ]]; then
+    error_message=" restoring some testing toolkit configuration data failed  "
+    printf "    - testing toolkit data and environment config " 
+    ####   bluebank  ###
+    ttk_pod_env_dest="/opt/app/examples/environments"
+    ttk_pod_spec_dest="/opt/app/spec_files"
+    kubectl cp $ttk_files_dir/environment/hub_local_environment.json bluebank-backend-0:$ttk_pod_env_dest/hub_local_environment.json 
+    kubectl cp $ttk_files_dir/environment/dfsp_local_environment.json bluebank-backend-0:$ttk_pod_env_dest/dfsp_local_environment.json
+    kubectl cp $ttk_files_dir/spec_files/user_config_bluebank.json bluebank-backend-0:$ttk_pod_spec_dest/user_config.json
+    kubectl cp $ttk_files_dir/spec_files/default.json bluebank-backend-0:$ttk_pod_spec_dest/rules_callback/default.json
 
-  ####  greenbank  ###
-  kubectl cp $ttk_files_dir/environment/hub_local_environment.json greenbank-backend-0:$ttk_pod_env_dest/hub_local_environment.json
-  kubectl cp $ttk_files_dir/environment/dfsp_local_environment.json greenbank-backend-0:$ttk_pod_env_dest/dfsp_local_environment.json
-  kubectl cp $ttk_files_dir/spec_files/user_config_greenbank.json greenbank-backend-0:$ttk_pod_spec_dest/user_config.json
-  kubectl cp $ttk_files_dir/spec_files/default.json greenbank-backend-0:$ttk_pod_spec_dest/rules_callback/default.json
+    ####  greenbank  ###
+    kubectl cp $ttk_files_dir/environment/hub_local_environment.json greenbank-backend-0:$ttk_pod_env_dest/hub_local_environment.json
+    kubectl cp $ttk_files_dir/environment/dfsp_local_environment.json greenbank-backend-0:$ttk_pod_env_dest/dfsp_local_environment.json
+    kubectl cp $ttk_files_dir/spec_files/user_config_greenbank.json greenbank-backend-0:$ttk_pod_spec_dest/user_config.json
+    kubectl cp $ttk_files_dir/spec_files/default.json greenbank-backend-0:$ttk_pod_spec_dest/rules_callback/default.json
 
-  if [[ ! $WARNING_IS_CURRENT == true ]]; then
-    printf " [ ok ] \n"
-  fi
+    if [[ ! $WARNING_IS_CURRENT == true ]]; then
+      printf " [ ok ] \n"
+    fi
+  else 
+    printf "    - ttk does not seem to be running so skipping TTK data and environment config (ttk does not yet run on arm64)\n" 
+  fi 
+
+
   WARNING_IS_CURRENT=false  #clear current warning 
 }
 
 function configure_elastic_search {
   local repo_base_dir=$1
-  local wait_secs=30
+  local wait_secs=45
   local seconds=0 
   local end_time=$((seconds + $wait_secs )) 
   local warn=false
@@ -536,12 +544,12 @@ function configure_elastic_search {
   audit_json="es_mappings_auditing.json"
   elastic_password=`grep ES_ELASTIC_PASSWORD $repo_base_dir/packages/deployment/docker-compose-infra/.env.sample | cut -d "=" -f2`
   curlpod="curl"
-  curlpodstatus=`kubectl get pods $curlpod --namespace $NAMESPACE  --no-headers 2>/dev/null | awk '{print $3}' `
-  if [[ "$curlpodstatus" != "Running" ]]; then
+  curl_pod_status=`kubectl get pods $curlpod --namespace $NAMESPACE  --no-headers 2>/dev/null | awk '{print $3}' `
+  if [[ "$curl_pod_status" != "Running" ]]; then
     kubectl --namespace $NAMESPACE  run curl --image=curlimages/curl:latest -- sleep 1200 > /dev/null 2>&1
     while [ $seconds -lt $end_time ]; do
-      curlpodstatus=`kubectl get pods $curlpod --namespace $NAMESPACE  --no-headers | awk '{print $3}' `
-      if [[  "$curlpodstatus" == "Running" ]]; then
+      curl_pod_status=`kubectl get pods $curlpod --namespace $NAMESPACE  --no-headers | awk '{print $3}' `
+      if [[  "$curl_pod_status" == "Running" ]]; then
         break 
       else 
         sleep 5 
@@ -553,8 +561,6 @@ function configure_elastic_search {
   # copy the mappings into the curl pod
   kubectl cp $config_path/$audit_json $curlpod:/tmp > /dev/null 2>&1
   kubectl cp $config_path/$logging_json $curlpod:/tmp  > /dev/null 2>&1
-  # kubectl exec curl -- ls /tmp/$logging_json
-  # kubectl exec curl -- ls /tmp/$audit_json
    
   ## TODO: the url for the logging has been made temporarily ml-logging1 to avoid a clash
   ##       need to figure out why the http://infra-elasticsearch:9200/ml-logging already exists at this 
@@ -562,17 +568,17 @@ function configure_elastic_search {
   result=`kubectl exec curl -- curl -i --insecure -X PUT "http://infra-elasticsearch:9200/ml-logging1/" \
       -u elastic:$elastic_password \
       -H "Content-Type: application/json" --data-binary @/tmp/$logging_json 2>&1 `
-  echo $result | grep -i error #> /dev/null 2>&1
+  echo $result | grep -i error > /dev/null 2>&1
   if [[ "$?" -ne 1 ]]; then 
-    printf "   ** Warning: looks like the elastic search logging configuration failed\n" 
+    printf "\n    ** Warning: elastic search logging configuration failed (was logging dashbnoard already uploaded ?)\n" 
     warn=true
   fi 
   result=`kubectl exec curl -- curl -i --insecure -X PUT "http://infra-elasticsearch:9200/ml-auditing/" \
       -u elastic:$elastic_password \
       -H "Content-Type: application/json" --data-binary @"/tmp/$audit_json" 2>&1 `
-  echo $result | grep -i error #> /dev/null 2>&1 
+  echo $result | grep -i error > /dev/null 2>&1 
   if [[ "$?" -ne 1 ]]; then 
-    printf "   ** Warning: looks like the elastic search auditing configuration failed\n" 
+    printf "    ** Warning: elastic search auditing configuration failed (was auditing dashbnoard already uploaded ?) \n" 
     warn=true
   fi
   kubectl delete pod $curlpod  > /dev/null 2>&1 & 

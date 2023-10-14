@@ -98,6 +98,10 @@ set_and_create_namespace
 set_mojaloop_timeout
 printf "\n"
 
+  # restore_demo_data $ETC_DIR $REPO_BASE_DIR/packages/deployment/docker-compose-apps/ttk_files
+  # configure_elastic_search $REPO_BASE_DIR
+  # exit
+
 if [[ "$mode" == "delete_ml" ]] ; then
   delete_mojaloop_layer "ttk" $MANIFESTS_DIR/ttk
   delete_mojaloop_layer "apps" $MANIFESTS_DIR/apps
