@@ -12,6 +12,15 @@ handle_error() {
   exit $exit_code
 }
 
+handle_warning() {
+  local line_number=$1
+  local message="$2"
+  local script_name="${0##*/}"
+  echo
+  echo "    ** Warning from line $line_number : $message continuing ...\n"
+  WARNING_IS_CURRENT=true
+}
+
 function check_arch {
   ## check architecture Mojaloop deploys on x64 only today arm is coming  
   ARCH=`uname -p`
@@ -478,43 +487,39 @@ function restore_demo_data {
   local ttk_files_dir=$2
 
   error_message=" restoring the mongo database data failed "
-  trap 'handle_error $LINENO "$error_message"' ERR
-  printf "==> restoring demonstration and test data into mongodb "
+  trap 'handle_warning $LINENO "$error_message"' ERR
+  printf "==> restoring demonstration/test data and ttk configs \n "
   # temporary measure to inject base participants data into switch 
+  printf "   - restoring mongodb data " 
   mongopod=`kubectl get pods --namespace $NAMESPACE | grep -i mongodb |awk '{print $1}'` 
   mongo_root_pw=`kubectl get secret mongodb -o jsonpath='{.data.MONGO_INITDB_ROOT_PASSWORD}'| base64 -d` 
-  #printf "      - mongodb data  " 
   kubectl cp $mongo_data_dir/mongodata.gz $mongopod:/tmp >/dev/null 2>&1 # copy the demo / test data into the mongodb pod
   # run the mongorestore 
   kubectl exec --stdin --tty $mongopod -- mongorestore  -u root -p $mongo_root_pw \
                --gzip --archive=/tmp/mongodata.gz --authenticationDatabase admin > /dev/null 2>&1
   printf " [ ok ] \n"
-  error_message=" restoring the testing toolkit data failed  "
-  printf "      - testing toolkit data and environment config   " 
+  error_message=" restoring some testing toolkit configuration data failed  "
+  printf "    - testing toolkit data and environment config   " 
 
-  # copy in the bluebank TTK environment data 
-  # only need bluebank as we run the TTK from there.
-  # pod_dest="/opt/app/examples/environments"
-  # kubectl cp $ttk_files_dir/environment/hub_local_environment.json ./exec/data/ttk1_data/examples/environments/hub_local_environment.json
-  # file_base="$ttk_files_dir/ttk/bluebank"
-  # envfile1="dfsp_local_environment.json"
-  # envfile2="hub_local_environment.json"
- 
-  # pod="bluebank-backend-0" 
-  # kubectl cp "$file_base/$file1" "$pod:$pod_dest"
-  # kubectl cp "$file_base/$file2" "$pod:$pod_dest"
-  # kubectl cp "$file_base/$file3" "$pod:$pod_dest"
-  # printf " [ ok ] \n"
+  # copy in the TTK environment data 
+  ####   bluebank  ###
+  ttk_pod_env_dest="/opt/app/examples/environments"
+  ttk_pod_spec_dest="/opt/app/spec_files"
+  kubectl cp $ttk_files_dir/environment/hub_local_environment.json bluebank-backend-0:$ttk_pod_env_dest/hub_local_environment.json 
+  kubectl cp $ttk_files_dir/environment/dfsp_local_environment.json bluebank-backend-0:$ttk_pod_env_dest/dfsp_local_environment.json
+  kubectl cp $ttk_files_dir/spec_files/user_config_bluebank.json bluebank-backend-0:$ttk_pod_spec_dest/user_config.json
+  kubectl cp $ttk_files_dir/spec_files/default.json bluebank-backend-0:$ttk_pod_spec_dest/rules_callback/default.json
 
-# p ./ttk_files/spec_files/user_config_bluebank.json ./exec/data/ttk1_data/spec_files/user_config.json
-# cp ./ttk_files/spec_files/default.json ./exec/data/ttk1_data/spec_files/rules_callback/default.json
-# cp ./ttk_files/environment/hub_local_environment.json ./exec/data/ttk1_data/examples/environments/hub_local_environment.json
-# cp ./ttk_files/environment/dfsp_local_environment.json ./exec/data/ttk1_data/examples/environments/dfsp_local_environment.json
-# cp ./ttk_files/spec_files/user_config_greenbank.json ./exec/data/ttk2_data/spec_files/user_config.json
-# cp ./ttk_files/spec_files/default.json ./exec/data/ttk2_data/spec_files/rules_callback/default.json
-# cp ./ttk_files/environment/hub_local_environment.json ./exec/data/ttk2_data/examples/environments/hub_local_environment.json
-# cp ./ttk_files/environment/dfsp_local_environment.json ./exec/data/ttk2_data/examples/environments/dfsp_local_environment.json
+  ####  greenbank  ###
+  kubectl cp $ttk_files_dir/environment/hub_local_environment.json greenbank-backend-0:$ttk_pod_env_dest/hub_local_environment.json
+  kubectl cp $ttk_files_dir/environment/dfsp_local_environment.json greenbank-backend-0:$ttk_pod_env_dest/dfsp_local_environment.json
+  kubectl cp $ttk_files_dir/spec_files/user_config_greenbank.json greenbank-backend-0:$ttk_pod_spec_dest/user_config.json
+  kubectl cp $ttk_files_dir/spec_files/default.json greenbank-backend-0:$ttk_pod_spec_dest/rules_callback/default.json
 
+  if [[ ! $WARNING_IS_CURRENT == true ]]; then
+    printf " [ ok ] \n"
+  fi
+  WARNING_IS_CURRENT=false  #clear current warning 
 }
 
 function configure_elastic_search {
@@ -524,7 +529,7 @@ function configure_elastic_search {
   local end_time=$((seconds + $wait_secs )) 
   local warn=false
 
-  printf "==> configure elastic search \n "
+  printf "==> configure elastic search  "
   # see https://github.com/mojaloop/platform-shared-tools/tree/alpha-1.1/packages/deployment/docker-compose-infra
   config_path="$repo_base_dir/packages/deployment/docker-compose-infra"
   logging_json="es_mappings_logging.json"
@@ -662,4 +667,5 @@ EXTERNAL_ENDPOINTS_LIST=( vnextadmin bluebank.local greenbank.local )
 LOGGING_ENDPOINTS_LIST=( elasticsearch.local )
 declare -A timer_array
 declare -A memstats_array
+WARNING_IS_CURRENT=false
 

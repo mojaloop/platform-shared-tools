@@ -107,10 +107,6 @@ if [[ "$mode" == "delete_ml" ]] ; then
 elif [[ "$mode" == "install_ml" ]]; then
   tstart=$(date +%s)
   printf "start : Mojaloop (vNext) install utility [%s]\n" "`date`" >> $LOGFILE
-  # configure_elastic_search $REPO_BASE_DIR
-  # #restore_demo_data $ETC_DIR $REPO_BASE_DIR/packages/deployment/docker-compose-apps/ttk_files
-  # exit 1 
-
   add_helm_repos # needed for EKS only 
   #configure_extra_options 
   copy_k8s_yaml_files_to_tmp
@@ -120,7 +116,7 @@ elif [[ "$mode" == "install_ml" ]]; then
   install_mojaloop_layer "apps" $MANIFESTS_DIR/apps
   install_mojaloop_layer "ttk" $MANIFESTS_DIR/ttk
   restore_demo_data $ETC_DIR $REPO_BASE_DIR/packages/deployment/docker-compose-apps/ttk_files
-  configure_elastic_search 
+  configure_elastic_search $REPO_BASE_DIR
   check_urls 
   tstop=$(date +%s)
   telapsed=$(timer $tstart $tstop)
