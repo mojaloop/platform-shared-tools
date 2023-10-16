@@ -1,6 +1,9 @@
 <div class="row">
   <div class="col-md-8 align-self-center">
-    <h2>{{ (participant | async)?.name }}</h2>
+    <h2>{{ (participant | async)?.name }} -  
+      <span class="badge badge-success" style="color:#ffffff;font-size:16px;" *ngIf="(participant | async)?.isActive">Active</span> 
+      <span class="badge badge-danger" style="color:#ffffff;font-size:16px;" *ngIf="!(participant | async)?.isActive">Inactive</span>
+      </h2>
   </div>
 
   <div class="col-md-4 align-self-center">
@@ -65,6 +68,12 @@
         (click)="approve()" [hidden]="(participant | async)?.type === 'HUB'">
         Approve
       </button>
+    </ng-container>
+    <ng-container *ngIf="participant | async as p">
+      <button [ngClass]="p.isActive ? 'btn btn-danger btn-block' : 'btn btn-success btn-block'" 
+                  (click)="createParticipantStatusChangeRequest(!p.isActive)">
+            {{ p.isActive ? 'Disable' : 'Enable' }} Participant
+          </button>
     </ng-container>
   </div>
   <!-- right col with action buttons -->
@@ -806,7 +815,7 @@
   <!-- Certificates -->
 
   <li ngbNavItem="contacts" [hidden]="(participant | async)?.type === 'HUB'">
-    <!-- Source IPs -->
+    <!-- Contact Information -->
     <a ngbNavLink>Contacts</a>
     <ng-template ngbNavContent>
       <h4 class="mt-3">Contact Information for this Participant</h4>
@@ -961,6 +970,54 @@
     </ng-template>
   </li>
 
+  <li ngbNavItem="status" [hidden]="(participant | async)?.type === 'HUB'">
+    <!-- Participant Status -->
+    <a ngbNavLink>Participant Status</a>
+    <ng-template ngbNavContent>
+      <h4 class="mt-3">Participant Status Change Requests</h4>
+      <table class="table table-hover mt-3">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">Request Type</th>
+            <th scope="col">Requested to</th>
+            <th scope="col">Created</th>
+            <th scope="col">Approved</th>
+            <th scope="col" style="width: 90px">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let statusChangeRequest of (participant | async)?.participantStatusChangeRequests">
+            <td>{{ statusChangeRequest.requestType }}</td>
+            <td>{{ statusChangeRequest.isActive? "Enable": "Disable" }}</td>
+            <td>
+              {{ statusChangeRequest.createdBy }} on
+              {{ statusChangeRequest.createdDate | date : "medium" }}
+            </td>
+            <td *ngIf="!statusChangeRequest.approved" class="text-danger">
+              (Not yet approved)
+            </td>
+            <td *ngIf="statusChangeRequest.approved">
+              {{ statusChangeRequest.approvedBy }} on
+              {{ statusChangeRequest.approvedDate | date : "medium" }}
+            </td>
+
+            <td>
+              <div class="btn-group btn-group-sm" role="group" aria-label="">
+                <button type="button" class="btn btn-success" *ngIf="!statusChangeRequest.approved"
+                  (click)="approveParticipantStatusChangeRequest(statusChangeRequest.id)" ngbTooltip="Approve">
+                  <span class="bi bi-check-lg"></span>
+                </button>
+                <button type="button" class="btn btn-danger" *ngIf="!statusChangeRequest.approved"
+                  (click)="rejectParticipantStatusChangeRequest(statusChangeRequest.id)" ngbTooltip="Reject">
+                  <span class="bi bi-x-lg"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-template>
+  </li>
 </ul>
 
 <div class="mt-6" [ngbNavOutlet]="nav"></div>

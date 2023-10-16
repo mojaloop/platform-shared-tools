@@ -18,7 +18,8 @@ import {
 	IParticipantSourceIpChangeRequest,
 	ParticipantAllowedSourceIpsPortModes,
 	IParticipantContactInfo,
-	IParticipantContactInfoChangeRequest
+	IParticipantContactInfoChangeRequest,
+	IParticipantStatusChangeRequest
 } from "@mojaloop/participant-bc-public-types-lib";
 import { ParticipantsService } from "src/app/_services_and_types/participants.service";
 import { BehaviorSubject, Observable } from "rxjs";
@@ -478,14 +479,10 @@ export class ParticipantDetailComponent implements OnInit {
 			sourceIpChangeRequest.ports = portValues;
 
 		} else if (sourceIp.portMode === "RANGE") {
-			if(this.sourceIpEditModeEnabled){
-				sourceIpChangeRequest.portRange = {
-					rangeFirst: this.sourceIpEditingPortRangeStart,
-					rangeLast: this.sourceIpEditingPortRangeEnd
-				};
-			}else{
-				sourceIpChangeRequest.portRange = sourceIp.portRange;
-			}
+			sourceIpChangeRequest.portRange = {
+				rangeFirst: this.sourceIpEditModeEnabled ? this.sourceIpEditingPortRangeStart : sourceIp.portRange?.rangeFirst,
+				rangeLast: this.sourceIpEditModeEnabled ? this.sourceIpEditingPortRangeEnd : sourceIp.portRange?.rangeLast
+			};
 		}
 
 		// check for duplicates
@@ -552,7 +549,7 @@ export class ParticipantDetailComponent implements OnInit {
 
 	isContactInfoValid(contact: IParticipantContactInfo): boolean {
 		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-		const phoneNumRegex = /^(\+\d{1,4}\s?)?(\(\d{1,4}\)\s?)?[\d\s-]+$/;
+		const phoneNumRegex = /^(\+\d{1,4}\s?)?(\(\d{1,4}\)\s?)?[\d\s\-]+$/;
 
 		const isNameValid = contact.name.trim().length > 0;
 		const isEmailValid = emailRegex.test(contact.email);
@@ -955,5 +952,70 @@ export class ParticipantDetailComponent implements OnInit {
 
 	async copyParticipantIdToClipboard() {
 		await navigator.clipboard.writeText(this._participantId || "");
+	}
+
+	/**
+	 * Participant's Status
+	 */
+
+	createParticipantStatusChangeRequest(status: boolean): void {
+		const confirmed = confirm(`Are you sure you want to ${status ? "enable" : "disable"} this participant?`);
+		if (!confirmed) {
+			return;
+		}
+
+		const participantStatusChangeRequest: IParticipantStatusChangeRequest = {
+			id: uuid.v4(),
+			isActive: status,
+			requestType: "CHANGE_PARTICIPANT_STATUS",
+			approvedBy: null,
+			approved: false,
+			approvedDate: null,
+			createdBy: "",
+			createdDate: Date.now()
+		};
+
+		this._participantsSvc
+			.createParticipantStatusChangeRequest(this._participantId, participantStatusChangeRequest)
+			.subscribe(
+				async () => {
+					this._messageService.addSuccess("Successfully created a change request to update participant's status.");
+					await this._fetchParticipant();
+				},
+				(error) => {
+					if (this.fundsMovementModalRef)
+						this.fundsMovementModalRef!.close();
+					this._messageService.addError(
+						`Updating participant's status failed with: ${error}`
+					);
+				}
+			);
+	}
+
+	approveParticipantStatusChangeRequest(changeReqId: string): void {
+
+		this._participantsSvc
+			.approveParticipantStatusChangeRequest(this._participantId, changeReqId)
+			.subscribe(
+				async () => {
+					this._messageService.addSuccess(
+						"Participant status changes approval success!"
+					);
+					await this._fetchParticipant();
+					this.updateAccounts();
+				},
+				(error) => {
+					if (this.fundsMovementModalRef)
+						this.fundsMovementModalRef!.close();
+					this._messageService.addError(
+						`Participant status changes approval failed with error: ${error.message}`
+					);
+				}
+			);
+
+	}
+
+	rejectParticipantStatusChangeRequest(reqId: string) {
+		this._messageService.addError("Not implemented (rejectParticipantStatusChangeRequest)");
 	}
 }
