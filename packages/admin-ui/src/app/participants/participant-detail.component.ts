@@ -549,8 +549,8 @@ export class ParticipantDetailComponent implements OnInit {
 
 	isContactInfoValid(contact: IParticipantContactInfo): boolean {
 		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-		const phoneNumRegex = /^(\+\d{1,4}\s?)?(\(\d{1,4}\)\s?)?[\d\s\-]+$/;
-
+		const phoneNumRegex = /^(\+\d{1,4}\s?)?(\(\d{1,4}\)\s?)?[\d\s-]+$/;
+		
 		const isNameValid = contact.name.trim().length > 0;
 		const isEmailValid = emailRegex.test(contact.email);
 		const isPhoneNumValid = phoneNumRegex.test(contact.phoneNumber);
