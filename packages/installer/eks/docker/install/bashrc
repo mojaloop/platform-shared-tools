@@ -8,7 +8,6 @@ parse_git_branch() {
      git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
 
-#export AWS_PROFILE=mojaloop
 export MFA_STS_DURATION=43600
 export KUBECONFIG=$HOME/.kube/config
 alias k=kubectl 

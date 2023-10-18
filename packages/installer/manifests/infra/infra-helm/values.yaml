@@ -8,9 +8,6 @@ kafka:
   enabled: true
   fullnameOverride: kafka
 
-  # image:
-  #   tag: 3.5.1-debian-11-r21
-
   persistence:
     enabled: false
 
@@ -32,12 +29,16 @@ kafka:
     enabled: false
 
   broker:
-    replicaCount: 3
+    replicaCount: 1
     persistence:
       enabled: false
+    nodeSelector: 
+      role: infra
 
   controller:
     replicaCount: 0
+    nodeSelector: 
+      role: infra
 
   extraConfig:
     offsetsTopicReplicationFactor: 1
@@ -99,7 +100,9 @@ kafka:
           value: SettlementsBcCommands
       -   name: PlatformConfigurationBcEvents
           value: PlatformConfigurationBcEvents
-  
+      -   name: ParticipantsBcEvents  
+          value: ParticipantsBcEvents
+          
     nodeSelector: {}
     tolerations: []
     waitForKafka: true
@@ -140,6 +143,10 @@ mongodb:
   settings:
     rootUsername: root
     rootPassword: mongoDbPas42
+  
+  nodeSelector: 
+    role: infra
+
 
   # initUserDatabase:
   #   dbname: mlos

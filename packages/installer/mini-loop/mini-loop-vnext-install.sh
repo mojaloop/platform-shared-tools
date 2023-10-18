@@ -90,8 +90,6 @@ while getopts "d:m:t:l:o:hH" OPTION ; do
     esac
 done
 
-# Call the function
-
 
 print_start_banner "mini-loop"
 check_arch   # mini-loop only 
@@ -103,10 +101,6 @@ check_k8s_version_is_current
 set_logfiles 
 set_and_create_namespace 
 set_mojaloop_timeout
-
-# configure_elastic_search $REPO_BASE_DIR
-# exit
-
 printf "\n"
 
 if [[ "$mode" == "delete_ml" ]]; then

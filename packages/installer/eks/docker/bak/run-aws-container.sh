@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Example of how to run the docker container which facilitates
-# authenticating to AWS and then running Terraform to build an AWS EKS cluster or EC2 instance
+# authenticating to AWS and then running Terraform to build an AWS EKS cluster 
 # and deploy Mojaloop vNext 
 # Tom Daly : Sept 2023
 
@@ -25,15 +25,6 @@ function other_setup_items {
   fi 
   if [ ! -d "$HOME/logs" ]; then 
     mkdir "$HOME/logs"  # used for logfiles from Mojaloop vNext install  
-  fi 
-}
-
-function check_image_exists_locally {
-  docker image inspect $DOCKER_IMAGE_NAME > /dev/null 2>&1
-  if [[ $? -ne 0 ]]; then 
-    printf " ** Error: the docker image [ %s ] is not found locally \n" "$DOCKER_IMAGE_NAME"
-    printf "    please run  [ %s ] to build it ** \n"  "$SCRIPT_DIR/build.sh"
-    exit 
   fi 
 }
 
@@ -80,6 +71,13 @@ Options:
 # MAIN
 ################################################################################
 
+# # Check arguments
+# if [ $# -lt 1 ] ; then
+# 	showUsage
+# 	echo "Not enough arguments -a account must be specified "
+# 	exit 1
+# fi
+
 # Process command line options as required
 while getopts "p:hH" OPTION ; do
    case "${OPTION}" in
@@ -100,39 +98,24 @@ AWS_CREDENTIALS_DIR="$HOME/.aws"   # directory with the aws "credentials file" n
 TERRAFORM_CLUSTER_DIR="active"  # this is the name of the directory containing the terraform to create the cluster 
 ################################################################################################
 
-# SCRIPT_DIR=$( cd $(dirname "$0") ; pwd )
-# INSTALLER_DIR=$( cd $(dirname "$0")/../.. ; pwd )
-# EKS_DIR=$( cd $(dirname "$0")/.. ; pwd )  # this is the installer/eks directory 
-# REPO_DIR=$( cd $(dirname "$0")/../../../.. ; pwd )
-# echo "script dir is $SCRIPT_DIR"
-# echo "REPO_DIR is $REPO_DIR"
-# echo "installer dir is $INSTALLER_DIR"
-
-# # point to the docker image that results from running build.sh 
-# DOCKER_IMAGE_NAME=`grep DOCKER_IMAGE_NAME= $SCRIPT_DIR/build.sh | cut -d "\"" -f2 | awk '{print $1}'`
-# # get the username and id of the user running this script
-# USER_NAME=$(whoami)
-# USER_ID=$(id -u $USER_NAME)
-# # terraform directory for AWS 
-# HOST_TERRAFORM_DIR=$EKS_DIR/terraform
-# # MOJALOOP_BIN_DIR=$EKS_DIR/bin
-# # MOJALOOP_ETC_DIR=$EKS_DIR/etc
-
-#### Set global env vars ####
-AWS_CREDENTIALS_DIR="$HOME/.aws"   # directory with the aws "credentials file" normally should not need changing
 SCRIPT_DIR=$( cd $(dirname "$0") ; pwd )
-HOST_TERRAFORM_DIR=$( cd $(dirname "$0")/../terraform ; pwd )
+INSTALLER_DIR=$( cd $(dirname "$0")/../.. ; pwd )
+EKS_DIR=$( cd $(dirname "$0")/.. ; pwd )  # this is the installer/eks directory 
+REPO_DIR=$( cd $(dirname "$0")/../../../.. ; pwd )
+echo "script dir is $SCRIPT_DIR"
+echo "REPO_DIR is $REPO_DIR"
+echo "installer dir is $INSTALLER_DIR"
+
 # point to the docker image that results from running build.sh 
-DOCKER_IMAGE_NAME=`grep DOCKER_IMAGE_NAME $SCRIPT_DIR/build.sh | grep -v "\-t" | cut -d "\"" -f2 | awk '{print $1}'`
+DOCKER_IMAGE_NAME=`grep DOCKER_IMAGE_NAME= $SCRIPT_DIR/build.sh | cut -d "\"" -f2 | awk '{print $1}'`
+# get the username and id of the user running this script
 USER_NAME=$(whoami)
 USER_ID=$(id -u $USER_NAME)
+# terraform directory for AWS 
+HOST_TERRAFORM_DIR=$EKS_DIR/terraform
+# MOJALOOP_BIN_DIR=$EKS_DIR/bin
+# MOJALOOP_ETC_DIR=$EKS_DIR/etc
 
-
-printf "running AWS script [ %s ] from directory [ %s ] \n" $0 $SCRIPT_DIR
-printf "using docker image [ %s ] declared in [ %s ]  \n" "$DOCKER_IMAGE_NAME" "$SCRIPT_DIR/build.sh" 
-
-## run checks and then run the container 
 check_aws_cred_setup
 other_setup_items
-check_image_exists_locally
 run_docker_container

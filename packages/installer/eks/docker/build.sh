@@ -62,7 +62,6 @@ function docker_build_cache {
 # MAIN
 ################################################################################
 
-# Set args for passing to Dockerfile 
 USER_NAME=$(whoami)
 USER_ID=$(id -u $USER_NAME)
 #ARCH=`uname -p`
@@ -75,7 +74,7 @@ SCRIPTNAME=$0
 BASE_DIR=$( cd $(dirname "$0")/../.. ; pwd )
 RUN_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # the directory that this script is run from 
 INSTALL_DIR="$RUN_DIR/install"
-DOCKER_IMAGE_NAME="vnext-eks-helper:1"
+DOCKER_IMAGE_NAME="vnext-aws-container:1"
 trap 'rm -f "$INSTALL_DIR/$BASHRC_FILE" ' ERR
 
 # Process command line options as required
