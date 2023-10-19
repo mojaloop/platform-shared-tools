@@ -1,93 +1,260 @@
-<div class="row mb-2">
-	<div class="col">
+<div class="d-flex justify-content-between align-items-center mb-3">
+	<div>
 		<h3>Transfers</h3>
+	</div>
+	<div>
+		<button (click)="filterToggle()" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
+			title="Filter">
+			<i class="bi bi-filter"></i>
+		</button>
+		<!-- <button class="d-inline-block btn btn-primary ml-3">Export </button> -->
 	</div>
 	<!--<div class="col text-right">
 		<button class="btn btn-warning" routerLink="/transfers/new">Create Test Transfer</button>
 	</div>-->
 </div>
 
-
-
 <!--filter-->
-<div class="filterbox">
-	<form >
+<div *ngIf="isFilterShow" class="filterbox">
+	<form [formGroup]="filterForm" (ngSubmit)="search()">
 		<table class="table">
 			<tr class="form-row">
-				<div class="form-group col-md-1">
-					<label for="filterState">State:</label>
-					<select class="form-control" id="filterState">
-						<option value="ALL">All</option>
-						<option value="RECEIVED">Received</option>
-						<option value="RESERVED">Reserved</option>
-						<option value="REJECTED">Rejected</option>
-						<option value="COMMITTED">Committed</option>
-						<option value="EXPIRED">Expired</option>
+				<div class="form-group col-md-3">
+					<label for="filterPayerDfspName">Payer DFSP Name:</label>
+					<select formControlName="filterPayerDfspName" id="filterPayerDfspName" class="form-control">
+						<option *ngFor="let partyName of partyNameList" value="{{partyName}}">{{partyName}}</option>
 					</select>
 				</div>
 
-				<div class="form-group col-md-1">
-					<label for="filterCurrency">Currency:</label>
-					<select class="form-control" id="filterCurrency">
-						<option value="ALL">All</option>
-						<option value="USD">USD</option>
-						<option value="EUR">EUR</option>
+				<div class="form-group col-md-3">
+					<label for="filterPayeeDfspName">Payee DFSP Name:</label>
+					<select formControlName="filterPayeeDfspName" id="filterPayeeDfspName" class="form-control">
+						<option *ngFor="let partyName of partyNameList" value="{{partyName}}">{{partyName}}</option>
 					</select>
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterState">Transfer State:</label>
+					<select formControlName="filterTransferState" id="filterTransferState" class="form-control">
+						<option *ngFor="let transferState of transferStateList" value="{{transferState}}">
+							{{transferState}}
+						</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterTransferType">Transfer Type:</label>
+					<select formControlName="filterTransferType" id="filterTransferType" class="form-control">
+						<option *ngFor="let transferType of transferTypeList" value="{{transferType}}">
+							{{transferType}}
+						</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterPayerIdType">Payer ID Type:</label>
+					<select formControlName="filterPayerIdType" id="filterPayerIdType" class="form-control">
+						<option *ngFor="let partyIdType of partyIdTypeList" value="{{partyIdType}}">
+							{{partyIdType}}
+						</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterPayeeIdType">Payee ID Type:</label>
+					<select formControlName="filterPayeeIdType" id="filterPayeeIdType" class="form-control">
+						<option *ngFor="let partyIdType of partyIdTypeList" value="{{partyIdType}}">
+							{{partyIdType}}
+						</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterCurrency">Currency:</label>
+					<select formControlName="filterCurrency" id="filterCurrency" class="form-control">
+						<option *ngFor="let currencyCode of currencyCodeList" value="{{currencyCode}}">
+							{{currencyCode}}
+						</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterTransferId">Transfer ID:</label>
+					<input type="text" formControlName="filterTransferId" id="filterTransferId" class="form-control">
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterPayerValue">Payer ID Value:</label>
+					<input type="text" formControlName="filterPayerValue" id="filterPayerValue" class="form-control">
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterPayeeIdValue">Payee ID Value:</label>
+					<input type="text" formControlName="filterPayeeIdValue" id="filterPayeeIdValue"
+						class="form-control">
 				</div>
 
 				<div class="form-group col-md-3">
 					<label for="filterStartDate">Start date:</label>
-					<input class="form-control" type="datetime-local" id="filterStartDate" step=300>
+					<input type="datetime-local" formControlName="filterStartDate" id="filterStartDate" step=300
+						class="form-control">
 				</div>
-
 
 				<div class="form-group col-md-3">
 					<label for="filterEndDate">End date:</label>
-					<input class="form-control" type="datetime-local" id="filterEndDate" step=300>
+					<input type="datetime-local" formControlName="filterEndDate" id="filterEndDate" step=300
+						class="form-control">
 				</div>
 
-				<div class="form-group col-md-2">
-					<label for="filterId">Id</label>
-					<input class="form-control" type="text" id="filterId">
-				</div>
+				<!-- Add filter controls here  -->
 
-				<div class="form-group col-md-2">
-					<label for="filterBtn">&nbsp;</label>
-					<button type="submit" class="form-control btn btn-primary" id="filterBtn" (click)="search()">Search &nbsp;&nbsp;<i class="bi bi-search"></i></button>
+				<div class="col-md-9"></div>
+
+				<div class="col-md-3 d-flex">
+					<div class="form-group w-50">
+						<label for="clearBtn">&nbsp;</label>
+						<button type="button" class="form-control btn btn-outline-primary" id="clearBtn"
+							(click)="clearFilters()">Clear</button>
+					</div>
+
+					<div class="form-group ml-3 w-50">
+						<label for="filterBtn">&nbsp;</label>
+						<button type="submit" class="form-control btn btn-primary" id="filterBtn">
+							Search&nbsp;&nbsp;<i class="bi bi-search"></i>
+						</button>
+					</div>
 				</div>
 			</tr>
 		</table>
 	</form>
 </div>
 
-
+<!-- Table -->
 <div>
-	<table class="table">
+	<table class="table table-sm table-hover">
 		<thead class="thead-light">
-		<tr>
-			<th scope="col">Timestamp</th>
-			<th scope="col">Transfer ID</th>
-			<th scope="col">Payer FSP</th>
-			<th scope="col">Payee FSP</th>
-			<th scope="col">Transfer State</th>
-			<th scope="col">Amount</th>
-			<th scope="col">Currency</th>
-		</tr>
+			<tr>
+				<th scope="col">Transfer ID</th>
+				<th scope="col">State</th>
+				<th scope="col">Type</th>
+				<th scope="col">Currency</th>
+				<th scope="col">Amount</th>
+				<th scope="col" class="text-center">Payer DFSP Name</th>
+				<th scope="col" class="text-center">Payee DFSP Name</th>
+				<th scope="col">Date Submitted</th>
+				<th scope="col">Error Code</th>
+			</tr>
 		</thead>
 		<tbody>
-		<tr *ngFor="let item of (transfers | async)">
-			<td >{{item.updatedAt | date: 'medium'}}</td>
-			<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
-			<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
-			<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
-
-			<td *ngIf="item.transferState==='COMMITTED'" class="text-success">{{item.transferState}}</td>
-			<td *ngIf="item.transferState==='RESERVED'" class="text-warning">{{item.transferState}}</td>
-			<td *ngIf="item.transferState!=='RESERVED' && item.transferState!=='COMMITTED'" class="text-danger">{{item.transferState}}</td>
-
-			<td>{{item.amount}}</td>
-			<td>{{item.currencyCode}}</td>
-		</tr>
+			<ng-container *ngIf="(transfers | async)?.length==0">
+				<tr>
+					<td colspan="12">No transfers found</td>
+				</tr>
+			</ng-container>
+			<tr *ngFor="let item of (transfers | async)">
+				<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
+				<td *ngIf="item.transferState==='COMMITTED'" class="text-success">{{item.transferState}}</td>
+				<td *ngIf="item.transferState==='RESERVED'" class="text-warning">{{item.transferState}}</td>
+				<td *ngIf="item.transferState!=='RESERVED' && item.transferState!=='COMMITTED'" class="text-danger">
+					{{item.transferState}}</td>
+				<td>_</td>
+				<td>{{item.currencyCode}}</td>
+				<td>{{item.amount}}</td>
+				<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
+				<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
+				<td>{{item.updatedAt | date: 'medium' }}</td>
+				<td>{{item?.errorInformation?.errorCode || '-'}}</td>
+			</tr>
 		</tbody>
 	</table>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="viewDetailModal"
+	aria-hidden="true">
+	<div class="modal-dialog modal-xl  modal-dialog-centered w-100" role="document">
+		<div class="modal-content ">
+			<div class="modal-header bg-white ">
+				<h5 class="modal-title text-dark font-weight-bold" id="viewDetailTitle">Transfer Details</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body text-dark">
+				<div class="container-fluid w-100">
+					<div class="row p-2">
+						<div class="col-md-6 detail-container gap-2 p-3 rounded bg-light">
+							<p>General Information</p>
+							<div><span class="detail-label">Transfer ID:</span>{{transferDetail?.transferId}}</div>
+							<div><span class="detail-label">Transfer State:</span>{{transferDetail?.transferState}}
+							</div>
+							<div><span class="detail-label">Transfer Type:</span>_</div>
+							<div><span class="detail-label">Currency:</span>{{transferDetail?.currencyCode}} </div>
+							<div><span class="detail-label">Amount:</span>{{transferDetail?.amount}} </div>
+							<div><span class="detail-label">Batch ID:</span>_</div>
+							<div><span class="detail-label">Date Submitted:</span>{{transferDetail?.createdAt | date:
+								'medium'}} </div>
+							<div><span class="detail-label">Error Code:</span>1254 </div>
+							<div><span class="detail-label">Quote ID:</span>f997d93-f840-3801-684v-f0d8238df0k </div>
+						</div>
+						<div class="col-md-6 ">
+							<div class="detail-container bg-light rounded p-3">
+								<p>Payer Information</p>
+								<div><span class="detail-label">ID Type:</span></div>
+								<div><span class="detail-label">ID Value:</span> </div>
+								<div><span class="detail-label">First Name:</span> </div>
+								<div><span class="detail-label">Last Name:</span> </div>
+								<div><span class="detail-label">FSP ID:</span> </div>
+							</div>
+							<div class="detail-container bg-light rounded p-2 mt-3">
+								<p>Payee Information</p>
+								<div><span class="detail-label">ID Type:</span></div>
+								<div><span class="detail-label">ID Value:</span> </div>
+								<div><span class="detail-label">First Name:</span> </div>
+								<div><span class="detail-label">Last Name:</span> </div>
+								<div><span class="detail-label">FSP ID:</span> </div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Pagination -->
+<ul class="pagination d-flex justify-content-end align-items-center">
+	<li class="page-item d-flex align-items-center ">
+		<span>Rows per page:</span>
+		<select class="rows-selector form-control  ml-2" id="rowsPerPage">
+			<option value="ALL">5</option>
+			<option value="USD">25</option>
+			<option value="EUR">50</option>
+			<option value="EUR">100</option>
+		</select>
+	</li>
+	<li class="page-item d-flex align-items-center ">
+		<span>Go to page</span>
+		<input type="number" min="1" value="1" class="form-control page-number ml-2">
+	</li>
+	<li class="page-item">
+		Page 1 of 1
+	</li>
+	<li class="page-indicator d-flex">
+		<div class="page-item">
+			<button class="page-link"><i class="bi bi-chevron-double-left text-body "></i></button>
+		</div>
+		<div class="page-item">
+			<button class="page-link"><i class="bi bi-chevron-left text-body"></i></button>
+		</div>
+		<div class="page-item">
+			<button class="page-link"><i class="bi bi-chevron-right text-body"></i></button>
+		</div>
+		<div class="page-item">
+			<button class="page-link"><i class="bi bi-chevron-double-right text-body"></i></button>
+		</div>
+	</li>
+</ul>
