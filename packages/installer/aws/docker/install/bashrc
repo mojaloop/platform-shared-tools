@@ -16,9 +16,11 @@ complete -F __start_kubectl k
 alias ksetns="kubectl config set-context --current --namespace"
 alias ksetuser="kubectl config set-context --current --user"
 export PS1="\u@\h \[\e[32m\]\w \[\e[91m\]\$(parse_git_branch)\[\e[00m\]$ "
-alias cdeks="cd ~/vnext/platform-shared-tools/packages/installer/eks"
+alias cdi="cd ~/vnext/platform-shared-tools/packages/installer"
+alias cdml="cd ~/vnext/platform-shared-tools/packages/installer/mini-loop"
+alias cdaws="cd ~/vnext/platform-shared-tools/packages/installer/aws"
 alias cdvn="cd ~/vnext/platform-shared-tools"
 export VNEXT_REPO_DIR=$HOME/vnext/platform-shared-tools
-export PATH=$PATH:$VNEXT_REPO_DIR/packages/installer/eks/scripts:$VNEXT_REPO_DIR/packages/installer/scripts
+export PATH=$PATH:$VNEXT_REPO_DIR/packages/installer/aws/scripts:$VNEXT_REPO_DIR/packages/installer/scripts
 alias getkconfig="aws eks --region $(terraform output -raw region) update-kubeconfig --name $(terraform output -raw cluster_name)"
 

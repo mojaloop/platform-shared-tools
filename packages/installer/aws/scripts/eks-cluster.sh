@@ -4,10 +4,6 @@
 # Author Tom Daly 
 # Date Aug 2023
 
-# todo list :
-# - run terraform apply or destroy depending on mode 
-
-
 function verify_credentials {
   printf "==> verify credentials are current using aws-mfa ...        "
   timeout 2 aws-mfa > /dev/null 2>&1 
@@ -36,8 +32,9 @@ function create_cluster {
   #check_if_cluster_already_created 
   if [ "$CLUSTER_EXISTS" = true ]; then 
     printf "\n    *** Error  : the cluster [%s] already exists   ** \n" $CLUSTER_NAME
-    printf "        you can remove the cluster and associated resources using $0 -m delete \n"
-    printf "        exiting and leaving cluster in place \n"
+    printf "        you can remove the cluster and associated resources using :- \n"
+    printf "        $0 -m delete \n"
+    printf "        \n.... exiting and leaving current cluster in place and un-touched \n"
     printf "    ***\n"
     exit 1
   fi
@@ -56,9 +53,7 @@ function configure_kubectl {
     printf "    ***\n"
     exit 1
   fi 
-
 }
-
 
 function deploy_nginx_configure_nlb {
   printf "==> deploy nginx with meta-data set to provision load balancer  " 
@@ -122,17 +117,6 @@ function delete_cluster {
   terraform destroy
 }
 
-# function check_cluster_installed { 
-#     printf "==> Check the cluster is available and ready from kubectl  "
-#     k8s_ready=`su - $k8s_user -c "kubectl get nodes" | perl -ne 'print  if s/^.*Ready.*$/Ready/'`
-#     if [[ ! "$k8s_ready" == "Ready" ]]; then 
-#         printf "** Error : kubernetes is not installed , please run $0 -m install -u $k8s_user \n"
-#         printf "           before trying to install mojaloop \n "
-#         exit 1 
-#     fi
-#     printf "    [ ok ] \n"
-# }
-
 function print_end_message { 
     printf "\n\n*********************** << success >> *******************************************\n"
     printf "            -- AWS EKS managed kubernetes cluster  -- \n"
@@ -143,10 +127,6 @@ function print_end_message {
 ################################################################################
 # Function: showUsage
 ################################################################################
-# Description:		Display usage message
-# Arguments:		none
-# Return values:	none
-#
 function showUsage {
 	if [ $# -ne 0 ] ; then
 		echo "Incorrect number of arguments passed to function $0"
@@ -202,29 +182,20 @@ printf "\n\n********************************************************************
 printf "            -- AWS EKS managed kubernetes cluster -- \n"
 printf "  utilities for deploying kubernetes in preparation for Mojaloop deployment   \n"
 printf "************************* << start >> *******************************************\n\n"
-# set_user
-# verify_user
 cd $TERRAFORM_RUN_DIR   
-
+verify_credentials
 
 if [[ "$mode" == "create" ]]  ; then
     printf "Creating  Cluster [%s] in directory [%s] ... \n" $CLUSTER_NAME $TERRAFORM_RUN_DIR 
-    verify_credentials
     terraform init > /dev/null 2>&1 
     check_if_cluster_already_created   
     create_cluster    # run terraform 
     configure_kubectl # enable kubectl access to the cluster, and test it works 
     add_helm_repos
     deploy_nginx_configure_nlb 
-
-    # printf "==> kubernetes distro:[%s] version:[%s] is now configured for user [%s] and ready for mojaloop deployment \n" \
-    #             "$k8s_distro" "$K8S_VERSION" "$k8s_user"
-    # printf "    To deploy mojaloop, please su - %s from root or login as user [%s] and then \n"  "$k8s_user" "$k8s_user"
-    # printf "    please execute %s/mojaloop-install.sh\n" "$SCRIPTS_DIR"
     print_end_message 
 elif [[ "$mode" == "delete" ]]  ; then
     printf "Deleting Cluster [%s] in directory [%s] ... \n" $CLUSTER_NAME $TERRAFORM_RUN_DIR 
-    verify_credentials
     terraform init > /dev/null 2>&1 
     check_if_cluster_already_created 
     delete_nginx 

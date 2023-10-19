@@ -38,7 +38,6 @@ function check_image_exists_locally {
 }
 
 function run_docker_container { 
-  printf "Mounting TERRAFORM from [%s] to /terraform \n" "$HOST_TERRAFORM_DIR"
   echo "Running $DOCKER_IMAGE_NAME container"
   docker run \
     --interactive --tty --rm \
@@ -47,8 +46,8 @@ function run_docker_container {
     --volume "$REPO_DIR":/home/${USER_NAME}/vnext/platform-shared-tools \
     --volume "$HOME/logs":/logs \
     --env AWS_PROFILE="$aws_profile" \
-    --env TERRAFORM_CLUSTER_DIR="/home/${USER_NAME}/vnext/platform-shared-tools/packages/installer/eks/terraform/$TERRAFORM_CLUSTER_DIR" \
-    --hostname "container-vnext-eks" \
+    --env TERRAFORM_CLUSTER_DIR="/home/${USER_NAME}/vnext/platform-shared-tools/packages/installer/aws/terraform/$TERRAFORM_CLUSTER_DIR" \
+    --hostname "$DOCKER_IMAGE_NAME" \
     --entrypoint=/bin/bash $DOCKER_IMAGE_NAME $@
 } 
 
@@ -97,7 +96,7 @@ done
 
 ## User settings change these to reflect your locations ########################################
 AWS_CREDENTIALS_DIR="$HOME/.aws"   # directory with the aws "credentials file" normally should not need changing
-TERRAFORM_CLUSTER_DIR="active"  # this is the name of the directory containing the terraform to create the cluster 
+TERRAFORM_CLUSTER_DIR="cluster1"  # this is the name of the directory containing the terraform to create the cluster 
 ################################################################################################
 
 # SCRIPT_DIR=$( cd $(dirname "$0") ; pwd )
@@ -121,12 +120,12 @@ TERRAFORM_CLUSTER_DIR="active"  # this is the name of the directory containing t
 #### Set global env vars ####
 AWS_CREDENTIALS_DIR="$HOME/.aws"   # directory with the aws "credentials file" normally should not need changing
 SCRIPT_DIR=$( cd $(dirname "$0") ; pwd )
+REPO_DIR=$( cd $(dirname "$0")/../../../.. ; pwd ) # the vNext repo directory 
 HOST_TERRAFORM_DIR=$( cd $(dirname "$0")/../terraform ; pwd )
 # point to the docker image that results from running build.sh 
 DOCKER_IMAGE_NAME=`grep DOCKER_IMAGE_NAME $SCRIPT_DIR/build.sh | grep -v "\-t" | cut -d "\"" -f2 | awk '{print $1}'`
 USER_NAME=$(whoami)
 USER_ID=$(id -u $USER_NAME)
-
 
 printf "running AWS script [ %s ] from directory [ %s ] \n" $0 $SCRIPT_DIR
 printf "using docker image [ %s ] declared in [ %s ]  \n" "$DOCKER_IMAGE_NAME" "$SCRIPT_DIR/build.sh" 
