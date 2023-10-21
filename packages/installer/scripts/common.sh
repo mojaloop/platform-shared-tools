@@ -337,7 +337,7 @@ function install_infra_from_local_chart  {
   printf  "==> deploy Mojaloop vNext infrastructure via %s helm chart and wait for upto %s  secs for it to be ready \n" "$ML_RELEASE_NAME" "$TIMEOUT_SECS"
   printf  "    executing helm install $HELM_INFRA_RELEASE --wait --timeout $TIMEOUT_SECS $infra_dir/infra-helm  \n "
   tstart=$(date +%s)
-  helm install $HELM_INFRA_RELEASE --wait --timeout $TIMEOUT_SECS  --namespace "$NAMESPACE" $infra_dir/infra-helm  >> $LOGFILE 2>>$ERRFILE
+  helm install $HELM_INFRA_RELEASE --wait --render-subchart-notes --timeout $TIMEOUT_SECS  --namespace "$NAMESPACE" $infra_dir/infra-helm  >> $LOGFILE 2>>$ERRFILE
   tstop=$(date +%s)
   telapsed=$(timer $tstart $tstop)
   if [[ `helm status $HELM_INFRA_RELEASE  --namespace "$NAMESPACE" | grep "^STATUS:" | awk '{ print $2 }' ` = "deployed" ]] ; then 
