@@ -1,0 +1,123 @@
+<div class="row mb-2">
+	<div class="col">
+		<h3>Audit Entries</h3>
+	</div>
+	<!--<div class="col text-right">
+		<button class="btn btn-warning" routerLink="/transfers/new">Create Test Transfer</button>
+	</div>-->
+</div>
+
+
+
+<!--filter-->
+<div class="filterbox">
+	<form >
+		<table class="table">
+			<tr class="form-row">
+				<div class="form-group col-md-2">
+					<label for="filterSourceBcName">Source BC Name:</label>
+					<select class="form-control" id="filterSourceBcName">
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordSourceBcName | async)">{{item}}</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-2">
+					<label for="filterSourceAppName">Source App Name:</label>
+					<select class="form-control" id="filterSourceAppName">
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordSourceAppName| async)">{{item}}</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-2">
+					<label for="filterActionType">Action Type:</label>
+					<select class="form-control" id="filterActionType" >
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordActionType | async)">{{item}}</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-2">
+					<label for="filterStartDate">Start date:</label>
+					<input class="form-control" type="datetime-local" id="filterStartDate" step=300
+						   [ngModel]="criteriaFromDate"
+						   [ngModelOptions]="{standalone: true}">
+				</div>
+
+
+				<div class="form-group col-md-2">
+					<label for="filterEndDate">End date:</label>
+					<input class="form-control" type="datetime-local" id="filterEndDate" step=300>
+				</div>
+
+
+				<div class="form-group col-md-2">
+					<label for="filterBtn">&nbsp;</label>
+					<button type="submit" class="form-control btn btn-primary" id="filterBtn" (click)="search()">Search &nbsp;&nbsp;<i class="bi bi-search"></i></button>
+				</div>
+			</tr>
+		</table>
+	</form>
+</div>
+
+<table class="table">
+  <thead class="thead-light">
+  <tr>
+    <th scope="col">When</th>
+    <th scope="col">BC</th>
+    <th scope="col">App</th>
+    <th scope="col">Action Type</th>
+<!--	<th scope="col">User</th>-->
+    <th scope="col">Success</th>
+
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let item of (entries | async)">
+    <td> {{item.actionTimestamp  | date:"medium"}}</td>
+    <td> {{item.sourceBcName}}</td>
+    <td> {{item.sourceAppName}} <span class="badge badge-secondary">{{item.sourceAppVersion}}</span></td>
+    <td> {{item.actionType}}</td>
+<!--	  <td> {{item.securityContext.userId}}</td>-->
+    <td>
+		<span *ngIf="item.actionSuccessful" class="badge badge-success">Succeeded</span>
+		<span *ngIf="!item.actionSuccessful" class="badge badge-danger">Failed</span>
+	</td>
+
+  </tr>
+  </tbody>
+</table>
+
+<!--pagination
+TODO: put in component
+-->
+<hr>
+<nav aria-label="Page navigation"  *ngIf="paginateResult | async; let paginateObj">
+	<ul class="pagination justify-content-end">
+		<li class="page-item" [ngClass]="{'disabled' : paginateObj.prev == null}">
+			<a class="page-link" aria-label="Previous" (click)="search(paginateObj.prev ? paginateObj.prev-1 : 0)">
+				<span aria-hidden="true">&laquo;</span>
+				<span class="sr-only">Previous</span>
+			</a>
+		</li>
+
+		<ng-container *ngFor="let item of paginateObj.items">
+			<li class="page-item" *ngIf="item != null" [ngClass]="{'active' : item === paginateObj.current}">
+				<a class="page-link" (click)="search(item-1)" >{{item}}
+					<span class="sr-only" *ngIf="item === paginateObj.current">(current)</span>
+				</a>
+			</li>
+			<li class="page-item disabled" *ngIf="item == null">
+				<a class="page-link disabled" *ngIf="!item" >...</a>
+			</li>
+		</ng-container>
+
+		<li class="page-item"  [ngClass]="{'disabled' : paginateObj.next == null}">
+			<a class="page-link" aria-label="Next" (click)="search(paginateObj.next ? paginateObj.next-1 : 0)">
+				<span aria-hidden="true">&raquo;</span>
+				<span class="sr-only">Next</span>
+			</a>
+		</li>
+	</ul>
+</nav>

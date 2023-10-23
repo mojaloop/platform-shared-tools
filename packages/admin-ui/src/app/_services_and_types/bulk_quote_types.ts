@@ -28,90 +28,90 @@
  --------------
  ******/
 
-"use strict"
+"use strict";
 
 /** BulkQuotes **/
 export declare type BulkQuote = {
-  bulkQuoteId: string;
-  payer:  {
-      partyIdInfo: {
-          partyIdType: string;
-          partyIdentifier: string;
-          partySubIdOrType: string | null;
-          fspId: string | null;
-      };
-      merchantClassificationCode?: string | null,
-      name?: string | null,
-      personalInfo?: {
-          complexName: {
-              firstName: string | null;
-              middleName: string | null;
-              lastName: string | null;              
-          } | null,
-          dateOfBirth: string | null
-      } | null
-  } | null;
-  geoCode?: {
-      latitude: string;
-      longitude: string;
-  } | null;
-  expiration?: string | null;
-  individualQuotes: {
-      quoteId: string;
-      transactionId: string;
-      transactionRequestId: string | null;
-      payee:  {
-          partyIdInfo: {
-              partyIdType: string;
-              partyIdentifier: string;
-              partySubIdOrType: string | null;
-              fspId: string | null;
-          };
-          merchantClassificationCode: string | null,
-          name: string | null,
-          personalInfo: {
-              complexName: {
-                  firstName: string | null;
-                  middleName: string | null;
-                  lastName: string | null;              
-              } | null,
-              dateOfBirth: string | null
-          } | null
-      };
-      amountType: "SEND" | "RECEIVE";
-      amount: {
-          currency: string;
-          amount: string;
-      };
-      fees: {
-          currency: string;
-          amount: string;
-      } | null;
-      transactionType: {
-          scenario: string
-          subScenario: string | null
-          initiator: string
-          initiatorType: string
-          refundInfo: {
-              originalTransactionId: string
-              refundReason: string | null
-          } | null,
-          balanceOfPayments: string | null
-      };
-      note: string | null;
-      extensionList: {
-          extension: {
-              key: string;
-              value: string;
-          }[]
-      } | null;
-  }[];
-  extensionList: {
-      extension: {
-          key: string;
-          value: string;
-      }[]
-  } | null;
-  quotesNotProcessedIds: string[];
-  status?: string
+	bulkQuoteId: string;
+	payer: {
+		partyIdInfo: {
+			partyIdType: string;
+			partyIdentifier: string;
+			partySubIdOrType: string | null;
+			fspId: string | null;
+		};
+		merchantClassificationCode?: string | null,
+		name?: string | null,
+		personalInfo?: {
+			complexName: {
+				firstName: string | null;
+				middleName: string | null;
+				lastName: string | null;
+			} | null,
+			dateOfBirth: string | null
+		} | null
+	} | null;
+	geoCode?: {
+		latitude: string;
+		longitude: string;
+	} | null;
+	expiration?: string | null;
+	individualQuotes: {
+		quoteId: string;
+		transactionId: string;
+		transactionRequestId: string | null;
+		payee: {
+			partyIdInfo: {
+				partyIdType: string;
+				partyIdentifier: string;
+				partySubIdOrType: string | null;
+				fspId: string | null;
+			};
+			merchantClassificationCode: string | null,
+			name: string | null,
+			personalInfo: {
+				complexName: {
+					firstName: string | null;
+					middleName: string | null;
+					lastName: string | null;
+				} | null,
+				dateOfBirth: string | null
+			} | null
+		};
+		amountType: "SEND" | "RECEIVE";
+		amount: {
+			currency: string;
+			amount: string;
+		};
+		fees: {
+			currency: string;
+			amount: string;
+		} | null;
+		transactionType: {
+			scenario: string
+			subScenario: string | null
+			initiator: string
+			initiatorType: string
+			refundInfo: {
+				originalTransactionId: string
+				refundReason: string | null
+			} | null,
+			balanceOfPayments: string | null
+		};
+		note: string | null;
+		extensionList: {
+			extension: {
+				key: string;
+				value: string;
+			}[]
+		} | null;
+	}[];
+	extensionList: {
+		extension: {
+			key: string;
+			value: string;
+		}[]
+	} | null;
+	quotesNotProcessedIds: string[];
+	status?: string
 }

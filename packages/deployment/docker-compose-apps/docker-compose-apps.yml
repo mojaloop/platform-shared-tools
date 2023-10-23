@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   fspiop-api-svc:
-    image: mojaloop/interop-apis-bc-fspiop-api-svc:0.1.19
+    image: mojaloop/interop-apis-bc-fspiop-api-svc:0.1.29
     depends_on:
       settlements-api-svc:
         condition: service_healthy
@@ -93,7 +93,7 @@ services:
 # participants
 
   participants-svc:
-    image: mojaloop/participants-bc-participants-svc:0.1.16
+    image: mojaloop/participants-bc-participants-svc:0.1.19
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -125,7 +125,7 @@ services:
 #account lookup
 
   account-lookup-http-oracle-svc:
-    image: mojaloop/account-lookup-bc-http-oracle-svc:0.1.1
+    image: mojaloop/account-lookup-bc-http-oracle-svc:0.1.4
     depends_on:
       participants-svc:
         condition: service_healthy
@@ -146,7 +146,7 @@ services:
     restart: unless-stopped
 
   account-lookup-svc:
-    image: mojaloop/account-lookup-bc-account-lookup-svc:0.1.11
+    image: mojaloop/account-lookup-bc-account-lookup-svc:0.1.13
     depends_on:
       account-lookup-http-oracle-svc:
         condition: service_healthy
@@ -176,7 +176,7 @@ services:
 # quoting
 
   quoting-svc:
-    image: mojaloop/quoting-bc-quoting-svc:0.1.12
+    image: mojaloop/quoting-bc-quoting-svc:0.1.15
     depends_on:
       participants-svc:
         condition: service_healthy
@@ -206,7 +206,7 @@ services:
 # transfers
 
   transfers-api-svc:
-    image: mojaloop/transfers-bc-transfers-api-svc:0.2.2
+    image: mojaloop/transfers-bc-transfers-api-svc:0.2.6
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -236,7 +236,7 @@ services:
     restart: unless-stopped
 
   transfers-event-handler-svc:
-    image: mojaloop/transfers-bc-event-handler-svc:0.2.1
+    image: mojaloop/transfers-bc-event-handler-svc:0.2.4
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -257,7 +257,7 @@ services:
     restart: unless-stopped
 
   transfers-command-handler-svc:
-    image: mojaloop/transfers-bc-command-handler-svc:0.2.5
+    image: mojaloop/transfers-bc-command-handler-svc:0.2.9
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -283,7 +283,7 @@ services:
 # settlements
 
   settlements-api-svc:
-    image: mojaloop/settlements-bc-settlements-api-svc:0.1.9
+    image: mojaloop/settlements-bc-settlements-api-svc:0.1.11
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -314,7 +314,7 @@ services:
     restart: unless-stopped
 
   settlements-event-handler-svc:
-    image: mojaloop/settlements-bc-event-handler-svc:0.1.5
+    image: mojaloop/settlements-bc-event-handler-svc:0.1.9
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -335,7 +335,7 @@ services:
     restart: unless-stopped
 
   settlements-command-handler-svc:
-    image: mojaloop/settlements-bc-command-handler-svc:0.1.8
+    image: mojaloop/settlements-bc-command-handler-svc:0.1.10
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -359,7 +359,7 @@ services:
 
 
   admin-ui:
-    image: mojaloop/vnext-admin-ui-svc:0.1.19
+    image: mojaloop/vnext-admin-ui-svc:0.1.27
     depends_on:
       transfers-api-svc:
         condition: service_healthy
@@ -397,6 +397,12 @@ services:
       - sh
       - /usr/share/nginx/start.sh
 
+  mongo_seed:
+    image: mongo
+    volumes:
+      - ./ttk_files:/ttk_files
+    command:
+      /ttk_files/mongodb/import.sh
   # green bank TTK
   ttk_2:
     image: mojaloop/ml-testing-toolkit:v15.0.0

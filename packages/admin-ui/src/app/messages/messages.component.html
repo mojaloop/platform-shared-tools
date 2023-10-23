@@ -1,32 +1,11 @@
-<!--<div *ngIf="getMessages()" >-->
+<ngb-toast *ngFor="let item of getMessages()"
+		   class="toast text-light fade show bg-{{item.level}}" [autohide]="item.delay!==0"
+		   [delay]="item.delay || 10000"
+		   (hidden)="messageService.close(item)">
 
-<!--  <ng-container *ngFor="let item of getMessages()">-->
-<!--      <ngb-toast [type]="item.level" (closed)="close(item)" (ended)="messageService.close(item)">-->
-<!--        {{item.date | date:dateFormat}} - {{item.message}}-->
-<!--      </ngb-toast>-->
+	<button type="button" aria-label="Close" class="close clearfix" (click)="close(item)">
+		<span aria-hidden="true" style="color: whitesmoke;">×</span>
+	</button>
 
-    <ngb-toast *ngFor="let item of getMessages()"
-         class="toast text-light fade show bg-{{item.level}}" [autohide]="item.delay!==0" [delay]="item.delay || 10000"
-               (hidden)="messageService.close(item)">
-
-
-<!--      <ng-template ngbToastHeader >-->
-<!--        <strong class="mx-1">{{item.level.toUpperCase()}}</strong>-->
-<!--      </ng-template>-->
-
-      <button type="button" aria-label="Close" class="close clearfix" (click)="close(item)">
-        <span aria-hidden="true" style="color: whitesmoke;">×</span>
-      </button>
-
-
-      <p>{{ item.message }}</p>
-    </ngb-toast>
-
-<!--  </ng-container>-->
-
-<!--  <ngb-toast *ngFor="let item of getMessages()" class="bg-{{item.level}}}" [autohide]="true" [delay]="item.delay || 10000"-->
-<!--             (hidden)="messageService.close(item)">-->
-<!--    <ng-template #text>{{ item.message }}</ng-template>-->
-<!--  </ngb-toast>-->
-
-<!--</div>-->
+	<p>{{ item.message }}</p>
+</ngb-toast>

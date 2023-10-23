@@ -1,0 +1,23 @@
+{
+  "order": [
+    {
+      "name": "p2p_money_transfer",
+      "type": "folder",
+      "labels": [
+        "p2p"
+      ]
+    },
+    {
+      "name": "duplicate_handling",
+      "type": "folder"
+    },
+    {
+      "name": "p2p_money_transfer",
+      "type": "folder"
+    },
+    {
+      "name": "duplicate_handling",
+      "type": "folder"
+    }
+  ]
+}

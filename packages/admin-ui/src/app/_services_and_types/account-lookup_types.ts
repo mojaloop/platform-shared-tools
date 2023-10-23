@@ -33,20 +33,20 @@
 export type OracleType = "builtin" | "remote-http";
 
 export type Oracle = {
-  id: string;
-  name: string;
-  type: OracleType;
-  partyType: string;
-  partySubType?: string | null;
-  endpoint: string;
+	id: string;
+	name: string;
+	type: OracleType;
+	partyType: string;
+	partySubType?: string | null;
+	endpoint: string;
 }
 
 export type Association = {
-  partyId: string,
-  fspId: string,
-  partyType: string,
-  partySubId: string | null,
-  currency: string
+	partyId: string,
+	fspId: string,
+	partyType: string,
+	partySubId: string | null,
+	currency: string
 }
 
 

@@ -27,7 +27,7 @@
 			<td>{{item.transferTimestamp | date:'medium'}}</td>
 			<td><a routerLink="/settlements/batches" [queryParams]="{batchId: item.batchId, currencyCode: item.currencyCode}">{{item.batchId}}</a></td>
 
-			<td *ngIf="item.settled"><a routerLink="/settlements/matrix/{{item.matrixId}}">Matrix</a></td>
+			<td *ngIf="item.matrixId"><a routerLink="/settlements/matrix/{{item.matrixId}}">Matrix</a></td>
 		</tr>
 		</tbody>
 	</table>

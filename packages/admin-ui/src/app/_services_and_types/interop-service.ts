@@ -28,199 +28,199 @@
  --------------
  ******/
 
- "use strict";
+"use strict";
 
- import {Observable} from "rxjs";
- import {Injectable} from "@angular/core";
- import {HttpClient, HttpHeaders} from "@angular/common/http";
- 
- import {SettingsService} from "./settings.service";
- import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
-import { Quote } from "./quote_types";
-import { BulkQuote } from "./bulk_quote_types";
-import { Transfer } from "./transfer_types";
+import {Observable} from "rxjs";
+import {Injectable} from "@angular/core";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+
+import {SettingsService} from "./settings.service";
+import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
+import {Quote} from "./quote_types";
+import {BulkQuote} from "./bulk_quote_types";
+import {Transfer} from "./transfer_types";
 //  import {} from "./interop_types";
- 
- const SVC_BASEURL = "/_interop";
- 
- @Injectable({
-   providedIn: "root",
- })
- export class InteropService {
- 
-	constructor(private _settings: SettingsService, private _http: HttpClient, private _authentication: AuthenticationService) {}
 
-	associateParticipant(participantId: string, partyType: string, partyId: string, partySubType: string, currencyCode: string):Observable<any>{
-        const URL = partySubType ? `${SVC_BASEURL}/participants/${partyType}/${partyId}/${partySubType}` : `${SVC_BASEURL}/participants/${partyType}/${partyId}`;
-		
+const SVC_BASEURL = "/_interop";
+
+@Injectable({
+	providedIn: "root",
+})
+export class InteropService {
+
+	constructor(private _settings: SettingsService, private _http: HttpClient, private _authentication: AuthenticationService) {
+	}
+
+	associateParticipant(participantId: string, partyType: string, partyId: string, partySubType: string, currencyCode: string): Observable<any> {
+		const URL = partySubType ? `${SVC_BASEURL}/participants/${partyType}/${partyId}/${partySubType}` : `${SVC_BASEURL}/participants/${partyType}/${partyId}`;
+
 		return new Observable<any>(subscriber => {
-			const headers = new HttpHeaders().set('fspiop-source', participantId)
-											.set('fspiop-date', new Date().toISOString());
+			const headers = new HttpHeaders().set("fspiop-source", participantId)
+				.set("fspiop-date", new Date().toISOString());
 
-			this._http.post<any>(URL, { fspId: participantId, currency: currencyCode }, { headers }).subscribe(									
-			(result: any) => {
-				console.log(`POST associate response: ${result}`);
+			this._http.post<any>(URL, {fspId: participantId, currency: currencyCode}, {headers}).subscribe(
+				(result: any) => {
+					console.log(`POST associate response: ${result}`);
 
-				subscriber.next(result);
-				return subscriber.complete();
-			},
-			error => {
-				console.error(error);
-				subscriber.error(error);
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					console.error(error);
+					subscriber.error(error);
 
-				return subscriber.complete();
-			}
+					return subscriber.complete();
+				}
 			);
 		});
 	}
 
-	disassociateParticipant(participantId: string,partyType: string, partyId: string, partySubType: string, currencyCode: string):Observable<any>{
-        const URL = partySubType ? `${SVC_BASEURL}/participants/${partyType}/${partyId}/${partySubType}?currency=${currencyCode}` : `${SVC_BASEURL}/participants/${partyType}/${partyId}?currency=${currencyCode}`;
-
-		return new Observable<any>(subscriber => {
-			const headers = new HttpHeaders().set('fspiop-source', participantId)
-											.set('fspiop-date', new Date().toISOString());
-
-			this._http.delete<any>(URL, { headers }).subscribe(
-			(result: any) => {
-				console.log(`DELETE disassociate response: ${result}`);
-
-				subscriber.next(result);
-				return subscriber.complete();
-			},
-			error => {
-				console.error(error);
-				subscriber.error(error);
-
-				return subscriber.complete();
-			}
-			);
-		});
-	}
-
-	getParticipant(participantId: string,partyType: string, partyId: string, partySubType: string, currencyCode: string):Observable<any>{
+	disassociateParticipant(participantId: string, partyType: string, partyId: string, partySubType: string, currencyCode: string): Observable<any> {
 		const URL = partySubType ? `${SVC_BASEURL}/participants/${partyType}/${partyId}/${partySubType}?currency=${currencyCode}` : `${SVC_BASEURL}/participants/${partyType}/${partyId}?currency=${currencyCode}`;
 
 		return new Observable<any>(subscriber => {
-			const headers = new HttpHeaders().set('fspiop-source', participantId)
-											.set('fspiop-date', new Date().toISOString());
-			
-			this._http.get<any>(URL, { headers }).subscribe(
-			(result: any) => {
-				console.log(`GET participant response: ${result}`);
+			const headers = new HttpHeaders().set("fspiop-source", participantId)
+				.set("fspiop-date", new Date().toISOString());
 
-				subscriber.next(result);
-				return subscriber.complete();
-			},
-			error => {
-				console.error(error);
-				subscriber.error(error);
+			this._http.delete<any>(URL, {headers}).subscribe(
+				(result: any) => {
+					console.log(`DELETE disassociate response: ${result}`);
 
-				return subscriber.complete();
-			}
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					console.error(error);
+					subscriber.error(error);
+
+					return subscriber.complete();
+				}
 			);
 		});
 	}
 
-	getParty(participantId: string, partyType: string, partyId: string, partySubType: string, currencyCode: string):Observable<any>{
+	getParticipant(participantId: string, partyType: string, partyId: string, partySubType: string, currencyCode: string): Observable<any> {
+		const URL = partySubType ? `${SVC_BASEURL}/participants/${partyType}/${partyId}/${partySubType}?currency=${currencyCode}` : `${SVC_BASEURL}/participants/${partyType}/${partyId}?currency=${currencyCode}`;
+
+		return new Observable<any>(subscriber => {
+			const headers = new HttpHeaders().set("fspiop-source", participantId)
+				.set("fspiop-date", new Date().toISOString());
+
+			this._http.get<any>(URL, {headers}).subscribe(
+				(result: any) => {
+					console.log(`GET participant response: ${result}`);
+
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					console.error(error);
+					subscriber.error(error);
+
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+	getParty(participantId: string, partyType: string, partyId: string, partySubType: string, currencyCode: string): Observable<any> {
 		const URL = partySubType ? `${SVC_BASEURL}/parties/${partyType}/${partyId}/${partySubType}?currency=${currencyCode}` : `${SVC_BASEURL}/parties/${partyType}/${partyId}?currency=${currencyCode}`;
 
 		return new Observable<any>(subscriber => {
-			const headers = new HttpHeaders().set('fspiop-source', participantId)
-											.set('fspiop-date', new Date().toISOString());
+			const headers = new HttpHeaders().set("fspiop-source", participantId)
+				.set("fspiop-date", new Date().toISOString());
 
-			this._http.get<any>(URL, { headers }).subscribe(
-			(result: any) => {
-				console.log(`GET party response: ${result}`);
+			this._http.get<any>(URL, {headers}).subscribe(
+				(result: any) => {
+					console.log(`GET party response: ${result}`);
 
-				subscriber.next(result);
-				return subscriber.complete();
-			},
-			error => {
-				console.error(error);
-				subscriber.error(error);
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					console.error(error);
+					subscriber.error(error);
 
-				return subscriber.complete();
-			}
+					return subscriber.complete();
+				}
 			);
 		});
 	}
 
 	// Quotes
-	createQuoteRequest(quote: Quote):Observable<any>{
+	createQuoteRequest(quote: Quote): Observable<any> {
 		const URL = `${SVC_BASEURL}/quotes`;
 
 		return new Observable<any>(subscriber => {
-			const headers = new HttpHeaders().set('fspiop-source', quote?.payer?.partyIdInfo.fspId as string)
-											 .set('fspiop-date', new Date().toISOString());
+			const headers = new HttpHeaders().set("fspiop-source", quote?.payer?.partyIdInfo.fspId as string)
+				.set("fspiop-date", new Date().toISOString());
 
-			const body = { ...quote };
+			const body = {...quote};
 
-			this._http.post<any>(URL, body, { headers }).subscribe(
-			(result: any) => {
-				console.log(`GET quote response: ${result}`);
+			this._http.post<any>(URL, body, {headers}).subscribe(
+				(result: any) => {
+					console.log(`GET quote response: ${result}`);
 
-				subscriber.next(result);
-				return subscriber.complete();
-			},
-			error => {
-				console.error(error);
-				subscriber.error(error);
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					console.error(error);
+					subscriber.error(error);
 
-				return subscriber.complete();
-			}
+					return subscriber.complete();
+				}
 			);
 		});
 	}
 
-	createBulkQuoteRequest(bulkQuote: BulkQuote):Observable<any>{
+	createBulkQuoteRequest(bulkQuote: BulkQuote): Observable<any> {
 		const URL = `${SVC_BASEURL}/bulkQuotes`;
 
 		return new Observable<any>(subscriber => {
-			const body = { ...bulkQuote };
+			const body = {...bulkQuote};
 
 			this._http.post<any>(URL, body).subscribe(
-			(result: any) => {
-				console.log(`GET bulk quote response: ${result}`);
+				(result: any) => {
+					console.log(`GET bulk quote response: ${result}`);
 
-				subscriber.next(result);
-				return subscriber.complete();
-			},
-			error => {
-				console.error(error);
-				subscriber.error(error);
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					console.error(error);
+					subscriber.error(error);
 
-				return subscriber.complete();
-			}
+					return subscriber.complete();
+				}
 			);
 		});
 	}
 
-	createTransferRequest(transfer: Transfer):Observable<any>{
+	createTransferRequest(transfer: Transfer): Observable<any> {
 		const URL = `${SVC_BASEURL}/transfers`;
 
-		const headers = new HttpHeaders().set('fspiop-source', transfer.payerFsp)
-										 .set('fspiop-date', new Date().toISOString());
+		const headers = new HttpHeaders().set("fspiop-source", transfer.payerFsp)
+			.set("fspiop-date", new Date().toISOString());
 
 		return new Observable<any>(subscriber => {
-			const body = { ...transfer };
+			const body = {...transfer};
 
-			this._http.post<any>(URL, body, { headers }).subscribe(
-			(result: any) => {
-				console.log(`GET transfer response: ${result}`);
+			this._http.post<any>(URL, body, {headers}).subscribe(
+				(result: any) => {
+					console.log(`GET transfer response: ${result}`);
 
-				subscriber.next(result);
-				return subscriber.complete();
-			},
-			error => {
-				console.error(error);
-				subscriber.error(error);
+					subscriber.next();
+					return subscriber.complete();
+				},
+				error => {
+					console.error(error);
+					subscriber.error(error);
 
-				return subscriber.complete();
-			}
+					return subscriber.complete();
+				}
 			);
 		});
 	}
 
 }
- 

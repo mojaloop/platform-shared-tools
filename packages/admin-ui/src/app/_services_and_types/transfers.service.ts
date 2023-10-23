@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 import {SettingsService} from "src/app/_services_and_types/settings.service";
 import {HttpClient} from "@angular/common/http";
 import {AllPrivilegesResp} from "./security_types";
@@ -37,7 +37,7 @@ export class TransfersService {
 			scenario: "",
 			initiator: "",
 			initiatorType: ""
-		} as any
+		} as any;
 	}
 
 	getAllTransfers(): Observable<Transfer[]> {
@@ -50,7 +50,7 @@ export class TransfersService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("Access forbidden received on getAllTransfers");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else {
@@ -65,32 +65,32 @@ export class TransfersService {
 	}
 
 	searchTransfers(
-		state?:string,
-		currencyCode?:string,
-		startDate?:number,
-		endDate?:number,
-		id?:string
+		state?: string,
+		currencyCode?: string,
+		startDate?: number,
+		endDate?: number,
+		id?: string
 	): Observable<Transfer[]> {
 		return new Observable<Transfer[]>(subscriber => {
 			let url = SVC_BASEURL + "/transfers/?";
 
-			if(state){
+			if (state) {
 				url += `state=${encodeURIComponent(state)}&`;
 			}
-			if(currencyCode){
+			if (currencyCode) {
 				url += `currencyCode=${encodeURIComponent(currencyCode)}&`;
 			}
-			if(startDate){
+			if (startDate) {
 				url += `startDate=${encodeURIComponent(startDate)}&`;
 			}
-			if(endDate){
+			if (endDate) {
 				url += `endDate=${encodeURIComponent(endDate)}&`;
 			}
-			if(id){
+			if (id) {
 				url += `id=${encodeURIComponent(id)}&`;
 			}
 
-			if(url.endsWith("&")) {
+			if (url.endsWith("&")) {
 				url = url.slice(0, url.length - 1);
 			}
 
@@ -102,7 +102,7 @@ export class TransfersService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("Access forbidden received on getAllTransfers");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else {
@@ -126,10 +126,10 @@ export class TransfersService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status==404) {
+					if (error && error.status == 404) {
 						subscriber.next(null);
 						return subscriber.complete();
-					} else if (error && error.status===403) {
+					} else if (error && error.status === 403) {
 						console.warn("Access forbidden received on getTransfer");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else {
@@ -153,7 +153,7 @@ export class TransfersService {
 					return subscriber.complete();
 				},
 				error => {
-					if (error && error.status===403) {
+					if (error && error.status === 403) {
 						console.warn("Access forbidden received on createTransfer");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else {

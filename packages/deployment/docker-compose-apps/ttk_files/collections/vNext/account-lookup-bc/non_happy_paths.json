@@ -1,0 +1,85 @@
+{
+  "name": "multi",
+  "test_cases": [
+    {
+      "id": 1,
+      "name": "Party Lookup should fail due to non-existing id type",
+      "meta": {
+        "info": "Party Lookup should fail due to non-existing id type"
+      },
+      "requests": [
+        {
+          "id": 1,
+          "meta": {
+            "info": "Get party information"
+          },
+          "description": "Get party information",
+          "apiVersion": {
+            "minorVersion": 1,
+            "majorVersion": 1,
+            "type": "fspiop",
+            "asynchronous": true
+          },
+          "operationPath": "/parties/{Type}/{ID}",
+          "method": "get",
+          "headers": {
+            "Accept": "{$inputs.accept}",
+            "Content-Type": "{$inputs.contentType}",
+            "Date": "{$function.generic.curDate}",
+            "FSPIOP-Source": "{$inputs.fromFspId}"
+          },
+          "params": {
+            "Type": "invalidIdType",
+            "ID": "{$inputs.toIdValue}"
+          },
+          "tests": {
+            "assertions": [
+              {
+                "id": 1,
+                "description": "Response should be 202",
+                "exec": [
+                  "expect(response.status).to.equal(202)"
+                ]
+              },
+              {
+                "id": 2,
+                "description": "Response statusText be Bad Request",
+                "exec": [
+                  "expect(response.statusText).to.equal('Accepted')"
+                ]
+              },
+              {
+                "id": 3,
+                "description": "Response should contain error information",
+                "exec": [
+                  "expect(callback.body).to.have.property('errorInformation')"
+                ]
+              },
+              {
+                "id": 3,
+                "description": "Response should contain error code",
+                "exec": [
+                  "expect(callback.body.errorInformation).to.have.property('errorCode')"
+                ]
+              },
+              {
+                "id": 4,
+                "description": "Response should contain 'Party not found'",
+                "exec": [
+                  "expect(callback.body.errorInformation.errorDescription).to.include('Party not found')"
+                ]
+              },
+              {
+                "id": 5,
+                "description": "Response should contain '3204'",
+                "exec": [
+                  "expect(callback.body.errorInformation.errorCode).to.include('3204')"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

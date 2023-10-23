@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {BehaviorSubject, Subscription} from "rxjs";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
 import {MessageService} from "src/app/_services_and_types/message.service";
@@ -7,9 +7,8 @@ import {
 	ISettlementBatch,
 	ISettlementBatchTransfer, ISettlementConfig,
 	ISettlementMatrix
-} from "src/app/_services_and_types/settlements_types";
+} from "@mojaloop/settlements-bc-public-types-lib";
 import {ActivatedRoute} from "@angular/router";
-
 
 
 @Component({
@@ -28,7 +27,7 @@ export class SettlementsModelsComponent implements OnInit {
 		this._fetchModels();
 	}
 
-	private async _fetchModels():Promise<void> {
+	private async _fetchModels(): Promise<void> {
 		return new Promise(resolve => {
 			this._settlementsService.getAllModels().subscribe(matrix => {
 				this.models.next(matrix);

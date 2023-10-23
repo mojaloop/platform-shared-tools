@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   authentication-svc:
-    image: mojaloop/security-bc-authentication-svc:0.1.18
+    image: mojaloop/security-bc-authentication-svc:0.1.20
     volumes:
       - authentication-svc_data:/app/data
     environment:
@@ -13,6 +13,7 @@ services:
       - AUTH_N_DEFAULT_AUDIENCE=${AUTH_N_DEFAULT_AUDIENCE}
       - AUTH_N_ISSUER_NAME=${AUTH_N_ISSUER_NAME}
       - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
+      - MONGO_URL=${MONGO_URL}
     ports:
       - 3201:3201
     healthcheck:
@@ -24,14 +25,13 @@ services:
     restart: unless-stopped
 
   authorization-svc:
-    image: mojaloop/security-bc-authorization-svc:0.1.20
-    volumes:
-      - authorization-svc_data:/app/data
+    image: mojaloop/security-bc-authorization-svc:0.1.24
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
       - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
       - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
+      - MONGO_URL=${MONGO_URL}
     ports:
       - 3202:3202
     healthcheck:
@@ -43,7 +43,7 @@ services:
     restart: unless-stopped
 
   auditing-svc:
-    image: mojaloop/auditing-bc-auditing-svc:alpha-latest
+    image: mojaloop/auditing-bc-auditing-svc:0.1.6
     volumes:
       - auditing-svc_data:/app/data
     environment:
@@ -54,10 +54,12 @@ services:
       - ELASTICSEARCH_AUDITS_INDEX=${ELASTICSEARCH_AUDITS_INDEX}
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME}
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
+    ports:
+      - 3050:3050
     restart: unless-stopped
 
   logging-svc:
-    image: mojaloop/logging-bc-logging-svc:alpha-latest
+    image: mojaloop/logging-bc-logging-svc:0.1.9
     volumes:
       - logging-svc_data:/app/data
     environment:

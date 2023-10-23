@@ -25,7 +25,7 @@
 			<td>{{item.type}}</td>
 			<td>{{item.state}}</td>
 			<td>{{item.settlementModel}}</td>
-			<td>{{item.currencyCode}}</td>
+			<td>{{item.currencyCodes ? item.currencyCodes.join(", ") : "(All)"}}</td>
 
 			<td>{{item.batches.length}}</td>
 			<td>{{item.createdAt | date: 'medium'}}</td>

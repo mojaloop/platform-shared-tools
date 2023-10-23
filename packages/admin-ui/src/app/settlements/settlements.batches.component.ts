@@ -1,9 +1,9 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {BehaviorSubject, Subscription} from "rxjs";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
 import {MessageService} from "src/app/_services_and_types/message.service";
 import {SettlementsService} from "src/app/_services_and_types/settlements.service";
-import {ISettlementBatch, ISettlementBatchTransfer} from "src/app/_services_and_types/settlements_types";
+import {ISettlementBatch, ISettlementBatchTransfer} from "@mojaloop/settlements-bc-public-types-lib";
 import * as uuid from "uuid";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -14,6 +14,7 @@ const DEFAULT_TIME_FILTER_HOURS = 8;
 	templateUrl: './settlements.batches.component.html'
 })
 export class SettlementsBatchesComponent implements OnInit, OnDestroy {
+	readonly ALL_STR_ID = "(All)";
 	batches: BehaviorSubject<ISettlementBatch[]> = new BehaviorSubject<ISettlementBatch[]>([]);
 	batchesSubs?: Subscription;
 
@@ -24,54 +25,58 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 	batchSelPrefix = "batchSel_";
 	selectedBatchIds: string[] = [];
 
-	public criteriaCurrencyCode: string = "USD";
-	public criteriaSettlementModel: string = "DEFAULT";
+	public criteriaCurrencyCode: string = this.ALL_STR_ID;
+	public criteriaSettlementModel: string = this.ALL_STR_ID;
 	public criteriaFromDate = "";
-	public criteriaToDate = ""
+	public criteriaToDate = "";
 	public criteriaBatchId = "";
 	public criteriaIncludeSettled = false;
 
 	constructor(private _router: Router, private _settlementsService: SettlementsService, private _messageService: MessageService, private _route: ActivatedRoute) {
-		this.criteriaFromDate = new Date(Date.now() - DEFAULT_TIME_FILTER_HOURS * 60 * 60 * 1000).toISOString()
-		this.criteriaFromDate = this.criteriaFromDate.substring(0, this.criteriaFromDate.length-8); // remove Z, ms and secs
+		this.criteriaFromDate = new Date(Date.now() - DEFAULT_TIME_FILTER_HOURS * 60 * 60 * 1000).toISOString();
+		this.criteriaFromDate = this.criteriaFromDate.substring(0, this.criteriaFromDate.length - 8); // remove Z, ms and secs
 
-		this.criteriaToDate = new Date(Date.now() + DEFAULT_TIME_FILTER_HOURS * 60 * 60 * 1000 ).toISOString()
-		this.criteriaToDate = this.criteriaToDate.substring(0, this.criteriaToDate.length-8); // remove Z, ms and secs
+		this.criteriaToDate = new Date(Date.now() + DEFAULT_TIME_FILTER_HOURS * 60 * 60 * 1000).toISOString();
+		this.criteriaToDate = this.criteriaToDate.substring(0, this.criteriaToDate.length - 8); // remove Z, ms and secs
 	}
 
 	ngOnInit(): void {
 		console.log("SettlementsBatchesComponent ngOnInit");
 
 		const batchId = this._route.snapshot.queryParamMap.get("batchId");
-		if(batchId) this.criteriaBatchId = batchId;
+		if (batchId) this.criteriaBatchId = batchId;
 		const currencyCode = this._route.snapshot.queryParamMap.get("currencyCode");
-		if(currencyCode) this.criteriaCurrencyCode = currencyCode;
+		if (currencyCode) this.criteriaCurrencyCode = currencyCode;
 
-		setTimeout(()=>{
+		setTimeout(() => {
 			this.applyCriteria();
 		}, 10);
 
 	}
 
-	applyCriteria(){
+	applyCriteria() {
 		const criteriaModel = (document.getElementById("criteriaSettlementModel") as HTMLSelectElement).value;
-		const criteriaCurrencyCode = (document.getElementById("criteriaCurrencyCode") as HTMLSelectElement).value;
+
+		const criteriaCurrencyCodeElemVal = (document.getElementById("criteriaCurrencyCode") as HTMLSelectElement).value;
+		const criteriaCurrencyCodes = criteriaCurrencyCodeElemVal != this.ALL_STR_ID ? [criteriaCurrencyCodeElemVal] : [];
+
+		const criteriaBatchStateElemVal = (document.getElementById("criteriaBatchState") as HTMLSelectElement).value;
+		const criteriaBatchStates = criteriaBatchStateElemVal != this.ALL_STR_ID ? [criteriaBatchStateElemVal] : [];
+
 		const criteriaFromStr = (document.getElementById("criteriaFromDate") as HTMLInputElement).value;
 		const criteriaFrom = new Date(criteriaFromStr);
 		const criteriaToStr = (document.getElementById("criteriaToDate") as HTMLInputElement).value;
 		const criteriaTo = new Date(criteriaToStr);
-		const criteriaIncludeSettled = (document.getElementById("criteriaIncludeSettled") as HTMLInputElement).checked;
+
+
 		const criteriaBatchId = (document.getElementById("criteriaBatchId") as HTMLInputElement).value;
 
 		this.batchesSubs = this._settlementsService.getBatchesByCriteria(
-			criteriaModel, criteriaCurrencyCode,
-			criteriaFrom.valueOf(), criteriaTo.valueOf()
+			criteriaFrom.valueOf(), criteriaTo.valueOf(),
+			criteriaModel, criteriaCurrencyCodes, criteriaBatchStates
 		).subscribe(list => {
 			const filtered = list.filter(value => {
-				if(!criteriaBatchId && !criteriaIncludeSettled && value.state==="SETTLED")
-					return false;
-
-				if(criteriaBatchId && value.id.toUpperCase() !==criteriaBatchId.toUpperCase())
+				if (criteriaBatchId && value.id.toUpperCase() !== criteriaBatchId.toUpperCase())
 					return false;
 
 				return true;
@@ -86,27 +91,30 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	createDynamicMatrix(){
+	createDynamicMatrix() {
 		const criteriaModel = (document.getElementById("criteriaSettlementModel") as HTMLSelectElement).value;
-		const criteriaCurrencyCode = (document.getElementById("criteriaCurrencyCode") as HTMLSelectElement).value;
+
 		const criteriaFromStr = (document.getElementById("criteriaFromDate") as HTMLInputElement).value;
 		const criteriaFrom = new Date(criteriaFromStr).valueOf();
 		const criteriaToStr = (document.getElementById("criteriaToDate") as HTMLInputElement).value;
 		const criteriaTo = new Date(criteriaToStr).valueOf();
 
-	/*	const openBatches = (this.batches.value || []).filter(value => !value.);
-		if(openBatches.length<=0){
-			if (!confirm("The current search found no open batches, are you sure you want to create a settlement matrix with these criteria?")) return;
-		}
-*/
+		const criteriaCurrencyCodeElemVal = (document.getElementById("criteriaCurrencyCode") as HTMLSelectElement).value;
+		const criteriaCurrencyCodes = criteriaCurrencyCodeElemVal != this.ALL_STR_ID ? [criteriaCurrencyCodeElemVal] : [];
+
+		/*	const openBatches = (this.batches.value || []).filter(value => !value.);
+			if(openBatches.length<=0){
+				if (!confirm("The current search found no open batches, are you sure you want to create a settlement matrix with these criteria?")) return;
+			}
+	*/
 		this._settlementsService.createDynamicMatrix(
 			uuid.v4(),
 			criteriaModel,
-			criteriaCurrencyCode,
+			criteriaCurrencyCodes,
 			criteriaFrom,
 			criteriaTo
 		).subscribe(matrixId => {
-			if(!matrixId)
+			if (!matrixId)
 				throw new Error("error saving matrix");
 
 			this._messageService.addSuccess("Matrix creation request accepted");
@@ -118,7 +126,7 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 
 
 	createStaticMatrix() {
-		if(this.selectedBatchIds.length<=0){
+		if (this.selectedBatchIds.length <= 0) {
 			if (!confirm("The current search found no batches, are you sure you want to create an empty static settlement matrix?")) return;
 		}
 		this._settlementsService.createStaticMatrix(
@@ -136,7 +144,7 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 	}
 
 
-	selectBatch(batchId:string){
+	selectBatch(batchId: string) {
 		this.batchTransfersSubs = this._settlementsService.getTransfersByBatch(batchId).subscribe(list => {
 			console.log("SettlementsBatchesComponent ngOnInit - got transfers By getTransfersByBatch");
 
@@ -148,17 +156,17 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	batchSelectionChanged(event:any){
+	batchSelectionChanged(event: any) {
 		console.log("Clicked, new value = " + event.checked);
 
-		const batchId:string = (event.target.id as string).replace(this.batchSelPrefix, "");
+		const batchId: string = (event.target.id as string).replace(this.batchSelPrefix, "");
 
-		if(event.target.checked){
-			if(!this.selectedBatchIds.includes(batchId))
+		if (event.target.checked) {
+			if (!this.selectedBatchIds.includes(batchId))
 				this.selectedBatchIds.push(batchId);
-		}else{
+		} else {
 			if (this.selectedBatchIds.includes(batchId))
-				this.selectedBatchIds = this.selectedBatchIds.filter(item => item!=batchId)
+				this.selectedBatchIds = this.selectedBatchIds.filter(item => item != batchId);
 		}
 	}
 

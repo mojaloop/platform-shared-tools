@@ -1,0 +1,16 @@
+{
+  "order": [
+    {
+      "name": "parties_negative.json",
+      "type": "file"
+    },
+    {
+      "name": "quotes_negative.json",
+      "type": "file"
+    },
+    {
+      "name": "transfers_negative.json",
+      "type": "file"
+    }
+  ]
+}

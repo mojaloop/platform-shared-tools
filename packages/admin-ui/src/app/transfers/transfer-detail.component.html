@@ -36,7 +36,7 @@
 
 			<div class="mb-2">
 				<label class="col-form-label text-secondary">Last update</label>
-				<div class="text-break">{{item.updatedAt | date:'medium'}}</div>
+					<div class="text-break">{{item.updatedAt | date:'medium'}}</div>
 			</div>
 
 			<div class="mb-2">
@@ -64,11 +64,12 @@
 				<label class="col-form-label text-secondary">Condition</label>
 				<div class="text-break">{{item.condition}}</div>
 			</div>
-			<div class="mb-2">
+
+			<!--<div class="mb-2">
 				<label class="col-form-label text-secondary">Settled</label>
 				<div class="text-break" *ngIf="!(settlementTransfer | async)?.settled">No</div>
-				<div class="text-break" *ngIf="(settlementTransfer | async)?.settled">Yes<!-- - <a routerLink="/settlements/matrix/{{(settlementTransfer | async)?.matrixId}}">Matrix</a>--></div>
-			</div>
+				<div class="text-break" *ngIf="(settlementTransfer | async)?.settled">Yes&lt;!&ndash; - <a routerLink="/settlements/matrix/{{(settlementTransfer | async)?.matrixId}}">Matrix</a>&ndash;&gt;</div>
+			</div>-->
 
 
 		</div> <!-- col 2 -->
@@ -152,4 +153,7 @@
 </ul>
 
 <div class="mt-6" [ngbNavOutlet]="nav"></div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 015385250e92b7508c8e1cecf8b70b51eeb93eb3

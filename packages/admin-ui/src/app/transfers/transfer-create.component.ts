@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MessageService} from "src/app/_services_and_types/message.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
@@ -6,13 +6,12 @@ import {Transfer} from "src/app/_services_and_types/transfer_types";
 import {TransfersService} from "src/app/_services_and_types/transfers.service";
 import {InteropService} from '../_services_and_types/interop-service';
 import {BehaviorSubject, Subscription} from 'rxjs';
-import {UnauthorizedError} from '../_services_and_types/errors';
 import {Quote} from "src/app/_services_and_types/quote_types";
-import {QuotesService} from '../_services_and_types/quotes.service';
-import {Participant} from '../_services_and_types/participant_types';
-import {ParticipantsService} from '../_services_and_types/participants.service';
+import {QuotesService} from "../_services_and_types/quotes.service";
+import {IParticipant} from "@mojaloop/participant-bc-public-types-lib";
+import {ParticipantsService} from "../_services_and_types/participants.service";
 import * as uuid from "uuid";
-import { removeEmpty } from '../_utils';
+import {removeEmpty} from '../_utils';
 
 @Component({
 	selector: 'app-transfer-create',
@@ -24,7 +23,7 @@ export class TransferCreateComponent implements OnInit {
 	public submitted: boolean = false;
 	public inputQuoteId: string | null = null;
 
-	public activeTransfer: Transfer | null = null
+	public activeTransfer: Transfer | null = null;
 	public selectedQuoteId: string | null = null;
 
 	currencyCodeList = ["EUR", "USD", "TZS"];
@@ -32,7 +31,7 @@ export class TransferCreateComponent implements OnInit {
 	quotes: BehaviorSubject<Quote[]> = new BehaviorSubject<Quote[]>([]);
 	quotesSubs?: Subscription;
 
-	participants: BehaviorSubject<Participant[]> = new BehaviorSubject<Participant[]>([]);
+	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
 	participantsSubs?: Subscription;
 
 	constructor(private _router: Router, private _route: ActivatedRoute, private _transfersSvc: TransfersService, private _interopSvc: InteropService, private _quotesSvc: QuotesService, private _participantsSvc: ParticipantsService, private _messageService: MessageService) {
@@ -47,25 +46,24 @@ export class TransferCreateComponent implements OnInit {
 		this.newTransfer();
 
 		try {
-			let participants = await  this._participantsSvc.getAllParticipants().toPromise();
-			participants = participants.filter(value => value.id!=="hub");
+			let participants = await this._participantsSvc.getAllParticipants().toPromise();
+			participants = participants.filter(value => value.id !== "hub");
 			this.participants.next(participants);
 
 			const quotes = await this._quotesSvc.getAllQuotes().toPromise();
 			quotes.reverse();
 			this.quotes.next(quotes);
 
-			if(!this.inputQuoteId){
+			if (!this.inputQuoteId) {
 				this.form.controls["selectedQuoteId"].setValue(quotes[0].quoteId);
-			}else{
+			} else {
 				this.form.controls["selectedQuoteId"].setValue(this.inputQuoteId);
 				this.applyQuote(this.inputQuoteId);
 			}
 
-		}catch(error){
-			this._messageService.addError(error.message);
+		} catch (error: any) {
+			this._messageService.addError(error.message || error);
 		}
-
 
 
 	}
@@ -112,7 +110,7 @@ export class TransferCreateComponent implements OnInit {
 		this.activeTransfer.expiration = this.form.controls["expiration"].value;
 
 		const existing = await this._transfersSvc.getTransfer(this.activeTransfer.transferId).toPromise();
-		if(existing){
+		if (existing) {
 			this._messageService.addError("A transfer with that id already exists");
 			return;
 		}
@@ -120,12 +118,9 @@ export class TransferCreateComponent implements OnInit {
 
 		const transfer = removeEmpty(this.activeTransfer) as Transfer;
 		const success = this._interopSvc.createTransferRequest(transfer).subscribe(success => {
-			if (!success)
-				throw new Error("error saving Transfer");
-
 			this._messageService.addSuccess("Transfer Created");
 
-			setTimeout(()=>{
+			setTimeout(() => {
 				this._router.navigateByUrl(`/transfers/${this.activeTransfer!.transferId}`);
 			}, 250);
 		}, error => {
@@ -135,14 +130,14 @@ export class TransferCreateComponent implements OnInit {
 
 	}
 
-	applyQuote(quoteId?:string) {
-		if (!quoteId){
+	applyQuote(quoteId?: string) {
+		if (!quoteId) {
 			const elem = document.getElementById("selectedQuoteId") as HTMLSelectElement;
 			if (!elem) throw new Error("Could not find selectedQuoteId select html element");
 
 			quoteId = elem.value;
 		}
-		const selectedQuote = this.quotes.value.find(quote => quote.quoteId===quoteId);
+		const selectedQuote = this.quotes.value.find(quote => quote.quoteId === quoteId);
 
 		this.form.controls["transferId"].setValue(selectedQuote?.transactionId);
 		this.form.controls["payeeFsp"].setValue(selectedQuote?.payee?.partyIdInfo.fspId);
@@ -154,12 +149,12 @@ export class TransferCreateComponent implements OnInit {
 		this.form.controls["expiration"].setValue(selectedQuote?.expiration);
 	}
 
-	genNewId(){
+	genNewId() {
 		this.form.controls["transferId"].setValue(uuid.v4());
 	}
 
-	genNewExpiration(){
-		this.form.controls["expiration"].setValue(new Date(Date.now()+3600*1000).toISOString());
+	genNewExpiration() {
+		this.form.controls["expiration"].setValue(new Date(Date.now() + 3600 * 1000).toISOString());
 	}
 
 	cancel() {

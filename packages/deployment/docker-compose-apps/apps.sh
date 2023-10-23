@@ -29,4 +29,12 @@ mkdir ./exec/data/ttk2_ui_data
 wait
 docker-compose -f ./docker-compose-apps.yml --env-file ./exec/.env up -d 
 wait 
-
+cp ./ttk_files/spec_files/user_config_bluebank.json ./exec/data/ttk1_data/spec_files
+cp ./ttk_files/spec_files/default.json ./exec/data/ttk1_data/spec_files/rules_callback
+cp ./ttk_files/environment/hub_local_environment.json ./exec/data/ttk1_data/examples/environments
+cp ./ttk_files/environment/dfsp_local_environment.json ./exec/data/ttk1_data/examples/environments
+cp ./ttk_files/spec_files/user_config_greenbank.json ./exec/data/ttk2_data/spec_files
+cp ./ttk_files/spec_files/default.json ./exec/data/ttk2_data/spec_files/rules_callback
+cp ./ttk_files/environment/hub_local_environment.json ./exec/data/ttk2_data/examples/environments
+cp ./ttk_files/environment/dfsp_local_environment.json ./exec/data/ttk2_data/examples/environments
+wait
