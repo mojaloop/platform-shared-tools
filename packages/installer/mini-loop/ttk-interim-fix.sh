@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#  - termporary work around for arm for the vNext interop fspiop-api-svc 
+#  - termporary work around for arm64 for the ttk so we can have bluebank and greenbank 
 #  - this script builds it locally with a known tag 
 # Author:  Tom Daly 
 # Date :   Sept 2023 
@@ -14,7 +14,7 @@ function set_user {
 #### main #####
 BASE_DIR="$( cd $(dirname "$0")/../../.. ; pwd )"
 MANIFESTS_DIR=$BASE_DIR/packages/installer/manifests
-local_image="local-fspiop-api:latest"
+local_image="ml-testing-toolkit"
 # ensure we are running as root 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
@@ -23,13 +23,14 @@ fi
 set_user
 
 # clone the interop BC repo 
-rm -rf /tmp/interop-apis-bc
-su - $k8s_user -c "git clone https://github.com/mojaloop/interop-apis-bc.git /tmp/interop-apis-bc"
-actual_version=` cat /tmp/interop-apis-bc/packages/fspiop-api-svc/package.json | grep version | cut -d ":" -f2 | tr -d "\"" | tr -d "," | tr -d " "`
+rm -rf /tmp/ml-testing-toolkit
+su - $k8s_user -c "git clone https://github.com/mojaloop/ml-testing-toolkit.git /tmp/ml-testing-toolkit"
+actual_version=` cat /tmp/ml-testing-toolkit/package.json | grep version | cut -d ":" -f2 | tr -d "\"" | tr -d "," | tr -d " "`
 echo "actual version : $actual_version"
 
 # build a version of the image 
-su - $k8s_user -c  "cd /tmp/interop-apis-bc; docker build -f packages/fspiop-api-svc/Dockerfile -t $local_image . " 
+docker build -t tomttk:1 --build-arg NODE_VERSION=18.17.1-alpine .
+su - $k8s_user -c  "cd /tmp/ml-testing-toolkit; docker build --build-arg NODE_VERSION=18.17.1-alpine -f Dockerfile -t $local_image:$actual_version . " 
 
 # save this docker image out and export to containerd images 
 tarfile="/tmp/$local_image:$local_version.tar" 

@@ -41,6 +41,26 @@ function check_user {
     exit 1
   fi
 }
+
+function check_repo_owner_not_root {
+  # ensure that the user has not cloned the mojaloop (vNext) repo as the root user 
+    dir_path=$1
+    if [ "$(stat -c '%U' "$dir_path")" = "root" ]; then
+         printf " ** Error: the mojaloop (vNext) repo [%s] is owned by the root user \n" "$dir_path"
+         printf "           this will break the Mojaloop deployment \n"
+         printf "           please re clone the repo as a non-root user \n"
+         exit 1 
+    fi
+}
+
+
+function check_not_inside_docker_container {
+    if [ -f "/.dockerenv" ]; then
+        printf " ** Error: can't run mini-loop inside docker container \n"
+        exit 1 
+    fi
+}
+
 function check_access_to_cluster {
   # check that the cluster is accessible 
   kubectl get nodes > /dev/null 2>&1 

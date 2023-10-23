@@ -92,6 +92,8 @@ done
 
 
 print_start_banner "mini-loop"
+check_not_inside_docker_container
+check_repo_owner_not_root $REPO_BASE_DIR
 check_arch   # mini-loop only 
 get_arch_of_nodes  
 check_user

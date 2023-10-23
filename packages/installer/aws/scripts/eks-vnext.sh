@@ -88,6 +88,7 @@ while getopts "n:d:m:t:l:hH" OPTION ; do
 done
 
 print_start_banner "EKS"
+check_repo_owner_not_root $REPO_BASE_DIR
 #check-arch mini-loop only ? 
 check_user
 # set_k8s_distro  # mini-loop ?  
