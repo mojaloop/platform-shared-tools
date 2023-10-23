@@ -1,8 +1,0 @@
-[{
-  "_id": {
-    "$oid": "64d169eca32a21c9f53299e3"
-  },
-  "id": "DEFAULT",
-  "settlementModel": "DEFAULT",
-  "batchCreateInterval": 300
-}]
