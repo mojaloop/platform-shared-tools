@@ -546,7 +546,7 @@ function configure_elastic_search {
   curlpod="curl"
   curl_pod_status=`kubectl get pods $curlpod --namespace $NAMESPACE  --no-headers 2>/dev/null | awk '{print $3}' `
   if [[ "$curl_pod_status" != "Running" ]]; then
-    kubectl --namespace $NAMESPACE  run curl --image=curlimages/curl:latest -- sleep 1200 > /dev/null 2>&1
+    kubectl --namespace $NAMESPACE  run curl --image=curlimages/curl:latest -- sleep 2400 > /dev/null 2>&1
     while [ $seconds -lt $end_time ]; do
       curl_pod_status=`kubectl get pods $curlpod --namespace $NAMESPACE  --no-headers | awk '{print $3}' `
       if [[  "$curl_pod_status" == "Running" ]]; then
