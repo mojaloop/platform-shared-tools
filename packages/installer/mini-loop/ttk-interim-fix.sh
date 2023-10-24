@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #  - termporary work around for arm64 for the ttk so we can have bluebank and greenbank 
-#  - this script builds it locally with a known tag 
+#  - this script builds it locally with a known tag then alters the manifests/ttk/bluebank and greenbank yaml to 
+#    use this local image 
 # Author:  Tom Daly 
 # Date :   Sept 2023 
 
@@ -10,35 +11,71 @@ function set_user {
   echo "k8s_user = $k8s_user"
 }
 
+#### main #######################################
 
-#### main #####
+## set env variables to enable navigating an finding things 
+MINI_LOOP_SCRIPTS_DIR="$( cd $(dirname "$0") ; pwd )"
+REPO_BASE_DIR="$( cd $(dirname "$MINI_LOOP_SCRIPTS_DIR")/../.. ; pwd )"
+COMMON_SCRIPTS_DIR=$REPO_BASE_DIR/packages/installer/scripts
 BASE_DIR="$( cd $(dirname "$0")/../../.. ; pwd )"
 MANIFESTS_DIR=$BASE_DIR/packages/installer/manifests
-local_image="ml-testing-toolkit"
-# ensure we are running as root 
+
+## set image details 
+IMAGE_BUILD_LIST=( "ml-testing-toolkit" "ml-testing-toolkit-ui" ) 
+local_tag="vnext"
+
+source $REPO_BASE_DIR/packages/installer/scripts/common.sh 
+
+printf "\n\n****************************************************************************************\n"
+printf "      --  Mojaloop vNext arm64 interim fixes -- build local images -- \n"  
+printf "********************* << START  >> *****************************************************\n\n" 
+
+# ensure we are running as root and set the user 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
   exit 1
 fi
 set_user
 
-# clone the interop BC repo 
-rm -rf /tmp/ml-testing-toolkit
-su - $k8s_user -c "git clone https://github.com/mojaloop/ml-testing-toolkit.git /tmp/ml-testing-toolkit"
-actual_version=` cat /tmp/ml-testing-toolkit/package.json | grep version | cut -d ":" -f2 | tr -d "\"" | tr -d "," | tr -d " "`
-echo "actual version : $actual_version"
+# copy the manifests/ttk directory to /tmp as it messes with git status during dev/test
+# if programatic changes are made to the yaml's in the repo itself
 
-# build a version of the image 
-docker build -t tomttk:1 --build-arg NODE_VERSION=18.17.1-alpine .
-su - $k8s_user -c  "cd /tmp/ml-testing-toolkit; docker build --build-arg NODE_VERSION=18.17.1-alpine -f Dockerfile -t $local_image:$actual_version . " 
+rm -rf /tmp/ttk
+su - $k8s_user -c "cp -r $MANIFESTS_DIR/ttk /tmp/ttk" 
 
-# save this docker image out and export to containerd images 
-tarfile="/tmp/$local_image:$local_version.tar" 
-echo "tarfile is $tarfile"
-rm -f $tarfile  # remove any old ones lying around 
-su - $k8s_user -c "docker save --output $tarfile $local_image"
-k3s ctr images import "$tarfile"
-rm -f $tarfile
+# clone the testing toolkit repos and build the images locally on arm64
+for img in "${IMAGE_BUILD_LIST[@]}"; do
+    printf "==> building image [%s] using tag [%s] \n" "$img" "$local_tag"
+    tagged_image="$img:$local_tag"
+    rm -rf /tmp/$img 
+    printf "cloning repo https://github.com/mojaloop/%s.git to /tmp \n " $img 
+    su - $k8s_user -c "git clone https://github.com/mojaloop/$img.git /tmp/$img" > /dev/null 2>&1
+    printf "building image locally on arm64 \n"
+    #echo "cd /tmp/$img; docker build -t $tagged_image --build-arg NODE_VERSION=18.17.1-alpine . "
+    su - $k8s_user -c  "cd /tmp/$img; docker build -t $tagged_image --build-arg NODE_VERSION=18.17.1-alpine . " > /dev/null 2>&1
+    #save this docker image out and export to containerd images 
+    tarfile="/tmp/$tagged_image.tar" 
+    #echo "tarfile is $tarfile"
+    rm -f $tarfile  # remove any old ones lying around 
+    #echo "docker save --output $tarfile $tagged_image"
+    su - $k8s_user -c "docker save --output $tarfile $tagged_image"
+    k3s ctr images import "$tarfile"
+    printf "cleaning up , removing docker image , tarfile etc\n"
+    rm -f $tarfile
+    docker image rm $tagged_image
 
-# now modify the interop deloyment yaml to use this local image and set set imagePullPolicy to Never 
-#su - $k8s_user -c "perl -p -i.bak -e 's/image:.*$/image: $local_image/g' $MANIFESTS_DIR/apps/fspiop-api-svc-deployment.yaml"
+    # now modify the interop deloyment yaml to use this local image and set set imagePullPolicy to Never 
+    # echo "images before "
+    # grep image: /tmp/ttk/*yaml
+    # echo "-----------------------"
+    # echo "tagged_image = $tagged_image"
+
+    su - $k8s_user -c "perl -p -i.bak -e 's/image:.*$img:.*$/image: $tagged_image/g' /tmp/ttk/*.yaml"
+    # grep image: /tmp/ttk/*yaml
+    # echo "-----------------------------"
+
+done
+    #grep image: /tmp/ttk/*yaml
+    # rm -rf /tmp/ttk
+    # su - $k8s_user -c "cp -r /tmp/ttkbak /tmp/ttk"
+

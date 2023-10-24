@@ -42,18 +42,16 @@ Options:
 ################################################################################
 
 # Mini-loop specific global vars 
-# REPO_BASE_DIR="$( cd $(dirname "$0")/../../.. ; pwd )"
-# echo "DBG> REPO_BASE_DIR = $REPO_BASE_DIR"
 MINI_LOOP_SCRIPTS_DIR="$( cd $(dirname "$0") ; pwd )"
-echo "DBG> MINI_LOOP_SCRIPTS_DIR X = $MINI_LOOP_SCRIPTS_DIR"
+#echo "DBG> MINI_LOOP_SCRIPTS_DIR X = $MINI_LOOP_SCRIPTS_DIR"
 REPO_BASE_DIR="$( cd $(dirname "$MINI_LOOP_SCRIPTS_DIR")/../.. ; pwd )"
-echo "DBG> REPO_BASE_DIR = $REPO_BASE_DIR"
+##echo "DBG> REPO_BASE_DIR = $REPO_BASE_DIR"
 COMMON_SCRIPTS_DIR=$REPO_BASE_DIR/packages/installer/scripts
-echo "DBG> COMMON SCRIPTS_DIR X = $COMMON_SCRIPTS_DIR"
+#echo "DBG> COMMON SCRIPTS_DIR X = $COMMON_SCRIPTS_DIR"
 MANIFESTS_DIR=$REPO_BASE_DIR/packages/installer/manifests
-echo "DBG> MANIFESTS_DIR = $MANIFESTS_DIR"
+#echo "DBG> MANIFESTS_DIR = $MANIFESTS_DIR"
 ETC_DIR=$REPO_BASE_DIR/packages/installer/etc
-echo "DBG> ETC_DIR X = $ETC_DIR"
+#echo "DBG> ETC_DIR X = $ETC_DIR"
 MOJALOOP_CONFIGURE_FLAGS_STR=" -d $MANIFESTS_DIR " 
 LOGFILE="/tmp/miniloop-install.log"
 ERRFILE="/tmp/miniloop-install.err"
@@ -122,9 +120,13 @@ elif [[ "$mode" == "install_ml" ]]; then
   install_mojaloop_layer "apps" $MANIFESTS_DIR/apps
   
   if [[ "$ARCH" == "x86_64" ]] || [[ "$NODE_ARCH" == "amd64" ]]; then 
-    # for now only install TTK on intel i.e. not arm64 yet 
     install_mojaloop_layer "ttk" $MANIFESTS_DIR/ttk
-  fi 
+  else
+    printf "=> running on arm64 deploy ttks from /tmp/ttk\n"
+    # TODO we assume that for arm64 so the TTK images already built locally
+    #      as interim fix until they get build for  
+    install_mojaloop_layer "ttk" /tmp/ttk
+  fi
   restore_demo_data $ETC_DIR $REPO_BASE_DIR/packages/deployment/docker-compose-apps/ttk_files
   configure_elastic_search $REPO_BASE_DIR
   check_urls
