@@ -29,7 +29,7 @@
     "@mojaloop/logging-bc-public-types-lib": "~0.1.19",
     "@mojaloop/platform-configuration-bc-public-types-lib": "~0.3.3",
     "@mojaloop/auditing-bc-public-types-lib": "~0.0.15",
-    "@mojaloop/security-bc-public-types-lib": "~0.3.0",
+    "@mojaloop/security-bc-public-types-lib": "~0.3.2",
     "@mojaloop/settlements-bc-public-types-lib": "~0.2.2",
     "@mojaloop/participant-bc-public-types-lib": "~0.0.19",
     "@ng-bootstrap/ng-bootstrap": "^10.0.0",

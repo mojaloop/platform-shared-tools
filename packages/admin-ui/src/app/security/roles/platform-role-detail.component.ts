@@ -57,7 +57,5 @@ export class PlatformRoleDetailComponent implements OnInit {
 		await navigator.clipboard.writeText(this._roleId || "");
 	}
 
-	showAddPrivilegesModal() {
-
-	}
+	showAddPrivilegesModal() {}
 }
