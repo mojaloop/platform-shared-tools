@@ -674,6 +674,22 @@ function print_success_message {
   printf "      no endpoint tests configured yet this is still WIP \n" 
 }
 
+function run_operator {
+  printf " Begin Mojaloop Kuberentes Operator install \n"
+  # custom resource definition, editor role and workload namespaces
+  kubectl apply -f $REPO_BASE_DIR/packages/k8s-operator/k8s-required-resources/mojaloopvnextinstall-crd.yaml
+  kubectl apply -f $REPO_BASE_DIR/packages/k8s-operator/k8s-required-resources/mojaloopvnextinstall-editor-role.yaml
+  kubectl apply -f $REPO_BASE_DIR/packages/k8s-operator/k8s-required-resources/workload-namespaces.yaml
+
+  # operator namespace, service account and binding for service account
+  kubectl apply -f $REPO_BASE_DIR/packages/k8s-operator/k8s-operator-resources/operator-namespace.yaml
+  kubectl apply -f $REPO_BASE_DIR/packages/k8s-operator/k8s-operator-resources/operator-sa.yaml
+  kubectl apply -f $REPO_BASE_DIR/packages/k8s-operator/k8s-operator-resources/operator-clusterrolebinding.yaml
+
+  # this will create the deployment and start running the operator
+  kubectl apply -f $REPO_BASE_DIR/packages/k8s-operator/k8s-operator-resources/operator-deployment.yaml
+}
+
 ## Common Environment Config & global vars 
 ##
 ARCH=""

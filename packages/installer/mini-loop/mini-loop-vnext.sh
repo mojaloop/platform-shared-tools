@@ -118,16 +118,17 @@ elif [[ "$mode" == "install_ml" ]]; then
   copy_k8s_yaml_files_to_tmp
   modify_local_mojaloop_yaml_and_charts  "$COMMON_SCRIPTS_DIR/vnext-configure.py" "$MANIFESTS_DIR"
   install_infra_from_local_chart $MANIFESTS_DIR/infra
-  install_mojaloop_layer "crosscut" $MANIFESTS_DIR/crosscut
-  install_mojaloop_layer "apps" $MANIFESTS_DIR/apps
+  # install_mojaloop_layer "crosscut" $MANIFESTS_DIR/crosscut
+  # install_mojaloop_layer "apps" $MANIFESTS_DIR/apps
+  run_operator
   
-  if [[ "$ARCH" == "x86_64" ]] || [[ "$NODE_ARCH" == "amd64" ]]; then 
-    # for now only install TTK on intel i.e. not arm64 yet 
-    install_mojaloop_layer "ttk" $MANIFESTS_DIR/ttk
-  fi 
-  restore_demo_data $ETC_DIR $REPO_BASE_DIR/packages/deployment/docker-compose-apps/ttk_files
-  configure_elastic_search $REPO_BASE_DIR
-  check_urls
+  # if [[ "$ARCH" == "x86_64" ]] || [[ "$NODE_ARCH" == "amd64" ]]; then 
+  #   # for now only install TTK on intel i.e. not arm64 yet 
+  #   install_mojaloop_layer "ttk" $MANIFESTS_DIR/ttk
+  # fi 
+  # restore_demo_data $ETC_DIR $REPO_BASE_DIR/packages/deployment/docker-compose-apps/ttk_files
+  # configure_elastic_search $REPO_BASE_DIR
+  # check_urls
 
   tstop=$(date +%s)
   telapsed=$(timer $tstart $tstop)
