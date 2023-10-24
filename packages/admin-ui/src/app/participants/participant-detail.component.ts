@@ -479,10 +479,14 @@ export class ParticipantDetailComponent implements OnInit {
 			sourceIpChangeRequest.ports = portValues;
 
 		} else if (sourceIp.portMode === "RANGE") {
-			sourceIpChangeRequest.portRange = {
-				rangeFirst: this.sourceIpEditModeEnabled ? this.sourceIpEditingPortRangeStart : sourceIp.portRange?.rangeFirst,
-				rangeLast: this.sourceIpEditModeEnabled ? this.sourceIpEditingPortRangeEnd : sourceIp.portRange?.rangeLast
-			};
+			if(this.sourceIpEditModeEnabled){
+				sourceIpChangeRequest.portRange = {
+					rangeFirst: this.sourceIpEditingPortRangeStart,
+					rangeLast: this.sourceIpEditingPortRangeEnd
+				};
+			}else{
+				sourceIpChangeRequest.portRange = sourceIp.portRange;
+			}
 		}
 
 		// check for duplicates
@@ -550,7 +554,7 @@ export class ParticipantDetailComponent implements OnInit {
 	isContactInfoValid(contact: IParticipantContactInfo): boolean {
 		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 		const phoneNumRegex = /^(\+\d{1,4}\s?)?(\(\d{1,4}\)\s?)?[\d\s-]+$/;
-		
+
 		const isNameValid = contact.name.trim().length > 0;
 		const isEmailValid = emailRegex.test(contact.email);
 		const isPhoneNumValid = phoneNumRegex.test(contact.phoneNumber);
@@ -921,8 +925,6 @@ export class ParticipantDetailComponent implements OnInit {
 					await this._fetchParticipant();
 				},
 				(error) => {
-					if (this.fundsMovementModalRef)
-						this.fundsMovementModalRef!.close();
 					this._messageService.addError(
 						`NDC Request approval failed with error: ${error.message}`
 					);
@@ -981,10 +983,9 @@ export class ParticipantDetailComponent implements OnInit {
 				async () => {
 					this._messageService.addSuccess("Successfully created a change request to update participant's status.");
 					await this._fetchParticipant();
+					this.navBar.select("status");
 				},
 				(error) => {
-					if (this.fundsMovementModalRef)
-						this.fundsMovementModalRef!.close();
 					this._messageService.addError(
 						`Updating participant's status failed with: ${error}`
 					);
@@ -1005,10 +1006,8 @@ export class ParticipantDetailComponent implements OnInit {
 					this.updateAccounts();
 				},
 				(error) => {
-					if (this.fundsMovementModalRef)
-						this.fundsMovementModalRef!.close();
 					this._messageService.addError(
-						`Participant status changes approval failed with error: ${error.message}`
+						`Participant status changes approval failed with error: ${ error?.message}`
 					);
 				}
 			);

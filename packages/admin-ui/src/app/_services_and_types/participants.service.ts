@@ -267,7 +267,7 @@ export class ParticipantsService {
 		statusChangeRequest: IParticipantStatusChangeRequest) :Observable<string> {
 		return new Observable<string>((subscriber) => {
 			this._http.post<{ id: string }>(
-					`${SVC_BASEURL}/participants/${participantId}/participantStatusChangeRequests`,
+					`${SVC_BASEURL}/participants/${participantId}/statusChangeRequests`,
 					statusChangeRequest
 				).subscribe(
 					(resp: { id: string }) => {
@@ -292,7 +292,7 @@ export class ParticipantsService {
 	approveParticipantStatusChangeRequest(participantId: string, requestId: string): Observable<void> {
 		return new Observable<void>((subscriber) => {
 			this._http.post(
-					`${SVC_BASEURL}/participants/${participantId}/participantStatusChangeRequests/${requestId}/approve`,
+					`${SVC_BASEURL}/participants/${participantId}/statusChangeRequests/${requestId}/approve`,
 					{}
 				).subscribe(
 					() => {
