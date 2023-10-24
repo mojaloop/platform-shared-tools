@@ -1,0 +1,97 @@
+<div class="row mb-2">
+	<div class="col">
+		<h3>Builtin IAM - User Management</h3>
+	</div>
+	<div class="col text-right">
+		<button class="btn btn-success btn-labeled" routerLink="/security/builtin_iam/users/new">
+			<span class="btn-label"><i class="bi bi-plus-lg"></i></span>Create User
+		</button>
+	</div>
+</div>
+
+<!--filter-->
+<div class="filterbox">
+	<form>
+		<table class="table">
+			<tr class="form-row">
+				<div class="form-group col-md-3">
+					<label for="filterName">Name:</label>
+					<input class="form-control" type="text" id="filterName" />
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterEmail">Email:</label>
+					<input class="form-control" type="text" id="filterEmail" />
+				</div>
+
+
+				<div class="form-group col-md-2">
+					<label for="filterUserType">Type:</label>
+					<select class="form-control" id="filterUserType">
+						<option value="ALL">All</option>
+						<option value="HUB">Hub User</option>
+						<option value="DFSP">Participant User</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-1">
+					<label for="filterUserState">State:</label>
+					<select class="form-control" id="filterUserState">
+						<option value="ALL">All</option>
+						<option value="true">Enabled</option>
+						<option value="false">Disabled</option>
+					</select>
+				</div>
+
+				<!-- spacer-->
+<!--				<div class="form-group col-md-2"></div>-->
+
+				<div class="form-group col-md-2">
+					<label for="filterBtn">&nbsp;</label>
+					<button type="submit" ngDefaultControl
+							class="form-control btn btn-primary"
+							id="filterBtn"
+							(click)="search()">
+						Search&nbsp;&nbsp;<i class="bi bi-search"></i>
+					</button>
+				</div>
+				<div class="form-group col-md-1">
+					<label for="resetFilterBtn">&nbsp;</label>
+					<button class="form-control btn btn-secondary" id="resetFilterBtn" (click)="resetFilter()">
+						Reset&nbsp;
+					</button>
+				</div>
+
+			</tr>
+		</table>
+	</form>
+</div>
+
+
+<table class="table table-striped">
+	<thead class="thead-light">
+	<tr>
+		<th scope="col">Full Name</th>
+		<th scope="col">Email</th>
+		<th scope="col">Type</th>
+		<th scope="col">Platform Roles</th>
+		<th scope="col">State</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr *ngFor="let item of (users | async)">
+		<td> <a routerLink="/security/builtin_iam/users/{{item.email}}">{{item.fullName}}</a> </td>
+		<td> {{item.email}}</td>
+		<td>
+			<span *ngIf="item.userType==='HUB'">Hub User</span>
+			<span *ngIf="item.userType==='DFSP'">Participant User</span>
+
+		</td>
+		<td> {{item.platformRoles}}</td>
+		<td>
+			<span *ngIf="item.enabled" class="badge badge-success">Enabled</span>
+			<span *ngIf="!item.enabled" class="badge badge-danger">Disabled</span>
+		</td>
+	</tr>
+	</tbody>
+</table>

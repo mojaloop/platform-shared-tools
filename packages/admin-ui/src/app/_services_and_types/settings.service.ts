@@ -18,6 +18,7 @@ export class SettingsService {
 	public username: string | null;
 
 	constructor() {
+		// TODO consider mangling these settings (not encrypt)
 		this.accessToken = localStorage.getItem(ACCESSTOKEN_KEYNAME);
 		this.username = localStorage.getItem(USERNAME_KEYNAME);
 		this._isDevMode = !environment.production;

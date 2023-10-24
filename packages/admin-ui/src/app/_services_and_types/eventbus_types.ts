@@ -30,75 +30,12 @@
 
 "use strict";
 
-// TODO use the sec public lib instead of local types
+export class EventData {
+	name: string;
+	value: any;
 
-export type UserType = "HUB" | "DFSP";
-
-export type ParticipantRole = {
-	participantId: string;
-	roleId: string;
-}
-
-export type LoginResponse = {
-	scope: string | null;
-	platformRoles: string[];
-	expires_in: number;
-}
-
-export type UserLoginResponse = LoginResponse & {
-	userType: UserType
-	participantRoles: ParticipantRole[];
-}
-
-
-
-export interface IBuiltinIamUser{
-	enabled: boolean;
-	email: string;
-	fullName: string;
-
-	userType: UserType;
-
-	passwordHash?:string;
-
-	// array of role ids for platform wide access
-	platformRoles: string[];
-
-	// per participant roles
-	participantRoles: ParticipantRole[];
-}
-
-
-// to be used on creation only
-export interface IBuiltinIamUserCreate extends IBuiltinIamUser{
-	password:string;
-}
-
-
-export interface IBuiltinIamApplication{
-	enabled: boolean;
-	clientId: string;
-
-	canLogin: boolean;
-
-	clientSecretHash?:string;
-
-	// array of role ids
-	platformRoles: string[];
-}
-
-// to be used on creation only
-export interface IBuiltinIamApplicationCreate extends IBuiltinIamApplication{
-	// Applications that can't login on their own have a null secret and no roles
-	// Ex: UIs or APIs that always call other services using the caller/user token
-	clientSecret:string | null;
-}
-
-export type AllPrivilegesResp = {
-	id: string;
-	labelName: string;
-	description: string;
-	boundedContextName: string;
-	applicationName: string;
-	applicationVersion: string;
+	constructor(name: string, value: any) {
+		this.name = name;
+		this.value = value;
+	}
 }

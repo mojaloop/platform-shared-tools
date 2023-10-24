@@ -14,7 +14,7 @@
 					</button>
 					<div class="dropdown-menu dropdown-menu-right">
 						<button class="dropdown-item" type="button" routerLinkActive="active" routerLink="/myaccount"><i class="bi bi-person-circle"></i> My Account</button>
-						<button class="dropdown-item" type="button" (click)="logout()"><i class="bi bi-box-arrow-right"></i> Log out</button>
+						<button class="dropdown-item" type="button" (click)="logout(true)"><i class="bi bi-box-arrow-right"></i> Log out</button>
 					</div>
 				</div>
 
@@ -161,6 +161,7 @@
 				</h6>
 
 				<ul class="nav flex-column" *ngIf="(isLoggedIn | async)"><!-- secondary sidebar-->
+					<!-- platform configuration -->
 					<li class="nav-item has-submenu">
 						<a class="nav-link dropdown-toggle" routerLinkActive="active" href="#platform-config-menu"
 						   data-toggle="collapse" role="button"><i class="bi bi-sliders"></i>Platform Configuration
@@ -185,18 +186,44 @@
 							</li>
 						</ul>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link" routerLinkActive="active" routerLink="/security">
-							<i class="bi bi-shield-check"></i> Security
+
+					<!-- security -->
+					<li class="nav-item has-submenu">
+						<a class="nav-link dropdown-toggle" routerLinkActive="active" href="#security-menu"
+						   data-toggle="collapse" role="button"><i class="bi bi-shield-check"></i>Security
 						</a>
+						<ul class="submenu collapse" id="security-menu">
+							<li>
+								<a class="nav-link " routerLinkActive="active" routerLink="/security/builtin_iam/users">
+									Builtin IAM - Users
+								</a>
+							</li>
+							<li>
+								<a class="nav-link " routerLinkActive="active" routerLink="/security/builtin_iam/apps">
+									Builtin IAM - Applications
+								</a>
+							</li>
+							<li>
+								<a class="nav-link " routerLinkActive="active" routerLink="/security/roles">
+									Role Management
+								</a>
+							</li>
+							<li>
+								<a class="nav-link " routerLinkActive="active" routerLink="/security/privileges">
+									Application Privileges
+								</a>
+							</li>
+						</ul>
 					</li>
 
+					<!-- auditing -->
 					<li class="nav-item">
 						<a class="nav-link" routerLinkActive="active" routerLink="/auditing">
 							<i class="bi bi-eye"></i> Audit Entries
 						</a>
 					</li>
 
+					<!-- tests -->
 					<li class="nav-item">
 						<a class="nav-link" routerLinkActive="active" routerLink="/tests">
 							<i class="bi bi-bug"></i> Tests <span class="text-warning">(dev mode)</span>

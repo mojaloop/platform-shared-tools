@@ -1,0 +1,94 @@
+<ng-template #notFound>
+	<div class="col-md-8 align-self-center">
+		<h2>Roles Management - Role Not Found</h2>
+	</div>
+</ng-template>
+
+<ng-container *ngIf="(role | async) as role; else notFound">
+	<div class="row ">
+		<div class="col-md-8 align-self-center align-content-end">
+			<h2>Builtin IAM - {{ role.labelName }}</h2>
+		</div>
+
+		<div class="col-md-4 align-self-center">
+			<small><strong>ID: </strong> {{ role.id }}
+				<a (click)="copyIdToClipboard()"
+				   ngbTooltip="Copy ID to clipboard"><i class="bi bi-clipboard-plus"></i></a></small>
+		</div>
+	</div>
+	<hr/>
+
+	<div class="row">
+		<div class="col-4"> <!-- col 1 -->
+			<div class="mb-2">
+				<label class="col-form-label text-secondary">Role Id:</label>
+				<div>{{ role.id }}</div>
+			</div>
+
+			<div class="mb-2">
+				<label class="col-form-label text-secondary">Scope:</label>
+				<div>
+					<span *ngIf="!role.isApplicationRole">Users</span>
+					<span *ngIf="role.isApplicationRole">Applications</span>
+				</div>
+			</div>
+
+			<div class="mb-4">
+				<label class="col-form-label text-secondary">Description:</label>
+				<div>{{ role.description }}</div>
+			</div>
+		</div> <!-- col 1 -->
+
+
+		<div class="col-5"> <!-- col 2 -->
+			<div class="mb-2">
+				<label class="col-form-label text-secondary">Label:</label>
+				<div>{{ role.labelName }}</div>
+			</div>
+
+			<div class="mb-2">
+				<label class="col-form-label text-secondary">Per Participant Role:</label>
+				<div>
+					<span *ngIf="!role.isPerParticipantRole">Yes</span>
+					<span *ngIf="role.isPerParticipantRole">No</span>
+				</div>
+			</div>
+		</div> <!-- col 2 -->
+
+		<div class="col-3"> <!-- column 3 - buttons -->
+			<button class="btn btn-danger btn-block" >
+				Remove all Privileges
+			</button>
+
+ 			<button class="btn btn-primary btn-block" (click)="showAddPrivilegesModal()">
+				Add Privileges
+			</button>
+
+		</div>  <!-- column 3 - buttons -->
+	</div>
+
+
+
+	<div class="row">
+
+		<table class="table table-striped">
+			<thead class="thead-light">
+			<tr>
+				<th scope="col">Name</th>
+				<th scope="col">Description</th>
+				<th scope="col">Owner</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr *ngFor="let priv of (includedPrivileges | async)">
+				<th >{{priv.labelName}} </th>
+				<td> {{priv.description}}</td>
+				<td> {{priv.boundedContextName}} / {{priv.applicationName}} <span class="badge badge-secondary">{{priv.applicationVersion}}</span></td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</ng-container>
+
+
+

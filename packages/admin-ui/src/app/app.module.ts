@@ -11,8 +11,8 @@ import {MessagesComponent} from './messages/messages.component';
 import {HomeComponent} from './home/home.component';
 
 import {CanLoadIsLoggedIn} from "src/app/_pipes_and_guards/canload_guard";
-import {SecurityComponent} from 'src/app/security/main/security.component';
-import {PlatformRoleDetailComponent} from './security/platform-role-detail/platform-role-detail.component';
+import {SecurityPrivilegesComponent} from 'src/app/security/main/security-privileges.component';
+import {PlatformRoleDetailComponent} from './security/roles/platform-role-detail.component';
 import {ParticipantsComponent} from './participants/participants.component';
 import {MyAccountComponent} from './my-account/my-account.component';
 import {AuthInterceptor} from "src/app/_pipes_and_guards/auth_interceptor";
@@ -49,6 +49,14 @@ import {SettlementsTransfersComponent} from "src/app/settlements/settlements.tra
 import {SettlementsModelsComponent} from "./settlements/settlements.models.component";
 import {SettlementsModelsCreateComponent} from './settlements/settlements.models.create.component';
 import {AuditingComponent} from "./auditing/auditing.component";
+import {BuiltinIamUsersListComponent} from "./security/builtin_iam/builtin-iam-users-list.component";
+import {BuiltinIamUserCreateComponent} from "./security/builtin_iam/builtin-iam-user-create.component";
+import {BuiltinIamUserDetailComponent} from "./security/builtin_iam/builtin-iam-user-detail.component";
+import {PlatformRoleListComponent} from "./security/roles/platform-role-list.component";
+import {BuiltinIamAppsListComponent} from "./security/builtin_iam/builtin-iam-apps-list.component";
+import {BuiltinIamAppCreateComponent} from "./security/builtin_iam/builtin-iam-app-create.component";
+import {BuiltinIamAppDetailComponent} from "./security/builtin_iam/builtin-iam-app-detail.component";
+import {PlatformRoleCreateComponent} from "./security/roles/platform-role-create.component";
 
 @NgModule({
 	declarations: [
@@ -57,7 +65,7 @@ import {AuditingComponent} from "./auditing/auditing.component";
 		HomeComponent,
 		TestsComponent,
 		LoginComponent,
-		SecurityComponent,
+		SecurityPrivilegesComponent,
 		PlatformRoleDetailComponent,
 		ParticipantsComponent,
 		MyAccountComponent,
@@ -86,7 +94,15 @@ import {AuditingComponent} from "./auditing/auditing.component";
 		SettlementsTransfersComponent,
 		SettlementsModelsComponent,
 		SettlementsModelsCreateComponent,
-		AuditingComponent
+		AuditingComponent,
+		BuiltinIamUsersListComponent,
+		BuiltinIamUserCreateComponent,
+		BuiltinIamUserDetailComponent,
+		PlatformRoleListComponent,
+		PlatformRoleCreateComponent,
+		BuiltinIamAppsListComponent,
+		BuiltinIamAppCreateComponent,
+		BuiltinIamAppDetailComponent
 	],
 	imports: [
 		BrowserModule,

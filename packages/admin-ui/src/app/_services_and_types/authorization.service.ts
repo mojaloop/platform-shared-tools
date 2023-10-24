@@ -4,6 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {AllPrivilegesResp} from "./security_types";
 import {Observable} from "rxjs";
 import {PlatformRole} from "@mojaloop/security-bc-public-types-lib";
+import {UnauthorizedError} from "./errors";
 
 const AUTH_Z_SVC_BASEURL = "/auth_z";
 
@@ -49,6 +50,27 @@ export class AuthorizationService {
 					return subscriber.complete();
 				}
 			);
+		});
+	}
+
+	createRole(newRole:PlatformRole):Observable<void>{
+		return new Observable<void>((subscriber) => {
+			this._http.post<void>(AUTH_Z_SVC_BASEURL + "/platformRoles/", newRole)
+				.subscribe(value => {
+					console.log(`got response - successfully created role: ${newRole.id}`);
+
+					subscriber.next();
+					return subscriber.complete();
+				}, error => {
+					if (error && error.status === 403) {
+						console.warn("UnauthorizedError received on createRole");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg || "Could not create role");
+					}
+					return subscriber.complete();
+				});
 		});
 	}
 }

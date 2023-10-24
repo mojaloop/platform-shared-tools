@@ -42,6 +42,7 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		).subscribe((list) => {
 			console.log("TransfersComponent search - got searchTransfers");
 
+			// TODO add participant's name here (get participants list on ngOnInit)
 			this.transfers.next(list);
 		}, error => {
 			if (error && error instanceof UnauthorizedError) {

@@ -16,7 +16,8 @@ export class AuthenticationService {
 	private _isDevMode: boolean;
 	private _accessToken: string | null = null;
 	private _username: string | null = null;
-	private _rolesIds: string[] = [];
+	private _platformRoles: string[] = [];
+	private _participantRoles: {participantId: string, roleId: string}[] = [];
 	private _decodedToken: any = null;
 	private _expiresAt: number = 0;
 
@@ -27,15 +28,23 @@ export class AuthenticationService {
 
 	constructor(private _settings: SettingsService, private _http: HttpClient, private _router: Router) {
 		this._isDevMode = _settings.isDevMode;
+		if (!_settings.accessToken) return;
+
 		this._accessToken = _settings.accessToken;
-
-		if (!this._accessToken) return;
-
 		this._loadAccessToken(this._accessToken);
 	}
 
-	public get rolesIds(): string[] {
-		return this._rolesIds;
+	// can be used from the AuthInterceptor to determine if the response if from login post
+	public get loginPostUrl():string{
+		return AUTH_N_SVC_BASEURL + "/token";
+	}
+
+	public get platformRoles(): string[] {
+		return this._platformRoles;
+	}
+
+	public get participantRoles(): {participantId: string, roleId: string}[] {
+		return this._participantRoles;
 	}
 
 	public get username(): string | null {
@@ -51,64 +60,77 @@ export class AuthenticationService {
 	}
 
 	private _loadAccessToken(accessToken: string): boolean {
-		let decoded: any;
-		try {
-			decoded = jwt_decode(accessToken);
+		try{
+			const decoded:any = jwt_decode(accessToken);
+
+			if (!decoded) {
+				console.warn("invalid token, could not decode it");
+				return false;
+			}
+
+			if (!decoded.sub) {
+				console.warn("invalid token, sub property is missing");
+				return false;
+			}
+
+			const subSplit = decoded.sub.split("::");
+			const subjectType = subSplit[0];
+			const subject = subSplit[1];
+
+			if (!subjectType.toUpperCase().startsWith("USER")) {
+				console.warn("invalid token, was expecting a user token");
+				return false;
+			}
+
+			this._accessToken = accessToken;
+			this._username = subject;
+			this._platformRoles = decoded.platformRoles;
+			this._participantRoles = decoded.participantRoles;
+			this._decodedToken = decoded;
+			this._expiresAt = decoded.exp * 1000;
+
+			if(Date.now() > this._expiresAt) {
+				console.warn("expired token");
+				return false;
+			}
+
+			this.LoggedInObs.next(true);
+			this.UsernameObs.next(this._username!);
+
+			return true;
 		} catch (Error) {
-			console.warn("Failed to decode jwt");
+			console.warn("Failed loading access token");
 			return false;
 		}
 
-		if (!decoded) {
-			return false;
-		}
-		console.log(`decoded: ${decoded}`);
-
-		if (!decoded.sub) {
-			return false;
-		}
-
-		const subSplit = decoded.sub.split("::");
-		const subjectType = subSplit[0];
-		const subject = subSplit[1];
-
-		if (!subjectType.toUpperCase().startsWith("USER")) {
-			console.warn("invalid token, was expecting a user token");
-			return false;
-		}
-
-		this._accessToken = accessToken;
-		this._username = subject;
-		this._rolesIds = decoded.roles;
-		this._decodedToken = decoded;
-		// this._expiresAt = moment().add(resp.expires_in,"second").valueOf();
-		this._expiresAt = decoded.exp * 1000;
-
-		this.LoggedInObs.next(true);
-		this.UsernameObs.next(this._username!);
-
-		return true;
 	}
 
 	login(username: string, password: string): Observable<boolean> {
-		const body = {
-			grant_type: "password",
-			client_id: CLIENT_ID,
-			username: username,
-			password: password
-		};
-
 		return new Observable<boolean>(subscriber => {
+			this._cleanTokenState();
 			this.LoggedInObs.next(false);
 			this.UsernameObs.next("");
 
-			this._http.post<TokenEndpointResponse>(AUTH_N_SVC_BASEURL + "/token", body).subscribe(
-				(result: TokenEndpointResponse) => {
-					console.log(`got token response: ${result}`);
+			const body = {
+				grant_type: "password",
+				client_id: CLIENT_ID,
+				username: username,
+				password: password
+			};
 
-					if (!this._loadAccessToken(result.access_token)) {
-						subscriber.next(false);
-						return subscriber.complete();
+			function fail() {
+				subscriber.next(false);
+				return subscriber.complete();
+			}
+
+			this._http.post<TokenEndpointResponse>(this.loginPostUrl, body).subscribe(
+				(result: TokenEndpointResponse) => {
+					console.log("got token response from Login");
+
+					try{
+						if(!this._loadAccessToken(result.access_token)) return fail();
+					}catch(e:any){
+						return fail();
 					}
 
 					this._settings.accessToken = this._accessToken;
@@ -118,10 +140,8 @@ export class AuthenticationService {
 					this.LoggedInObs.next(true);
 					subscriber.next(true);
 					return subscriber.complete();
-				},
-				error => {
-					subscriber.next(false);
-					return subscriber.complete();
+				}, error => {
+					return fail();
 				}
 			);
 		});
@@ -163,9 +183,15 @@ export class AuthenticationService {
 		return false;
 	}
 
-	logout() {
+	private _cleanTokenState(){
 		this._accessToken = null;
 		this._settings.clearToken();
+	}
 
+	logout() {
+		this._cleanTokenState();
+
+		this.LoggedInObs.next(false);
+		this.UsernameObs.next("");
 	}
 }

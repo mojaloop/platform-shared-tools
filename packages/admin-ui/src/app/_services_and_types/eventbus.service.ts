@@ -30,75 +30,27 @@
 
 "use strict";
 
-// TODO use the sec public lib instead of local types
+import {Injectable} from "@angular/core";
+import {Subject, Subscription} from "rxjs";
+import { EventData } from "./eventbus_types";
+import { filter, map } from 'rxjs/operators';
 
-export type UserType = "HUB" | "DFSP";
+@Injectable({
+	providedIn: "root"
+})
+export class EventBusService {
+	private subject = new Subject<EventData>();
 
-export type ParticipantRole = {
-	participantId: string;
-	roleId: string;
-}
+	constructor() { }
 
-export type LoginResponse = {
-	scope: string | null;
-	platformRoles: string[];
-	expires_in: number;
-}
+	emit(event: EventData) {
+		this.subject.next(event);
+	}
 
-export type UserLoginResponse = LoginResponse & {
-	userType: UserType
-	participantRoles: ParticipantRole[];
-}
-
-
-
-export interface IBuiltinIamUser{
-	enabled: boolean;
-	email: string;
-	fullName: string;
-
-	userType: UserType;
-
-	passwordHash?:string;
-
-	// array of role ids for platform wide access
-	platformRoles: string[];
-
-	// per participant roles
-	participantRoles: ParticipantRole[];
-}
-
-
-// to be used on creation only
-export interface IBuiltinIamUserCreate extends IBuiltinIamUser{
-	password:string;
-}
-
-
-export interface IBuiltinIamApplication{
-	enabled: boolean;
-	clientId: string;
-
-	canLogin: boolean;
-
-	clientSecretHash?:string;
-
-	// array of role ids
-	platformRoles: string[];
-}
-
-// to be used on creation only
-export interface IBuiltinIamApplicationCreate extends IBuiltinIamApplication{
-	// Applications that can't login on their own have a null secret and no roles
-	// Ex: UIs or APIs that always call other services using the caller/user token
-	clientSecret:string | null;
-}
-
-export type AllPrivilegesResp = {
-	id: string;
-	labelName: string;
-	description: string;
-	boundedContextName: string;
-	applicationName: string;
-	applicationVersion: string;
+	on(eventName: string, action: any): Subscription {
+		return this.subject.pipe(
+			filter((e: EventData) => e.name === eventName),
+			map((e: EventData) => e["value"])
+		).subscribe(action);
+	}
 }
