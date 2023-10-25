@@ -543,7 +543,7 @@ function restore_demo_data {
       printf " [ ok ] \n"
     fi
   else 
-    printf "    - ttk does not seem to be running so skipping TTK data and environment config (ttk does not yet run on arm64)\n" 
+    printf "    - ttk does not seem to be running so skipping TTK data and environment config (ttk does not yet run on arm64 from repo )\n" 
   fi 
 
 

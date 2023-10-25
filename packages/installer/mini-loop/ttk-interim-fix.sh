@@ -48,33 +48,27 @@ for img in "${IMAGE_BUILD_LIST[@]}"; do
     printf "==> building image [%s] using tag [%s] \n" "$img" "$local_tag"
     tagged_image="$img:$local_tag"
     rm -rf /tmp/$img 
-    printf "cloning repo https://github.com/mojaloop/%s.git to /tmp \n " $img 
-    su - $k8s_user -c "git clone https://github.com/mojaloop/$img.git /tmp/$img" > /dev/null 2>&1
-    printf "building image locally on arm64 \n"
-    #echo "cd /tmp/$img; docker build -t $tagged_image --build-arg NODE_VERSION=18.17.1-alpine . "
+    printf "==> cloning repo https://github.com/mojaloop/%s.git to /tmp \n " $img 
+    su - $k8s_user -c "git clone https://github.com/mojaloop/$img.git /tmp/$img\n" > /dev/null 2>&1
+    printf "==> running docker build locally \n"
     su - $k8s_user -c  "cd /tmp/$img; docker build -t $tagged_image --build-arg NODE_VERSION=18.17.1-alpine . " > /dev/null 2>&1
-    #save this docker image out and export to containerd images 
+    #export to containerd images 
+    printf "==> export docker image using docker save --output %s %s \n" $tarfile $tagged_image
     tarfile="/tmp/$tagged_image.tar" 
-    #echo "tarfile is $tarfile"
     rm -f $tarfile  # remove any old ones lying around 
-    #echo "docker save --output $tarfile $tagged_image"
-    su - $k8s_user -c "docker save --output $tarfile $tagged_image"
-    k3s ctr images import "$tarfile"
-    printf "cleaning up , removing docker image , tarfile etc\n"
+    su - $k8s_user -c "docker save --output $tarfile $tagged_image" > /dev/null 2>&1
+    printf "==> import image using: k3s ctr images import %s  \n" $tarfile
+    k3s ctr images import "$tarfile"  > /dev/null 2>&1 
+    printf "==> cleaning up , removing docker image , tarfile etc\n"
     rm -f $tarfile
-    docker image rm $tagged_image
-
-    # now modify the interop deloyment yaml to use this local image and set set imagePullPolicy to Never 
-    # echo "images before "
-    # grep image: /tmp/ttk/*yaml
-    # echo "-----------------------"
-    # echo "tagged_image = $tagged_image"
-
+    docker image rm $tagged_image > /dev/null 2>&1
+    printf "==> modify the deployment yamls to use this local image\n" 
     su - $k8s_user -c "perl -p -i.bak -e 's/image:.*$img:.*$/image: $tagged_image/g' /tmp/ttk/*.yaml"
-    # grep image: /tmp/ttk/*yaml
-    # echo "-----------------------------"
-
 done
+printf "\n ** images appear to have built and been imported ok\n"
+printf "      You can check they exist by running.. \n"
+printf "      sudo k3s ctr images list | grep testing-toolkit \n"
+
     #grep image: /tmp/ttk/*yaml
     # rm -rf /tmp/ttk
     # su - $k8s_user -c "cp -r /tmp/ttkbak /tmp/ttk"

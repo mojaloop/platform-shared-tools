@@ -14,8 +14,13 @@ function check_pi {
 }
 
 function check_arch_ok {
-    if [[ ! "$k8s_arch" == "x86_64" ]]; then 
-        printf " **** Warning : mini-loop only works properly with x86_64 today but vNext should be ok *****\n"
+    if [[ "$k8s_arch" == "aarch64" ]]  ; then
+        k8s_arch="arm64"
+    fi 
+    if [[ ! "$k8s_arch" == "x86_64" ]] && [[ ! "$k8s_arch" == "arm64" ]]  ; then 
+        printf "** Error: unrecognised architecture [%s] \n" $k8s_arch
+        printf "   mini-loop deployment of vNext only works on x86_64 or arm64\n"
+        exit  
     fi
 } 
 
@@ -104,7 +109,7 @@ function add_hosts {
     perl -p -i.bak -e 's/127\.0\.0\.1.*localhost.*$/$ENV{ENDPOINTS} /' /etc/hosts
     # TODO check the ping actually works > suggest cloud network rules if it doesn't
     #      also for cloud VMs might need to use something other than curl e.g. netcat ? 
-    ping  -c 2 account-lookup-service-admin.local
+    ping  -c 2 vnextadmin
 }
 
 function set_k8s_distro { 
@@ -495,7 +500,10 @@ if [[ "$mode" == "install" ]]  ; then
     install_prerequisites 
     add_hosts
     if [[ "$k8s_distro" == "microk8s" ]]; then 
-        do_microk8s_install
+        printf "** WIP: mini-loop for vNext with Microk8s is not yet sufficiently tested *** \n"
+        printf "        please select k3s \n"
+        exit 1 
+        #do_microk8s_install
     else 
         do_k3s_install
     fi 

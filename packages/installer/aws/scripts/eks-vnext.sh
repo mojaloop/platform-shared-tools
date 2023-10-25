@@ -107,7 +107,7 @@ if [[ "$mode" == "delete_ml" ]] ; then
   print_end_banner "EKS"
 elif [[ "$mode" == "install_ml" ]]; then
   tstart=$(date +%s)
-  printf "start : Mojaloop (vNext) install utility [%s]\n" "`date`" >> $LOGFILE
+  #printf "start : Mojaloop (vNext) install utility [%s]\n" "`date`" >> $LOGFILE
   add_helm_repos # needed for EKS only 
   #configure_extra_options 
   copy_k8s_yaml_files_to_tmp
