@@ -82,6 +82,7 @@ export function validatePortRange(rangeFirst?: number | null, rangeLast?: number
 }
 
 export function validatePorts(portString: string | undefined): boolean {
+	
 	if (typeof portString !== 'string') {
 		// Port input should be a string
 		return false;

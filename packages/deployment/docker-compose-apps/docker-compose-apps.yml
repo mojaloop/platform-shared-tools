@@ -93,7 +93,7 @@ services:
 # participants
 
   participants-svc:
-    image: mojaloop/participants-bc-participants-svc:0.1.19
+    image: mojaloop/participants-bc-participants-svc:0.1.21
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -397,12 +397,13 @@ services:
       - sh
       - /usr/share/nginx/start.sh
 
-  mongo_seed:
-    image: mongo
-    volumes:
-      - ./ttk_files:/ttk_files
-    command:
-      /ttk_files/mongodb/import.sh
+#  mongo_seed:
+#    image: mongo
+#    volumes:
+#      - ./ttk_files:/ttk_files
+#    command:
+#      /ttk_files/mongodb/import.sh
+
   # green bank TTK
   ttk_2:
     image: mojaloop/ml-testing-toolkit:v15.0.0
