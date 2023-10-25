@@ -208,7 +208,7 @@ function do_k3s_install {
     printf "========================================================================================\n"
     # ensure k8s_user has clean .kube/config 
     rm -rf $k8s_user_home/.kube >> /dev/null 2>&1 
-    printf "=> installing k3s "
+    printf "==> installing k3s "
     #echo $K8S_VERSION
     curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" \
                             INSTALL_K3S_CHANNEL="v$K8S_VERSION" \
@@ -242,7 +242,7 @@ function do_k3s_install {
     helm_arch_str=""
     if [[ "$k8s_arch" == "x86_64" ]]; then 
         helm_arch_str="amd64"
-    elif [[ "$k8s_arch" == "aarch64" ]]; then 
+    elif [[ "$k8s_arch" == "aarch64" ]] || [[ "$k8s_arch" == "arm64" ]]; then 
         helm_arch_str="arm64"
     else 
         printf "** Error:  architecture not recognised as x86_64 or arm64  ** \n"

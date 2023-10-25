@@ -111,7 +111,7 @@ if [[ "$mode" == "delete_ml" ]]; then
   print_end_banner "mini-loop"
 elif [[ "$mode" == "install_ml" ]]; then
   tstart=$(date +%s)
-  printf "start :  Mojaloop (vNext) install utility [%s]\n" "`date`" >> $LOGFILE
+  printf "    <start> :  Mojaloop (vNext) install utility [%s]\n" "`date`" >> $LOGFILE
   #configure_extra_options 
   copy_k8s_yaml_files_to_tmp
   modify_local_mojaloop_yaml_and_charts  "$COMMON_SCRIPTS_DIR/vnext-configure.py" "$MANIFESTS_DIR"

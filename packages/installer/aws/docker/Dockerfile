@@ -8,7 +8,7 @@ ARG BASHRC_FILE
 ARG HELM_VERSION
 
 RUN cd /tmp && \
-    yum install -y tar python3 curl unzip wget openssl bash-completion procps jq perl \
+    yum install -y tar python3 curl unzip wget openssl bash-completion procps jq perl git \
     && pip3 install aws-mfa ruamel.yaml \
     && yum clean all && \
     rm -rf /var/cache/yum
