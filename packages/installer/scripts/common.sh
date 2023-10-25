@@ -328,7 +328,7 @@ function delete_mojaloop_infra_release {
       printf "   also check the pods using kubectl get pods --namespace   \n" $HELM_INFRA_RELEASE
       exit 1
   fi
-  # now check that the persistent volumes got cleaned up
+  ## cleanup storage resources 
   pvc_exists=`kubectl get pvc --namespace "$NAMESPACE"  2>>$ERRFILE | grep -v NAME ` >> $LOGFILE 2>>$ERRFILE
   if [ ! -z "$pvc_exists" ]; then 
     kubectl get pvc --namespace "$NAMESPACE" | cut -d " " -f1 | xargs kubectl delete pvc >> $LOGFILE 2>>$ERRFILE
@@ -336,12 +336,25 @@ function delete_mojaloop_infra_release {
     sleep 5 
   fi 
   # and check the pvc and pv are gone 
-  pvc_exists=`kubectl get pvc --namespace "$NAMESPACE" 2>>$ERRFILE |  grep -v NAME 2>>$ERRFILE`
-  if [ ! -z "$pvc_exists" ]; then
-    printf "** Error: the backend persistent volume resources may not have deleted properly  \n" 
-    printf "   please try running the delete again or use helm and kubectl to remove manually  \n"
-    printf "   ensure no pv or pvc resources remain defore trying to re-install ** \n"
-    exit 1
+  local wait_secs=30
+  local seconds=0 
+  local end_time=$((seconds + $wait_secs )) 
+  local iterations=0
+  while [ $seconds -lt $end_time ]; do
+    pvc_exists=`kubectl get pvc --namespace "$NAMESPACE" 2>>$ERRFILE |  grep -v NAME 2>>$ERRFILE`
+    if [ ! -z "$pvc_exists" ]; then
+      sleep 5 
+      ((seconds+=5))
+    else 
+      break
+    fi
+
+  done
+  if [[ $seconds -ge $end_time ]]; then 
+      printf "** Error: the backend persistent volume resources may not have deleted properly  \n" 
+      printf "   please try running the delete again or use helm and kubectl to remove manually  \n"
+      printf "   ensure no pv or pvc resources remain defore trying to re-install ** \n"
+      exit 1
   fi
   # if we get to here then we are reasonably confident infrastructure resources are cleanly deleted
   printf " [ ok ] \n"
