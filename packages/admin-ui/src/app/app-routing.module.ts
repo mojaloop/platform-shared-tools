@@ -33,6 +33,8 @@ import {BulkQuoteCreateComponent} from './bulk-quotes/bulk-quote-create.componen
 import {TransfersComponent} from './transfers/transfers.component';
 import {TransferDetailComponent} from './transfers/transfer-detail.component';
 import {TransferCreateComponent} from './transfers/transfer-create.component';
+import {BulkTransfersComponent} from "src/app/bulk-transfers/bulk-transfers.component";
+import {BulkTransferDetailComponent} from "./bulk-transfers/bulk-transfer-detail.component";
 import {SettlementsMatrixDetailComponent} from "src/app/settlements/settlements.matrix-detail.component";
 import {SettlementsMatricesComponent} from "src/app/settlements/settlements.matrices.component";
 import {SettlementsTransfersComponent} from "src/app/settlements/settlements.transfers.component";
@@ -79,6 +81,8 @@ const routes: Routes = [
 	{path: "transfers", component: TransfersComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "transfers/new", component: TransferCreateComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "transfers/:id", component: TransferDetailComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "bulk-transfers", component: BulkTransfersComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "bulk-transfers/:id", component: BulkTransferDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "account-lookup/oracles/:id", component: QuoteDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{
 		path: "platform-configuration-global",

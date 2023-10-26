@@ -41,6 +41,8 @@ import {BulkQuoteCreateComponent} from './bulk-quotes/bulk-quote-create.componen
 import {TransfersComponent} from './transfers/transfers.component';
 import {TransferDetailComponent} from './transfers/transfer-detail.component';
 import {TransferCreateComponent} from './transfers/transfer-create.component';
+import {BulkTransfersComponent} from './bulk-transfers/bulk-transfers.component';
+import {BulkTransferDetailComponent} from './bulk-transfers/bulk-transfer-detail.component';
 import {AccountLookupAssociationsListComponent} from './account-lookup/associations-list.component';
 import {SettlementsBatchesComponent} from 'src/app/settlements/settlements.batches.component';
 import {SettlementsMatrixDetailComponent} from "src/app/settlements/settlements.matrix-detail.component";
@@ -80,6 +82,8 @@ import {AuditingComponent} from "./auditing/auditing.component";
 		TransfersComponent,
 		TransferDetailComponent,
 		TransferCreateComponent,
+		BulkTransfersComponent,
+		BulkTransferDetailComponent,
 		SettlementsBatchesComponent,
 		SettlementsMatrixDetailComponent,
 		SettlementsMatricesComponent,
