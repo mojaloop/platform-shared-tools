@@ -80,6 +80,15 @@
 		},
 		"logLevel": "debug"
 	},
+	"/_bulk-transfers": {
+		"target": "http://localhost:3500/",
+		"secure": true,
+		"changeOrigin": true,
+		"pathRewrite": {
+			"^/_bulk-transfers": ""
+		},
+		"logLevel": "debug"
+	},
 	"/_settlements": {
 		"target": "http://localhost:3600/",
 		"secure": true,

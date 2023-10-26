@@ -23,8 +23,11 @@ import {
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
 import * as uuid from "uuid";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
+import { ParticipantsSearchResults } from "./participant_types";
 
 const SVC_BASEURL = "/_participants";
+
+const DEFAULT_PAGE_SIZE = 20;
 
 @Injectable({
 	providedIn: "root",
@@ -768,7 +771,61 @@ export class ParticipantsService {
 				);
 		});
 	}
+	
+	search(
+		userId: string | null,
+		state: string | null,
+		id: string | null,
+		name: string | null,
+		pageIndex?: number,
+		pageSize: number = DEFAULT_PAGE_SIZE
+	): Observable<ParticipantsSearchResults> {
+		const searchParams = new URLSearchParams();
+		if (userId) searchParams.append("userId", userId);
+		if (state) searchParams.append("state", state);
+		if (id) searchParams.append("id", id);
+		if (name) searchParams.append("name", name);
 
+		if (pageIndex) searchParams.append("pageIndex", pageIndex.toString());
+		if (pageSize) searchParams.append("pageSize", pageSize.toString());
+
+		const url = `${SVC_BASEURL}/entries?${searchParams.toString()}`;
+
+
+		return new Observable<ParticipantsSearchResults>(subscriber => {
+			this._http.get<ParticipantsSearchResults>(url).subscribe(
+				(result: ParticipantsSearchResults) => {
+					console.log(`got getAllEntries response: ${result}`);
+
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					console.error(error);
+					subscriber.error(error);
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+	getSearchKeywords(): Observable<{ fieldName: string, distinctTerms: string[] }[]> {
+		return new Observable<{ fieldName: string, distinctTerms: string[] }[]>(subscriber => {
+			this._http.get<{ fieldName: string, distinctTerms: string[] }[]>(`${SVC_BASEURL}/searchKeywords`).subscribe(
+				(result: { fieldName: string, distinctTerms: string[] }[]) => {
+					console.log(`got getSearchKeywords response: ${result}`);
+
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					console.error(error);
+					subscriber.error(error);
+					return subscriber.complete();
+				}
+			);
+		});
+	}
 
 	/* TESTS */
 	simulateTransfer(

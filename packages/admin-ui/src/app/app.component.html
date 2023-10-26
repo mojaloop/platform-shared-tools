@@ -110,10 +110,23 @@
 					</li>
 
 					<!--transfers-->
-					<li class="nav-item" *ngIf="(isLoggedIn | async)">
-						<a class="nav-link" routerLinkActive="active" routerLink="/transfers">
-							<i class="bi bi-cash-stack"></i>Transfers
+					<li class="nav-item has-submenu" *ngIf="(isLoggedIn | async)">
+						<a class="nav-link dropdown-toggle" routerLinkActive="active" href="#transfers-menu"
+						   data-toggle="collapse" role="button">
+							<i class="bi bi-receipt"></i>Transfers
 						</a>
+						<ul class="submenu collapse" id="transfers-menu">
+							<li>
+								<a class="nav-link " routerLinkActive="active" routerLink="/transfers">
+									Transfers
+								</a>
+							</li>
+							<li>
+								<a class="nav-link" routerLinkActive="active" routerLink="/bulk-transfers">
+									Bulk Transfers
+								</a>
+							</li>
+						</ul>
 					</li>
 
 					<!--settlements-->

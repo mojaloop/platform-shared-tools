@@ -1,0 +1,23 @@
+<h3>Bulk Transfers</h3>
+
+<div>
+  <table class="table">
+    <thead class="thead-light">
+    <tr>
+      <th scope="col">BulkTransfer ID</th>
+      <th scope="col">Total Transfers</th>
+      <th scope="col">Total Transfers Not Processed</th>
+      <th scope="col">Status</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of (bulkTransfers | async)">
+      <td><a routerLink="/bulk-transfers/{{item.bulkTransferId}}">{{item.bulkTransferId}}</a></td>
+      <td>{{item.individualTransfers.length}}</td>
+      <td>{{item.transfersNotProcessedIds.length}}</td>
+      <td>{{item.status}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

@@ -17,27 +17,24 @@
 				<div class="form-group col-md-1">
 					<label for="filterState">State:</label>
 					<select class="form-control" id="filterState">
-						<option value="ALL">All</option>
-						<option value="RECEIVED">Received</option>
-						<option value="RESERVED">Reserved</option>
-						<option value="REJECTED">Rejected</option>
-						<option value="COMMITTED">Committed</option>
-						<option value="EXPIRED">Expired</option>
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordState | async)">{{item}}</option>
 					</select>
 				</div>
 
 				<div class="form-group col-md-1">
 					<label for="filterCurrency">Currency:</label>
 					<select class="form-control" id="filterCurrency">
-						<option value="ALL">All</option>
-						<option value="USD">USD</option>
-						<option value="EUR">EUR</option>
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordCurrency | async)">{{item}}</option>
 					</select>
 				</div>
 
 				<div class="form-group col-md-3">
 					<label for="filterStartDate">Start date:</label>
-					<input class="form-control" type="datetime-local" id="filterStartDate" step=300>
+					<input class="form-control" type="datetime-local" id="filterStartDate" step=300
+						   [ngModel]="criteriaFromDate"
+						   [ngModelOptions]="{standalone: true}">
 				</div>
 
 
@@ -75,7 +72,7 @@
 		</tr>
 		</thead>
 		<tbody>
-		<tr *ngFor="let item of (transfers | async)">
+		<tr *ngFor="let item of (entries | async)">
 			<td >{{item.updatedAt | date: 'medium'}}</td>
 			<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
 			<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>

@@ -30,38 +30,9 @@
 
 "use strict";
 
-/** Transfers **/
-export declare type Transfer = {
-	createdAt: number;
-	updatedAt: number;
-	bulkTransferId: string;
-	transferId: string;
-	payeeFsp: string;
-	payerFsp: string;
-	amount: {
-		currency: string;
-		amount: string;
-	};
-	ilpPacket: string;
-	condition: string;
-	expiration: number;
-	extensionList: {
-		extension: {
-			key: string;
-			value: string;
-		}[]
-	} | null;
-	transferState?: string;
-	currency: string;
-	payeeFspId?: string;
-	payerFspId?: string;
-	currencyCode?: string;
-	completedTimestamp?: string;
-}
-
-export declare type TransfersSearchResults = {
+export declare type ParticipantsSearchResults = {
 	pageSize: number;
 	totalPages: number;
 	pageIndex: number;
-	items: Transfer[];
+	items: any[];
 }
