@@ -6,12 +6,7 @@
   <div class="form-row">
     <div class="form-group col-md-6">
       <label for="inputName">Name</label>
-      <input
-        type="text"
-        class="form-control"
-        id="inputName"
-        placeholder="Oracle Name"
-        formControlName="name" />
+      <input type="text" class="form-control" id="inputName" placeholder="Oracle Name" formControlName="name" />
       <div class="invalid-feedback">
         Please choose a valid name
       </div>
@@ -22,10 +17,7 @@
   <div class="form-row">
     <div class="form-group col-md-6">
       <label for="inputPartyType">Party Type</label>
-      <select
-        id="inputPartyType"
-        class="form-control"
-        formControlName="partyType">
+      <select id="inputPartyType" class="form-control" formControlName="partyType">
         <option value="MSISDN" [selected]="this.oracle.partyType==='MSISDN'">MSISDN</option>
         <option value="EMAIL" [selected]="this.oracle.partyType==='EMAIL'">Email</option>
         <option value="PERSONAL_ID" [selected]="this.oracle.partyType==='PERSONAL_ID'">Personal Id</option>
@@ -38,8 +30,7 @@
     </div>
     <div class="form-group col-md-6">
       <label for="inputType">Type</label>
-      <select id="inputType" class="form-control" formControlName="type"
-        (change)="selectOracleType($event)">
+      <select id="inputType" class="form-control" formControlName="type" (change)="selectOracleType($event)">
         <option value="builtin" [selected]="this.oracle.type==='builtin'">Built-in</option>
         <option value="remote-http" [selected]="this.oracle.type==='remote-http'">Remote HTTP(s)</option>
       </select>
@@ -50,27 +41,24 @@
   <div class="form-row">
     <div class="form-group col-md-12">
       <label for="inputEndpoint">Oracle endpoint</label>
-      <input type="text" [readonly]="isBuiltinSelected"
-        class="form-control"
-        id="inputEndpoint"
-        placeholder="Ex: https://oracle.example.com:443/"
-        formControlName="endpoint"/>
+      <input type="text" [readonly]="isBuiltinSelected" class="form-control" id="inputEndpoint"
+        placeholder="Ex: https://oracle.example.com:443/" formControlName="endpoint" />
       <small id="emailHelp" class="form-text text-muted">
         Required for types other than "Built-in". For oracles of type "Remote
         HTTP(s)" this is the complete URL where the Oracle API is available
       </small>
-      <div class="invalid-feedback" >
+      <div class="invalid-feedback">
         Invalid endpoint
       </div>
     </div>
   </div>
 
-  <div class="form-row d-flex mb-3">
+  <div class="form-row d-flex justify-content-end mb-3">
     <div class="p-2">
       <button type="submit" class="btn btn-primary" (click)="register()">Register Oracle</button>
     </div>
-    <div class="ml-auto p-2">
-      <button class="btn btn-danger" (click)="cancel()">Cancel</button>
+    <div class="p-2">
+      <button class="btn btn-outline-primary" (click)="cancel()">Cancel</button>
     </div>
   </div>
 

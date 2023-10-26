@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-8 align-self-center">
-    <h2>{{ (participant | async)?.name }}</h2>
+    <h2>{{ (participant | async)?.name || 'HUB' }}</h2>
   </div>
 
   <div class="col-md-4 align-self-center">
@@ -694,11 +694,13 @@
                 <div style="display: flex; flex-direction: col; flex-wrap: nowrap;">
                   <div style="width: 100px;margin-right: 5px;">
                     <input type="text" class="form-control" [id]="'portRangeFirst_' + newSourceIp.id" placeholder="From"
-                      [disabled]="newSourceIp.portMode !== 'RANGE'"  pattern="[0-9]*" [(ngModel)]="newSourceIp.portRange.rangeFirst">
+                      [disabled]="newSourceIp.portMode !== 'RANGE'" pattern="[0-9]*"
+                      [(ngModel)]="newSourceIp.portRange.rangeFirst">
                   </div>
                   <div style="width: 100px;">
                     <input type="text" class="form-control" [id]="'portRangeLast_' + newSourceIp.id" placeholder="To"
-                      [disabled]="newSourceIp.portMode !== 'RANGE'"  pattern="[0-9]*" [(ngModel)]="newSourceIp.portRange.rangeLast">
+                      [disabled]="newSourceIp.portMode !== 'RANGE'" pattern="[0-9]*"
+                      [(ngModel)]="newSourceIp.portRange.rangeLast">
                   </div>
                 </div>
               </div>

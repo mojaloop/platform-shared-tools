@@ -1,13 +1,13 @@
-import {Injectable} from "@angular/core";
-import {SettingsService} from "src/app/_services_and_types/settings.service";
-import {HttpClient} from "@angular/common/http";
-import {AllPrivilegesResp} from "./security_types";
-import {Observable} from "rxjs";
-import {PlatformRole, TokenEndpointResponse} from "@mojaloop/security-bc-public-types-lib";
-import {Transfer} from "src/app/_services_and_types/transfer_types";
-import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
+import { Injectable } from "@angular/core";
+import { SettingsService } from "src/app/_services_and_types/settings.service";
+import { HttpClient } from "@angular/common/http";
+import { AllPrivilegesResp } from "./security_types";
+import { Observable } from "rxjs";
+import { PlatformRole, TokenEndpointResponse } from "@mojaloop/security-bc-public-types-lib";
+import { Transfer } from "src/app/_services_and_types/transfer_types";
+import { AuthenticationService } from "src/app/_services_and_types/authentication.service";
 import * as uuid from "uuid";
-import {UnauthorizedError} from "src/app/_services_and_types/errors";
+import { UnauthorizedError } from "src/app/_services_and_types/errors";
 
 const SVC_BASEURL = "/_transfers";
 
@@ -69,7 +69,14 @@ export class TransfersService {
 		currencyCode?: string,
 		startDate?: number,
 		endDate?: number,
-		id?: string
+		id?: string,
+		payerIdType?: string,
+		payeeIdType?: string,
+		payerDfspName?: string,
+		payeeDfspName?: string,
+		payerIdValue?: string,
+		payeeIdValue?: string,
+		transferType?: string,
 	): Observable<Transfer[]> {
 		return new Observable<Transfer[]>(subscriber => {
 			let url = SVC_BASEURL + "/transfers/?";
@@ -88,6 +95,27 @@ export class TransfersService {
 			}
 			if (id) {
 				url += `id=${encodeURIComponent(id)}&`;
+			}
+			if (payerIdType) {
+				url += `payerIdType=${encodeURIComponent(payerIdType)}&`;
+			}
+			if (payeeIdType) {
+				url += `payeeIdType=${encodeURIComponent(payeeIdType)}&`;
+			}
+			if (payerDfspName) {
+				url += `payerDfspName=${encodeURIComponent(payerDfspName)}&`;
+			}
+			if (payeeDfspName) {
+				url += `payeeDfspName=${encodeURIComponent(payeeDfspName)}&`;
+			}
+			if (payerIdValue) {
+				url += `payerIdValue=${encodeURIComponent(payerIdValue)}&`;
+			}
+			if (payeeIdValue) {
+				url += `payeeIdValue=${encodeURIComponent(payeeIdValue)}&`;
+			}
+			if (transferType) {
+				url += `transferType=${encodeURIComponent(transferType)}&`;
 			}
 
 			if (url.endsWith("&")) {

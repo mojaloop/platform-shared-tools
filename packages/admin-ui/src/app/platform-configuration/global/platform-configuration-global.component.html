@@ -3,30 +3,30 @@
 
 <div class="row" style="margin-top: 20px; margin-bottom: 20px;">
 	<div class="col-sm-2">
-	<div class="card text-white bg-secondary mb-2 text-center h-100 " style="max-width: 18rem;">
-		<div class="card-body">
-			<h5 class="card-title"><strong>{{(globalConfigStatus|async)?.distinctVersionCount}}</strong></h5>
-			<p class="card-text">Versions</p>
+		<div class="card text-white bg-secondary mb-2 text-center h-100 " style="max-width: 18rem;">
+			<div class="card-body">
+				<h5 class="card-title"><strong>{{(globalConfigStatus|async)?.distinctVersionCount}}</strong></h5>
+				<p class="card-text">Versions</p>
+			</div>
 		</div>
-	</div>
 	</div>
 
 	<div class="col-sm-2">
-	<div class="card text-white bg-secondary mb-2 text-center h-100 " style="max-width: 18rem;">
-		<div class="card-body">
-			<h5 class="card-title"><strong>v{{(globalConfigStatus|async)?.latestSchemaVersion}}</strong></h5>
-			<p class="card-text">Latest version</p>
+		<div class="card text-white bg-secondary mb-2 text-center h-100 " style="max-width: 18rem;">
+			<div class="card-body">
+				<h5 class="card-title"><strong>v{{(globalConfigStatus|async)?.latestSchemaVersion}}</strong></h5>
+				<p class="card-text">Latest version</p>
+			</div>
 		</div>
-	</div>
 	</div>
 
 	<div class="col-sm-2">
-	<div class="card text-white bg-secondary mb-2 text-center h-100 " style="max-width: 18rem;">
-		<div class="card-body">
-			<h5 class="card-title"><strong>#{{(globalConfigStatus|async)?.currentIteration}}</strong></h5>
-			<p class="card-text">Current iteration</p>
+		<div class="card text-white bg-secondary mb-2 text-center h-100 " style="max-width: 18rem;">
+			<div class="card-body">
+				<h5 class="card-title"><strong>#{{(globalConfigStatus|async)?.currentIteration}}</strong></h5>
+				<p class="card-text">Current iteration</p>
+			</div>
 		</div>
-	</div>
 	</div>
 </div>
 
@@ -37,101 +37,105 @@
 <!--  <li>Current iteration number is: <strong>#{{(globalConfigStatus|async)?.currentIteration}}</strong></li>-->
 <!--</ul>-->
 
-<h4>Parameters</h4>
-<div>
-  <table class="table">
-    <thead class="thead-light">
-    <tr>
-      <th scope="col">Iteration / Schema</th>
-      <th scope="col">Param Name</th>
-      <th scope="col">Type</th>
-      <th scope="col">Default Value</th>
-      <th scope="col">Current Value</th>
-      <th scope="col">Description</th>
-		<th scope="col" style="width: 90px;">Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let param of (params | async)">
-      <td>#{{param.iterationNumber}} / v{{param.schemaVersion}}</td>
-      <td>{{param.name}}</td>
-      <td>{{param.type}}</td>
+<div class="bg-white p-4 rounded-lg mb-4 shadow-sm">
+	<h4>Parameters</h4>
+	<div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Iteration / Schema</th>
+					<th scope="col">Param Name</th>
+					<th scope="col">Type</th>
+					<th scope="col">Default Value</th>
+					<th scope="col">Current Value</th>
+					<th scope="col">Description</th>
+					<th scope="col" style="width: 90px;">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let param of (params | async)">
+					<td>#{{param.iterationNumber}} / v{{param.schemaVersion}}</td>
+					<td>{{param.name}}</td>
+					<td>{{param.type}}</td>
 
-		<td *ngIf="param.type==='LIST' || param.type==='OBJECT'">(list or object not shown)</td>
-		<td *ngIf="param.type!=='LIST' && param.type!=='OBJECT'">{{param.defaultValue}}</td>
+					<td *ngIf="param.type==='LIST' || param.type==='OBJECT'">(list or object not shown)</td>
+					<td *ngIf="param.type!=='LIST' && param.type!=='OBJECT'">{{param.defaultValue}}</td>
 
-		<td *ngIf="param.type==='LIST' || param.type==='OBJECT'">(list or object not shown)</td>
-		<td *ngIf="param.type!=='LIST' && param.type!=='OBJECT'">{{param.currentValue}}</td>
+					<td *ngIf="param.type==='LIST' || param.type==='OBJECT'">(list or object not shown)</td>
+					<td *ngIf="param.type!=='LIST' && param.type!=='OBJECT'">{{param.currentValue}}</td>
 
-      <td>{{param.description}}</td>
+					<td>{{param.description}}</td>
 
-		<td> <!--actions-->
-			<button class="btn btn-primary btn-block" [disabled]="editing" (click)="showEditConfigItemModal()">Deposit</button>
-			<div class="btn-group btn-group-sm" role="group" aria-label="">
+					<td> <!--actions-->
+						<button class="btn btn-primary btn-block" [disabled]="editing"
+							(click)="showEditConfigItemModal()">Deposit</button>
+						<div class="btn-group btn-group-sm" role="group" aria-label="">
 
-				<button type="button" class="btn btn-danger" [hidden]="false"
-						ngbTooltip="Disable account">
-					<span class="bi bi-dash-circle"></span>
-				</button>
-			</div>
-		</td>
-    </tr>
-    </tbody>
-  </table>
+							<button type="button" class="btn btn-danger" [hidden]="false" ngbTooltip="Disable account">
+								<span class="bi bi-dash-circle"></span>
+							</button>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div class="bg-white p-4 rounded-lg mb-4 shadow-sm">
+	<h4>Feature Flags</h4>
+	<div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Schema/Iteration</th>
+					<th scope="col">Flag Name</th>
+
+					<th scope="col">Default Value</th>
+					<th scope="col">Current Value</th>
+					<th scope="col">Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let flag of (featureFlags | async)">
+					<td>#{{flag.iterationNumber}} / v{{flag.schemaVersion}}</td>
+					<td>{{flag.name}}</td>
+
+					<td>{{flag.defaultValue}}</td>
+					<td>{{flag.currentValue}}</td>
+					<td>{{flag.description}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>
 
 
-<h4>Feature Flags</h4>
-<div>
-  <table class="table">
-    <thead class="thead-light">
-    <tr>
-      <th scope="col">Schema/Iteration</th>
-      <th scope="col">Flag Name</th>
 
-      <th scope="col">Default Value</th>
-      <th scope="col">Current Value</th>
-      <th scope="col">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let flag of (featureFlags | async)">
-		<td>#{{flag.iterationNumber}} / v{{flag.schemaVersion}}</td>
-      <td>{{flag.name}}</td>
+<div class="bg-white p-4 rounded-lg mb-4 shadow-sm">
+	<h4>Secrets</h4>
+	<div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Schema/Iteration</th>
+					<th scope="col">Secret Name</th>
 
-      <td>{{flag.defaultValue}}</td>
-      <td>{{flag.currentValue}}</td>
-      <td>{{flag.description}}</td>
-    </tr>
-    </tbody>
-  </table>
-</div>
+					<th scope="col">Current Value</th>
+					<th scope="col">Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let secret of (secrets | async)">
+					<td>#{{secret.iterationNumber}} / v{{secret.schemaVersion}}</td>
+					<td>{{secret.name}}</td>
 
-
-
-
-<h4>Secrets</h4>
-<div>
-  <table class="table">
-    <thead class="thead-light">
-    <tr>
-      <th scope="col">Schema/Iteration</th>
-      <th scope="col">Secret Name</th>
-
-      <th scope="col">Current Value</th>
-      <th scope="col">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let secret of (secrets | async)">
-		<td>#{{secret.iterationNumber}} / v{{secret.schemaVersion}}</td>
-      <td>{{secret.name}}</td>
-
-      <td>****</td>
-      <td>{{secret.description}}</td>
-    </tr>
-    </tbody>
-  </table>
+					<td>****</td>
+					<td>{{secret.description}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>
 
 
@@ -191,4 +195,3 @@
 		<button type="button" class="btn btn-danger" (click)="modal.dismiss()">Cancel</button>
 	</div>
 </ng-template>
-

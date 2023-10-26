@@ -1,0 +1,19 @@
+.page-number{
+    width: 60px;
+}
+
+.page-indicator{
+    gap: 5px;
+}
+
+.rows-selector{
+    width: 80px;
+}
+
+.pagination {
+    gap: 10px;
+}
+
+.w-td{
+    width: 120px;
+}
