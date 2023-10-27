@@ -171,9 +171,9 @@ function set_logfiles {
 }
 
 function update_k8s_images_from_docker_files {
-  printf "==> updating kubernetes image versions in %s from docker-compose files   " $MANIFESTS_DIR
+  printf "==> updating kubernetes image versions in %s from docker-compose files   \n" $MANIFESTS_DIR
   local yaml_files=("path/to/file1.yaml" "path/to/file2.yaml")  # Replace with your YAML file paths
-  compose_dir=$BASE_DIR/packages/deployment  
+  compose_dir=$REPO_BASE_DIR/packages/deployment  
   CURRENT_IMAGES_FROM_DOCKER_FILES=($(grep image $compose_dir/**/docker*yml | grep -v infra | grep mojaloop | cut -d ":" -f3,4))
   k8s_yaml_files=($(ls $MANIFESTS_DIR/**/*yaml))
   # for element in "${k8s_yaml_files[@]}"; do

@@ -34,7 +34,7 @@ spec:
               value: http://platform-configuration-svc:3100
             - name: MONGO_URL
               value: mongodb://root:mongoDbPas42@mongodb:27017/
-          image: mojaloop/security-bc-authorization-svc:0.1.24
+          image: mojaloop/security-bc-authorization-svc:0.3.3
           name: authorization-svc
           ports:
             - containerPort: 3202

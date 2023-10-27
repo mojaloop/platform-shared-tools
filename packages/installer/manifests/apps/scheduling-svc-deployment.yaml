@@ -45,7 +45,7 @@ spec:
         - name: PLATFORM_CONFIG_BASE_SVC_URL
           value: http://platform-configuration-svc:3100
         - name: SCHEDULING_HOST_LOCKS
-          value: redis-master:6379
+          value: redis-master
         image: mojaloop/scheduling-bc-scheduling-svc:0.3.1
         livenessProbe:
           exec:
