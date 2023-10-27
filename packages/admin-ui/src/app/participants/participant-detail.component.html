@@ -69,7 +69,7 @@
 			</button>
 		</ng-container>
 		<ng-container *ngIf="participant | async as p">
-			<button [ngClass]="p.isActive ? 'btn btn-danger btn-block' : 'btn btn-success btn-block'"
+			<button *ngIf="p.id !== HUB_ID" [ngClass]="p.isActive ? 'btn btn-danger btn-block' : 'btn btn-success btn-block'"
 					(click)="createParticipantStatusChangeRequest(!p.isActive)">
 				{{ p.isActive ? 'Disable' : 'Enable' }} Participant
 			</button>

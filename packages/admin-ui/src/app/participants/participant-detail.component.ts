@@ -40,6 +40,8 @@ export class ParticipantDetailComponent implements OnInit {
 	public participant: BehaviorSubject<IParticipant | null> =
 		new BehaviorSubject<IParticipant | null>(null);
 
+	readonly HUB_ID = this._participantsSvc.hubId;
+
 	endpointCreateModeEnabled = false;
 	endpointEditModeEnabled = false;
 	endpointEditingId: string = "";
