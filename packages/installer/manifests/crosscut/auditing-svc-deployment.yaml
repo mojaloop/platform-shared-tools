@@ -42,12 +42,5 @@ spec:
           image: mojaloop/auditing-bc-auditing-svc:0.1.6
           name: auditing-svc
           resources: {}
-          volumeMounts:
-            - mountPath: /app/data
-              name: auditing-svc-data
       restartPolicy: Always
-      volumes:
-        - name: auditing-svc-data
-          persistentVolumeClaim:
-            claimName: auditing-svc-data
 status: {}

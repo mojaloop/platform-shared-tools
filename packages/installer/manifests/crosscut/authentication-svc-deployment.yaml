@@ -43,12 +43,5 @@ spec:
         ports:
         - containerPort: 3201
         resources: {}
-        volumeMounts:
-        - mountPath: /app/data
-          name: authentication-svc-data
       restartPolicy: Always
-      volumes:
-      - name: authentication-svc-data
-        persistentVolumeClaim:
-          claimName: authentication-svc-data
 status: {}

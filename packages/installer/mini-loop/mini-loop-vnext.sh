@@ -103,6 +103,9 @@ set_and_create_namespace
 set_mojaloop_timeout
 printf "\n"
 
+update_k8s_images_from_docker_files 
+exit 1 
+
 if [[ "$mode" == "delete_ml" ]]; then
   delete_mojaloop_layer "ttk" $MANIFESTS_DIR/ttk
   delete_mojaloop_layer "apps" $MANIFESTS_DIR/apps
@@ -113,6 +116,7 @@ elif [[ "$mode" == "install_ml" ]]; then
   tstart=$(date +%s)
   printf "    <start> :  Mojaloop (vNext) install utility [%s]\n" "`date`" >> $LOGFILE
   #configure_extra_options 
+  
   copy_k8s_yaml_files_to_tmp
   modify_local_mojaloop_yaml_and_charts  "$COMMON_SCRIPTS_DIR/vnext-configure.py" "$MANIFESTS_DIR"
   install_infra_from_local_chart $MANIFESTS_DIR/infra

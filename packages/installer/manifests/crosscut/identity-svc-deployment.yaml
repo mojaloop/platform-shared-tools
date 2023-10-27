@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  creationTimestamp: null
+  labels:
+    mojaloop.service: identity-svc
+    mojaloop.layer: crosscut
+  name: identity-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      mojaloop.service: identity-svc
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+      creationTimestamp: null
+      labels:
+        mojaloop.service: identity-svc
+        mojaloop.layer: crosscut
+    spec:
+      containers:
+        - env:
+            - name: KAFKA_URL
+            - value: kafka:9092
+            - name: KAFKA_AUDITS_TOPIC
+              value: audits
+            - name: KAFKA_LOGS_TOPIC
+              value: logs
+            - name: MONGO_URL
+              value: mongodb://root:mongoDbPas42@mongodb:27017/
+            - name: PLATFORM_CONFIG_BASE_SVC_URL
+              value: http://platform-configuration-svc:3100
+            - name: AUTH_Z_SVC_BASEURL
+              value: http://authorization-svc:3202
+            - name: AUTH_N_SVC_BASEURL
+              value: http://authentication-svc:3201
+            - name: AUTH_N_TOKEN_ISSUER_NAME
+              value: ${AUTH_N_TOKEN_ISSUER_NAME}
+            - name: AUTH_N_TOKEN_AUDIENCE
+              value: ${AUTH_N_TOKEN_AUDIENCE}
+
+          image: mojaloop/security-bc-builtin-identity-svc:0.3.5
+          name: identity-svc
+          ports:
+            - containerPort: 3203
+          resources: {}
+      restartPolicy: Always
+status: {}

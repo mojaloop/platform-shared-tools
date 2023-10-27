@@ -90,6 +90,11 @@ kafka:
           value: PlatformConfigurationBcEvents
       -   name: ParticipantsBcEvents  
           value: ParticipantsBcEvents
+      -   name: SchedulingBcCommands
+          value: SchedulingBcCommands
+      -   name: SchedulingBcEvents
+          value: SchedulingBcEvents
+
           
     # nodeSelector: {}
 
