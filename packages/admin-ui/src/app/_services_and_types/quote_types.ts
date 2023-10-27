@@ -140,6 +140,6 @@ export declare type QuotingSearchResults = {
 	pageSize: number;
 	totalPages: number;
 	pageIndex: number;
-	items: any[];
+	items: Quote[];
 }
 

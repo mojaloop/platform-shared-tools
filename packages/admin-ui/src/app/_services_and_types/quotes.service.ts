@@ -231,11 +231,12 @@ export class QuotesService {
 	}
 
 	search(
-		userId: string | null,
-		amountType: string | null,
-		transactionType: string | null,
-		quoteId: string | null,
-		transactionId: string | null,
+		userId?: string | null,
+		amountType?: string | null,
+		transactionType?: string | null,
+		quoteId?: string | null,
+		transactionId?: string | null,
+		bulkQuoteId?: string,
 		pageIndex?: number,
 		pageSize: number = DEFAULT_PAGE_SIZE
 	): Observable<QuotingSearchResults> {
@@ -245,6 +246,7 @@ export class QuotesService {
 		if (transactionType) searchParams.append("transactionType", transactionType);
 		if (quoteId) searchParams.append("quoteId", quoteId);
 		if (transactionId) searchParams.append("transactionId", transactionId);
+		if (bulkQuoteId) searchParams.append("bulkQuoteId", bulkQuoteId);
 
 		if (pageIndex) searchParams.append("pageIndex", pageIndex.toString());
 		if (pageSize) searchParams.append("pageSize", pageSize.toString());

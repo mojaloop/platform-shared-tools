@@ -16,10 +16,8 @@ import {BulkTransfersService} from '../_services_and_types/bulk-transfers.servic
 export class BulkTransferDetailComponent implements OnInit {
 	private _bulkTransferId: string | null = null;
 	public bulkTransfer: BehaviorSubject<BulkTransfer | null> = new BehaviorSubject<BulkTransfer | null>(null);
-	transfers: BehaviorSubject<Transfer[]> = new BehaviorSubject<Transfer[]>([]);
-	transfersSubs?: Subscription;
-	allTransfers: Transfer[] = [];
-	transfersNotProcessed: Transfer[] = [];
+	public allTransfers: BehaviorSubject<Transfer[] | null> = new BehaviorSubject<Transfer[] | null>(null);
+	public transfersNotProcessed: BehaviorSubject<Transfer[] | null> = new BehaviorSubject<Transfer[] | null>(null);
 
 	@ViewChild("nav") // Get a reference to the ngbNav
 	navBar!: NgbNav;
@@ -40,29 +38,32 @@ export class BulkTransferDetailComponent implements OnInit {
 			throw new Error("invalid bulkTransfer id");
 		}
 
-		await this._fetchTransfer(this._bulkTransferId);
+		await this._fetchBulkTransfer(this._bulkTransferId);
 
-		await this._fetchAllTransfers();
+		await this._fetchAllTransfers(this._bulkTransferId);
 
-		this.allTransfers = this.transfers.value.filter(item => {
-			return item.bulkTransferId === this._bulkTransferId;
-		});
-		this.transfersNotProcessed = this.transfers.value.filter(item => this.bulkTransfer.value?.transfersNotProcessedIds.includes(item.transferId));
 	}
 
-	private async _fetchTransfer(id: string): Promise<void> {
+	private async _fetchBulkTransfer(bulkTransferId: string): Promise<void> {
 		return new Promise(resolve => {
-			this._bulkTransfersSvc.getBulkTransfer(id).subscribe(bulkTransfer => {
+			this._bulkTransfersSvc.getBulkTransfer(bulkTransferId).subscribe(bulkTransfer => {
 				this.bulkTransfer.next(bulkTransfer);
 				resolve();
 			});
 		});
 	}
 
-	private async _fetchAllTransfers(): Promise<void> {
+	private async _fetchAllTransfers(bulkTransferId: string): Promise<void> {
 		return new Promise(resolve => {
-			this._transfersSvc.search().subscribe(transfersSearchResult => {
-				this.transfers.next(transfersSearchResult.items);
+			this._transfersSvc.search(
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				bulkTransferId,
+			).subscribe(transfersSearchResult => {
+				this.allTransfers.next(transfersSearchResult.items);
 				resolve();
 			});
 		});

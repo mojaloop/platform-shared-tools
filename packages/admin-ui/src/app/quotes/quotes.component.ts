@@ -56,6 +56,7 @@ export class QuotesComponent implements OnInit, OnDestroy {
 			(filterQuoteTransactionType === this.ALL_STR_ID ? null : filterQuoteTransactionType),
 			(filterQuoteId === this.ALL_STR_ID ? null : filterQuoteId),
 			(filterTransactionId === this.ALL_STR_ID ? null : filterTransactionId),
+			undefined,
 			pageIndex
 		).subscribe((result) => {
 			console.log("QuotesComponent search - got QuotesSearchResults");
