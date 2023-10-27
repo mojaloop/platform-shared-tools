@@ -31,32 +31,42 @@
 "use strict";
 
 import {Injectable} from "@angular/core";
-import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
+import {Observable, throwError} from "rxjs";
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
+import {EventBusService} from "../_services_and_types/eventbus.service";
+import {EventData} from "../_services_and_types/eventbus_types";
+import {catchError} from "rxjs/operators";
+import {ActivatedRouteSnapshot, Router, RouterStateSnapshot} from "@angular/router";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-	constructor(private _authentication: AuthenticationService) {
+	constructor(private _authentication: AuthenticationService, private _eventBusService: EventBusService, private _router: Router) {
 
 	}
-
 
 	intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-		if (!this._authentication.isLoggedIn())
-			return next.handle(req);
+		const catch401ErrorPipeFn = catchError((error:any, caught: Observable<any>) => {
+			// only interested in 401's that didn't come from the login page
+			if (error instanceof HttpErrorResponse && error.status === 401 && req.url !== this._authentication.loginPostUrl) {
+				this._authentication.redirectUrl = this._router.routerState.snapshot.url;
+				this._eventBusService.emit(new EventData("LogoutForced", null));
+				return throwError(error);
+			}
+			return throwError(error);
+		});
 
+		// if not logged in don't add the Authorization header
 		const token = this._authentication.accessToken;
+		if (!this || !this._authentication.isLoggedIn())
+			return next.handle(req).pipe(catch401ErrorPipeFn);
 
-		if (token) {
-			const cloned = req.clone({
-				headers: req.headers.set("Authorization", "Bearer " + token)
-			});
+		const clonedReq = req.clone({
+			headers: req.headers.set("Authorization", "Bearer " + token)
+		});
 
-			return next.handle(cloned);
-		} else {
-			return next.handle(req);
-		}
+		return next.handle(clonedReq).pipe(catch401ErrorPipeFn);
 	}
+
 }

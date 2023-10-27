@@ -6,15 +6,11 @@ import {PlatformRole} from "@mojaloop/security-bc-public-types-lib";
 
 @Component({
 	selector: 'app-security',
-	templateUrl: './security.component.html',
-	styleUrls: ['./security.component.css']
+	templateUrl: './security-privileges.component.html'
 })
-export class SecurityComponent implements OnInit, OnDestroy {
+export class SecurityPrivilegesComponent implements OnInit, OnDestroy {
 	privileges: BehaviorSubject<AllPrivilegesResp[]> = new BehaviorSubject<AllPrivilegesResp[]>([]);
 	privilegesSubs?: Subscription;
-
-	roles: BehaviorSubject<PlatformRole[]> = new BehaviorSubject<PlatformRole[]>([]);
-	rolesSubs?: Subscription;
 
 	constructor(private _authorizationSvc: AuthorizationService) {
 	}
@@ -27,10 +23,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
 			this.privileges.next(privs);
 		});
 
-		this.rolesSubs = this._authorizationSvc.getAllPlatformRoles().subscribe((roles) => {
-			console.log("SecurityComponent ngOnInit - got getAllPlatformRoles");
-			this.roles.next(roles);
-		});
+
 	}
 
 	ngOnDestroy() {
@@ -38,8 +31,5 @@ export class SecurityComponent implements OnInit, OnDestroy {
 			this.privilegesSubs.unsubscribe();
 		}
 
-		if (this.rolesSubs) {
-			this.rolesSubs.unsubscribe();
-		}
 	}
 }

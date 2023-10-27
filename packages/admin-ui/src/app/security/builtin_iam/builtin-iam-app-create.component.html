@@ -1,0 +1,87 @@
+<div class="row mb-2">
+	<div class="col">
+		<h3>Builtin IAM - Create Application</h3>
+	</div>
+</div>
+
+
+
+<form [formGroup]="form" (ngSubmit)="createApp()">
+
+	<div class="form-row"> <!--form-row-->
+
+		<!-- type -->
+		<div class="form-group col-md-3">
+			<label for="appCanLoginType">Can be used for authentication: </label>
+			<select id="appCanLoginType" class="form-control" formControlName="appCanLoginType" (change)="appCanLoginTypeChanged($event)">
+				<option value="true">Yes</option>
+				<option value="false">No</option>
+			</select>
+
+		</div>
+
+		<!-- clientId (username) -->
+		<div class="form-group col-md-9">
+			<label for="clientId">Client Id: </label>
+			<input id="clientId" formControlName="clientId" type="text" class="form-control"
+				   [ngClass]="{'is-valid': form.controls['clientId'].touched && form.controls['clientId'].valid,
+              'is-invalid': (submitted || form.controls['clientId'].touched) && form.controls['clientId'].invalid}">
+		</div>
+
+
+		<!-- clientSecret -->
+		<div class="form-group col-md-6">
+			<label for="clientSecret">Client Secret: </label>
+			<div class="input-group">
+				<div class="input-group" >
+					<input class="form-control" id="clientSecret" formControlName="clientSecret" type="password"
+						   [ngClass]="{'is-valid': form.controls['clientSecret'].touched && form.controls['clientSecret'].valid,
+				 'is-invalid': (submitted || form.controls['clientSecret'].touched) && form.controls['clientSecret'].invalid}">
+					<div class="input-group-append">
+						<span class="input-group-text" >
+							<a (click)="showHidePassword()">
+							<i class="bi bi-eye-slash" id="password-icon" aria-hidden="true"></i>
+							</a>
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="invalid-feedback">
+				Please provide a valid client secret.
+			</div>
+		</div>
+
+		<!-- clientSecret repeat -->
+		<div class="form-group col-md-6">
+			<label for="confirmSecret">Client Secret confirm: </label>
+			<div class="input-group">
+				<div class="input-group">
+					<input class="form-control" id="confirmSecret" formControlName="confirmSecret" type="password"
+						   [ngClass]="{'is-valid': form.controls['confirmSecret'].touched && form.controls['confirmSecret'].valid,
+				 'is-invalid': (submitted || form.controls['confirmSecret'].touched) && form.controls['confirmSecret'].invalid}">
+					<div class="input-group-append">
+						<span class="input-group-text" >
+							<a (click)="showHidePassword()">
+							<i class="bi bi-eye-slash" id="confirmPassword-icon" aria-hidden="true"></i>
+							</a>
+						</span>
+					</div>
+					<div class="invalid-feedback">
+						Please provide matching client secrets
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+	</div> <!--form-row-->
+
+	<div class="form-row d-flex mb-3">
+		<div class="p-2">
+			<button type="submit" class="btn btn-primary" [disabled]="!form.valid">Create Application</button>
+		</div>
+		<div class="ml-auto p-2">
+			<button class="btn btn-danger" (click)="cancel()">Cancel</button>
+		</div>
+	</div>
+</form>

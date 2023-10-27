@@ -5,7 +5,7 @@
 ROOT="./packages"
 REPOSITORY_TYPE="github"
 # Move to circleCi file
-DOCKER_BUILD_PLATFORMS=linux/amd64,linux/arm64,linux/arm/v7
+DOCKER_BUILD_PLATFORMS=linux/amd64,linux/arm64
 DOCKER_LATEST_RELEASE_NAME=snapshot
 
 ########################################################################################

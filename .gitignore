@@ -1,8 +1,3 @@
-#Generated files for docker-compose
-packages/deployment/docker-compose-apps/exec/*
-packages/deployment/docker-compose-cross-cutting/exec/*
-packages/deployment/docker-compose-infra/exec/*
-
 # Logs
 logs
 *.log
@@ -121,7 +116,6 @@ devspace*
 # General Ignore
 *IGNORE*
 
-
 # yarn not using Zero-Installs:
 .pnp.*
 .yarn/*
@@ -131,6 +125,15 @@ devspace*
 !.yarn/sdks
 !.yarn/versions
 
+# --------------- #
+# IntelliJ #
+# --------------- #
+.idea
+**/*.iml
+
+# Gedit backups.
+*~
+
 # Helm
 **/charts
 **/tmpcharts
@@ -138,8 +141,8 @@ requirements.lock
 Chart.lock
 
 # Helm Publish Repo
-repo/**
-**/repo/
+**/manifests/infra/infra-helm/repo/**
+
 
 # Terraform
 .terraform*

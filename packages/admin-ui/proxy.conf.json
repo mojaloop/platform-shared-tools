@@ -97,6 +97,15 @@
 			"^/_auditing": ""
 		},
 		"logLevel": "debug"
+	},
+	"/_builtin_iam": {
+		"target": "http://localhost:3203/",
+		"secure": true,
+		"changeOrigin": true,
+		"pathRewrite": {
+			"^/_builtin_iam": ""
+		},
+		"logLevel": "debug"
 	}
 }
 

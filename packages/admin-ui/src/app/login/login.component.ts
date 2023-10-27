@@ -34,17 +34,17 @@ export class LoginComponent implements OnInit {
 	}
 
 	login() {
-		this._authentication.login(this.form.controls["username"].value, this.form.controls["password"].value).subscribe(result => {
-			if (result) {
+		this._authentication.login(this.form.controls["username"].value, this.form.controls["password"].value).subscribe(async(result) => {
+			if (result && result === true) {
 				this._messages.addSuccess("Login successful");
 				if (this._authentication.redirectUrl) {
-					this._router.navigateByUrl(this._authentication.redirectUrl);
+					await this._router.navigateByUrl(this._authentication.redirectUrl);
 					this._authentication.redirectUrl = null;
 				} else {
-					this._router.navigateByUrl("/home");
+					await this._router.navigateByUrl("/home");
 				}
 			} else {
-				this._messages.addError("Unauthorized");
+				this._messages.addError("Invalid Login");
 			}
 		});
 

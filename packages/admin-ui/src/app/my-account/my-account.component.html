@@ -10,7 +10,7 @@
   </thead>
   <tbody>
   <tr *ngFor="let item of (roles | async)">
-    <th scope="row"><a routerLink="/platformRole/{{item.id}}">{{item.labelName}}</a></th>
+    <th scope="row"><a routerLink="/security/roles/{{item.id}}">{{item.labelName}}</a></th>
     <td> {{item.description}}</td>
   </tr>
   </tbody>

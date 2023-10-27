@@ -197,6 +197,9 @@ services:
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic TransfersBcErrors
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic TransfersBcTimeouts
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic PlatformConfigurationBcEvents
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic ParticipantsBcEvents
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic SchedulingBcCommands
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic SchedulingBcEvents
       echo -e '\nSuccessfully created the following topics:'
       kafka-topics --bootstrap-server kafka:19092 --list
       "
@@ -252,32 +255,55 @@ services:
       ME_CONFIG_MONGODB_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/
       ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
 
-  tigerbeetle-setup:
-    image: ghcr.io/tigerbeetle/tigerbeetle
-    command: "format --cluster=0 --replica=0 --replica-count=1 /data/0_0.tigerbeetle"
-    cap_add:
-      - IPC_LOCK
-    volumes:
-      - tigerbeetle_data_vol:/data
-
-  tigerbeetle:
-    image: ghcr.io/tigerbeetle/tigerbeetle
-    command: "start --addresses=0.0.0.0:3000 /data/0_0.tigerbeetle"
+  prometheus:
+    image: prom/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
     restart: unless-stopped
-    cap_add:
-      - IPC_LOCK
     volumes:
-      - tigerbeetle_data_vol:/data
+      - prometheus_etc_vol:/etc/prometheus
+      - prometheus_data_vol:/prometheus
+  grafana:
+    image: grafana/grafana
     ports:
       - 3000:3000
-    depends_on:
-      - tigerbeetle-setup
-    healthcheck:
-      test: ["CMD", "/tigerbeetle" ,"version"]
-      timeout: 20s
-      retries: 10
-      start_period: 40s
-      interval: 30s
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+    volumes:
+      - grafana_data_vol:/etc/grafana/provisioning/datasources
+
+#  tigerbeetle-setup:
+#    image: ghcr.io/tigerbeetle/tigerbeetle
+#    command: "format --cluster=0 --replica=0 --replica-count=1 /data/0_0.tigerbeetle"
+#    mem_limit: ${TB_MEM_LIMIT}
+#    cap_add:
+#      - IPC_LOCK
+#    volumes:
+#      - tigerbeetle_data_vol:/data
+#
+#  tigerbeetle:
+#    image: ghcr.io/tigerbeetle/tigerbeetle
+#    command: "start --addresses=0.0.0.0:9001 /data/0_0.tigerbeetle"
+#    restart: unless-stopped
+#    mem_limit: ${TB_MEM_LIMIT}
+##    depends_on:
+##      - tigerbeetle-setup
+#    cap_add:
+#      - IPC_LOCK
+#    volumes:
+#      - tigerbeetle_data_vol:/data
+#    ports:
+#      - 9001:9001
+#    healthcheck:
+#      test: ["CMD", "/tigerbeetle", "version"]
+#      timeout: 20s
+#      retries: 10
+#      start_period: 40s
+#      interval: 30s
 
 volumes:
   certs_vol:
@@ -310,3 +336,21 @@ volumes:
       o: bind
       type: none
       device: ${ROOT_VOLUME_DEVICE_PATH}/mongodb_data
+  prometheus_etc_vol:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${ROOT_VOLUME_DEVICE_PATH}/prometheus_etc
+  prometheus_data_vol:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${ROOT_VOLUME_DEVICE_PATH}/prometheus_data
+  grafana_data_vol:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${ROOT_VOLUME_DEVICE_PATH}/grafana_data

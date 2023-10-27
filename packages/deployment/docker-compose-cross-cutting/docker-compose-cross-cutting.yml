@@ -2,9 +2,9 @@ version: "3.8"
 
 services:
   authentication-svc:
-    image: mojaloop/security-bc-authentication-svc:0.1.20
-    volumes:
-      - authentication-svc_data:/app/data
+    image: mojaloop/security-bc-authentication-svc:0.3.3
+#    volumes:
+#      - authentication-svc_data:/app/data
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -13,7 +13,7 @@ services:
       - AUTH_N_DEFAULT_AUDIENCE=${AUTH_N_DEFAULT_AUDIENCE}
       - AUTH_N_ISSUER_NAME=${AUTH_N_ISSUER_NAME}
       - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
-      - MONGO_URL=${MONGO_URL}
+      - BUILTIN_IAM_BASE_URL=${BUILTIN_IAM_BASE_URL}
     ports:
       - 3201:3201
     healthcheck:
@@ -25,7 +25,7 @@ services:
     restart: unless-stopped
 
   authorization-svc:
-    image: mojaloop/security-bc-authorization-svc:0.1.24
+    image: mojaloop/security-bc-authorization-svc:0.3.3
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -42,10 +42,35 @@ services:
       retries: 10
     restart: unless-stopped
 
+  identity-svc:
+    image: mojaloop/security-bc-builtin-identity-svc:0.3.5
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - MONGO_URL=${MONGO_URL}
+      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
+      - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+      - AUTH_N_TOKEN_ISSUER_NAME=${AUTH_N_TOKEN_ISSUER_NAME}
+      - AUTH_N_TOKEN_AUDIENCE=${AUTH_N_TOKEN_AUDIENCE}
+    ports:
+      - 3203:3203
+    depends_on:
+      authentication-svc:
+        condition: service_healthy
+      authorization-svc:
+        condition: service_healthy
+    healthcheck:
+      test: nc -z localhost 3203 || exit -1
+      start_period: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    restart: unless-stopped
+
   auditing-svc:
-    image: mojaloop/auditing-bc-auditing-svc:0.1.6
-    volumes:
-      - auditing-svc_data:/app/data
+    image: mojaloop/auditing-bc-auditing-svc:0.3.1
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -59,9 +84,7 @@ services:
     restart: unless-stopped
 
   logging-svc:
-    image: mojaloop/logging-bc-logging-svc:0.1.9
-    volumes:
-      - logging-svc_data:/app/data
+    image: mojaloop/logging-bc-logging-svc:0.3.2
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -72,7 +95,7 @@ services:
     restart: unless-stopped
 
   platform-configuration-svc:
-    image: mojaloop/platform-configuration-bc-configuration-svc:0.3.3
+    image: mojaloop/platform-configuration-bc-configuration-svc:0.3.8
     depends_on:
       authentication-svc:
         condition: service_healthy
@@ -97,33 +120,9 @@ services:
     restart: unless-stopped
 
 volumes:
-  authentication-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/authentication-svc
-  authorization-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/authorization-svc
   platform-configuration-svc_data:
     driver: local
     driver_opts:
       o: bind
       type: none
       device: ${ROOT_VOLUME_DEVICE_PATH}/data/platform-configuration-svc
-  auditing-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/auditing-svc
-  logging-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/logging-svc
