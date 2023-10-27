@@ -62,7 +62,7 @@ export class TransfersComponent implements OnInit, OnDestroy {
 
 	search() {
 		const { filterTransferState, filterCurrency, filterStartDate, filterEndDate, filterTransferId, filterPayerIdType, filterPayeeIdType, filterPayeeDfspName, filterPayerDfspName, filterTransferType, filterPayerValue, filterPayeeIdValue } = this.filterForm.value
-		console.log('formValue', this.filterForm.value);
+
 
 		const startDate = filterStartDate ? new Date(filterStartDate).valueOf() : undefined;
 		const endDate = filterEndDate ? new Date(filterEndDate).valueOf() : undefined;
