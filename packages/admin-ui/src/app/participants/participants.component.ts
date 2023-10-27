@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ParticipantsService} from "src/app/_services_and_types/participants.service";
 import {BehaviorSubject, Subscription} from "rxjs";
-import {IParticipant} from "@mojaloop/participant-bc-public-types-lib";
+import {HUB_PARTICIPANT_ID, IParticipant} from "@mojaloop/participant-bc-public-types-lib";
 import {MessageService} from "src/app/_services_and_types/message.service";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
 import {paginate, PaginateResult} from "../_utils";
@@ -60,7 +60,9 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 		).subscribe((result) => {
 			console.log("ParticipantsComponent search - got ParticipantsSearchResults");
 
-			this.participants.next(result.items);
+			const onlyDfsps = result.items.filter(value => value.id!==HUB_PARTICIPANT_ID);
+
+			this.participants.next(onlyDfsps);
 
 			const pageRes = paginate(result.pageIndex, result.totalPages);
 			console.log(pageRes);
