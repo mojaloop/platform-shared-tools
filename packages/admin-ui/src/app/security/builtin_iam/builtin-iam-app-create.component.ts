@@ -30,6 +30,7 @@ export class BuiltinIamAppCreateComponent implements OnInit, OnDestroy {
 		this.form.addValidators(this._textMatchValidator("clientSecret", "confirmSecret"));
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	ngOnDestroy() { }
 
 	_textMatchValidator(controlName: string, matchingControlName: string):ValidatorFn {

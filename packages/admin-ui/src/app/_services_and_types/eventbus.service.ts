@@ -41,7 +41,6 @@ import { filter, map } from 'rxjs/operators';
 export class EventBusService {
 	private subject = new Subject<EventData>();
 
-	constructor() { }
 
 	emit(event: EventData) {
 		this.subject.next(event);
