@@ -30,7 +30,7 @@ export class AuditingComponent implements OnInit, OnDestroy {
 
 	}
 
-	async ngOnInit(): Promise<void> {
+	ngOnInit(): void {
 		console.log("AuditingComponent ngOnInit");
 
 		this.getSearchKeywords();

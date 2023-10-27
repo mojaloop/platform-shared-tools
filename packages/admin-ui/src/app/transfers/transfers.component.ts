@@ -11,12 +11,10 @@ import {paginate, PaginateResult} from "../_utils";
 	templateUrl: './transfers.component.html'
 })
 export class TransfersComponent implements OnInit, OnDestroy {
-	transfers: BehaviorSubject<Transfer[]> = new BehaviorSubject<Transfer[]>([]);
-	transfersSubs?: Subscription;
 
 	readonly ALL_STR_ID = "(All)";
-	entries: BehaviorSubject<Transfer[]> = new BehaviorSubject<Transfer[]>([]);
-	entriesSubs?: Subscription;
+	transfers: BehaviorSubject<Transfer[]> = new BehaviorSubject<Transfer[]>([]);
+	transfersSubs?: Subscription;
 
 	keywordState: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordCurrency: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
@@ -32,7 +30,7 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		this.criteriaFromDate = this.criteriaFromDate.substring(0, this.criteriaFromDate.length - 8); // remove Z, ms and secs
 	}
 
-	async ngOnInit(): Promise<void> {
+	ngOnInit(): void {
 		console.log("TransfersComponent ngOnInit");
 
 		this.getSearchKeywords();
@@ -54,7 +52,7 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		const elemFilterEndDateStr = (document.getElementById("filterEndDate") as HTMLInputElement).value;
 		const filterEndDate = elemFilterEndDateStr ? new Date(elemFilterEndDateStr).valueOf() : undefined;
 
-		this.entriesSubs = this._transfersSvc.search(
+		this.transfersSubs = this._transfersSvc.search(
 			(filterState === this.ALL_STR_ID ? undefined : filterState),
 			(filterCurrency === this.ALL_STR_ID ? undefined : filterCurrency),
 			(filterId === this.ALL_STR_ID ? undefined : filterId),
@@ -65,7 +63,7 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		).subscribe((result) => {
 			console.log("TransfersComponent search - got TransfersSearchResults");
 
-			this.entries.next(result.items);
+			this.transfers.next(result.items);
 
 			const pageRes = paginate(result.pageIndex, result.totalPages);
 			console.log(pageRes);

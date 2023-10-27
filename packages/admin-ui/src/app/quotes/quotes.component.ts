@@ -11,12 +11,10 @@ import {paginate, PaginateResult} from "../_utils";
 	templateUrl: "./quotes.component.html",
 })
 export class QuotesComponent implements OnInit, OnDestroy {
-	quotes: BehaviorSubject<Quote[]> = new BehaviorSubject<Quote[]>([]);
-	quotesSubs?: Subscription;
 
 	readonly ALL_STR_ID = "(All)";
-	entries: BehaviorSubject<Quote[]> = new BehaviorSubject<Quote[]>([]);
-	entriesSubs?: Subscription;
+	quotes: BehaviorSubject<Quote[]> = new BehaviorSubject<Quote[]>([]);
+	quotesSubs?: Subscription;
 
 	keywordQuoteAmountType: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordQuoteTransactionType: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
@@ -32,10 +30,10 @@ export class QuotesComponent implements OnInit, OnDestroy {
 	) {
 	}
 
-	async ngOnInit(): Promise<void> {
+	ngOnInit(): void {
 		console.log("QuotesComponent ngOnInit");
 
-		await this.getSearchKeywords();
+		this.getSearchKeywords();
 
 		// wait for the page components to layout
 		setTimeout(() => {
@@ -45,23 +43,22 @@ export class QuotesComponent implements OnInit, OnDestroy {
 
 	search(pageIndex: number = 0) {
 
-		const filterQuoteAmountType = (document.getElementById("filterQuoteAmountType") as HTMLSelectElement).value || null;
-		const filterQuoteTransactionType = (document.getElementById("filterQuoteTransactionType") as HTMLSelectElement).value || null;
-		const filterQuoteId = (document.getElementById("filterQuoteId") as HTMLSelectElement).value || null;
-		const filterTransactionId = (document.getElementById("filterTransactionId") as HTMLSelectElement).value || null;
+		const filterQuoteAmountType = (document.getElementById("filterQuoteAmountType") as HTMLSelectElement).value || undefined;
+		const filterQuoteTransactionType = (document.getElementById("filterQuoteTransactionType") as HTMLSelectElement).value || undefined;
+		const filterQuoteId = (document.getElementById("filterQuoteId") as HTMLSelectElement).value || undefined;
+		const filterTransactionId = (document.getElementById("filterTransactionId") as HTMLSelectElement).value || undefined;
 
-		this.entriesSubs = this._quotesSvc.search(
-			null,
-			(filterQuoteAmountType === this.ALL_STR_ID ? null : filterQuoteAmountType),
-			(filterQuoteTransactionType === this.ALL_STR_ID ? null : filterQuoteTransactionType),
-			(filterQuoteId === this.ALL_STR_ID ? null : filterQuoteId),
-			(filterTransactionId === this.ALL_STR_ID ? null : filterTransactionId),
+		this.quotesSubs = this._quotesSvc.search(
+			(filterQuoteAmountType === this.ALL_STR_ID ? undefined : filterQuoteAmountType),
+			(filterQuoteTransactionType === this.ALL_STR_ID ? undefined : filterQuoteTransactionType),
+			(filterQuoteId === this.ALL_STR_ID ? undefined : filterQuoteId),
+			(filterTransactionId === this.ALL_STR_ID ? undefined : filterTransactionId),
 			undefined,
 			pageIndex
 		).subscribe((result) => {
 			console.log("QuotesComponent search - got QuotesSearchResults");
 
-			this.entries.next(result.items);
+			this.quotes.next(result.items);
 
 			const pageRes = paginate(result.pageIndex, result.totalPages);
 			console.log(pageRes);

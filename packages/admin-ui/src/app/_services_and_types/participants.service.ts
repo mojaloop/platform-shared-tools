@@ -773,15 +773,13 @@ export class ParticipantsService {
 	}
 
 	search(
-		userId: string | null,
-		state: string | null,
-		id: string | null,
-		name: string | null,
+		state?: string,
+		id?: string,
+		name?: string,
 		pageIndex?: number,
 		pageSize: number = DEFAULT_PAGE_SIZE
 	): Observable<ParticipantsSearchResults> {
 		const searchParams = new URLSearchParams();
-		if (userId) searchParams.append("userId", userId);
 		if (state) searchParams.append("state", state);
 		if (id) searchParams.append("id", id);
 		if (name) searchParams.append("name", name);
@@ -789,7 +787,7 @@ export class ParticipantsService {
 		if (pageIndex) searchParams.append("pageIndex", pageIndex.toString());
 		if (pageSize) searchParams.append("pageSize", pageSize.toString());
 
-		const url = `${SVC_BASEURL}/?${searchParams.toString()}`;
+		const url = `${SVC_BASEURL}/participants?${searchParams.toString()}`;
 
 
 		return new Observable<ParticipantsSearchResults>(subscriber => {

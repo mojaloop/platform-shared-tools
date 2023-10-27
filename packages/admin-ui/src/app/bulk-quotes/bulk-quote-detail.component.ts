@@ -59,8 +59,7 @@ export class BulkQuoteDetailComponent implements OnInit {
 				undefined,
 				undefined,
 				undefined,
-				undefined,
-				bulkQuoteId,
+				bulkQuoteId
 			).subscribe(quotesSearchResult => {
 				this.allQuotes.next(quotesSearchResult.items);
 				resolve();

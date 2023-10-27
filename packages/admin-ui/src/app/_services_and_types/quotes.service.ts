@@ -231,17 +231,15 @@ export class QuotesService {
 	}
 
 	search(
-		userId?: string | null,
-		amountType?: string | null,
-		transactionType?: string | null,
-		quoteId?: string | null,
-		transactionId?: string | null,
+		amountType?: string,
+		transactionType?: string,
+		quoteId?: string,
+		transactionId?: string,
 		bulkQuoteId?: string,
 		pageIndex?: number,
 		pageSize: number = DEFAULT_PAGE_SIZE
 	): Observable<QuotingSearchResults> {
 		const searchParams = new URLSearchParams();
-		if (userId) searchParams.append("userId", userId);
 		if (amountType) searchParams.append("amountType", amountType);
 		if (transactionType) searchParams.append("transactionType", transactionType);
 		if (quoteId) searchParams.append("quoteId", quoteId);
@@ -251,7 +249,7 @@ export class QuotesService {
 		if (pageIndex) searchParams.append("pageIndex", pageIndex.toString());
 		if (pageSize) searchParams.append("pageSize", pageSize.toString());
 
-		const url = `${SVC_BASEURL}/entries?${searchParams.toString()}`;
+		const url = `${SVC_BASEURL}/quotes?${searchParams.toString()}`;
 
 
 		return new Observable<QuotingSearchResults>(subscriber => {

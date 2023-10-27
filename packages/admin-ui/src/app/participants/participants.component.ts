@@ -11,12 +11,10 @@ import {paginate, PaginateResult} from "../_utils";
 	templateUrl: "./participants.component.html",
 })
 export class ParticipantsComponent implements OnInit, OnDestroy {
-	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
-	participantsSubs?: Subscription;
 
 	readonly ALL_STR_ID = "(All)";
-	entries: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
-	entriesSubs?: Subscription;
+	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
+	participantsSubs?: Subscription;
 
 	keywordParticipantState: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordParticipantId: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
@@ -50,20 +48,19 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 
 	search(pageIndex: number = 0) {
 
-		const filterParticipantState = (document.getElementById("filterParticipantState") as HTMLSelectElement).value || null;
-		const filterParticipantId = (document.getElementById("filterParticipantId") as HTMLSelectElement).value || null;
-		const filterParticipantName = (document.getElementById("filterParticipantName") as HTMLSelectElement).value || null;
+		const filterParticipantState = (document.getElementById("filterParticipantState") as HTMLSelectElement).value || undefined;
+		const filterParticipantId = (document.getElementById("filterParticipantId") as HTMLSelectElement).value || undefined;
+		const filterParticipantName = (document.getElementById("filterParticipantName") as HTMLSelectElement).value || undefined;
 
-		this.entriesSubs = this._participantsSvc.search(
-			null,
-			(filterParticipantState === this.ALL_STR_ID ? null : filterParticipantState),
-			(filterParticipantId === this.ALL_STR_ID ? null : filterParticipantId),
-			(filterParticipantName === this.ALL_STR_ID ? null : filterParticipantName),
+		this.participantsSubs = this._participantsSvc.search(
+			(filterParticipantState === this.ALL_STR_ID ? undefined : filterParticipantState),
+			(filterParticipantId === this.ALL_STR_ID ? undefined : filterParticipantId),
+			(filterParticipantName === this.ALL_STR_ID ? undefined : filterParticipantName),
 			pageIndex
 		).subscribe((result) => {
 			console.log("ParticipantsComponent search - got ParticipantsSearchResults");
 
-			this.entries.next(result.items);
+			this.participants.next(result.items);
 
 			const pageRes = paginate(result.pageIndex, result.totalPages);
 			console.log(pageRes);
