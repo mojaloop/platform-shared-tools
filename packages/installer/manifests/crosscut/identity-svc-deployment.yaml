@@ -25,7 +25,7 @@ spec:
       containers:
         - env:
             - name: KAFKA_URL
-            - value: kafka:9092
+              value: kafka:9092
             - name: KAFKA_AUDITS_TOPIC
               value: audits
             - name: KAFKA_LOGS_TOPIC
@@ -42,6 +42,8 @@ spec:
               value:  mojaloop.vnext.dev.default_issuer
             - name: AUTH_N_TOKEN_AUDIENCE
               value: mojaloop.vnext.dev.default_audience
+            - name: BUILTIN_IAM_BASE_URL
+              value: http://identity-svc:3203
           image: mojaloop/security-bc-builtin-identity-svc:0.3.5
           livenessProbe:
             exec:
