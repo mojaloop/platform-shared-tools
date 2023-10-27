@@ -2,9 +2,9 @@ version: "3.8"
 
 services:
   authentication-svc:
-    image: mojaloop/security-bc-authentication-svc:0.3.2
-    volumes:
-      - authentication-svc_data:/app/data
+    image: mojaloop/security-bc-authentication-svc:0.3.3
+#    volumes:
+#      - authentication-svc_data:/app/data
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -25,7 +25,7 @@ services:
     restart: unless-stopped
 
   authorization-svc:
-    image: mojaloop/security-bc-authorization-svc:0.3.2
+    image: mojaloop/security-bc-authorization-svc:0.3.3
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -43,7 +43,7 @@ services:
     restart: unless-stopped
 
   identity-svc:
-    image: mojaloop/security-bc-builtin-identity-svc:0.3.2
+    image: mojaloop/security-bc-builtin-identity-svc:0.3.5
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -70,9 +70,7 @@ services:
     restart: unless-stopped
 
   auditing-svc:
-    image: mojaloop/auditing-bc-auditing-svc:0.1.6
-    volumes:
-      - auditing-svc_data:/app/data
+    image: mojaloop/auditing-bc-auditing-svc:0.3.1
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -86,9 +84,7 @@ services:
     restart: unless-stopped
 
   logging-svc:
-    image: mojaloop/logging-bc-logging-svc:0.1.9
-    volumes:
-      - logging-svc_data:/app/data
+    image: mojaloop/logging-bc-logging-svc:0.3.2
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -99,7 +95,7 @@ services:
     restart: unless-stopped
 
   platform-configuration-svc:
-    image: mojaloop/platform-configuration-bc-configuration-svc:0.3.3
+    image: mojaloop/platform-configuration-bc-configuration-svc:0.3.8
     depends_on:
       authentication-svc:
         condition: service_healthy
@@ -124,33 +120,9 @@ services:
     restart: unless-stopped
 
 volumes:
-  authentication-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/authentication-svc
-  authorization-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/authorization-svc
   platform-configuration-svc_data:
     driver: local
     driver_opts:
       o: bind
       type: none
       device: ${ROOT_VOLUME_DEVICE_PATH}/data/platform-configuration-svc
-  auditing-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/auditing-svc
-  logging-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/logging-svc
