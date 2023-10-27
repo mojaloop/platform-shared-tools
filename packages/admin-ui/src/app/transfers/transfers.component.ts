@@ -35,7 +35,7 @@ export class TransfersComponent implements OnInit, OnDestroy {
 	async ngOnInit(): Promise<void> {
 		console.log("TransfersComponent ngOnInit");
 
-		await this.getSearchKeywords();
+		this.getSearchKeywords();
 
 		// wait for the page components to layout
 		setTimeout(() => {
@@ -45,22 +45,22 @@ export class TransfersComponent implements OnInit, OnDestroy {
 
 	search(pageIndex: number = 0) {
 
-		const filterState = (document.getElementById("filterState") as HTMLSelectElement).value || null;
-		const filterCurrency = (document.getElementById("filterCurrency") as HTMLSelectElement).value || null;
-		const filterId = (document.getElementById("filterId") as HTMLSelectElement).value || null;
+		const filterState = (document.getElementById("filterState") as HTMLSelectElement).value || undefined;
+		const filterCurrency = (document.getElementById("filterCurrency") as HTMLSelectElement).value || undefined;
+		const filterId = (document.getElementById("filterId") as HTMLSelectElement).value || undefined;
 
 		const elemFilterStartDateStr = (document.getElementById("filterStartDate") as HTMLInputElement).value;
-		const filterStartDate = elemFilterStartDateStr ? new Date(elemFilterStartDateStr).valueOf() : null;
+		const filterStartDate = elemFilterStartDateStr ? new Date(elemFilterStartDateStr).valueOf() : undefined;
 		const elemFilterEndDateStr = (document.getElementById("filterEndDate") as HTMLInputElement).value;
-		const filterEndDate = elemFilterEndDateStr ? new Date(elemFilterEndDateStr).valueOf() : null;
+		const filterEndDate = elemFilterEndDateStr ? new Date(elemFilterEndDateStr).valueOf() : undefined;
 
 		this.entriesSubs = this._transfersSvc.search(
-			null,
-			(filterState === this.ALL_STR_ID ? null : filterState),
-			(filterCurrency === this.ALL_STR_ID ? null : filterCurrency),
-			(filterId === this.ALL_STR_ID ? null : filterId),
+			(filterState === this.ALL_STR_ID ? undefined : filterState),
+			(filterCurrency === this.ALL_STR_ID ? undefined : filterCurrency),
+			(filterId === this.ALL_STR_ID ? undefined : filterId),
 			filterStartDate,
 			filterEndDate,
+			undefined, // TODO: add bulk filter box
 			pageIndex
 		).subscribe((result) => {
 			console.log("TransfersComponent search - got TransfersSearchResults");

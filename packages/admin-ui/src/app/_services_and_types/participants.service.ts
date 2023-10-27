@@ -771,7 +771,7 @@ export class ParticipantsService {
 				);
 		});
 	}
-	
+
 	search(
 		userId: string | null,
 		state: string | null,
@@ -789,7 +789,7 @@ export class ParticipantsService {
 		if (pageIndex) searchParams.append("pageIndex", pageIndex.toString());
 		if (pageSize) searchParams.append("pageSize", pageSize.toString());
 
-		const url = `${SVC_BASEURL}/entries?${searchParams.toString()}`;
+		const url = `${SVC_BASEURL}/?${searchParams.toString()}`;
 
 
 		return new Observable<ParticipantsSearchResults>(subscriber => {

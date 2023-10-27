@@ -48,30 +48,6 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	approve(participantId: string) {
-		this._participantsSvc.approveParticipant(participantId).subscribe(
-			(value) => {
-				this._messageService.addSuccess("Participant Approved");
-				this.ngOnInit();
-			},
-			(error) => {
-				this._messageService.addError(error.message);
-			}
-		);
-	}
-
-	disable(participantId: string) {
-		this._participantsSvc.disableParticipant(participantId).subscribe(
-			(value) => {
-				this._messageService.addSuccess("Participant Disabled");
-				this.ngOnInit();
-			},
-			(error) => {
-				this._messageService.addError(error.message);
-			}
-		);
-	}
-
 	search(pageIndex: number = 0) {
 
 		const filterParticipantState = (document.getElementById("filterParticipantState") as HTMLSelectElement).value || null;

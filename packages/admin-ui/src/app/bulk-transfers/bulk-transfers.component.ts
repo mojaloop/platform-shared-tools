@@ -29,7 +29,6 @@ export class BulkTransfersComponent implements OnInit, OnDestroy {
 			}
 		});
 
-
 	}
 
 	ngOnDestroy() {

@@ -61,8 +61,8 @@ export class BulkTransferDetailComponent implements OnInit {
 
 	private async _fetchAllTransfers(): Promise<void> {
 		return new Promise(resolve => {
-			this._transfersSvc.getAllTransfers().subscribe(transfers => {
-				this.transfers.next(transfers);
+			this._transfersSvc.search().subscribe(transfersSearchResult => {
+				this.transfers.next(transfersSearchResult.items);
 				resolve();
 			});
 		});

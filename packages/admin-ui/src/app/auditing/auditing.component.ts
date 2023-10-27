@@ -33,7 +33,7 @@ export class AuditingComponent implements OnInit, OnDestroy {
 	async ngOnInit(): Promise<void> {
 		console.log("AuditingComponent ngOnInit");
 
-		await this.getSearchKeywords();
+		this.getSearchKeywords();
 
 		// wait for the page components to layout
 		setTimeout(() => {
