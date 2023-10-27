@@ -252,25 +252,32 @@ services:
       ME_CONFIG_MONGODB_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/
       ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
 
-#  tigerbeetle-setup:
-#    image: ghcr.io/tigerbeetledb/tigerbeetle@sha256:6021c2bde3f7
-#    command: "format --cluster=0 --replica=0 /data/0_0.tigerbeetle"
-#    cap_add:
-#      - IPC_LOCK
-#    volumes:
-#      - tigerbeetle_data:/data
+  tigerbeetle-setup:
+    image: ghcr.io/tigerbeetle/tigerbeetle
+    command: "format --cluster=0 --replica=0 --replica-count=1 /data/0_0.tigerbeetle"
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - tigerbeetle_data_vol:/data
 
-#  tigerbeetle:
-#    image: ghcr.io/tigerbeetledb/tigerbeetle
-##    image: ghcr.io/tigerbeetledb/tigerbeetle@sha256:6021c2bde3f7
-#    command: "start --addresses=0.0.0.0:3000 /data/0_0.tigerbeetle"
-#    restart: unless-stopped
-#    cap_add:
-#      - IPC_LOCK
-#    volumes:
-#      - tigerbeetle_data_vol:/data
-#    ports:
-#      - 3000:3000
+  tigerbeetle:
+    image: ghcr.io/tigerbeetle/tigerbeetle
+    command: "start --addresses=0.0.0.0:3000 /data/0_0.tigerbeetle"
+    restart: unless-stopped
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - tigerbeetle_data_vol:/data
+    ports:
+      - 3000:3000
+    depends_on:
+      - tigerbeetle-setup
+    healthcheck:
+      test: ["CMD", "/tigerbeetle" ,"version"]
+      timeout: 20s
+      retries: 10
+      start_period: 40s
+      interval: 30s
 
 volumes:
   certs_vol:
