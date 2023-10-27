@@ -141,7 +141,7 @@ requirements.lock
 Chart.lock
 
 # Helm Publish Repo
-**/manifests/infra/infra-helm/repo/**
+**/manifests/infra/repo/**
 
 
 # Terraform
