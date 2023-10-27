@@ -20,7 +20,7 @@ export class TransfersComponent implements OnInit, OnDestroy {
 	partyIdTypeList = ["ALL", "MSISDN", "PERSONAL_ID", "BUSINESS", "DEVICE", "ACCOUNT_ID", "IBAN", "ALIAS"];
 	transferStateList = ["ALL", "Received", "Reserved", "Rejected", "Committed", "Expired"]
 	currencyCodeList = ["ALL", "EUR", "USD"];
-	transferTypeList = ["ALL", "TRANSFER", "WITHDRAWAL", "PAYMENT", "REFUND"];
+	transferTypeList = ["ALL", "DEPOSIT", "WITHDRAWAL", "REFUND"];
 
 	isFilterShow: boolean = false;
 	transferDetail: Transfer | null = null;
@@ -62,7 +62,7 @@ export class TransfersComponent implements OnInit, OnDestroy {
 
 	search() {
 		const { filterTransferState, filterCurrency, filterStartDate, filterEndDate, filterTransferId, filterPayerIdType, filterPayeeIdType, filterPayeeDfspName, filterPayerDfspName, filterTransferType, filterPayerValue, filterPayeeIdValue } = this.filterForm.value
-
+		console.log('formValue', this.filterForm.value);
 
 		const startDate = filterStartDate ? new Date(filterStartDate).valueOf() : undefined;
 		const endDate = filterEndDate ? new Date(filterEndDate).valueOf() : undefined;

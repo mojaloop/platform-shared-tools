@@ -43,6 +43,15 @@
 				</div>
 
 				<div class="form-group col-md-3">
+					<label for="filterTransferType">Transfer Type:</label>
+					<select formControlName="filterTransferType" id="filterTransferType" class="form-control">
+						<option *ngFor="let transferType of transferTypeList" value="{{transferType}}">
+							{{transferType}}
+						</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-3">
 					<label for="filterPayerIdType">Payer ID Type:</label>
 					<select formControlName="filterPayerIdType" id="filterPayerIdType" class="form-control">
 						<option *ngFor="let partyIdType of partyIdTypeList" value="{{partyIdType}}">
@@ -99,6 +108,8 @@
 
 				<!-- Add filter controls here  -->
 
+				<div class="col-md-9"></div>
+
 				<div class="col-md-3 d-flex">
 					<div class="form-group w-50">
 						<label for="clearBtn">&nbsp;</label>
@@ -125,6 +136,7 @@
 			<tr>
 				<th scope="col">Transfer ID</th>
 				<th scope="col">State</th>
+				<th scope="col">Type</th>
 				<th scope="col">Currency</th>
 				<th scope="col">Amount</th>
 				<th scope="col" class="text-center">Payer DFSP Name</th>
@@ -145,6 +157,7 @@
 				<td *ngIf="item.transferState==='RESERVED'" class="text-warning">{{item.transferState}}</td>
 				<td *ngIf="item.transferState!=='RESERVED' && item.transferState!=='COMMITTED'" class="text-danger">
 					{{item.transferState}}</td>
+				<td>_</td>
 				<td>{{item.currencyCode}}</td>
 				<td>{{item.amount}}</td>
 				<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
