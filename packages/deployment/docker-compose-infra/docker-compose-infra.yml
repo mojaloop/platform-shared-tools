@@ -198,6 +198,8 @@ services:
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic TransfersBcTimeouts
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic PlatformConfigurationBcEvents
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic ParticipantsBcEvents
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic SchedulingBcCommands
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic SchedulingBcEvents
       echo -e '\nSuccessfully created the following topics:'
       kafka-topics --bootstrap-server kafka:19092 --list
       "
