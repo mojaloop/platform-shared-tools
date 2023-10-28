@@ -62,11 +62,11 @@ export class QuotesService {
 
 	getAllQuotes(): Observable<Quote[]> {
 		return new Observable<Quote[]>((subscriber) => {
-			this._http.get<Quote[]>(SVC_BASEURL + "/quotes/").subscribe(
-				(result: Quote[]) => {
+			this._http.get<QuotingSearchResults>(SVC_BASEURL + "/quotes/").subscribe(
+				(result: QuotingSearchResults) => {
 					console.log(`got response: ${result}`);
 
-					subscriber.next(result);
+					subscriber.next(result.items);
 					return subscriber.complete();
 				},
 				(error) => {
@@ -179,54 +179,6 @@ export class QuotesService {
 						return subscriber.complete();
 					}
 				);
-		});
-	}
-
-	searchQuotes(
-		quoteId?: string,
-		transactionId?: string,
-		amountType?: string,
-		transactionType?: string
-	): Observable<Quote[]> {
-		return new Observable<Quote[]>((subscriber) => {
-			let url = SVC_BASEURL + "/quotes/?";
-
-			if (quoteId) {
-				url += `quoteId=${encodeURIComponent(quoteId)}&`;
-			}
-			if (transactionId) {
-				url += `transactionId=${encodeURIComponent(transactionId)}&`;
-			}
-			if (amountType) {
-				url += `amountType=${encodeURIComponent(amountType)}&`;
-			}
-			if (transactionType) {
-				url += `transactionType=${encodeURIComponent(transactionType)}&`;
-			}
-
-			if (url.endsWith("&")) {
-				url = url.slice(0, url.length - 1);
-			}
-
-			this._http.get<Quote[]>(url).subscribe(
-				(result: Quote[]) => {
-					console.log(`got response: ${result}`);
-
-					subscriber.next(result);
-					return subscriber.complete();
-				},
-				(error) => {
-					if (error && error.status === 403) {
-						console.warn("Access forbidden received on getAllTransfers");
-						subscriber.error(new UnauthorizedError(error.error?.msg));
-					} else {
-						console.error(error);
-						subscriber.error(error.error?.msg);
-					}
-
-					return subscriber.complete();
-				}
-			);
 		});
 	}
 

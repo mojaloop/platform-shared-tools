@@ -46,9 +46,9 @@ export class TransferCreateComponent implements OnInit {
 		this.newTransfer();
 
 		try {
-			let participants = await this._participantsSvc.getAllParticipants().toPromise();
-			participants = participants.filter(value => value.id !== "hub");
-			this.participants.next(participants);
+			const participantsRes = await this._participantsSvc.getAllParticipants().toPromise();
+			const onlyDfsps = participantsRes.items.filter(value => value.id !== "hub");
+			this.participants.next(onlyDfsps);
 
 			const quotes = await this._quotesSvc.getAllQuotes().toPromise();
 			quotes.reverse();

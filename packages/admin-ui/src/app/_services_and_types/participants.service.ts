@@ -134,10 +134,10 @@ export class ParticipantsService {
 		};
 	}
 
-	getAllParticipants(): Observable<IParticipant[]> {
-		return new Observable<IParticipant[]>((subscriber) => {
-			this._http.get<IParticipant[]>(SVC_BASEURL + "/participants/").subscribe(
-				(result: IParticipant[]) => {
+	getAllParticipants(): Observable<ParticipantsSearchResults> {
+		return new Observable<ParticipantsSearchResults>((subscriber) => {
+			this._http.get<ParticipantsSearchResults>(SVC_BASEURL + "/participants/").subscribe(
+				(result: ParticipantsSearchResults) => {
 					console.log(`got response: ${result}`);
 
 					subscriber.next(result);

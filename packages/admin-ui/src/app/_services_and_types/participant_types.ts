@@ -30,9 +30,11 @@
 
 "use strict";
 
+import { IParticipant } from "@mojaloop/participant-bc-public-types-lib";
+
 export declare type ParticipantsSearchResults = {
 	pageSize: number;
 	totalPages: number;
 	pageIndex: number;
-	items: any[];
+	items: IParticipant[];
 }

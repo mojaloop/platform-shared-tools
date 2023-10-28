@@ -28,7 +28,7 @@ export class TestsComponent implements OnInit {
 
 		this.participantsSubs = this._participantsSvc.getAllParticipants().subscribe((list) => {
 			// remove the hub from the list
-			const newList: IParticipant[] = list.filter(value => value.id !== this._participantsSvc.hubId);
+			const newList: IParticipant[] = list.items.filter(value => value.id !== this._participantsSvc.hubId);
 
 			const currenciesList: string[] = [];
 			newList.forEach(participant => {
