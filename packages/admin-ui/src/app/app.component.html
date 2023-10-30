@@ -4,9 +4,9 @@
 
 	<ng-container *ngIf="(isLoggedIn | async); else notLoggedIn" >
 		<ul class="navbar-nav ml-auto navbar-right">
-			<li class="nav-item">
+			<!--<li class="nav-item">
 				<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
-			</li>
+			</li>-->
 			<li class="nav-item ml-2">
 				<div class="btn-group">
 					<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -68,7 +68,7 @@
 						   data-toggle="collapse" role="button">
 							<i class="bi bi-search"></i>Account Lookup
 						</a>
-						<ul class="submenu collapse" id="account-lookup-menu">
+						<ul class="submenu collapse" id="account-lookup-menu" routerLinkActive="show">
 
 							<li>
 								<a class="nav-link" routerLinkActive="active" routerLink="/account-lookup-oracles">
@@ -76,8 +76,7 @@
 								</a>
 							</li>
 							<li>
-								<a class="nav-link" hrouterLinkActive="active"
-								   routerLink="/account-lookup-associations">
+								<a class="nav-link" hrouterLinkActive="active" routerLink="/account-lookup-associations">
 									Associations
 								</a>
 							</li>
@@ -95,7 +94,7 @@
 						   data-toggle="collapse" role="button">
 							<i class="bi bi-receipt"></i>Quotes
 						</a>
-						<ul class="submenu collapse" id="quotes-menu">
+						<ul class="submenu collapse" id="quotes-menu"  routerLinkActive="show">
 							<li>
 								<a class="nav-link " routerLinkActive="active" routerLink="/quotes">
 									Quotes
@@ -110,12 +109,12 @@
 					</li>
 
 					<!--transfers-->
-					<li class="nav-item has-submenu" *ngIf="(isLoggedIn | async)">
+					<li class="nav-item has-submenu" *ngIf="(isLoggedIn | async)" >
 						<a class="nav-link dropdown-toggle" routerLinkActive="active" href="#transfers-menu"
 						   data-toggle="collapse" role="button">
 							<i class="bi bi-receipt"></i>Transfers
 						</a>
-						<ul class="submenu collapse" id="transfers-menu">
+						<ul class="submenu collapse" id="transfers-menu"  routerLinkActive="show">
 							<li>
 								<a class="nav-link " routerLinkActive="active" routerLink="/transfers">
 									Transfers
@@ -130,12 +129,12 @@
 					</li>
 
 					<!--settlements-->
-					<li class="nav-item has-submenu" *ngIf="(isLoggedIn | async)">
+					<li class="nav-item has-submenu" *ngIf="(isLoggedIn | async)" >
 						<a class="nav-link dropdown-toggle" routerLinkActive="active" href="#settlements-menu"
 						   data-toggle="collapse" role="button">
 							<i class="bi bi-arrow-left-right"></i>Settlements
 						</a>
-						<ul class="submenu collapse" id="settlements-menu">
+						<ul class="submenu collapse" id="settlements-menu"  routerLinkActive="show">
 							<li>
 								<a class="nav-link " routerLinkActive="active" routerLink="/settlements/models">
 									Models
@@ -175,25 +174,26 @@
 
 				<ul class="nav flex-column" *ngIf="(isLoggedIn | async)"><!-- secondary sidebar-->
 					<!-- platform configuration -->
-					<li class="nav-item has-submenu">
+					<li class="nav-item has-submenu" >
 						<a class="nav-link dropdown-toggle" routerLinkActive="active" href="#platform-config-menu"
 						   data-toggle="collapse" role="button"><i class="bi bi-sliders"></i>Platform Configuration
 						</a>
-						<ul class="submenu collapse" id="platform-config-menu">
+						<ul class="submenu collapse" id="platform-config-menu" routerLinkActive="show">
 							<li>
-								<a class="nav-link " routerLinkActive="active" routerLink="/platform-configuration">
+								<a class="nav-link " routerLinkActive="active"
+								   routerLink="/platform-configuration/main">
 									Main
 								</a>
 							</li>
 							<li>
 								<a class="nav-link " routerLinkActive="active"
-								   routerLink="/platform-configuration-global">
+								   routerLink="/platform-configuration/global">
 									Global Configurations
 								</a>
 							</li>
 							<li>
 								<a class="nav-link " routerLinkActive="active"
-								   routerLink="/platform-configuration-bc">
+								   routerLink="/platform-configuration/bcs">
 									Bounded Context Configurations
 								</a>
 							</li>
@@ -201,11 +201,11 @@
 					</li>
 
 					<!-- security -->
-					<li class="nav-item has-submenu">
+					<li class="nav-item has-submenu" >
 						<a class="nav-link dropdown-toggle" routerLinkActive="active" href="#security-menu"
 						   data-toggle="collapse" role="button"><i class="bi bi-shield-check"></i>Security
 						</a>
-						<ul class="submenu collapse" id="security-menu">
+						<ul class="submenu collapse" id="security-menu" routerLinkActive="show">
 							<li>
 								<a class="nav-link " routerLinkActive="active" routerLink="/security/builtin_iam/users">
 									Builtin IAM - Users

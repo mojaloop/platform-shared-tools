@@ -117,16 +117,20 @@ const routes: Routes = [
 	{path: "bulk-transfers/:id", component: BulkTransferDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "account-lookup/oracles/:id", component: QuoteDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{
-		path: "platform-configuration-global",
+		path: "platform-configuration/main",
+		component: PlatformConfigurationComponent,
+		canActivate: [CanLoadIsLoggedIn]
+	},
+	{
+		path: "platform-configuration/global",
 		component: PlatformConfigurationGlobalComponent,
 		canActivate: [CanLoadIsLoggedIn]
 	},
 	{
-		path: "platform-configuration-bc",
+		path: "platform-configuration/bcs",
 		component: PlatformConfigurationBoundedContextComponent,
 		canActivate: [CanLoadIsLoggedIn]
 	},
-	{path: "platform-configuration", component: PlatformConfigurationComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/matrix/:id", component: SettlementsMatrixDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/matrix", component: SettlementsMatricesComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/batches", component: SettlementsBatchesComponent, canActivate: [CanLoadIsLoggedIn]},

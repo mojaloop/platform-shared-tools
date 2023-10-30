@@ -50,13 +50,18 @@ export class TransferCreateComponent implements OnInit {
 			const onlyDfsps = participantsRes.items.filter(value => value.id !== "hub");
 			this.participants.next(onlyDfsps);
 
-			const quotes = await this._quotesSvc.getAllQuotes().toPromise();
-			quotes.reverse();
-			this.quotes.next(quotes);
-
 			if (!this.inputQuoteId) {
+				const quotes = await this._quotesSvc.getAllQuotes().toPromise();
+				quotes.reverse();
+				this.quotes.next(quotes);
 				this.form.controls["selectedQuoteId"].setValue(quotes[0].quoteId);
 			} else {
+				const quote = await this._quotesSvc.getQuote(this.inputQuoteId).toPromise();
+				if(!quote){
+					this._messageService.addError("Could not get quote by id");
+					return;
+				}
+				this.quotes.next([quote]);
 				this.form.controls["selectedQuoteId"].setValue(this.inputQuoteId);
 				this.applyQuote(this.inputQuoteId);
 			}
