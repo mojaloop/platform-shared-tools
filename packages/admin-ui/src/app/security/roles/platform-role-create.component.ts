@@ -3,7 +3,7 @@ import {BehaviorSubject, Observable, Subscription} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PlatformRole, Privilege} from "@mojaloop/security-bc-public-types-lib";
 import {AuthorizationService} from "src/app/_services_and_types/authorization.service";
-import {AllPrivilegesResp, IBuiltinIamApplicationCreate} from "../../_services_and_types/security_types";
+import {PrivilegeWithOwnerAppInfo, IBuiltinIamApplicationCreate} from "../../_services_and_types/security_types";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {MessageService} from "../../_services_and_types/message.service";
 

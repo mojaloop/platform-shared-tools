@@ -1,12 +1,8 @@
 import {Injectable} from "@angular/core";
-import {SettingsService} from "src/app/_services_and_types/settings.service";
 import {HttpClient} from "@angular/common/http";
-import {AllPrivilegesResp} from "./security_types";
 import {Observable} from "rxjs";
-import {PlatformRole, TokenEndpointResponse} from "@mojaloop/security-bc-public-types-lib";
 import {Transfer, TransfersSearchResults} from "src/app/_services_and_types/transfer_types";
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
-import * as uuid from "uuid";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
 
 const SVC_BASEURL = "/_transfers";

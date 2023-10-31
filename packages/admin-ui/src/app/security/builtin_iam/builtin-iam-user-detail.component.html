@@ -144,7 +144,7 @@
 	<div class="modal-body">
 		<form class="">
 			<div class="form-group">
-				<label class="" for="addRoles_RolesIds">Avaliable Roles</label>
+				<label class="" for="addRoles_RolesIds">Available Roles</label>
 				<select class="form-control" id="addRoles_RolesIds" multiple size="10">
 					<ng-container *ngFor="let role of (allRoles | async)">
 						<option *ngIf="!role.isApplicationRole" value="{{role.id}}">{{role.labelName}}</option>
