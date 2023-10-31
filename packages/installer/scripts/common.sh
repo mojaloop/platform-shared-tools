@@ -21,10 +21,25 @@ handle_warning() {
   WARNING_IS_CURRENT=true
 }
 
+function set_arch {
+  # note the setting and checking of architecture could do with some tidying up
+  local arch=`uname -p`
+  if [[  "$arch" == "x86_64" ]]; then 
+     ARCH="$arch"
+  elif [[ "$arch" == "aarch64" ]] || [[ "$arch" == "arm" ]] || [[ "$arch" == "arm64" ]]; then 
+    ARCH="arm64"
+  else 
+    printf " ** Error: unable to detect x86_64 or arm64 architecture   \n"
+    printf "    Please refer to the vNext installer readme for pre-requisites  \n" 
+    exit 1
+  fi
+}
+
 function check_arch {
   ## check architecture Mojaloop deploys on x64 only today arm is coming  
-  ARCH=`uname -p`
-  if [[ ! "$ARCH" == "x86_64" ]]; then 
+  #ARCH=`uname -p`
+  if [[ "$ARCH" == "x86_64" ]]; then 
+    continue
     printf " ** Warning: Mojaloop vNext is only running confidently on x86_64 today. ARM64 is experimental  \n"
     printf " ** \n"
   fi

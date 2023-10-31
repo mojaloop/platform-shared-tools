@@ -120,7 +120,8 @@ TERRAFORM_CLUSTER_DIR="cluster1"  # this is the name of the directory containing
 #### Set global env vars ####
 AWS_CREDENTIALS_DIR="$HOME/.aws"   # directory with the aws "credentials file" normally should not need changing
 SCRIPT_DIR=$( cd $(dirname "$0") ; pwd )
-REPO_DIR=$( cd $(dirname "$0")/../../../.. ; pwd ) # the vNext repo directory 
+REPO_BASE_DIR=$( cd $(dirname "$0")/../../../.. ; pwd ) # the vNext repo directory 
+echo "REPO_BASE_DIR = $REPO_BASE_DIR"
 HOST_TERRAFORM_DIR=$( cd $(dirname "$0")/../terraform ; pwd )
 # point to the docker image that results from running build.sh 
 DOCKER_IMAGE_NAME=`grep DOCKER_IMAGE_NAME $SCRIPT_DIR/build.sh | grep -v "\-t" | cut -d "\"" -f2 | awk '{print $1}'`

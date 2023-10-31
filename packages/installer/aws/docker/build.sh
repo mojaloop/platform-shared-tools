@@ -52,15 +52,27 @@ function docker_build_cache {
 DOCKER_IMAGE_NAME="vnext-aws-container:1"
 USER_NAME=$(whoami)
 USER_ID=$(id -u $USER_NAME)
-ARCH=`dpkg --print-architecture`
+#ARCH=`dpkg --print-architecture`
 TERRAFORM_VERSION="1.5.1"
 HELM_VERSION="3.12.1"
-RUN_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # the directory that this script is run from 
-INSTALL_DIR="$RUN_DIR/install"
+#RUN_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # the directory that this script is run from 
+SCRIPT_DIR=$( cd $(dirname "$0") ; pwd )
+echo "SCRIPT_DIR=$SCRIPT_DIR"
+INSTALL_DIR="$SCRIPT_DIR/install"
+REPO_BASE_DIR=$( cd $(dirname "$0")/../../../.. ; pwd ) # the vNext repo directory 
+echo "REPO_BASE_DIR = $REPO_BASE_DIR"
+COMMON_SCRIPTS_DIR=$REPO_BASE_DIR/packages/installer/scripts
+echo "COMMON_SCRIPTS_DIR = $COMMON_SCRIPTS_DIR"
 
 
 
-trap 'rm -f "$INSTALL_DIR/$BASHRC_FILE" ' ERR
+source $COMMON_SCRIPTS_DIR/common.sh 
+set_arch 
+
+echo "ARCH is $ARCH"
+
+
+#trap 'rm -f "$INSTALL_DIR/$BASHRC_FILE" ' ERR
 
 # Process command line options as required
 while getopts "v:nhH" OPTION ; do
