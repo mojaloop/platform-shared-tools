@@ -47,12 +47,14 @@ export class QuotesComponent implements OnInit, OnDestroy {
 		const filterQuoteTransactionType = (document.getElementById("filterQuoteTransactionType") as HTMLSelectElement).value || undefined;
 		const filterQuoteId = (document.getElementById("filterQuoteId") as HTMLSelectElement).value || undefined;
 		const filterTransactionId = (document.getElementById("filterTransactionId") as HTMLSelectElement).value || undefined;
+		const filterBulkQuoteId = (document.getElementById("filterBulkQuoteId") as HTMLSelectElement).value || undefined;
 
 		this.quotesSubs = this._quotesSvc.search(
 			(filterQuoteAmountType === this.ALL_STR_ID ? undefined : filterQuoteAmountType),
 			(filterQuoteTransactionType === this.ALL_STR_ID ? undefined : filterQuoteTransactionType),
 			(filterQuoteId === this.ALL_STR_ID ? undefined : filterQuoteId),
 			(filterTransactionId === this.ALL_STR_ID ? undefined : filterTransactionId),
+			(filterBulkQuoteId === this.ALL_STR_ID ? undefined : filterBulkQuoteId),
 			undefined,
 			pageIndex
 		).subscribe((result) => {

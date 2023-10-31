@@ -13,24 +13,23 @@
 <div class="filterbox">
 	<form >
 		<table class="table">
-			<tr class="form-row">
-
-				<div class="form-group col-md-1">
-					<label for="filterPartyType">Party Type:</label>
+			<tr class="form-row justify-content-end">
+				<div class="form-group col-md-2">
+					<label for="filterPartyType">Party Type</label>
 					<select class="form-control" id="filterPartyType">
 						<option value="{{ALL_STR_ID}}">(All)</option>
 						<option value="{{item}}" *ngFor="let item of (keywordPartyType | async)">{{item}}</option>
 					</select>
 				</div>
-				<div class="form-group col-md-1">
-					<label for="filterCurrency">Currency:</label>
+				<div class="form-group col-md-2">
+					<label for="filterCurrency">Currency</label>
 					<select class="form-control" id="filterCurrency">
 						<option value="{{ALL_STR_ID}}">(All)</option>
 						<option value="{{item}}" *ngFor="let item of (keywordCurrency | async)">{{item}}</option>
 					</select>
 				</div>
-				<div class="form-group col-md-1">
-					<label for="filterFspId">Participant:</label>
+				<div class="form-group col-md-2">
+					<label for="filterFspId">Participant</label>
 					<select class="form-control" id="filterFspId">
 						<option value="{{ALL_STR_ID}}">(All)</option>
 						<option value="{{item}}" *ngFor="let item of (keywordFspId | async)">{{item}}</option>
