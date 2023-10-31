@@ -1,17 +1,18 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
-import {BehaviorSubject, Subscription} from "rxjs";
-import {UnauthorizedError} from "src/app/_services_and_types/errors";
-import {MessageService} from "src/app/_services_and_types/message.service";
-import {SettlementsService} from "src/app/_services_and_types/settlements.service";
-import {ISettlementBatch, ISettlementBatchTransfer} from "@mojaloop/settlements-bc-public-types-lib";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { BehaviorSubject, Subscription } from "rxjs";
+import { UnauthorizedError } from "src/app/_services_and_types/errors";
+import { MessageService } from "src/app/_services_and_types/message.service";
+import { SettlementsService } from "src/app/_services_and_types/settlements.service";
+import { ISettlementBatch, ISettlementBatchTransfer } from "@mojaloop/settlements-bc-public-types-lib";
 import * as uuid from "uuid";
-import {ActivatedRoute, Router} from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 const DEFAULT_TIME_FILTER_HOURS = 8;
 
 @Component({
 	selector: 'app-settlements',
-	templateUrl: './settlements.batches.component.html'
+	templateUrl: './settlements.batches.component.html',
+	styleUrls: ['./settlements.batches.component.css']
 })
 export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 	readonly ALL_STR_ID = "(All)";

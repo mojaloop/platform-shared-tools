@@ -6,7 +6,6 @@ import { Observable } from "rxjs";
 import { PlatformRole, TokenEndpointResponse } from "@mojaloop/security-bc-public-types-lib";
 import { Transfer } from "src/app/_services_and_types/transfer_types";
 import { AuthenticationService } from "src/app/_services_and_types/authentication.service";
-import * as uuid from "uuid";
 import { UnauthorizedError } from "src/app/_services_and_types/errors";
 
 const SVC_BASEURL = "/_transfers";
@@ -14,13 +13,13 @@ const SVC_BASEURL = "/_transfers";
 @Injectable({
 	providedIn: "root",
 })
+
 export class TransfersService {
 
 	constructor(private _http: HttpClient, private _authentication: AuthenticationService) {
 	}
 
 	createEmptyTransfer(): Transfer {
-		const now = Date.now();
 		return {
 			transferId: "",
 			bulkTransferId: "",
@@ -79,7 +78,7 @@ export class TransfersService {
 		transferType?: string,
 	): Observable<Transfer[]> {
 		return new Observable<Transfer[]>(subscriber => {
-			let url = SVC_BASEURL + "/transfers/?";
+			let url = SVC_BASEURL + "/entries/?";
 
 			if (state) {
 				url += `state=${encodeURIComponent(state)}&`;

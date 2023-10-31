@@ -14,7 +14,8 @@ import { FormBuilder, FormGroup } from "@angular/forms";
 
 @Component({
 	selector: 'app-settlements',
-	templateUrl: './settlements.matrices.component.html'
+	templateUrl: './settlements.matrices.component.html',
+	styleUrls: ['./settlements.matrices.component.css']
 })
 export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 	private _matrixId: string | null = null;
@@ -33,6 +34,8 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 
 	//filter options
 	currencyCodeList = ["ALL", "EUR", "USD"];
+	matrixTypeList = ["ALL", "DYNAMIC", "STATIC"];
+	matrixStateList = ["ALL", "IDLE", "BUSY", "FINALIZED", "OUT_OF_SYNC", "LOCKED"]
 
 
 	search() {

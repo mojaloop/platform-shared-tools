@@ -22,14 +22,20 @@
 				<div class="form-group col-md-3">
 					<label for="filterPayerDfspName">Payer DFSP Name:</label>
 					<select formControlName="filterPayerDfspName" id="filterPayerDfspName" class="form-control">
-						<option *ngFor="let partyName of partyNameList" value="{{partyName}}">{{partyName}}</option>
+						<option value="ALL">ALL</option>
+						<option *ngFor="let item of participants | async" value="{{item.id}}">
+							{{item.name}}
+						</option>
 					</select>
 				</div>
 
 				<div class="form-group col-md-3">
 					<label for="filterPayeeDfspName">Payee DFSP Name:</label>
 					<select formControlName="filterPayeeDfspName" id="filterPayeeDfspName" class="form-control">
-						<option *ngFor="let partyName of partyNameList" value="{{partyName}}">{{partyName}}</option>
+						<option value="ALL">ALL</option>
+						<option *ngFor="let item of participants | async" value="{{item.id}}">
+							{{item.name}}
+						</option>
 					</select>
 				</div>
 
@@ -229,16 +235,17 @@
 <ul class="pagination d-flex justify-content-end align-items-center">
 	<li class="page-item d-flex align-items-center ">
 		<span>Rows per page:</span>
-		<select class="rows-selector form-control  ml-2" id="rowsPerPage">
-			<option value="ALL">5</option>
-			<option value="USD">25</option>
-			<option value="EUR">50</option>
-			<option value="EUR">100</option>
+		<select [([(ngModel)]="initialValues.pageSize" )] class="rows-selector form-control  ml-2" id="rowsPerPage">
+			<option value="5">5</option>
+			<option value="25">25</option>
+			<option value="50">50</option>
+			<option value="100">100</option>
 		</select>
 	</li>
 	<li class="page-item d-flex align-items-center ">
 		<span>Go to page</span>
-		<input type="number" min="1" value="1" class="form-control page-number ml-2">
+		<input [([(ngModel)]="initialValues.pageIndex" )] type="number" min="1" value="1"
+			class="form-control page-number ml-2">
 	</li>
 	<li class="page-item">
 		Page 1 of 1

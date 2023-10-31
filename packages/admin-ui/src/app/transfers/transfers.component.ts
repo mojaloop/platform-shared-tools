@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { TransfersService } from "src/app/_services_and_types/transfers.service";
+import { ParticipantsService } from "src/app/_services_and_types/participants.service";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { Transfer } from "src/app/_services_and_types/transfer_types";
 import { MessageService } from "src/app/_services_and_types/message.service";
 import { UnauthorizedError } from "src/app/_services_and_types/errors";
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { IParticipant } from "@mojaloop/participant-bc-public-types-lib";
 
 @Component({
 	selector: 'app-transfers',
@@ -14,8 +16,11 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class TransfersComponent implements OnInit, OnDestroy {
 	transfers: BehaviorSubject<Transfer[]> = new BehaviorSubject<Transfer[]>([]);
 	transfersSubs?: Subscription;
+	participantsSubs?: Subscription;
 	filterForm: FormGroup;
 
+	//Filters
+	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
 	partyNameList = ["ALL", "VisionFund_Myanmar", "OkDollar", "Company_A_Limited"];
 	partyIdTypeList = ["ALL", "MSISDN", "PERSONAL_ID", "BUSINESS", "DEVICE", "ACCOUNT_ID", "IBAN", "ALIAS"];
 	transferStateList = ["ALL", "Received", "Reserved", "Rejected", "Committed", "Expired"]
@@ -38,16 +43,36 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		filterStartDate: null,
 		filterEndDate: null,
 		filterId: null,
+		pageIndex: 1,
+		pageSize: 5,
 		//add initial values for other form controls (filters)
 	}
 
-	constructor(private formBuilder: FormBuilder, private _transfersSvc: TransfersService, private _messageService: MessageService,) {
+	constructor(private _participantsSvc: ParticipantsService, private formBuilder: FormBuilder, private _transfersSvc: TransfersService, private _messageService: MessageService,) {
 		this.filterForm = this.formBuilder.group(this.initialValues);
-
 	}
 
 	ngOnInit(): void {
 		console.log("TransfersComponent ngOnInit");
+
+		this.participantsSubs = this._participantsSvc
+			.getAllParticipants()
+			.subscribe(
+				(list) => {
+
+					// remove the hub from the list
+					const newList: IParticipant[] = list.filter(
+						(value) => value.id !== this._participantsSvc.hubId
+					);
+
+					this.participants.next(newList);
+				},
+				(error) => {
+					if (error && error instanceof UnauthorizedError) {
+						this._messageService.addError(error.message);
+					}
+				}
+			);
 
 		this.clearFilters();
 	}
@@ -60,9 +85,29 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		this.isFilterShow = !this.isFilterShow
 	}
 
+	onPrevious() {
+		this.initialValues.pageIndex--;
+	}
+
+	onNext() {
+		this.initialValues.pageIndex++;
+	}
+
 	search() {
-		const { filterTransferState, filterCurrency, filterStartDate, filterEndDate, filterTransferId, filterPayerIdType, filterPayeeIdType, filterPayeeDfspName, filterPayerDfspName, filterTransferType, filterPayerValue, filterPayeeIdValue } = this.filterForm.value
-		console.log('formValue', this.filterForm.value);
+		const {
+			filterTransferState,
+			filterCurrency,
+			filterStartDate,
+			filterEndDate,
+			filterTransferId,
+			filterPayerIdType,
+			filterPayeeIdType,
+			filterPayeeDfspName,
+			filterPayerDfspName,
+			filterTransferType,
+			filterPayerValue,
+			filterPayeeIdValue
+		} = this.filterForm.value;
 
 		const startDate = filterStartDate ? new Date(filterStartDate).valueOf() : undefined;
 		const endDate = filterEndDate ? new Date(filterEndDate).valueOf() : undefined;
@@ -77,18 +122,23 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		const payeeIdValue = filterPayeeIdValue || undefined;
 		const transferType = filterTransferType.toUpperCase() === "ALL" ? undefined : filterTransferType;
 
-
 		this.transfersSubs = this._transfersSvc.searchTransfers(
-			transferState, currency, startDate,
-			endDate, transferId, payerIdType, payeeIdType,
-			payerDfspName, payeeDfspName, payerIdValue,
-			payeeIdValue, transferType
+			transferState,
+			currency,
+			startDate,
+			endDate,
+			transferId,
+			payerIdType,
+			payeeIdType,
+			payerDfspName,
+			payeeDfspName,
+			payerIdValue,
+			payeeIdValue,
+			transferType
 		).subscribe((list) => {
-			console.log("TransfersComponent search - got searchTransfers");
-
 			this.transfers.next(list);
-		}, error => {
-			if (error && error instanceof UnauthorizedError) {
+		}, (error) => {
+			if (error instanceof UnauthorizedError) {
 				this._messageService.addError(error.message);
 			}
 		});

@@ -14,16 +14,16 @@
 				<div class="form-group col-md-3">
 					<label for="filterMatrixType">Type</label>
 					<select formControlName="filterMatrixType" id="filterMatrixType" class="form-control">
-						<!-- <option *ngFor="let partyName of partyNameList" value="{{partyName}}">{{partyName}}</option> -->
+						<option *ngFor="let matrixType of matrixTypeList" value="{{matrixType}}">{{matrixType}}</option>
 					</select>
 				</div>
 
 				<div class="form-group col-md-3">
 					<label for="filterMatrixState">State</label>
 					<select formControlName="filterMatrixState" id="filterMatrixState" class="form-control">
-						<!-- <option *ngFor="let transferState of transferStateList" value="{{transferState}}">
-							{{transferState}}
-						</option> -->
+						<option *ngFor="let matrixState of matrixStateList" value="{{matrixState}}">
+							{{matrixState}}
+						</option>
 					</select>
 				</div>
 
@@ -109,3 +109,37 @@
 		</tbody>
 	</table>
 </div>
+
+<!-- Pagination -->
+<ul class="pagination d-flex justify-content-end align-items-center">
+	<li class="page-item d-flex align-items-center ">
+		<span>Rows per page:</span>
+		<select class="rows-selector form-control  ml-2" id="rowsPerPage">
+			<option value="ALL">5</option>
+			<option value="USD">25</option>
+			<option value="EUR">50</option>
+			<option value="EUR">100</option>
+		</select>
+	</li>
+	<li class="page-item d-flex align-items-center ">
+		<span>Go to page</span>
+		<input type="number" min="1" value="1" class="form-control page-number ml-2">
+	</li>
+	<li class="page-item">
+		Page 1 of 1
+	</li>
+	<li class="page-indicator d-flex">
+		<div class="page-item">
+			<button class="page-link"><i class="bi bi-chevron-double-left text-body "></i></button>
+		</div>
+		<div class="page-item">
+			<button class="page-link"><i class="bi bi-chevron-left text-body"></i></button>
+		</div>
+		<div class="page-item">
+			<button class="page-link"><i class="bi bi-chevron-right text-body"></i></button>
+		</div>
+		<div class="page-item">
+			<button class="page-link"><i class="bi bi-chevron-double-right text-body"></i></button>
+		</div>
+	</li>
+</ul>
