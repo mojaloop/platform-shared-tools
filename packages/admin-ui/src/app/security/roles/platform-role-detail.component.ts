@@ -118,6 +118,7 @@ export class PlatformRoleDetailComponent implements OnInit {
 
 	addPrivileges(){
 		this._authorizationSvc.addPrivilegesToRole(this._roleId!, this.addPrivsSelectedIds).subscribe(value => {
+			this.addPrivsSelectedIds = [];
 			this._fetchRole();
 			this._messageService.addSuccess("Role privilege(s) added successfully");
 			// this.addPrivilegesModalRef!.close();
@@ -128,6 +129,7 @@ export class PlatformRoleDetailComponent implements OnInit {
 
 	removePrivileges() {
 		this._authorizationSvc.removePrivilegesFromRole(this._roleId!, this.curPrivsSelectedIds).subscribe(value => {
+			this.curPrivsSelectedIds = [];
 			this._fetchRole();
 			this._messageService.addSuccess("Role privilege(s) removed successfully");
 			// this.addPrivilegesModalRef!.close();

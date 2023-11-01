@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   authentication-svc:
-    image: mojaloop/security-bc-authentication-svc:0.3.3
+    image: mojaloop/security-bc-authentication-svc:0.3.4
 #    volumes:
 #      - authentication-svc_data:/app/data
     environment:
@@ -25,7 +25,7 @@ services:
     restart: unless-stopped
 
   authorization-svc:
-    image: mojaloop/security-bc-authorization-svc:0.3.3
+    image: mojaloop/security-bc-authorization-svc:0.3.6
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -43,7 +43,7 @@ services:
     restart: unless-stopped
 
   identity-svc:
-    image: mojaloop/security-bc-builtin-identity-svc:0.3.5
+    image: mojaloop/security-bc-builtin-identity-svc:0.3.6
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
