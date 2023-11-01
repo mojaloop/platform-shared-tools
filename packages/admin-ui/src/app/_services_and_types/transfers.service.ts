@@ -119,10 +119,10 @@ export class TransfersService {
 				url += `transferType=${encodeURIComponent(transferType)}&`;
 			}
 			if (pageIndex) {
-				url += `payeeIdValue=${encodeURIComponent(pageIndex)}&`;
+				url += `pageIndex=${encodeURIComponent(pageIndex)}&`;
 			}
 			if (pageSize) {
-				url += `transferType=${encodeURIComponent(pageSize)}&`;
+				url += `pageSize=${encodeURIComponent(pageSize)}&`;
 			}
 
 			if (url.endsWith("&")) {

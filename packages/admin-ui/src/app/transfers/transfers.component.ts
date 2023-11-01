@@ -113,6 +113,10 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		  }
 	}
 
+	onPageSizeChange() {
+		this.search();
+	}
+
 	search() {
 		const {
 			filterTransferState,
@@ -170,10 +174,6 @@ export class TransfersComponent implements OnInit, OnDestroy {
 				this._messageService.addError(error.message);
 			}
 		});
-	}
-
-	onPageSizeChange() {
-		this.search();
 	}
 
 	ngOnDestroy() {
