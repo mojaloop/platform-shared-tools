@@ -157,7 +157,7 @@
 					<td colspan="12">No transfers found</td>
 				</tr>
 			</ng-container>
-			<tr *ngFor="let item of (transfers | async)">
+			<tr *ngFor="let item of (transfers.items | async)">
 				<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
 				<td *ngIf="item.transferState==='COMMITTED'" class="text-success">{{item.transferState}}</td>
 				<td *ngIf="item.transferState==='RESERVED'" class="text-warning">{{item.transferState}}</td>
@@ -175,93 +175,46 @@
 	</table>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="viewDetailModal"
-	aria-hidden="true">
-	<div class="modal-dialog modal-xl  modal-dialog-centered w-100" role="document">
-		<div class="modal-content ">
-			<div class="modal-header bg-white ">
-				<h5 class="modal-title text-dark font-weight-bold" id="viewDetailTitle">Transfer Details</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body text-dark">
-				<div class="container-fluid w-100">
-					<div class="row p-2">
-						<div class="col-md-6 detail-container gap-2 p-3 rounded bg-light">
-							<p>General Information</p>
-							<div><span class="detail-label">Transfer ID:</span>{{transferDetail?.transferId}}</div>
-							<div><span class="detail-label">Transfer State:</span>{{transferDetail?.transferState}}
-							</div>
-							<div><span class="detail-label">Transfer Type:</span>_</div>
-							<div><span class="detail-label">Currency:</span>{{transferDetail?.currencyCode}} </div>
-							<div><span class="detail-label">Amount:</span>{{transferDetail?.amount}} </div>
-							<div><span class="detail-label">Batch ID:</span>_</div>
-							<div><span class="detail-label">Date Submitted:</span>{{transferDetail?.createdAt | date:
-								'medium'}} </div>
-							<div><span class="detail-label">Error Code:</span>1254 </div>
-							<div><span class="detail-label">Quote ID:</span>f997d93-f840-3801-684v-f0d8238df0k </div>
-						</div>
-						<div class="col-md-6 ">
-							<div class="detail-container bg-light rounded p-3">
-								<p>Payer Information</p>
-								<div><span class="detail-label">ID Type:</span></div>
-								<div><span class="detail-label">ID Value:</span> </div>
-								<div><span class="detail-label">First Name:</span> </div>
-								<div><span class="detail-label">Last Name:</span> </div>
-								<div><span class="detail-label">FSP ID:</span> </div>
-							</div>
-							<div class="detail-container bg-light rounded p-2 mt-3">
-								<p>Payee Information</p>
-								<div><span class="detail-label">ID Type:</span></div>
-								<div><span class="detail-label">ID Value:</span> </div>
-								<div><span class="detail-label">First Name:</span> </div>
-								<div><span class="detail-label">Last Name:</span> </div>
-								<div><span class="detail-label">FSP ID:</span> </div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-
 <!-- Pagination -->
 <ul class="pagination d-flex justify-content-end align-items-center">
-	<li class="page-item d-flex align-items-center ">
+	<li class="page-item d-flex align-items-center">
 		<span>Rows per page:</span>
-		<select [([(ngModel)]="initialValues.pageSize" )] class="rows-selector form-control  ml-2" id="rowsPerPage">
+		<select (change)="onPageSizeChange()" [(ngModel)]="pageSize" class="rows-selector form-control ml-2"
+			id="rowsPerPage">
 			<option value="5">5</option>
 			<option value="25">25</option>
 			<option value="50">50</option>
 			<option value="100">100</option>
 		</select>
 	</li>
-	<li class="page-item d-flex align-items-center ">
+	<li class="page-item d-flex align-items-center">
 		<span>Go to page</span>
-		<input [([(ngModel)]="initialValues.pageIndex" )] type="number" min="1" value="1"
+		<input (change)="onPageSizeChange()" [(ngModel)]="pageIndex" type="number" min="1"
 			class="form-control page-number ml-2">
 	</li>
 	<li class="page-item">
-		Page 1 of 1
+		Page {{ pageIndex }} of {{transfers.totalPages || 1}}
 	</li>
 	<li class="page-indicator d-flex">
 		<div class="page-item">
-			<button class="page-link"><i class="bi bi-chevron-double-left text-body "></i></button>
+			<button (click)="toFirstPage()" class="page-link">
+				<i class="bi bi-chevron-double-left text-body "></i>
+			</button>
 		</div>
 		<div class="page-item">
-			<button class="page-link"><i class="bi bi-chevron-left text-body"></i></button>
+			<button [disabled]=" pageIndex===1" (click)="onPrevious()" class="page-link">
+				<i class="bi bi-chevron-left text-body"></i>
+			</button>
 		</div>
 		<div class="page-item">
-			<button class="page-link"><i class="bi bi-chevron-right text-body"></i></button>
+			<button [disabled]=" transfers.totalPages === pageIndex" (click)="onNext()" class="page-link">
+				<i class="bi bi-chevron-right text-body"></i>
+			</button>
 		</div>
 		<div class="page-item">
-			<button class="page-link"><i class="bi bi-chevron-double-right text-body"></i></button>
+			<button (click)="toLastPage()" class="page-link">
+				<i class="bi bi-chevron-double-right text-body"></i>
+			</button>
 		</div>
 	</li>
 </ul>

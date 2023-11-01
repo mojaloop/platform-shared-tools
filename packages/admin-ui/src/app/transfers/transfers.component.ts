@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { TransfersService } from "src/app/_services_and_types/transfers.service";
 import { ParticipantsService } from "src/app/_services_and_types/participants.service";
 import { BehaviorSubject, Subscription } from "rxjs";
-import { Transfer } from "src/app/_services_and_types/transfer_types";
+import { Transfer, TransferSearchResult } from "src/app/_services_and_types/transfer_types";
 import { MessageService } from "src/app/_services_and_types/message.service";
 import { UnauthorizedError } from "src/app/_services_and_types/errors";
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -14,10 +14,12 @@ import { IParticipant } from "@mojaloop/participant-bc-public-types-lib";
 	styleUrls: ['./transfers.component.css']
 })
 export class TransfersComponent implements OnInit, OnDestroy {
-	transfers: BehaviorSubject<Transfer[]> = new BehaviorSubject<Transfer[]>([]);
+	transfers: BehaviorSubject<TransferSearchResult[]> = new BehaviorSubject<TransferSearchResult[]>([]);
 	transfersSubs?: Subscription;
 	participantsSubs?: Subscription;
 	filterForm: FormGroup;
+	pageIndex:number = 1;
+	pageSize:number = 5;
 
 	//Filters
 	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
@@ -28,7 +30,6 @@ export class TransfersComponent implements OnInit, OnDestroy {
 	transferTypeList = ["ALL", "DEPOSIT", "WITHDRAWAL", "REFUND"];
 
 	isFilterShow: boolean = false;
-	transferDetail: Transfer | null = null;
 	initialValues = {
 		filterPayerDfspName: 'ALL',
 		filterPayeeDfspName: 'ALL',
@@ -43,8 +44,6 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		filterStartDate: null,
 		filterEndDate: null,
 		filterId: null,
-		pageIndex: 1,
-		pageSize: 5,
 		//add initial values for other form controls (filters)
 	}
 
@@ -86,11 +85,24 @@ export class TransfersComponent implements OnInit, OnDestroy {
 	}
 
 	onPrevious() {
-		this.initialValues.pageIndex--;
+		this.pageIndex --;
+		this.search()
 	}
 
 	onNext() {
-		this.initialValues.pageIndex++;
+		this.pageIndex ++;
+		this.search()
+	}
+
+	toFirstPage(){
+		this.pageIndex = 1
+		this.search()
+	}
+
+	toLastPage(){
+		if (!this.transfers) return;
+		this.pageIndex = this.transfers.totalPages
+		this.search()
 	}
 
 	search() {
@@ -134,7 +146,9 @@ export class TransfersComponent implements OnInit, OnDestroy {
 			payeeDfspName,
 			payerIdValue,
 			payeeIdValue,
-			transferType
+			transferType,
+			this.pageSize,
+			this.pageIndex
 		).subscribe((list) => {
 			this.transfers.next(list);
 		}, (error) => {
@@ -142,6 +156,10 @@ export class TransfersComponent implements OnInit, OnDestroy {
 				this._messageService.addError(error.message);
 			}
 		});
+	}
+
+	onPageSizeChange() {
+		this.search();
 	}
 
 	ngOnDestroy() {

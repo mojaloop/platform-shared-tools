@@ -4,7 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { AllPrivilegesResp } from "./security_types";
 import { Observable } from "rxjs";
 import { PlatformRole, TokenEndpointResponse } from "@mojaloop/security-bc-public-types-lib";
-import { Transfer } from "src/app/_services_and_types/transfer_types";
+import { Transfer, TransferSearchResult } from "src/app/_services_and_types/transfer_types";
 import { AuthenticationService } from "src/app/_services_and_types/authentication.service";
 import { UnauthorizedError } from "src/app/_services_and_types/errors";
 
@@ -76,9 +76,11 @@ export class TransfersService {
 		payerIdValue?: string,
 		payeeIdValue?: string,
 		transferType?: string,
-	): Observable<Transfer[]> {
-		return new Observable<Transfer[]>(subscriber => {
-			let url = SVC_BASEURL + "/entries/?";
+		pageSize: number = 5,
+		pageIndex: number = 1,
+	): Observable<TransferSearchResult[]> {
+		return new Observable<TransferSearchResult[]>(subscriber => {
+			let url = SVC_BASEURL + "/searchTransfers/?";
 
 			if (state) {
 				url += `state=${encodeURIComponent(state)}&`;
@@ -116,13 +118,19 @@ export class TransfersService {
 			if (transferType) {
 				url += `transferType=${encodeURIComponent(transferType)}&`;
 			}
+			if (pageIndex) {
+				url += `payeeIdValue=${encodeURIComponent(pageIndex)}&`;
+			}
+			if (pageSize) {
+				url += `transferType=${encodeURIComponent(pageSize)}&`;
+			}
 
 			if (url.endsWith("&")) {
 				url = url.slice(0, url.length - 1);
 			}
 
-			this._http.get<Transfer[]>(url).subscribe(
-				(result: Transfer[]) => {
+			this._http.get<TransferSearchResult[]>(url).subscribe(
+				(result: TransferSearchResult[]) => {
 					console.log(`got response: ${result}`);
 
 					subscriber.next(result);

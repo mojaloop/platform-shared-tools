@@ -62,3 +62,10 @@ export declare type Transfer = {
 export interface IErrorInformation {
 	errorCode: string;
 }
+
+export interface TransferSearchResult {
+    pageSize: number;
+    totalPages: number;
+    pageIndex: number;
+    items: Transfer[];
+}
