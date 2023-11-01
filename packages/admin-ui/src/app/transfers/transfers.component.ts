@@ -14,7 +14,12 @@ import { IParticipant } from "@mojaloop/participant-bc-public-types-lib";
 	styleUrls: ['./transfers.component.css']
 })
 export class TransfersComponent implements OnInit, OnDestroy {
-	transfers: BehaviorSubject<TransferSearchResult[]> = new BehaviorSubject<TransferSearchResult[]>([]);
+	transfers: BehaviorSubject<TransferSearchResult> = new BehaviorSubject<TransferSearchResult>({
+		pageSize: 5,
+		totalPages: 1,
+		pageIndex: 1,
+		items: [],
+	  });	  
 	transfersSubs?: Subscription;
 	participantsSubs?: Subscription;
 	filterForm: FormGroup;
@@ -90,8 +95,10 @@ export class TransfersComponent implements OnInit, OnDestroy {
 	}
 
 	onNext() {
-		this.pageIndex ++;
-		this.search()
+		if (this.transfers.value.totalPages && this.pageIndex < this.transfers.value.totalPages) {
+			this.pageIndex++;
+			this.search();
+		  }
 	}
 
 	toFirstPage(){
@@ -100,9 +107,10 @@ export class TransfersComponent implements OnInit, OnDestroy {
 	}
 
 	toLastPage(){
-		if (!this.transfers) return;
-		this.pageIndex = this.transfers.totalPages
-		this.search()
+		if (this.transfers.value.totalPages) {
+			this.pageIndex = this.transfers.value.totalPages;
+			this.search();
+		  }
 	}
 
 	search() {
@@ -150,7 +158,13 @@ export class TransfersComponent implements OnInit, OnDestroy {
 			this.pageSize,
 			this.pageIndex
 		).subscribe((list) => {
-			this.transfers.next(list);
+			const newTransferSearchResult: TransferSearchResult = {
+				pageSize: list.pageSize,
+				totalPages: list.totalPages,
+				pageIndex: list.pageIndex,
+				items: list.items,
+			  };
+			  this.transfers.next(newTransferSearchResult);
 		}, (error) => {
 			if (error instanceof UnauthorizedError) {
 				this._messageService.addError(error.message);

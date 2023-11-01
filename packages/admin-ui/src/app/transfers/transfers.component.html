@@ -152,12 +152,12 @@
 			</tr>
 		</thead>
 		<tbody>
-			<ng-container *ngIf="(transfers | async)?.length==0">
+			<ng-container *ngIf="(transfers | async)?.items?.length==0">
 				<tr>
 					<td colspan="12">No transfers found</td>
 				</tr>
 			</ng-container>
-			<tr *ngFor="let item of (transfers.items | async)">
+			<tr *ngFor="let item of (transfers | async)?.items">
 				<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
 				<td *ngIf="item.transferState==='COMMITTED'" class="text-success">{{item.transferState}}</td>
 				<td *ngIf="item.transferState==='RESERVED'" class="text-warning">{{item.transferState}}</td>
@@ -189,11 +189,11 @@
 	</li>
 	<li class="page-item d-flex align-items-center">
 		<span>Go to page</span>
-		<input (change)="onPageSizeChange()" [(ngModel)]="pageIndex" type="number" min="1"
-			class="form-control page-number ml-2">
+		<input [disabled]=" (transfers | async)?.totalPages === pageIndex" (change)="onPageSizeChange()"
+			[(ngModel)]="pageIndex" type="number" min="1" class="form-control page-number ml-2">
 	</li>
 	<li class="page-item">
-		Page {{ pageIndex }} of {{transfers.totalPages || 1}}
+		Page {{ pageIndex }} of {{(transfers | async)?.totalPages || 1}}
 	</li>
 	<li class="page-indicator d-flex">
 		<div class="page-item">
@@ -207,7 +207,7 @@
 			</button>
 		</div>
 		<div class="page-item">
-			<button [disabled]=" transfers.totalPages === pageIndex" (click)="onNext()" class="page-link">
+			<button [disabled]=" (transfers | async)?.totalPages === pageIndex" (click)="onNext()" class="page-link">
 				<i class="bi bi-chevron-right text-body"></i>
 			</button>
 		</div>

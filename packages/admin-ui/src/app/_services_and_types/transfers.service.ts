@@ -78,8 +78,8 @@ export class TransfersService {
 		transferType?: string,
 		pageSize: number = 5,
 		pageIndex: number = 1,
-	): Observable<TransferSearchResult[]> {
-		return new Observable<TransferSearchResult[]>(subscriber => {
+	): Observable<TransferSearchResult> {
+		return new Observable<TransferSearchResult>(subscriber => {
 			let url = SVC_BASEURL + "/searchTransfers/?";
 
 			if (state) {
@@ -129,8 +129,8 @@ export class TransfersService {
 				url = url.slice(0, url.length - 1);
 			}
 
-			this._http.get<TransferSearchResult[]>(url).subscribe(
-				(result: TransferSearchResult[]) => {
+			this._http.get<TransferSearchResult>(url).subscribe(
+				(result: TransferSearchResult) => {
 					console.log(`got response: ${result}`);
 
 					subscriber.next(result);
