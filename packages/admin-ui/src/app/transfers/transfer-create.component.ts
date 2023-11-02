@@ -12,6 +12,7 @@ import {IParticipant} from "@mojaloop/participant-bc-public-types-lib";
 import {ParticipantsService} from "../_services_and_types/participants.service";
 import * as uuid from "uuid";
 import {removeEmpty} from '../_utils';
+import {DEFAULT_TEST_CALL_REDIRECT_WAIT_MS} from "src/app/_services_and_types/settings.service";
 
 @Component({
 	selector: 'app-transfer-create',
@@ -127,7 +128,7 @@ export class TransferCreateComponent implements OnInit {
 
 			setTimeout(() => {
 				this._router.navigateByUrl(`/transfers/${this.activeTransfer!.transferId}`);
-			}, 250);
+			}, DEFAULT_TEST_CALL_REDIRECT_WAIT_MS);
 		}, error => {
 			this._messageService.addError(error.message);
 		});

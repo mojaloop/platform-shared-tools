@@ -138,7 +138,7 @@ services:
     restart: unless-stopped
 
   account-lookup-svc:
-    image: mojaloop/account-lookup-bc-account-lookup-svc:0.3.4
+    image: mojaloop/account-lookup-bc-account-lookup-svc:0.3.5
     depends_on:
       account-lookup-http-oracle-svc:
         condition: service_healthy
@@ -389,7 +389,7 @@ services:
       - 4200:4200
 
 
-  # blue bank TTK
+  # green bank TTK
   ttk_1:
     image: mojaloop/ml-testing-toolkit:v15.0.0
     volumes:
@@ -424,7 +424,7 @@ services:
 #    command:
 #      /ttk_files/mongodb/import.sh
 
-  # green bank TTK
+  # blue bank TTK
   ttk_2:
     image: mojaloop/ml-testing-toolkit:v15.0.0
     volumes:

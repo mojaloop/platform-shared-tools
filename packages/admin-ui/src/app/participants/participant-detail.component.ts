@@ -833,7 +833,7 @@ export class ParticipantDetailComponent implements OnInit {
 					if (this.fundsMovementModalRef)
 						this.fundsMovementModalRef!.close();
 					this._messageService.addError(
-						`Funds movement approval failed with error: ${error.message}`
+						`Funds movement approval failed with error: ${error}`
 					);
 				}
 			);
