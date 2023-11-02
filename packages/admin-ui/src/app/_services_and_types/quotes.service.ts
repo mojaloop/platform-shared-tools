@@ -50,16 +50,6 @@ export class QuotesService {
 		};
 	}
 
-	createEmptyBulkQuote(): BulkQuote {
-		return {
-			bulkQuoteId: "",
-			payer: null,
-			individualQuotes: [],
-			extensionList: null,
-			quotesNotProcessedIds: [],
-		};
-	}
-
 	getAllQuotes(): Observable<Quote[]> {
 		return new Observable<Quote[]>((subscriber) => {
 			this._http.get<QuotingSearchResults>(SVC_BASEURL + "/quotes/").subscribe(

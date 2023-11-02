@@ -7,6 +7,7 @@ import {BehaviorSubject, Subscription} from "rxjs";
 import {NgbModal, NgbNav} from "@ng-bootstrap/ng-bootstrap";
 import {BulkTransfer} from '../_services_and_types/bulk_transfer_types';
 import {BulkTransfersService} from '../_services_and_types/bulk-transfers.service';
+import { PaginateResult } from "../_utils";
 
 
 @Component({
@@ -19,6 +20,13 @@ export class BulkTransferDetailComponent implements OnInit {
 	public allTransfers: BehaviorSubject<Transfer[] | null> = new BehaviorSubject<Transfer[] | null>(null);
 	public transfersNotProcessed: BehaviorSubject<Transfer[] | null> = new BehaviorSubject<Transfer[] | null>(null);
 
+	private _live: boolean = false;
+	private _reloadRequested: boolean = false;
+
+	private _reloadCount = 0;
+
+	paginateResult: BehaviorSubject<PaginateResult | null> = new BehaviorSubject<PaginateResult | null>(null);
+	
 	@ViewChild("nav") // Get a reference to the ngbNav
 	navBar!: NgbNav;
 
@@ -42,14 +50,40 @@ export class BulkTransferDetailComponent implements OnInit {
 
 		await this._fetchAllTransfers(this._bulkTransferId);
 
+		console.log(this._route.snapshot.routeConfig?.path);
+
+		this._live = this._route.snapshot.queryParamMap.has('live');
+
+		this._route.params.subscribe(params => {
+			this._bulkTransferId = params['id'];
+
+			if (this._bulkTransferId) {
+				this._fetchBulkTransfer(this._bulkTransferId);
+			} else {
+				throw new Error("invalid parameter");
+			}
+		});
 	}
 
 	private async _fetchBulkTransfer(bulkTransferId: string): Promise<void> {
-		return new Promise(resolve => {
-			this._bulkTransfersSvc.getBulkTransfer(bulkTransferId).subscribe(bulkTransfer => {
-				this.bulkTransfer.next(bulkTransfer);
-				resolve();
-			});
+		this._bulkTransfersSvc.getBulkTransfer(bulkTransferId).subscribe(bulkTransfer => {
+			this.bulkTransfer.next(bulkTransfer);
+
+			if (this._live && !bulkTransfer || !(bulkTransfer?.status === "REJECTED" || bulkTransfer?.status === "ACCEPTED")) {
+
+				if (this._reloadCount > 30) return;
+
+				this._reloadCount++;
+				this._reloadRequested = true;
+				setTimeout(() => {
+					this._reloadCount++;
+					this._fetchBulkTransfer(bulkTransferId);
+					this._fetchAllTransfers(bulkTransferId);
+				}, 1000);
+
+			} else if (this._live && this._reloadRequested) {
+				this._messageService.addSuccess("Transfer reloaded");
+			}
 		});
 	}
 
@@ -62,6 +96,8 @@ export class BulkTransferDetailComponent implements OnInit {
 				undefined,
 				undefined,
 				bulkTransferId,
+				undefined,
+				100
 			).subscribe(transfersSearchResult => {
 				this.allTransfers.next(transfersSearchResult.items);
 				resolve();
