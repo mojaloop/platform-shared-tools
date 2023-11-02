@@ -799,8 +799,13 @@ export class ParticipantsService {
 					return subscriber.complete();
 				},
 				error => {
-					console.error(error);
-					subscriber.error(error);
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on search");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
 					return subscriber.complete();
 				}
 			);
@@ -817,8 +822,13 @@ export class ParticipantsService {
 					return subscriber.complete();
 				},
 				error => {
-					console.error(error);
-					subscriber.error(error);
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on getSearchKeywords");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
 					return subscriber.complete();
 				}
 			);
