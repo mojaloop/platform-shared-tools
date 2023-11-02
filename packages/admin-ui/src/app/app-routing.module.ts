@@ -3,8 +3,8 @@ import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
 import {HomeComponent} from "src/app/home/home.component";
 import {CanLoadIsLoggedIn} from "src/app/_pipes_and_guards/canload_guard";
-import {SecurityComponent} from "src/app/security/main/security.component";
-import {PlatformRoleDetailComponent} from "src/app/security/platform-role-detail/platform-role-detail.component";
+import {SecurityPrivilegesComponent} from "src/app/security/main/security-privileges.component";
+import {PlatformRoleDetailComponent} from "src/app/security/roles/platform-role-detail.component";
 import {ParticipantsComponent} from "src/app/participants/participants.component";
 import {MyAccountComponent} from "src/app/my-account/my-account.component";
 import {ParticipantDetailComponent} from "src/app/participants/participant-detail.component";
@@ -33,12 +33,22 @@ import {BulkQuoteCreateComponent} from './bulk-quotes/bulk-quote-create.componen
 import {TransfersComponent} from './transfers/transfers.component';
 import {TransferDetailComponent} from './transfers/transfer-detail.component';
 import {TransferCreateComponent} from './transfers/transfer-create.component';
+import {BulkTransfersComponent} from "src/app/bulk-transfers/bulk-transfers.component";
+import {BulkTransferDetailComponent} from "./bulk-transfers/bulk-transfer-detail.component";
 import {SettlementsMatrixDetailComponent} from "src/app/settlements/settlements.matrix-detail.component";
 import {SettlementsMatricesComponent} from "src/app/settlements/settlements.matrices.component";
 import {SettlementsTransfersComponent} from "src/app/settlements/settlements.transfers.component";
 import {SettlementsModelsComponent} from "./settlements/settlements.models.component";
 import {SettlementsModelsCreateComponent} from './settlements/settlements.models.create.component';
 import {AuditingComponent} from "./auditing/auditing.component";
+import {BuiltinIamUsersListComponent} from "./security/builtin_iam/builtin-iam-users-list.component";
+import {BuiltinIamUserCreateComponent} from "./security/builtin_iam/builtin-iam-user-create.component";
+import {BuiltinIamUserDetailComponent} from "./security/builtin_iam/builtin-iam-user-detail.component";
+import {PlatformRoleListComponent} from "./security/roles/platform-role-list.component";
+import { BuiltinIamAppsListComponent } from "./security/builtin_iam/builtin-iam-apps-list.component";
+import {BuiltinIamAppCreateComponent} from "./security/builtin_iam/builtin-iam-app-create.component";
+import {BuiltinIamAppDetailComponent} from "./security/builtin_iam/builtin-iam-app-detail.component";
+import {PlatformRoleCreateComponent} from "./security/roles/platform-role-create.component";
 
 const routes: Routes = [
 	{path: "", redirectTo: "/home", pathMatch: "full"},
@@ -46,8 +56,32 @@ const routes: Routes = [
 	{path: "home", component: HomeComponent},
 	{path: "tests", component: TestsComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "myaccount", component: MyAccountComponent, canActivate: [CanLoadIsLoggedIn]},
-	{path: "security", component: SecurityComponent, canActivate: [CanLoadIsLoggedIn]},
-	{path: "platformRole/:id", component: PlatformRoleDetailComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "security/builtin_iam/users", component: BuiltinIamUsersListComponent, canActivate: [CanLoadIsLoggedIn]},
+	{
+		path: "security/builtin_iam/users/new",
+		component: BuiltinIamUserCreateComponent,
+		canActivate: [CanLoadIsLoggedIn]
+	},
+	{
+		path: "security/builtin_iam/users/:id",
+		component: BuiltinIamUserDetailComponent,
+		canActivate: [CanLoadIsLoggedIn]
+	},
+	{path: "security/builtin_iam/apps", component: BuiltinIamAppsListComponent, canActivate: [CanLoadIsLoggedIn]},
+	{
+		path: "security/builtin_iam/apps/new",
+		component: BuiltinIamAppCreateComponent,
+		canActivate: [CanLoadIsLoggedIn]
+	},
+	{
+		path: "security/builtin_iam/apps/:id",
+		component: BuiltinIamAppDetailComponent,
+		canActivate: [CanLoadIsLoggedIn]
+	},
+	{path: "security/privileges", component: SecurityPrivilegesComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "security/roles", component: PlatformRoleListComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "security/roles/new", component: PlatformRoleCreateComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "security/roles/:id", component: PlatformRoleDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "hub", component: ParticipantDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "participants/new", component: ParticipantCreateComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "participants/:id", component: ParticipantDetailComponent, canActivate: [CanLoadIsLoggedIn]},
@@ -79,18 +113,24 @@ const routes: Routes = [
 	{path: "transfers", component: TransfersComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "transfers/new", component: TransferCreateComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "transfers/:id", component: TransferDetailComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "bulk-transfers", component: BulkTransfersComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "bulk-transfers/:id", component: BulkTransferDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "account-lookup/oracles/:id", component: QuoteDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{
-		path: "platform-configuration-global",
+		path: "platform-configuration/main",
+		component: PlatformConfigurationComponent,
+		canActivate: [CanLoadIsLoggedIn]
+	},
+	{
+		path: "platform-configuration/global",
 		component: PlatformConfigurationGlobalComponent,
 		canActivate: [CanLoadIsLoggedIn]
 	},
 	{
-		path: "platform-configuration-bc",
+		path: "platform-configuration/bcs",
 		component: PlatformConfigurationBoundedContextComponent,
 		canActivate: [CanLoadIsLoggedIn]
 	},
-	{path: "platform-configuration", component: PlatformConfigurationComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/matrix/:id", component: SettlementsMatrixDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/matrix", component: SettlementsMatricesComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/batches", component: SettlementsBatchesComponent, canActivate: [CanLoadIsLoggedIn]},

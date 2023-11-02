@@ -1,0 +1,94 @@
+<div class="row mb-2">
+	<div class="col">
+		<h3>Builtin IAM - Create User</h3>
+	</div>
+</div>
+
+
+
+<form [formGroup]="form" (ngSubmit)="createUser()">
+
+	<div class="form-row"> <!--form-row-->
+
+		<!-- type -->
+		<div class="form-group col-md-3">
+			<label for="userType">User Type: </label>
+			<select id="userType" class="form-control" formControlName="userType">
+				<option value="HUB">Hub User</option>
+<!--				<option value="DFSP">Participant User</option>-->
+			</select>
+
+		</div>
+
+		<!-- email (username) -->
+		<div class="form-group col-md-4">
+			<label for="email">Email Address: </label>
+			<input id="email" formControlName="email" type="text" class="form-control"
+				   [ngClass]="{'is-valid': form.controls['email'].touched && form.controls['email'].valid,
+              'is-invalid': (submitted || form.controls['email'].touched) && form.controls['email'].invalid}">
+		</div>
+
+		<!--name-->
+		<div class="form-group col-md-12">
+			<label for="fullName">Name: </label>
+			<input class="form-control" id="fullName" formControlName="fullName" type="text" placeholder="Full Name"
+				   [ngClass]="{'is-valid': form.controls['fullName'].touched && form.controls['fullName'].valid,
+              'is-invalid': (submitted || form.controls['fullName'].touched) && form.controls['fullName'].invalid}">
+		</div>
+
+		<!-- password -->
+		<div class="form-group col-md-6">
+			<label for="password">Password: </label>
+			<div class="input-group">
+				<div class="input-group" >
+					<input class="form-control" id="password" formControlName="password" type="password"
+						   [ngClass]="{'is-valid': form.controls['password'].touched && form.controls['password'].valid,
+				 'is-invalid': (submitted || form.controls['password'].touched) && form.controls['password'].invalid}">
+					<div class="input-group-append">
+						<span class="input-group-text" >
+							<a (click)="showHidePassword()">
+							<i class="bi bi-eye-slash" id="password-icon" aria-hidden="true"></i>
+							</a>
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="invalid-feedback">
+				Please provide a valid password.
+			</div>
+		</div>
+
+		<!-- password repeat -->
+		<div class="form-group col-md-6">
+			<label for="confirmPassword">Password confirm: </label>
+			<div class="input-group">
+				<div class="input-group">
+					<input class="form-control" id="confirmPassword" formControlName="confirmPassword" type="password"
+						   [ngClass]="{'is-valid': form.controls['confirmPassword'].touched && form.controls['confirmPassword'].valid,
+				 'is-invalid': (submitted || form.controls['confirmPassword'].touched) && form.controls['confirmPassword'].invalid}">
+					<div class="input-group-append">
+						<span class="input-group-text" >
+							<a (click)="showHidePassword()">
+							<i class="bi bi-eye-slash" id="confirmPassword-icon" aria-hidden="true"></i>
+							</a>
+						</span>
+					</div>
+					<div class="invalid-feedback">
+						Please provide matching passwords
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+	</div> <!--form-row-->
+
+	<div class="form-row d-flex mb-3">
+		<div class="p-2">
+			<button type="submit" class="btn btn-primary" [disabled]="!form.valid">Create User</button>
+		</div>
+		<div class="ml-auto p-2">
+			<button class="btn btn-danger" (click)="cancel()">Cancel</button>
+		</div>
+	</div>
+</form>

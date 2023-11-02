@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: monitoring
+  labels:
+    app: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana
+          env:
+            - name: GF_SECURITY_ADMIN_USER
+              value: admin
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              value: grafana
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: grafana-datasources-vol
+              mountPath: /etc/grafana/provisioning/datasources
+              readOnly: false
+#            - mountPath: /etc/grafana/provisioning/dashboards
+#              name: grafana-dashboards
+#              readOnly: false
+      volumes:
+        - name: grafana-datasources-vol
+          configMap:
+            defaultMode: 420
+            name: grafana-datasources-conf
+#        - name: grafana-dashboard
+#          configMap:
+#            defaultMode: 420
+#            name: { { .Release.Name } }-grafana-dashboard

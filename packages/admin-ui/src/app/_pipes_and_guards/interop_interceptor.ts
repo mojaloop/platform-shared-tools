@@ -7,6 +7,8 @@ import {
 } from '@angular/common/http';
 import {Observable} from 'rxjs';
 
+//TODO move this to the interop service, no need for an intercept
+
 @Injectable()
 export class InteropInterceptor implements HttpInterceptor {
 

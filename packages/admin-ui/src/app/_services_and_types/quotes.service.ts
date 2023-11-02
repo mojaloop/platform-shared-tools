@@ -2,12 +2,14 @@ import {Injectable} from "@angular/core";
 import {SettingsService} from "src/app/_services_and_types/settings.service";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {Quote} from "src/app/_services_and_types/quote_types";
+import {Quote, QuotingSearchResults} from "src/app/_services_and_types/quote_types";
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
 import {BulkQuote} from "./bulk_quote_types";
 
 const SVC_BASEURL = "/_quotes";
+
+const DEFAULT_PAGE_SIZE = 20;
 
 @Injectable({
 	providedIn: "root",
@@ -60,11 +62,11 @@ export class QuotesService {
 
 	getAllQuotes(): Observable<Quote[]> {
 		return new Observable<Quote[]>((subscriber) => {
-			this._http.get<Quote[]>(SVC_BASEURL + "/quotes/").subscribe(
-				(result: Quote[]) => {
+			this._http.get<QuotingSearchResults>(SVC_BASEURL + "/quotes/").subscribe(
+				(result: QuotingSearchResults) => {
 					console.log(`got response: ${result}`);
 
-					subscriber.next(result);
+					subscriber.next(result.items);
 					return subscriber.complete();
 				},
 				(error) => {
@@ -180,48 +182,57 @@ export class QuotesService {
 		});
 	}
 
-	searchQuotes(
+	search(
+		amountType?: string,
+		transactionType?: string,
 		quoteId?: string,
 		transactionId?: string,
-		amountType?: string,
-		transactionType?: string
-	): Observable<Quote[]> {
-		return new Observable<Quote[]>((subscriber) => {
-			let url = SVC_BASEURL + "/quotes/?";
+		bulkQuoteId?: string,
+		pageIndex?: number,
+		pageSize: number = DEFAULT_PAGE_SIZE
+	): Observable<QuotingSearchResults> {
+		const searchParams = new URLSearchParams();
+		if (amountType) searchParams.append("amountType", amountType);
+		if (transactionType) searchParams.append("transactionType", transactionType);
+		if (quoteId) searchParams.append("quoteId", quoteId);
+		if (transactionId) searchParams.append("transactionId", transactionId);
+		if (bulkQuoteId) searchParams.append("bulkQuoteId", bulkQuoteId);
 
-			if (quoteId) {
-				url += `quoteId=${encodeURIComponent(quoteId)}&`;
-			}
-			if (transactionId) {
-				url += `transactionId=${encodeURIComponent(transactionId)}&`;
-			}
-			if (amountType) {
-				url += `amountType=${encodeURIComponent(amountType)}&`;
-			}
-			if (transactionType) {
-				url += `transactionType=${encodeURIComponent(transactionType)}&`;
-			}
+		if (pageIndex) searchParams.append("pageIndex", pageIndex.toString());
+		if (pageSize) searchParams.append("pageSize", pageSize.toString());
 
-			if (url.endsWith("&")) {
-				url = url.slice(0, url.length - 1);
-			}
+		const url = `${SVC_BASEURL}/quotes?${searchParams.toString()}`;
 
-			this._http.get<Quote[]>(url).subscribe(
-				(result: Quote[]) => {
-					console.log(`got response: ${result}`);
+
+		return new Observable<QuotingSearchResults>(subscriber => {
+			this._http.get<QuotingSearchResults>(url).subscribe(
+				(result: QuotingSearchResults) => {
+					console.log(`got getAllEntries response: ${result}`);
 
 					subscriber.next(result);
 					return subscriber.complete();
 				},
-				(error) => {
-					if (error && error.status === 403) {
-						console.warn("Access forbidden received on getAllTransfers");
-						subscriber.error(new UnauthorizedError(error.error?.msg));
-					} else {
-						console.error(error);
-						subscriber.error(error.error?.msg);
-					}
+				error => {
+					console.error(error);
+					subscriber.error(error);
+					return subscriber.complete();
+				}
+			);
+		});
+	}
 
+	getSearchKeywords(): Observable<{ fieldName: string, distinctTerms: string[] }[]> {
+		return new Observable<{ fieldName: string, distinctTerms: string[] }[]>(subscriber => {
+			this._http.get<{ fieldName: string, distinctTerms: string[] }[]>(`${SVC_BASEURL}/searchKeywords`).subscribe(
+				(result: { fieldName: string, distinctTerms: string[] }[]) => {
+					console.log(`got getSearchKeywords response: ${result}`);
+
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					console.error(error);
+					subscriber.error(error);
 					return subscriber.complete();
 				}
 			);

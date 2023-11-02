@@ -1,0 +1,204 @@
+<ng-template #notFound>
+	<div class="col-md-8 align-self-center">
+		<h2>Roles Management - Role Not Found</h2>
+	</div>
+</ng-template>
+
+<ng-container *ngIf="(role | async) as role; else notFound">
+	<div class="row ">
+		<div class="col-md-8 align-self-center align-content-end">
+			<h2>Builtin IAM - {{ role.labelName }}</h2>
+		</div>
+
+		<div class="col-md-4 align-self-center">
+			<small><strong>ID: </strong> {{ role.id }}
+				<a (click)="copyIdToClipboard()"
+				   ngbTooltip="Copy ID to clipboard"><i class="bi bi-clipboard-plus"></i></a></small>
+		</div>
+	</div>
+	<hr/>
+
+	<div class="row">
+		<div class="col-4"> <!-- col 1 -->
+			<div class="mb-2">
+				<label class="col-form-label text-secondary">Role Id:</label>
+				<div>{{ role.id }}</div>
+			</div>
+
+			<div class="mb-2">
+				<label class="col-form-label text-secondary">Scope:</label>
+				<div>
+					<span *ngIf="!role.isApplicationRole">Users</span>
+					<span *ngIf="role.isApplicationRole">Applications</span>
+				</div>
+			</div>
+
+			<div class="mb-4">
+				<label class="col-form-label text-secondary">Description:</label>
+				<div>{{ role.description }}</div>
+			</div>
+		</div> <!-- col 1 -->
+
+
+		<div class="col-5"> <!-- col 2 -->
+			<div class="mb-2">
+				<label class="col-form-label text-secondary">Label:</label>
+				<div>{{ role.labelName }}</div>
+			</div>
+
+			<div class="mb-2">
+				<label class="col-form-label text-secondary">Per Participant Role:</label>
+				<div>
+					<span *ngIf="!role.isPerParticipantRole">Yes</span>
+					<span *ngIf="role.isPerParticipantRole">No</span>
+				</div>
+			</div>
+		</div> <!-- col 2 -->
+
+		<div class="col-3"> <!-- column 3 - buttons -->
+<!--			<button class="btn btn-danger btn-block" >-->
+<!--				Remove all Privileges-->
+<!--			</button>-->
+
+<!-- 			<button class="btn btn-primary btn-block" (click)="showAddPrivilegesModal()">-->
+<!--				Add Privileges-->
+<!--			</button>-->
+
+		</div>  <!-- column 3 - buttons -->
+	</div>
+
+	<ul ngbNav #nav="ngbNav" class="mt-4 nav-tabs">
+		<li ngbNavItem="currentPrivileges"> <!-- currentPrivileges -->
+			<a ngbNavLink>Current Privileges</a>
+			<ng-template ngbNavContent>
+				<div class="row">
+					<div class="col-md-9">
+						<h4>Privileges already associated to this Role</h4>
+					</div>
+					<div class="form-group col-md-3">
+						<label for="removeSelectedPrivs">&nbsp;</label>
+						<button type="button" class="form-control btn btn-success" id="removeSelectedPrivs"
+								[disabled]="curPrivsSelectedIds.length<=0"
+								(click)="removePrivileges()"
+								ngbTooltip="Remove selected privileges from role">Remove Privilege(s) from Role
+						</button>
+					</div>
+				</div>
+
+				<div class="row">
+					<table class="table table-striped">
+						<thead class="thead-light">
+						<tr>
+							<th scope="col">Sel?</th>
+							<th scope="col">Name and description</th>
+							<th scope="col">Owner</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr *ngFor="let priv of (includedPrivileges | async)">
+							<td>
+								<input type="checkbox" class="form-control" (change)="currentPrivsSelChanged($event)" [id]="curPrivsSelPrefix+priv.id">
+							</td>
+							<td>
+								<div>{{priv.labelName}}</div>
+								<div class="text-black-50 mt-2">{{priv.description}}</div>
+							</td>
+							<td> {{priv.boundedContextName}} / {{priv.applicationName}} <span class="badge badge-secondary">{{priv.applicationVersion}}</span></td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
+			</ng-template>
+		</li> <!-- currentPrivileges end -->
+
+		<li ngbNavItem="addPrivileges"> <!-- addPrivileges -->
+
+			<a ngbNavLink>Add Privileges</a>
+			<ng-template ngbNavContent>
+				<div class="row">
+					<div class="col-md-9">
+						<h4>Privileges available to be associated with this Role</h4>
+					</div>
+					<div class="form-group col-md-3">
+						<label for="addSelectedPrivs">&nbsp;</label>
+						<button type="button" class="form-control btn btn-success" id="addSelectedPrivs"
+								[disabled]="addPrivsSelectedIds.length<=0"
+								(click)="addPrivileges()"
+								ngbTooltip="Add privileges to role">Add selected Privilege(s) to Role
+						</button>
+					</div>
+				</div>
+
+				<div class="row">
+					<table class="table table-striped">
+						<thead class="thead-light">
+						<tr>
+							<th scope="col">Sel?</th>
+							<th scope="col">Name and description</th>
+							<th scope="col">Owner</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr *ngFor="let priv of (excludedPrivileges | async)">
+							<td>
+								<input type="checkbox" class="form-control" (change)="addPrivsSelChanged($event)" [id]="addPrivsSelPrefix+priv.id">
+							</td>
+							<td>
+								<div>{{priv.labelName}}</div>
+								<div class="text-black-50 mt-2">{{priv.description}}</div>
+							</td>
+							<td> {{priv.boundedContextName}} / {{priv.applicationName}} <span class="badge badge-secondary">{{priv.applicationVersion}}</span></td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</ng-template>
+		</li> <!-- addPrivileges end -->
+	</ul>
+
+	<div class="mt-6" [ngbNavOutlet]="nav"></div>
+</ng-container>
+
+
+
+
+
+<!-- Add roles Modal -->
+<!--
+<ng-template #addPrivilegesModal let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title">
+			Add Privileges to Roles
+		</h4>
+	</div>
+	<div class="modal-body">
+		<form class="">
+			<div class="form-group">
+				<label class="" for="addPrivileges_PrivsIds">Available Privileges</label>
+				<select class="form-control" id="addPrivileges_PrivsIds" multiple size="10">
+					<ng-container *ngFor="let priv of (excludedPrivileges | async)">
+						<option value="{{priv.id}}">{{priv.labelName}}</option>
+					</ng-container>
+
+				</select>
+				<div class="form-text text-muted">
+					Use Ctrl-click to select multiple.
+				</div>
+				<div class="invalid-feedback">
+					Please choose at least one privilege to add to the role.
+				</div>
+			</div>
+
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-success" (click)="addPrivileges($event)">
+			Add Roles
+		</button>
+		<button type="button" class="btn btn-danger" (click)="modal.dismiss()">
+			Cancel
+		</button>
+	</div>
+</ng-template>
+-->

@@ -16,10 +16,8 @@ import {BulkQuotesService} from '../_services_and_types/bulk-quotes.service';
 export class BulkQuoteDetailComponent implements OnInit {
 	private _bulkQuoteId: string | null = null;
 	public bulkQuote: BehaviorSubject<BulkQuote | null> = new BehaviorSubject<BulkQuote | null>(null);
-	quotes: BehaviorSubject<Quote[]> = new BehaviorSubject<Quote[]>([]);
-	quotesSubs?: Subscription;
-	allQuotes: Quote[] = [];
-	quotesNotProcessed: Quote[] = [];
+	public allQuotes: BehaviorSubject<Quote[] | null> = new BehaviorSubject<Quote[] | null>(null);
+	public quotesNotProcessed: BehaviorSubject<Quote[] | null> = new BehaviorSubject<Quote[] | null>(null);
 
 	@ViewChild("nav") // Get a reference to the ngbNav
 	navBar!: NgbNav;
@@ -42,12 +40,7 @@ export class BulkQuoteDetailComponent implements OnInit {
 
 		await this._fetchQuote(this._bulkQuoteId);
 
-		await this._fetchAllQuotes();
-
-		this.allQuotes = this.quotes.value.filter(item => {
-			return item.bulkQuoteId === this._bulkQuoteId;
-		});
-		this.quotesNotProcessed = this.quotes.value.filter(item => this.bulkQuote.value?.quotesNotProcessedIds.includes(item.quoteId));
+		await this._fetchAllQuotes(this._bulkQuoteId);
 	}
 
 	private async _fetchQuote(id: string): Promise<void> {
@@ -59,10 +52,16 @@ export class BulkQuoteDetailComponent implements OnInit {
 		});
 	}
 
-	private async _fetchAllQuotes(): Promise<void> {
+	private async _fetchAllQuotes(bulkQuoteId: string): Promise<void> {
 		return new Promise(resolve => {
-			this._quotesSvc.getAllQuotes().subscribe(quotes => {
-				this.quotes.next(quotes);
+			this._quotesSvc.search(
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				bulkQuoteId
+			).subscribe(quotesSearchResult => {
+				this.allQuotes.next(quotesSearchResult.items);
 				resolve();
 			});
 		});

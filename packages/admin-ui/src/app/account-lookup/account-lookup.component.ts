@@ -46,9 +46,9 @@ export class AccountLookupComponent implements OnInit {
 
 			const forms = [this.formAssociateParticipant, this.formDisassociateParticipant, this.formGetParticipant, this.formGetParty];
 
-			for (let i = 0; i < list.length; i += 1) {
-				for (let j = 0; j < list[i].participantAccounts.length; j += 1) {
-					this.currencyList.push(list[i].participantAccounts[j].currencyCode);
+			for (let i = 0; i < list.items.length; i += 1) {
+				for (let j = 0; j < list.items[i].participantAccounts.length; j += 1) {
+					this.currencyList.push(list.items[i].participantAccounts[j].currencyCode);
 				}
 			}
 
@@ -56,12 +56,12 @@ export class AccountLookupComponent implements OnInit {
 			this.currencyList = this.currencyList.filter((item, index) => this.currencyList.indexOf(item) === index);
 
 			for (let i = 0; i < forms.length; i += 1) {
-				forms[i].controls['participantId'].setValue(list[0].id);
+				forms[i].controls['participantId'].setValue(list.items[0].id);
 				forms[i].controls['partyType'].setValue(this.partyTypeList[0]);
 				forms[i].controls['currencyCode'].setValue(this.currencyList[0]);
 			}
 
-			this.participants.next(list);
+			this.participants.next(list.items);
 		}, error => {
 			if (error && error instanceof UnauthorizedError) {
 				this._messageService.addError(error.message);

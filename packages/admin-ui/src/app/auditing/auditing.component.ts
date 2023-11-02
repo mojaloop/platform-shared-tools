@@ -30,10 +30,10 @@ export class AuditingComponent implements OnInit, OnDestroy {
 
 	}
 
-	async ngOnInit(): Promise<void> {
-		console.log("SecurityComponent ngOnInit");
+	ngOnInit(): void {
+		console.log("AuditingComponent ngOnInit");
 
-		await this.getSearchKeywords();
+		this.getSearchKeywords();
 
 		// wait for the page components to layout
 		setTimeout(() => {
@@ -43,7 +43,7 @@ export class AuditingComponent implements OnInit, OnDestroy {
 
 	getSearchKeywords() {
 		this.keywordsSubs = this._auditingSvc.getSearchKeywords().subscribe((keywords) => {
-			console.log("TransfersComponent search - got getSearchKeywords");
+			console.log("AuditingComponent search - got getSearchKeywords");
 
 			keywords.forEach(value => {
 				if (value.fieldName == "actionType") this.keywordActionType.next(value.distinctTerms);
