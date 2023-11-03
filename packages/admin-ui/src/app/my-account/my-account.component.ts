@@ -4,7 +4,7 @@ import {SettingsService} from "src/app/_services_and_types/settings.service";
 import {AuthorizationService} from "src/app/_services_and_types/authorization.service";
 import {BehaviorSubject, Subscription} from "rxjs";
 import {AppPrivileges, PlatformRole} from "@mojaloop/security-bc-public-types-lib";
-import {AllPrivilegesResp} from "src/app/_services_and_types/security_types";
+import {PrivilegeWithOwnerAppInfo} from "src/app/_services_and_types/security_types";
 
 declare type MyAccountRole = {
 	id: string,
@@ -37,8 +37,8 @@ export class MyAccountComponent implements OnInit, OnDestroy {
 	roles: BehaviorSubject<MyAccountRole[]> = new BehaviorSubject<MyAccountRole[]>([]);
 	privs: BehaviorSubject<MyAccountPrivs[]> = new BehaviorSubject<MyAccountPrivs[]>([]);
 
-	private _alllRolesSubs?: Subscription;
-	private _alllPrivsSubs?: Subscription;
+	private _allRolesSubs?: Subscription;
+	private _allPrivsSubs?: Subscription;
 
 	constructor(private _authentication: AuthenticationService, private _authorizationService: AuthorizationService) {
 
@@ -56,11 +56,11 @@ export class MyAccountComponent implements OnInit, OnDestroy {
 
 			const privIdsList: { id: string, roleLabel: string }[] = [];
 
-			this._alllPrivsSubs = this._authorizationService.getAllPrivileges().subscribe((appPrivs: AllPrivilegesResp[]) => {
+			this._allPrivsSubs = this._authorizationService.getAllPrivileges().subscribe((appPrivs: PrivilegeWithOwnerAppInfo[]) => {
 
-				this._alllRolesSubs = this._authorizationService.getAllPlatformRoles().subscribe((platformRoles: PlatformRole[]) => {
+				this._allRolesSubs = this._authorizationService.getAllPlatformRoles().subscribe((platformRoles: PlatformRole[]) => {
 					platformRoles.forEach(role => {
-						if (this._authentication.rolesIds.includes(role.id)) {
+						if (this._authentication.platformRoles.includes(role.id)) {
 							rolesList.push({
 								id: role.id,
 								labelName: role.labelName,
@@ -78,7 +78,7 @@ export class MyAccountComponent implements OnInit, OnDestroy {
 					});
 
 					privIdsList.forEach(item => {
-						const foundAppPriv: AllPrivilegesResp | undefined = appPrivs.find(appPriv => appPriv.id === item.id);
+						const foundAppPriv: PrivilegeWithOwnerAppInfo | undefined = appPrivs.find(appPriv => appPriv.id === item.id);
 						if (foundAppPriv) {
 							privsList.push({
 								id: foundAppPriv.id,
@@ -103,11 +103,11 @@ export class MyAccountComponent implements OnInit, OnDestroy {
 		if (this._usernameSubs) {
 			this._usernameSubs.unsubscribe();
 		}
-		if (this._alllRolesSubs) {
-			this._alllRolesSubs.unsubscribe();
+		if (this._allRolesSubs) {
+			this._allRolesSubs.unsubscribe();
 		}
-		if (this._alllPrivsSubs) {
-			this._alllPrivsSubs.unsubscribe();
+		if (this._allPrivsSubs) {
+			this._allPrivsSubs.unsubscribe();
 		}
 	}
 

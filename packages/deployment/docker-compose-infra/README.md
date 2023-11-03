@@ -1,8 +1,8 @@
 # Platform Tools - Docker Compose for Infrastructure Services
 
-Note: for Windows specific tips see this [readme](README_WIN.md)
+Note: for Windows specific tips see this [readme](../README_WIN.md)
 
-# Setup Infrastructure Containers 
+# Setup Infrastructure Containers
 
 To startup Kafka, MongoDB, Elasticsearch and Kibana, follow the steps below:
 
@@ -11,7 +11,7 @@ To startup Kafka, MongoDB, Elasticsearch and Kibana, follow the steps below:
 _This `exec` directory is ignored by gitignore, so can't be pushed to GitHub._
 
 ```shell
-mkdir exec 
+mkdir exec
 cd exec
 ```
 
@@ -22,9 +22,12 @@ cd exec
 * `logs`
 * `tigerbeetle_data`
 * `mongodb_data`
+* `grafana_data`
+* `prometheus_data`
+* `prometheus_etc`
 
 ```shell
-mkdir {certs,esdata01,kibanadata,logs,tigerbeetle_data,mongodb_data}
+mkdir {certs,esdata01,kibanadata,logs,tigerbeetle_data,mongodb_data,grafana_data,prometheus_data,prometheus_etc}
 ```
 
 Note: For Mac users you might have to grant full access to these directories, to do that execute in the exec directory:
@@ -37,16 +40,23 @@ sudo chmod -R 777 .
 cp ../.env.sample ./.env
 ```
 
-4. Review the contents of the `.env` file. **If using MacOS update the ROOT_VOLUME_DEVICE_PATH to reflect the absolute path**
+3. Copy Prometheus and Grafana's files to the correspondent data directories:
+```shell
+cp ../prometheus.yml ./prometheus_etc/prometheus.yml
+cp ../grafana_datasources.yml ./grafana_data/datasource.yml
+```
 
 
-5. Ensure `vm.max_map_count` is set to at least `262144`: Example to apply property on live system:
+5. Review the contents of the `.env` file. **If using MacOS update the ROOT_VOLUME_DEVICE_PATH to reflect the absolute path**
+
+
+6. Ensure `vm.max_map_count` is set to at least `262144`: Example to apply property on live system:
 ```shell
 sysctl -w vm.max_map_count=262144 # might require sudo
 ```
 
 
-6. Initialise TigerBeetle data
+7. Initialise TigerBeetle data
 ```shell
 docker run -v $(pwd)/tigerbeetle_data:/data ghcr.io/tigerbeetledb/tigerbeetle \
   format --cluster=0 --replica=0 --replica-count=1 /data/0_0.tigerbeetle
@@ -83,7 +93,7 @@ docker-compose -f ../docker-compose-infra.yml --env-file ./.env stop
 ```
 
 
-&nbsp; 
+&nbsp;
 
 ---
 
@@ -120,7 +130,7 @@ Execute this in the directory containing the files `es_mappings_logging.json` an
 **When asked, enter the password for the `elastic` user in the `.env` file.**
 
 ```shell
-# Create the logging index 
+# Create the logging index
 curl -i --insecure -X PUT "https://localhost:9200/ml-logging/" -u "elastic" -H "Content-Type: application/json" --data-binary "@es_mappings_logging.json"
 ```
 ```shell
@@ -128,7 +138,7 @@ curl -i --insecure -X PUT "https://localhost:9200/ml-logging/" -u "elastic" -H "
 curl -i --insecure -X PUT "https://localhost:9200/ml-auditing/" -u "elastic" -H "Content-Type: application/json" --data-binary "@es_mappings_auditing.json"
 ```
 
-**NOTE:** The master/source for the mappings files is the respective repositories: [logging-bc](https://github.com/mojaloop/logging-bc/blob/main/docker-compose/es_mappings.json) and [auditing-bc](https://github.com/mojaloop/auditing-bc/blob/main/docker-compose/es_mappings.json).  
+**NOTE:** The master/source for the mappings files is the respective repositories: [logging-bc](https://github.com/mojaloop/logging-bc/blob/main/docker-compose/es_mappings.json) and [auditing-bc](https://github.com/mojaloop/auditing-bc/blob/main/docker-compose/es_mappings.json).
 
 ##### Additional Information on Elastic mappings
 https://www.elastic.co/guide/en/elasticsearch/reference/8.1/explicit-mapping.html
@@ -136,7 +146,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/8.1/mapping-types.html
 
 ## Setup Kibana Dashboards
 
-Once the mappings are installed, it is time to import the prebuilt Kibana objects for the _DataView_ and the _search_. 
+Once the mappings are installed, it is time to import the prebuilt Kibana objects for the _DataView_ and the _search_.
 
 1. Open Kibana (login with credentials in .env file)
 2. Navigate to **(top left burger icon) -> Management / Stack Management -> Kibana / Saved Objects**
@@ -148,7 +158,7 @@ Once the mappings are installed, it is time to import the prebuilt Kibana object
 
 ## Viewing Kibana Logs
 
-Go to **(top left burger icon) -> Analytics / Discover**, and then use the Open option on the top right to open the imported `"MojaloopDefaultLogView"` view.   
+Go to **(top left burger icon) -> Analytics / Discover**, and then use the Open option on the top right to open the imported `"MojaloopDefaultLogView"` view.
 
 ## Viewing Kibana Audits
 

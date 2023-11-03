@@ -6,26 +6,21 @@ import {AuthorizationService} from "src/app/_services_and_types/authorization.se
 
 @Component({
 	selector: 'app-platform-role-detail',
-	templateUrl: './platform-role-detail.component.html',
-	styleUrls: ['./platform-role-detail.component.css']
+	templateUrl: './platform-role-list.component.html'
 })
-export class PlatformRoleDetailComponent implements OnInit {
-	private _roleId: string | null;
-	public role: BehaviorSubject<PlatformRole | undefined> = new BehaviorSubject<PlatformRole | undefined>(undefined);
+export class PlatformRoleListComponent implements OnInit {
+	public roles: BehaviorSubject<PlatformRole[]> = new BehaviorSubject<PlatformRole[]>([]);
 
 
 	constructor(private _authorizationSvc: AuthorizationService, private route: ActivatedRoute) {
-		this._roleId = this.route.snapshot.paramMap.get("id");
-
 
 	}
 
 	ngOnInit(): void {
 		this._authorizationSvc.getAllPlatformRoles().subscribe((roles) => {
 			console.log("SecurityComponent ngOnInit - got getAllPlatformRoles");
-			const role: PlatformRole | undefined = roles.find(value => value.id == this._roleId);
 
-			this.role.next(role);
+			this.roles.next(roles);
 		});
 	}
 

@@ -38,9 +38,11 @@ import * as uuid from "uuid";
 import {SettingsService} from "./settings.service";
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
 import {UnauthorizedError} from "./errors";
-import {Association, Oracle} from "./account-lookup_types";
+import {Association, AssociationsSearchResults, Oracle} from "./account-lookup_types";
 
 const SVC_BASEURL = "/_account-lookup";
+
+const DEFAULT_PAGE_SIZE = 20;
 
 @Injectable({
 	providedIn: "root",
@@ -199,6 +201,75 @@ export class AccountLookupService {
 						subscriber.error(error);
 					}
 
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+	search(
+		fspId?: string,
+		partyId?: string,
+		partyType?: string,
+		partySubType?: string,
+		currency?: string,
+		pageIndex?: number,
+		pageSize: number = DEFAULT_PAGE_SIZE
+	): Observable<AssociationsSearchResults> {
+		const searchParams = new URLSearchParams();
+		if (fspId) searchParams.append("fspId", fspId);
+		if (partyId) searchParams.append("partyId", partyId);
+		if (partyType) searchParams.append("partyType", partyType);
+		if (partySubType) searchParams.append("partySubType", partySubType);
+		if (currency) searchParams.append("currency", currency);
+
+
+		if (pageIndex) searchParams.append("pageIndex", pageIndex.toString());
+		if (pageSize) searchParams.append("pageSize", pageSize.toString());
+
+		const url = `${SVC_BASEURL}/admin/oracles/associations?${searchParams.toString()}`;
+
+
+		return new Observable<AssociationsSearchResults>(subscriber => {
+			this._http.get<AssociationsSearchResults>(url).subscribe(
+				(result: AssociationsSearchResults) => {
+					console.log(`got getAllAccountLookupAssociations response: ${result}`);
+
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on search");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+
+	getSearchKeywords(): Observable<{ fieldName: string, distinctTerms: string[] }[]> {
+		return new Observable<{ fieldName: string, distinctTerms: string[] }[]>(subscriber => {
+			this._http.get<{ fieldName: string, distinctTerms: string[] }[]>(`${SVC_BASEURL}/admin/oracles/builtin-associations/searchKeywords`).subscribe(
+				(result: { fieldName: string, distinctTerms: string[] }[]) => {
+					console.log(`got getSearchKeywords response: ${result}`);
+
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on getSearchKeywords");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
 					return subscriber.complete();
 				}
 			);

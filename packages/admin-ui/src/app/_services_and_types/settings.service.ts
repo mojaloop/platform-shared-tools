@@ -8,6 +8,9 @@ const ACCESSTOKEN_KEYNAME = "accessToken";
 const DEVELOPMENT_ENV_NAME = "dev";
 const PRODUCTION_ENV_NAME = "prod";
 
+//constants shared
+export const DEFAULT_TEST_CALL_REDIRECT_WAIT_MS = 750;
+
 @Injectable({
 	providedIn: 'root',
 })
@@ -18,6 +21,7 @@ export class SettingsService {
 	public username: string | null;
 
 	constructor() {
+		// TODO consider mangling these settings (not encrypt)
 		this.accessToken = localStorage.getItem(ACCESSTOKEN_KEYNAME);
 		this.username = localStorage.getItem(USERNAME_KEYNAME);
 		this._isDevMode = !environment.production;

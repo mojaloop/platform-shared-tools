@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   fspiop-api-svc:
-    image: mojaloop/interop-apis-bc-fspiop-api-svc:0.1.29
+    image: mojaloop/interop-apis-bc-fspiop-api-svc:0.3.2
     depends_on:
       settlements-api-svc:
         condition: service_healthy
@@ -14,8 +14,6 @@ services:
         condition: service_healthy
       transfers-api-svc:
         condition: service_healthy
-    volumes:
-      - fspiop-api-svc_data:/app/data
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -31,9 +29,7 @@ services:
       - 4000:4000
 
   accounts_and_balances_builtin-ledger-grpc-svc:
-    image: mojaloop/accounts-and-balances-bc-builtin-ledger-grpc-svc:0.2.5
-    volumes:
-      - aandb_builtin-ledger-grpc-svc_data:/app/data
+    image: mojaloop/accounts-and-balances-bc-builtin-ledger-grpc-svc:0.3.4
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -59,12 +55,10 @@ services:
     restart: unless-stopped
 
   accounts_and_balances_coa-grpc-svc:
-    image: mojaloop/accounts-and-balances-bc-coa-grpc-svc:0.2.3
+    image: mojaloop/accounts-and-balances-bc-coa-grpc-svc:0.3.4
     depends_on:
       accounts_and_balances_builtin-ledger-grpc-svc:
         condition: service_healthy
-    volumes:
-      - aandb_coa-grpc-svc_data:/app/data
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -93,12 +87,10 @@ services:
 # participants
 
   participants-svc:
-    image: mojaloop/participants-bc-participants-svc:0.1.19
+    image: mojaloop/participants-bc-participants-svc:0.3.5
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
-    volumes:
-      - participants-svc_data:/app/data
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -125,12 +117,12 @@ services:
 #account lookup
 
   account-lookup-http-oracle-svc:
-    image: mojaloop/account-lookup-bc-http-oracle-svc:0.1.4
+    image: mojaloop/account-lookup-bc-http-oracle-svc:0.3.1
     depends_on:
       participants-svc:
         condition: service_healthy
-    volumes:
-      - account-lookup-http-oracle-svc_data:/app/data
+#    volumes:
+#      - account-lookup-http-oracle-svc_data:/app/data
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -146,12 +138,12 @@ services:
     restart: unless-stopped
 
   account-lookup-svc:
-    image: mojaloop/account-lookup-bc-account-lookup-svc:0.1.13
+    image: mojaloop/account-lookup-bc-account-lookup-svc:0.3.5
     depends_on:
       account-lookup-http-oracle-svc:
         condition: service_healthy
-    volumes:
-      - account-lookup-svc_data:/app/data
+#    volumes:
+#      - account-lookup-svc_data:/app/data
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -176,12 +168,12 @@ services:
 # quoting
 
   quoting-svc:
-    image: mojaloop/quoting-bc-quoting-svc:0.1.15
+    image: mojaloop/quoting-bc-quoting-svc:0.3.4
     depends_on:
       participants-svc:
         condition: service_healthy
-    volumes:
-      - quoting-svc_data:/app/data
+#    volumes:
+#      - quoting-svc_data:/app/data
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -203,17 +195,42 @@ services:
       - 3033:3033
     restart: unless-stopped
 
-# transfers
+# scheduling
+  scheduling-svc:
+    image: mojaloop/scheduling-bc-scheduling-svc:0.3.1
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - MONGO_URL=${MONGO_URL}
+      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
+      - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+      - AUTH_N_TOKEN_ISSUER_NAME=${AUTH_N_TOKEN_ISSUER_NAME}
+      - AUTH_N_TOKEN_AUDIENCE=${AUTH_N_TOKEN_AUDIENCE}
+      - SCHEDULING_HOST_LOCKS=${REDIS_HOST}
+    healthcheck:
+      test: nc -z localhost 1234 || exit -1
+      start_period: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    ports:
+      - 1234:1234
+    restart: unless-stopped
+
+
+  # transfers
 
   transfers-api-svc:
-    image: mojaloop/transfers-bc-transfers-api-svc:0.2.6
+    image: mojaloop/transfers-bc-transfers-api-svc:0.3.3
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
       participants-svc:
         condition: service_healthy
-    volumes:
-      - transfers-api-svc_data:/app/data
+#    volumes:
+#      - transfers-api-svc_data:/app/data
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -236,14 +253,14 @@ services:
     restart: unless-stopped
 
   transfers-event-handler-svc:
-    image: mojaloop/transfers-bc-event-handler-svc:0.2.4
+    image: mojaloop/transfers-bc-event-handler-svc:0.3.3
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
       participants-svc:
         condition: service_healthy
-    volumes:
-      - transfers-event-handler-svc_data:/app/data
+#    volumes:
+#      - transfers-event-handler-svc_data:/app/data
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -257,14 +274,16 @@ services:
     restart: unless-stopped
 
   transfers-command-handler-svc:
-    image: mojaloop/transfers-bc-command-handler-svc:0.2.9
+    image: mojaloop/transfers-bc-command-handler-svc:0.3.3
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
       participants-svc:
         condition: service_healthy
-    volumes:
-      - transfers-command-handler-svc_data:/app/data
+      scheduling-svc:
+        condition: service_healthy
+#    volumes:
+#      - transfers-command-handler-svc_data:/app/data
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -278,19 +297,20 @@ services:
       - PARTICIPANTS_SVC_URL=${PARTICIPANTS_SVC_URL}
       - ACCOUNTS_BALANCES_COA_SVC_URL=${ACCOUNTS_BALANCES_COA_SVC_URL}
       - SETTLEMENTS_SVC_URL=${SETTLEMENTS_SVC_URL}
+      - SCHEDULING_SVC_URL=${SCHEDULING_SVC_URL}
     restart: unless-stopped
 
 # settlements
 
   settlements-api-svc:
-    image: mojaloop/settlements-bc-settlements-api-svc:0.1.11
+    image: mojaloop/settlements-bc-settlements-api-svc:0.3.2
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
       participants-svc:
         condition: service_healthy
-    volumes:
-      - settlements-api-svc_data:/app/data
+#    volumes:
+#      - settlements-api-svc_data:/app/data
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -314,14 +334,14 @@ services:
     restart: unless-stopped
 
   settlements-event-handler-svc:
-    image: mojaloop/settlements-bc-event-handler-svc:0.1.9
+    image: mojaloop/settlements-bc-event-handler-svc:0.3.1
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
       participants-svc:
         condition: service_healthy
-    volumes:
-      - settlements-event-handler-svc_data:/app/data
+#    volumes:
+#      - settlements-event-handler-svc_data:/app/data
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -335,14 +355,14 @@ services:
     restart: unless-stopped
 
   settlements-command-handler-svc:
-    image: mojaloop/settlements-bc-command-handler-svc:0.1.10
+    image: mojaloop/settlements-bc-command-handler-svc:0.3.2
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
       participants-svc:
         condition: service_healthy
-    volumes:
-      - settlements-command-handler-svc_data:/app/data
+#    volumes:
+#      - settlements-command-handler-svc_data:/app/data
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -359,7 +379,7 @@ services:
 
 
   admin-ui:
-    image: mojaloop/vnext-admin-ui-svc:0.1.27
+    image: mojaloop/vnext-admin-ui-svc:0.1.35
     depends_on:
       transfers-api-svc:
         condition: service_healthy
@@ -369,14 +389,14 @@ services:
       - 4200:4200
 
 
-  # blue bank TTK
+  # green bank TTK
   ttk_1:
     image: mojaloop/ml-testing-toolkit:v15.0.0
     volumes:
 #      - ttk1_data:/app/data
       - ttk1_data:/opt/app
-#    extra_hosts:
-#      - "host.docker.internal:host-gateway"
+    extra_hosts: # only needed for linux
+      - "host.docker.internal:host-gateway"
     ports:
       - "4040:4040"
       - "5050:5050"
@@ -397,20 +417,21 @@ services:
       - sh
       - /usr/share/nginx/start.sh
 
-  mongo_seed:
-    image: mongo
-    volumes:
-      - ./ttk_files:/ttk_files
-    command:
-      /ttk_files/mongodb/import.sh
-  # green bank TTK
+#  mongo_seed:
+#    image: mongo
+#    volumes:
+#      - ./ttk_files:/ttk_files
+#    command:
+#      /ttk_files/mongodb/import.sh
+
+  # blue bank TTK
   ttk_2:
     image: mojaloop/ml-testing-toolkit:v15.0.0
     volumes:
 #      - ttk2_data:/app/data
       - ttk2_data:/opt/app
-#    extra_hosts:
-#      - "host.docker.internal:host-gateway"
+    extra_hosts: # only needed for linux
+      - "host.docker.internal:host-gateway"
     ports:
       - "4041:4040"
       - "5051:5050"
@@ -432,84 +453,84 @@ services:
       - /usr/share/nginx/start.sh
 
 volumes:
-  participants-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/participants-svc
-  account-lookup-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/account-lookup-svc
-  account-lookup-http-oracle-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/account-lookup-http-oracle-svc
-  quoting-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/quoting-svc
-  fspiop-api-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/fspiop-api-svc
-  aandb_builtin-ledger-grpc-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/aandb_builtin-ledger-grpc-svc
-  aandb_coa-grpc-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/aandb_coa-grpc-svc
-  transfers-api-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/transfers-api-svc
-  transfers-event-handler-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/transfers-event-handler-svc
-  transfers-command-handler-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/transfers-command-handler-svc
-  settlements-api-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/settlements-api-svc
-  settlements-event-handler-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/settlements-event-handler-svc
-  settlements-command-handler-svc_data:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ${ROOT_VOLUME_DEVICE_PATH}/data/settlements-command-handler-svc
+#  participants-svc_data:
+#    driver: local
+#    driver_opts:
+#      o: bind
+#      type: none
+#      device: ${ROOT_VOLUME_DEVICE_PATH}/data/participants-svc
+#  account-lookup-svc_data:
+#    driver: local
+#    driver_opts:
+#      o: bind
+#      type: none
+#      device: ${ROOT_VOLUME_DEVICE_PATH}/data/account-lookup-svc
+#  account-lookup-http-oracle-svc_data:
+#    driver: local
+#    driver_opts:
+#      o: bind
+#      type: none
+#      device: ${ROOT_VOLUME_DEVICE_PATH}/data/account-lookup-http-oracle-svc
+#  quoting-svc_data:
+#    driver: local
+#    driver_opts:
+#      o: bind
+#      type: none
+#      device: ${ROOT_VOLUME_DEVICE_PATH}/data/quoting-svc
+#  fspiop-api-svc_data:
+#    driver: local
+#    driver_opts:
+#      o: bind
+#      type: none
+#      device: ${ROOT_VOLUME_DEVICE_PATH}/data/fspiop-api-svc
+#  aandb_builtin-ledger-grpc-svc_data:
+#    driver: local
+#    driver_opts:
+#      o: bind
+#      type: none
+#      device: ${ROOT_VOLUME_DEVICE_PATH}/data/aandb_builtin-ledger-grpc-svc
+#  aandb_coa-grpc-svc_data:
+#    driver: local
+#    driver_opts:
+#      o: bind
+#      type: none
+#      device: ${ROOT_VOLUME_DEVICE_PATH}/data/aandb_coa-grpc-svc
+#  transfers-api-svc_data:
+#    driver: local
+#    driver_opts:
+#      o: bind
+#      type: none
+#      device: ${ROOT_VOLUME_DEVICE_PATH}/data/transfers-api-svc
+#  transfers-event-handler-svc_data:
+#    driver: local
+#    driver_opts:
+#      o: bind
+#      type: none
+#      device: ${ROOT_VOLUME_DEVICE_PATH}/data/transfers-event-handler-svc
+#  transfers-command-handler-svc_data:
+#    driver: local
+#    driver_opts:
+#      o: bind
+#      type: none
+#      device: ${ROOT_VOLUME_DEVICE_PATH}/data/transfers-command-handler-svc
+#  settlements-api-svc_data:
+#    driver: local
+#    driver_opts:
+#      o: bind
+#      type: none
+#      device: ${ROOT_VOLUME_DEVICE_PATH}/data/settlements-api-svc
+#  settlements-event-handler-svc_data:
+#    driver: local
+#    driver_opts:
+#      o: bind
+#      type: none
+#      device: ${ROOT_VOLUME_DEVICE_PATH}/data/settlements-event-handler-svc
+#  settlements-command-handler-svc_data:
+#    driver: local
+#    driver_opts:
+#      o: bind
+#      type: none
+#      device: ${ROOT_VOLUME_DEVICE_PATH}/data/settlements-command-handler-svc
   ttk1_data:
     driver: local
     driver_opts:

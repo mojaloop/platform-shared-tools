@@ -11,8 +11,8 @@ import {MessagesComponent} from './messages/messages.component';
 import {HomeComponent} from './home/home.component';
 
 import {CanLoadIsLoggedIn} from "src/app/_pipes_and_guards/canload_guard";
-import {SecurityComponent} from 'src/app/security/main/security.component';
-import {PlatformRoleDetailComponent} from './security/platform-role-detail/platform-role-detail.component';
+import {SecurityPrivilegesComponent} from 'src/app/security/main/security-privileges.component';
+import {PlatformRoleDetailComponent} from './security/roles/platform-role-detail.component';
 import {ParticipantsComponent} from './participants/participants.component';
 import {MyAccountComponent} from './my-account/my-account.component';
 import {AuthInterceptor} from "src/app/_pipes_and_guards/auth_interceptor";
@@ -41,6 +41,8 @@ import {BulkQuoteCreateComponent} from './bulk-quotes/bulk-quote-create.componen
 import {TransfersComponent} from './transfers/transfers.component';
 import {TransferDetailComponent} from './transfers/transfer-detail.component';
 import {TransferCreateComponent} from './transfers/transfer-create.component';
+import {BulkTransfersComponent} from './bulk-transfers/bulk-transfers.component';
+import {BulkTransferDetailComponent} from './bulk-transfers/bulk-transfer-detail.component';
 import {AccountLookupAssociationsListComponent} from './account-lookup/associations-list.component';
 import {SettlementsBatchesComponent} from 'src/app/settlements/settlements.batches.component';
 import {SettlementsMatrixDetailComponent} from "src/app/settlements/settlements.matrix-detail.component";
@@ -51,6 +53,14 @@ import {SettlementsModelsCreateComponent} from './settlements/settlements.models
 import {AuditingComponent} from "./auditing/auditing.component";
 import { DFSPSettlementReport } from "./report/dfsp-settlement-report.component";
 import { DFSPSettlementDetailsReport } from "./report/dfsp-settlement-details-report.component";
+import {BuiltinIamUsersListComponent} from "./security/builtin_iam/builtin-iam-users-list.component";
+import {BuiltinIamUserCreateComponent} from "./security/builtin_iam/builtin-iam-user-create.component";
+import {BuiltinIamUserDetailComponent} from "./security/builtin_iam/builtin-iam-user-detail.component";
+import {PlatformRoleListComponent} from "./security/roles/platform-role-list.component";
+import {BuiltinIamAppsListComponent} from "./security/builtin_iam/builtin-iam-apps-list.component";
+import {BuiltinIamAppCreateComponent} from "./security/builtin_iam/builtin-iam-app-create.component";
+import {BuiltinIamAppDetailComponent} from "./security/builtin_iam/builtin-iam-app-detail.component";
+import {PlatformRoleCreateComponent} from "./security/roles/platform-role-create.component";
 
 @NgModule({
 	declarations: [
@@ -59,7 +69,7 @@ import { DFSPSettlementDetailsReport } from "./report/dfsp-settlement-details-re
 		HomeComponent,
 		TestsComponent,
 		LoginComponent,
-		SecurityComponent,
+		SecurityPrivilegesComponent,
 		PlatformRoleDetailComponent,
 		ParticipantsComponent,
 		MyAccountComponent,
@@ -82,6 +92,8 @@ import { DFSPSettlementDetailsReport } from "./report/dfsp-settlement-details-re
 		TransfersComponent,
 		TransferDetailComponent,
 		TransferCreateComponent,
+		BulkTransfersComponent,
+		BulkTransferDetailComponent,
 		SettlementsBatchesComponent,
 		SettlementsMatrixDetailComponent,
 		SettlementsMatricesComponent,
@@ -91,6 +103,14 @@ import { DFSPSettlementDetailsReport } from "./report/dfsp-settlement-details-re
 		AuditingComponent,
 		DFSPSettlementReport,
 		DFSPSettlementDetailsReport,
+		BuiltinIamUsersListComponent,
+		BuiltinIamUserCreateComponent,
+		BuiltinIamUserDetailComponent,
+		PlatformRoleListComponent,
+		PlatformRoleCreateComponent,
+		BuiltinIamAppsListComponent,
+		BuiltinIamAppCreateComponent,
+		BuiltinIamAppDetailComponent
 	],
 	imports: [
 		BrowserModule,

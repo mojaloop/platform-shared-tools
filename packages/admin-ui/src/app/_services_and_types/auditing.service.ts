@@ -6,6 +6,7 @@ import {AuthenticationService} from "src/app/_services_and_types/authentication.
 
 import {} from "@mojaloop/auditing-bc-public-types-lib";
 import {AuditSearchResults} from "./auditing_types";
+import {UnauthorizedError} from "src/app/_services_and_types/errors";
 
 
 const SVC_BASEURL = "/_auditing";
@@ -57,8 +58,13 @@ export class AuditingService {
 					return subscriber.complete();
 				},
 				error => {
-					console.error(error);
-					subscriber.error(error);
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on search");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
 					return subscriber.complete();
 				}
 			);
@@ -75,8 +81,13 @@ export class AuditingService {
 					return subscriber.complete();
 				},
 				error => {
-					console.error(error);
-					subscriber.error(error);
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on getSearchKeywords");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
 					return subscriber.complete();
 				}
 			);

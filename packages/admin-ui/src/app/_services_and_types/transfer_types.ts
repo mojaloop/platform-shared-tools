@@ -34,6 +34,7 @@
 export declare type Transfer = {
 	createdAt: number;
 	updatedAt: number;
+	bulkTransferId: string;
 	transferId: string;
 	payeeFsp: string;
 	payerFsp: string;
@@ -56,4 +57,11 @@ export declare type Transfer = {
 	payerFspId?: string;
 	currencyCode?: string;
 	completedTimestamp?: string;
+}
+
+export declare type TransfersSearchResults = {
+	pageSize: number;
+	totalPages: number;
+	pageIndex: number;
+	items: Transfer[];
 }

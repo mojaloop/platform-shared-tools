@@ -1,0 +1,172 @@
+<ng-template #notFound>
+	<div class="col-md-8 align-self-center">
+		<h2>Builtin IAM - User not found</h2>
+	</div>
+</ng-template>
+
+<ng-container *ngIf="(user | async) as user; else notFound">
+
+	<div class="row">
+		<div class="col-md-9 align-self-center">
+			<h2>Builtin IAM - {{ user.email }}</h2>
+		</div>
+
+		<div class="col-md-3 align-self-center">
+			<small><strong>ID: </strong> {{ user.email }}
+				<a (click)="copyUserIdToClipboard()"
+				   ngbTooltip="Copy ID to clipboard"><i class="bi bi-clipboard-plus"></i></a></small>
+		</div>
+	</div>
+	<hr/>
+
+	<div class="row">
+
+		<div class="col-4"> <!-- col 1 -->
+			<div class="mb-2">
+				<label class="col-form-label text-secondary">User Type</label>
+				<div>{{ user.userType }}</div>
+			</div>
+
+			<div class="mb-2">
+				<label class="col-form-label text-secondary">State</label>
+				<div>
+					<span *ngIf="user.enabled">Enabled</span>
+					<span *ngIf="!user.enabled" class="text-danger">Disabled</span>
+				</div>
+			</div>
+
+		</div> <!-- col 1 -->
+
+
+		<div class="col-5"> <!-- col 2 -->
+			<div class="mb-2">
+				<label class="col-form-label text-secondary">Full name</label>
+				<div>{{ user.fullName }}</div>
+			</div>
+
+			<div class="mb-2">
+				<label class="col-form-label text-secondary">Email</label>
+				<div>{{ user.email }}</div>
+			</div>
+		</div> <!-- col 2 -->
+
+
+		<div class="col-3"> <!-- column 3 - buttons -->
+			<button class="btn btn-success btn-block" *ngIf="!user.enabled" (click)="enableUser()">
+				Enable User
+			</button>
+			<button class="btn btn-danger btn-block" *ngIf="user.enabled" (click)="disableUser()">
+				Disable User
+			</button>
+
+			<button class="btn btn-primary btn-block" [disabled]="true">
+				Reset Password
+			</button>
+
+			<button class="btn btn-primary btn-block"(click)="showAddRolesModal()">
+				Add Roles
+			</button>
+
+		</div>  <!-- column 3 - buttons -->
+
+	</div>
+
+	<hr/>
+
+	<div class="row">
+		<!--		roles and privileges-->
+		<div class="col-12">
+			<h4>Associated Roles</h4>
+			<table class="table">
+				<thead class="thead-light">
+				<tr>
+					<th scope="col">Name</th>
+					<th scope="col">Description</th>
+					<th scope="col">Actions</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr *ngFor="let item of (roles | async)">
+					<th scope="row"><a routerLink="/security/roles/{{item.id}}">{{item.labelName}}</a></th>
+					<td> {{item.description}}</td>
+					<td>
+						<div class="btn-group btn-group-sm" role="group" aria-label="">
+							<button type="button" class="btn btn-danger" (click)="removeRole(item.id)" [ngbTooltip]="'Remove this role from the user'">
+								<span class="bi bi-x-lg"></span>
+							</button>
+						</div>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="col-12">
+			<h4>Associated Privileges</h4>
+			<table class="table">
+				<thead class="thead-light">
+				<tr>
+					<th scope="col">Name</th>
+					<th scope="col">Description</th>
+					<th scope="col">Owner</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr *ngFor="let item of (privs | async)">
+					<th>{{item.labelName}} <span class="badge badge-secondary">{{item.fromRoleLabel}}</span></th>
+					<td> {{item.description}}</td>
+					<td> {{item.boundedContextName}} / {{item.applicationName}} <span
+						class="badge badge-secondary">{{item.applicationVersion}}</span></td>
+				</tr>
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+</ng-container>
+
+
+
+
+<!-- Add roles Modal -->
+<ng-template #addRolesModal let-modal>
+	<div class="modal-header">
+		<h4 *ngIf="(user | async)?.userType === 'HUB'" class="modal-title">
+			Add Platform Roles
+		</h4>
+		<h4 *ngIf="(user | async)?.userType === 'DFSP'" class="modal-title">
+			Add Per Participant Roles
+		</h4>
+<!--		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">-->
+<!--			<span aria-hidden="true">&times;</span>-->
+<!--		</button>-->
+	</div>
+	<div class="modal-body">
+		<form class="">
+			<div class="form-group">
+				<label class="" for="addRoles_RolesIds">Available Roles</label>
+				<select class="form-control" id="addRoles_RolesIds" multiple size="10">
+					<ng-container *ngFor="let role of (allRoles | async)">
+						<option *ngIf="!role.isApplicationRole" value="{{role.id}}">{{role.labelName}}</option>
+					</ng-container>
+
+				</select>
+				<div class="form-text text-muted">
+					Use Ctrl-click to select multiple.
+				</div>
+				<div class="invalid-feedback">
+					Please choose at least one role to add to the user.
+				</div>
+			</div>
+
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-success" (click)="addRoles($event)">
+			Add Roles
+		</button>
+		<button type="button" class="btn btn-danger" (click)="modal.dismiss()">
+			Cancel
+		</button>
+	</div>
+</ng-template>

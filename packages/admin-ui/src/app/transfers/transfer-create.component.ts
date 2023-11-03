@@ -12,6 +12,7 @@ import {IParticipant} from "@mojaloop/participant-bc-public-types-lib";
 import {ParticipantsService} from "../_services_and_types/participants.service";
 import * as uuid from "uuid";
 import {removeEmpty} from '../_utils';
+import {DEFAULT_TEST_CALL_REDIRECT_WAIT_MS} from "src/app/_services_and_types/settings.service";
 
 @Component({
 	selector: 'app-transfer-create',
@@ -46,17 +47,22 @@ export class TransferCreateComponent implements OnInit {
 		this.newTransfer();
 
 		try {
-			let participants = await this._participantsSvc.getAllParticipants().toPromise();
-			participants = participants.filter(value => value.id !== "hub");
-			this.participants.next(participants);
-
-			const quotes = await this._quotesSvc.getAllQuotes().toPromise();
-			quotes.reverse();
-			this.quotes.next(quotes);
+			const participantsRes = await this._participantsSvc.getAllParticipants().toPromise();
+			const onlyDfsps = participantsRes.items.filter(value => value.id !== "hub");
+			this.participants.next(onlyDfsps);
 
 			if (!this.inputQuoteId) {
+				const quotes = await this._quotesSvc.getAllQuotes().toPromise();
+				quotes.reverse();
+				this.quotes.next(quotes);
 				this.form.controls["selectedQuoteId"].setValue(quotes[0].quoteId);
 			} else {
+				const quote = await this._quotesSvc.getQuote(this.inputQuoteId).toPromise();
+				if(!quote){
+					this._messageService.addError("Could not get quote by id");
+					return;
+				}
+				this.quotes.next([quote]);
 				this.form.controls["selectedQuoteId"].setValue(this.inputQuoteId);
 				this.applyQuote(this.inputQuoteId);
 			}
@@ -122,7 +128,7 @@ export class TransferCreateComponent implements OnInit {
 
 			setTimeout(() => {
 				this._router.navigateByUrl(`/transfers/${this.activeTransfer!.transferId}`);
-			}, 250);
+			}, DEFAULT_TEST_CALL_REDIRECT_WAIT_MS);
 		}, error => {
 			this._messageService.addError(error.message);
 		});

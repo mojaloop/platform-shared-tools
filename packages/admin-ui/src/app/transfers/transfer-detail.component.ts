@@ -24,7 +24,7 @@ export class TransferDetailComponent implements OnInit {
 	public transfer: BehaviorSubject<Transfer | null> = new BehaviorSubject<Transfer | null>(null);
 	public payer: BehaviorSubject<IParticipant | null> = new BehaviorSubject<IParticipant | null>(null);
 	public payee: BehaviorSubject<IParticipant | null> = new BehaviorSubject<IParticipant | null>(null);
-	settlementTransfer: BehaviorSubject<ISettlementBatchTransfer | null> = new BehaviorSubject<ISettlementBatchTransfer | null>(null);
+	//settlementTransfer: BehaviorSubject<ISettlementBatchTransfer | null> = new BehaviorSubject<ISettlementBatchTransfer | null>(null);
 	public decodedIlpPacket: any;
 
 	private _reloadCount = 0;
@@ -66,11 +66,11 @@ export class TransferDetailComponent implements OnInit {
 
 			} else if (this._live && this._reloadRequested) {
 				this._messageService.addSuccess("Transfer reloaded");
-			} else {
+			}/* else {
 				this._settlementsService.getTransfersByTransferId(id!).subscribe(async (value) => {
 					this.settlementTransfer.next(value);
 				});
-			}
+			}*/
 
 			if (!transfer || !transfer.payerFspId || !transfer.payeeFspId) return;
 

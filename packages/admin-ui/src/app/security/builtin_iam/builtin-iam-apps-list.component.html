@@ -1,0 +1,89 @@
+<div class="row mb-2">
+	<div class="col">
+		<h3>Builtin IAM - Application Management</h3>
+	</div>
+	<div class="col text-right">
+		<button class="btn btn-success btn-labeled" routerLink="/security/builtin_iam/apps/new">
+			<span class="btn-label"><i class="bi bi-plus-lg"></i></span>Create Application
+		</button>
+	</div>
+</div>
+
+<!--filter-->
+<div class="filterbox">
+	<form>
+		<table class="table">
+			<tr class="form-row">
+				<div class="form-group col-md-5">
+					<label for="filterClientId">Client ID:</label>
+					<input class="form-control" type="text" id="filterClientId" />
+				</div>
+
+				<div class="form-group col-md-2">
+					<label for="filterLoginType">Login enabled:</label>
+					<select class="form-control" id="filterLoginType">
+						<option value="ALL">All</option>
+						<option value="CAN_LOGIN">Yes</option>
+						<option value="CANNOT_LOGIN">No</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-2">
+					<label for="filterAppState">State:</label>
+					<select class="form-control" id="filterAppState">
+						<option value="ALL">All</option>
+						<option value="true">Enabled</option>
+						<option value="false">Disabled</option>
+					</select>
+				</div>
+
+				<!-- spacer-->
+<!--				<div class="form-group col-md-2"></div>-->
+
+				<div class="form-group col-md-2">
+					<label for="filterBtn">&nbsp;</label>
+					<button
+						type="submit"
+						class="form-control btn btn-primary"
+						id="filterBtn"
+						(click)="search()">
+						Search&nbsp;&nbsp;<i class="bi bi-search"></i>
+					</button>
+				</div>
+
+				<div class="form-group col-md-1">
+					<label for="resetFilterBtn">&nbsp;</label>
+					<button class="form-control btn btn-secondary" id="resetFilterBtn" (click)="resetFilter()">
+						Reset&nbsp;
+					</button>
+				</div>
+			</tr>
+		</table>
+	</form>
+</div>
+
+
+<table class="table table-striped">
+	<thead class="thead-light">
+	<tr>
+		<th scope="col">Client Id</th>
+		<th scope="col">Login Enabled</th>
+		<th scope="col">Platform Roles</th>
+		<th scope="col">State</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr *ngFor="let item of (apps | async)">
+		<td> <a routerLink="/security/builtin_iam/apps/{{item.clientId}}">{{item.clientId}}</a> </td>
+		<td> {{item.canLogin}}</td>
+		<td>
+			<span *ngIf="item.canLogin">{{item.platformRoles}}</span>
+			<span *ngIf="!item.canLogin">(not applicable)</span>
+		</td>
+		<td>
+			<span *ngIf="item.enabled" class="badge badge-success">Enabled</span>
+			<span *ngIf="!item.enabled" class="badge badge-danger">Disabled</span>
+		</td>
+	</tr>
+	</tbody>
+</table>

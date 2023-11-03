@@ -11,6 +11,7 @@ import {IParticipant} from "@mojaloop/participant-bc-public-types-lib";
 import {ParticipantsService} from "../_services_and_types/participants.service";
 import * as uuid from "uuid";
 import {removeEmpty} from "../_utils";
+import {DEFAULT_TEST_CALL_REDIRECT_WAIT_MS} from "src/app/_services_and_types/settings.service";
 
 @Component({
 	selector: 'app-quote-create',
@@ -39,12 +40,12 @@ export class QuoteCreateComponent implements OnInit {
 		this.participantsSubs = this._participantsSvc.getAllParticipants().subscribe((list) => {
 			console.log("TransferCreateComponent ngOnInit - got getAllParticipants");
 
-			list = list.filter(value => value.id !== "hub");
+			const onlyDfsps = list.items.filter(value => value.id !== "hub");
 
-			this.form.controls["payeeFspId"].setValue(list[0].id);
-			this.form.controls["payerFspId"].setValue(list[0].id);
+			this.form.controls["payeeFspId"].setValue(onlyDfsps[0].id);
+			this.form.controls["payerFspId"].setValue(onlyDfsps[0].id);
 
-			this.participants.next(list);
+			this.participants.next(onlyDfsps);
 		}, error => {
 			if (error && error instanceof UnauthorizedError) {
 				this._messageService.addError(error.message);
@@ -133,7 +134,7 @@ export class QuoteCreateComponent implements OnInit {
 			this._messageService.addSuccess("Quote Created");
 			setTimeout(() => {
 				this._router.navigateByUrl(`/quotes/${this.activeQuote!.quoteId}?live`);
-			}, 500);
+			}, DEFAULT_TEST_CALL_REDIRECT_WAIT_MS);
 		}, error => {
 			console.error(error);
 			this._messageService.addError("Quote Creation error: " + error.toString());

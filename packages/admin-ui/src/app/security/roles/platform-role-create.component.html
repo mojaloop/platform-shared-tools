@@ -1,0 +1,70 @@
+<div class="row mb-2">
+	<div class="col">
+		<h3>Platform Roles - Create new Role</h3>
+	</div>
+</div>
+
+
+
+<form [formGroup]="form" (ngSubmit)="createApp()">
+
+	<div class="form-row"> <!--form-row-->
+
+		<!-- id (role id) -->
+		<div class="form-group col-md-4">
+			<label for="roleId">Role Identifier: </label>
+			<input id="roleId" formControlName="id" type="text" class="form-control"
+				   [ngClass]="{'is-valid': form.controls['id'].touched && form.controls['id'].valid,
+              'is-invalid': (submitted || form.controls['id'].touched) && form.controls['id'].invalid}">
+		</div>
+
+		<!-- label -->
+		<div class="form-group col-md-4">
+			<label for="labelName">Label Name: </label>
+			<input id="labelName" formControlName="labelName" type="text" class="form-control"
+				   [ngClass]="{'is-valid': form.controls['labelName'].touched && form.controls['labelName'].valid,
+              'is-invalid': (submitted || form.controls['labelName'].touched) && form.controls['labelName'].invalid}">
+		</div>
+
+		<!-- isApplicationRole -->
+		<div class="form-group col-md-2">
+			<label for="isApplicationRole">Scope: </label>
+			<select id="isApplicationRole" class="form-control" formControlName="isApplicationRole" (change)="isApplicationRoleChanged($event)">
+				<option value="false">Users</option>
+				<option value="true">Applications</option>
+			</select>
+
+		</div>
+
+		<!-- isPerParticipantRole -->
+		<div class="form-group col-md-2">
+			<label for="isPerParticipantRole">Per Participant Role: </label>
+			<select id="isPerParticipantRole" class="form-control" formControlName="isPerParticipantRole">
+				<option value="true">Yes</option>
+				<option value="false">No</option>
+			</select>
+
+		</div>
+
+	</div>
+
+	<div class="form-row"> <!--form-row-->
+		<!-- description -->
+		<div class="form-group col-md-12">
+			<label for="description">Description: </label>
+			<input id="description" formControlName="description" type="text" class="form-control"
+				   [ngClass]="{'is-valid': form.controls['description'].touched && form.controls['description'].valid,
+              'is-invalid': (submitted || form.controls['description'].touched) && form.controls['description'].invalid}">
+		</div>
+	</div>
+
+
+	<div class="form-row d-flex mb-3">
+		<div class="p-2">
+			<button type="submit" class="btn btn-primary" [disabled]="!form.valid">Create Role</button>
+		</div>
+		<div class="ml-auto p-2">
+			<button class="btn btn-danger" (click)="cancel()">Cancel</button>
+		</div>
+	</div>
+</form>

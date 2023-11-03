@@ -18,7 +18,8 @@ import {
 	IParticipantSourceIpChangeRequest,
 	ParticipantAllowedSourceIpsPortModes,
 	IParticipantContactInfo,
-	IParticipantContactInfoChangeRequest
+	IParticipantContactInfoChangeRequest,
+	IParticipantStatusChangeRequest
 } from "@mojaloop/participant-bc-public-types-lib";
 import { ParticipantsService } from "src/app/_services_and_types/participants.service";
 import { BehaviorSubject, Observable } from "rxjs";
@@ -38,6 +39,8 @@ export class ParticipantDetailComponent implements OnInit {
 	private _participantId!: string;
 	public participant: BehaviorSubject<IParticipant | null> =
 		new BehaviorSubject<IParticipant | null>(null);
+
+	readonly HUB_ID = this._participantsSvc.hubId;
 
 	endpointCreateModeEnabled = false;
 	endpointEditModeEnabled = false;
@@ -830,7 +833,7 @@ export class ParticipantDetailComponent implements OnInit {
 					if (this.fundsMovementModalRef)
 						this.fundsMovementModalRef!.close();
 					this._messageService.addError(
-						`Funds movement approval failed with error: ${error.message}`
+						`Funds movement approval failed with error: ${error}`
 					);
 				}
 			);
@@ -924,8 +927,6 @@ export class ParticipantDetailComponent implements OnInit {
 					await this._fetchParticipant();
 				},
 				(error) => {
-					if (this.fundsMovementModalRef)
-						this.fundsMovementModalRef!.close();
 					this._messageService.addError(
 						`NDC Request approval failed with error: ${error.message}`
 					);
@@ -955,5 +956,67 @@ export class ParticipantDetailComponent implements OnInit {
 
 	async copyParticipantIdToClipboard() {
 		await navigator.clipboard.writeText(this._participantId || "");
+	}
+
+	/**
+	 * Participant's Status
+	 */
+
+	createParticipantStatusChangeRequest(status: boolean): void {
+		const confirmed = confirm(`Are you sure you want to ${status ? "enable" : "disable"} this participant?`);
+		if (!confirmed) {
+			return;
+		}
+
+		const participantStatusChangeRequest: IParticipantStatusChangeRequest = {
+			id: uuid.v4(),
+			isActive: status,
+			requestType: "CHANGE_PARTICIPANT_STATUS",
+			approvedBy: null,
+			approved: false,
+			approvedDate: null,
+			createdBy: "",
+			createdDate: Date.now()
+		};
+
+		this._participantsSvc
+			.createParticipantStatusChangeRequest(this._participantId, participantStatusChangeRequest)
+			.subscribe(
+				async () => {
+					this._messageService.addSuccess("Successfully created a change request to update participant's status.");
+					await this._fetchParticipant();
+					this.navBar.select("status");
+				},
+				(error) => {
+					this._messageService.addError(
+						`Updating participant's status failed with: ${error}`
+					);
+				}
+			);
+	}
+
+	approveParticipantStatusChangeRequest(changeReqId: string): void {
+
+		this._participantsSvc
+			.approveParticipantStatusChangeRequest(this._participantId, changeReqId)
+			.subscribe(
+				async () => {
+					this._messageService.addSuccess(
+						"Participant status changes approval success!"
+					);
+					await this._fetchParticipant();
+					this.updateAccounts();
+				},
+				(error) => {
+					this._messageService.addError(
+						`Participant status changes approval failed with error: ${ error?.message}`
+					);
+				}
+			);
+
+	}
+
+	rejectParticipantStatusChangeRequest(reqId: string) {
+		this._messageService.addError("Not implemented (rejectParticipantStatusChangeRequest)");
 	}
 }

@@ -135,3 +135,11 @@ export declare type Quote = {
 	initiatorType: string;
 	ilpPacket: string;
 }
+
+export declare type QuotingSearchResults = {
+	pageSize: number;
+	totalPages: number;
+	pageIndex: number;
+	items: Quote[];
+}
+
