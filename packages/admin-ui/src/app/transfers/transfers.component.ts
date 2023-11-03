@@ -19,16 +19,16 @@ export class TransfersComponent implements OnInit, OnDestroy {
 	public criteriaFromDate = "";
 
 	transfers: BehaviorSubject<TransfersSearchResults> = new BehaviorSubject<TransfersSearchResults>({
-		pageSize: 5,
+		pageSize: 10,
 		totalPages: 1,
 		pageIndex: 1,
-		items: [],
+		items: []
 	});
 	transfersSubs?: Subscription;
 	participantsSubs?: Subscription;
 	filterForm: FormGroup;
 	pageIndex: number = 1;
-	pageSize: number = 5;
+	pageSize: number = 10;
 
 	//Filters
 	keywordState: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
