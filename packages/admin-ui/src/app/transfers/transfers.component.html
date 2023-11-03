@@ -1,125 +1,206 @@
-<div class="row mb-2">
-	<div class="col">
+<div class="d-flex justify-content-between align-items-center mb-3">
+	<div>
 		<h3>Transfers</h3>
+	</div>
+	<div>
+		<button (click)="filterToggle()" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
+			title="Filter">
+			<i class="bi bi-filter"></i>
+		</button>
+		<!-- <button class="d-inline-block btn btn-primary ml-3">Export </button> -->
 	</div>
 	<!--<div class="col text-right">
 		<button class="btn btn-warning" routerLink="/transfers/new">Create Test Transfer</button>
 	</div>-->
 </div>
 
-
-
 <!--filter-->
-<div class="filterbox">
-	<form >
+<div *ngIf="isFilterShow" class="filterbox">
+	<form [formGroup]="filterForm" (ngSubmit)="search()">
 		<table class="table">
 			<tr class="form-row">
-				<div class="form-group col-md-1">
-					<label for="filterState">State:</label>
-					<select class="form-control" id="filterState">
-						<option value="{{ALL_STR_ID}}">(All)</option>
-						<option value="{{item}}" *ngFor="let item of (keywordState | async)">{{item}}</option>
+				<div class="form-group col-md-3">
+					<label for="filterPayerDfspName">Payer DFSP Name:</label>
+					<select formControlName="filterPayerDfspName" id="filterPayerDfspName" class="form-control">
+						<option value={{ALL_STR_ID}}>(All)</option>
+						<option *ngFor="let item of participants | async" value="{{item.id}}">
+							{{item.name}}
+						</option>
 					</select>
 				</div>
 
-				<div class="form-group col-md-1">
+				<div class="form-group col-md-3">
+					<label for="filterPayeeDfspName">Payee DFSP Name:</label>
+					<select formControlName="filterPayeeDfspName" id="filterPayeeDfspName" class="form-control">
+						<option value={{ALL_STR_ID}}>(All)</option>
+						<option *ngFor="let item of participants | async" value="{{item.id}}">
+							{{item.name}}
+						</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterPayerIdType">Payer ID Type:</label>
+					<select formControlName="filterPayerIdType" id="filterPayerIdType" class="form-control">
+						<option *ngFor="let partyIdType of partyIdTypeList" value="{{partyIdType}}">
+							{{partyIdType}}
+						</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterPayeeIdType">Payee ID Type:</label>
+					<select formControlName="filterPayeeIdType" id="filterPayeeIdType" class="form-control">
+						<option *ngFor="let partyIdType of partyIdTypeList" value="{{partyIdType}}">
+							{{partyIdType}}
+						</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-3">
 					<label for="filterCurrency">Currency:</label>
-					<select class="form-control" id="filterCurrency">
+					<select formControlName="filterCurrency" id="filterCurrency" class="form-control">
 						<option value="{{ALL_STR_ID}}">(All)</option>
 						<option value="{{item}}" *ngFor="let item of (keywordCurrency | async)">{{item}}</option>
 					</select>
 				</div>
 
 				<div class="form-group col-md-3">
-					<label for="filterStartDate">Start date:</label>
-					<input class="form-control" type="datetime-local" id="filterStartDate" step=300
-						   [ngModel]="criteriaFromDate"
-						   [ngModelOptions]="{standalone: true}">
+					<label for="filterState">Transfer State:</label>
+					<select formControlName="filterTransferState" id="filterTransferState" class="form-control">
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordState | async)">{{item}}</option>
+					</select>
 				</div>
 
+				<div class="form-group col-md-3">
+					<label for="filterTransferId">Transfer ID:</label>
+					<input type="text" formControlName="filterTransferId" id="filterTransferId" class="form-control">
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterPayerValue">Payer ID Value:</label>
+					<input type="text" formControlName="filterPayerValue" id="filterPayerValue" class="form-control">
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterPayeeIdValue">Payee ID Value:</label>
+					<input type="text" formControlName="filterPayeeIdValue" id="filterPayeeIdValue"
+						class="form-control">
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterStartDate">Start date:</label>
+					<input type="datetime-local" formControlName="filterStartDate" id="filterStartDate" step=300
+						class="form-control">
+				</div>
 
 				<div class="form-group col-md-3">
 					<label for="filterEndDate">End date:</label>
-					<input class="form-control" type="datetime-local" id="filterEndDate" step=300>
+					<input type="datetime-local" formControlName="filterEndDate" id="filterEndDate" step=300
+						class="form-control">
 				</div>
 
-				<div class="form-group col-md-2">
-					<label for="filterId">Id</label>
-					<input class="form-control" type="text" id="filterId">
-				</div>
+				<!-- Add filter controls here  -->
 
-				<div class="form-group col-md-2">
-					<label for="filterBtn">&nbsp;</label>
-					<button type="submit" class="form-control btn btn-primary" id="filterBtn" (click)="search()">Search &nbsp;&nbsp;<i class="bi bi-search"></i></button>
+
+				<div class="col-md-3 d-flex">
+					<div class="form-group w-50">
+						<label for="clearBtn">&nbsp;</label>
+						<button type="button" class="form-control btn btn-outline-primary" id="clearBtn"
+							(click)="clearFilters()">Clear</button>
+					</div>
+
+					<div class="form-group ml-3 w-50">
+						<label for="filterBtn">&nbsp;</label>
+						<button type="submit" class="form-control btn btn-primary" id="filterBtn">
+							Search&nbsp;&nbsp;<i class="bi bi-search"></i>
+						</button>
+					</div>
 				</div>
 			</tr>
 		</table>
 	</form>
 </div>
 
-
+<!-- Table -->
 <div>
-	<table class="table">
+	<table class="table table-sm table-hover">
 		<thead class="thead-light">
-		<tr>
-			<th scope="col">Timestamp</th>
-			<th scope="col">Transfer ID</th>
-			<th scope="col">Payer FSP</th>
-			<th scope="col">Payee FSP</th>
-			<th scope="col">Transfer State</th>
-			<th scope="col">Amount</th>
-			<th scope="col">Currency</th>
-		</tr>
+			<tr>
+				<th scope="col">Transfer ID</th>
+				<th scope="col">State</th>
+				<th scope="col">Currency</th>
+				<th scope="col">Amount</th>
+				<th scope="col" class="text-center">Payer DFSP Name</th>
+				<th scope="col" class="text-center">Payee DFSP Name</th>
+				<th scope="col">Date Submitted</th>
+				<th scope="col">Error Code</th>
+			</tr>
 		</thead>
 		<tbody>
-		<tr *ngFor="let item of (transfers | async)">
-			<td >{{item.updatedAt | date: 'medium'}}</td>
-			<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
-			<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
-			<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
-
-			<td *ngIf="item.transferState==='COMMITTED'" class="text-success">{{item.transferState}}</td>
-			<td *ngIf="item.transferState==='RESERVED'" class="text-warning">{{item.transferState}}</td>
-			<td *ngIf="item.transferState!=='RESERVED' && item.transferState!=='COMMITTED'" class="text-danger">{{item.transferState}}</td>
-
-			<td>{{item.amount}}</td>
-			<td>{{item.currencyCode}}</td>
-		</tr>
+			<ng-container *ngIf="(transfers | async)?.items?.length==0">
+				<tr>
+					<td colspan="12">No transfers found</td>
+				</tr>
+			</ng-container>
+			<tr *ngFor="let item of (transfers | async)?.items">
+				<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
+				<td *ngIf="item.transferState==='COMMITTED'" class="text-success">{{item.transferState}}</td>
+				<td *ngIf="item.transferState==='RESERVED'" class="text-warning">{{item.transferState}}</td>
+				<td *ngIf="item.transferState!=='RESERVED' && item.transferState!=='COMMITTED'" class="text-danger">
+					{{item.transferState}}</td>
+				<td>{{item.currencyCode}}</td>
+				<td>{{item.amount}}</td>
+				<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
+				<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
+				<td>{{item.updatedAt | date: 'medium' }}</td>
+				<td>{{item?.errorInformation?.errorCode || '-'}}</td>
+			</tr>
 		</tbody>
 	</table>
 </div>
 
-
-
-<!--pagination
-TODO: put in component
--->
-<hr>
-<nav aria-label="Page navigation"  *ngIf="paginateResult | async; let paginateObj">
-	<ul class="pagination justify-content-end">
-		<li class="page-item" [ngClass]="{'disabled' : paginateObj.prev == null}">
-			<a class="page-link" aria-label="Previous" (click)="search(paginateObj.prev ? paginateObj.prev-1 : 0)">
-				<span aria-hidden="true">&laquo;</span>
-				<span class="sr-only">Previous</span>
-			</a>
-		</li>
-
-		<ng-container *ngFor="let item of paginateObj.items">
-			<li class="page-item" *ngIf="item != null" [ngClass]="{'active' : item === paginateObj.current}">
-				<a class="page-link" (click)="search(item-1)" >{{item}}
-					<span class="sr-only" *ngIf="item === paginateObj.current">(current)</span>
-				</a>
-			</li>
-			<li class="page-item disabled" *ngIf="item == null">
-				<a class="page-link disabled" *ngIf="!item" >...</a>
-			</li>
-		</ng-container>
-
-		<li class="page-item"  [ngClass]="{'disabled' : paginateObj.next == null}">
-			<a class="page-link" aria-label="Next" (click)="search(paginateObj.next ? paginateObj.next-1 : 0)">
-				<span aria-hidden="true">&raquo;</span>
-				<span class="sr-only">Next</span>
-			</a>
-		</li>
-	</ul>
-</nav>
+<!-- Pagination -->
+<ul class="pagination d-flex justify-content-end align-items-center">
+	<li class="page-item d-flex align-items-center">
+		<span>Rows per page:</span>
+		<select (change)="onPageSizeChange()" [(ngModel)]="pageSize" class="rows-selector form-control ml-2"
+			id="rowsPerPage">
+			<option value="5">5</option>
+			<option value="25">25</option>
+			<option value="50">50</option>
+			<option value="100">100</option>
+		</select>
+	</li>
+	<li class="page-item d-flex align-items-center">
+		<span>Go to page</span>
+		<input [disabled]=" (transfers | async)?.totalPages === pageIndex" (change)="onPageSizeChange()"
+			[(ngModel)]="pageIndex" type="number" min="1" class="form-control page-number ml-2">
+	</li>
+	<li class="page-item">
+		Page {{ pageIndex }} of {{(transfers | async)?.totalPages || 1}}
+	</li>
+	<li class="page-indicator d-flex">
+		<div class="page-item">
+			<button (click)="toFirstPage()" class="page-link">
+				<i class="bi bi-chevron-double-left text-body "></i>
+			</button>
+		</div>
+		<div class="page-item">
+			<button [disabled]=" pageIndex===1" (click)="onPrevious()" class="page-link">
+				<i class="bi bi-chevron-left text-body"></i>
+			</button>
+		</div>
+		<div class="page-item">
+			<button [disabled]=" (transfers | async)?.totalPages === pageIndex" (click)="onNext()" class="page-link">
+				<i class="bi bi-chevron-right text-body"></i>
+			</button>
+		</div>
+		<div class="page-item">
+			<button (click)="toLastPage()" class="page-link">
+				<i class="bi bi-chevron-double-right text-body"></i>
+			</button>
+		</div>
+	</li>
+</ul>
