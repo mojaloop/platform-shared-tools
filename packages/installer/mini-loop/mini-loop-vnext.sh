@@ -7,7 +7,7 @@
 # Author Tom Daly 
 # Date Sept 2023
 
-source ../scripts/common.sh 
+#source ../scripts/common.sh 
 
 ################################################################################
 # Function: showUsage
