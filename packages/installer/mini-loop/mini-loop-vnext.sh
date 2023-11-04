@@ -119,6 +119,7 @@ elif [[ "$mode" == "install_ml" ]]; then
   #configure_extra_options 
   
   copy_k8s_yaml_files_to_tmp
+  source $HOME/mlenv/bin/activate 
   modify_local_mojaloop_yaml_and_charts  "$COMMON_SCRIPTS_DIR/vnext-configure.py" "$MANIFESTS_DIR"
   install_infra_from_local_chart $MANIFESTS_DIR/infra
   install_mojaloop_layer "crosscut" $MANIFESTS_DIR/crosscut

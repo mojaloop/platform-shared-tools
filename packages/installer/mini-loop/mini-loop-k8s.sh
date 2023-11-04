@@ -90,7 +90,11 @@ function install_prerequisites {
         apt update > /dev/null 2>&1
         printf "    python and python libs ...\n"
         apt install python3-pip -y > /dev/null 2>&1
-        pip3 install ruamel.yaml > /dev/null 
+        apt install python3.10-venv -y > /dev/null 2>&1
+        su - $k8s_user -c "pip3 install --user virtualenv" 
+        su - $k8s_user -c "python3 -m venv $k8s_user_home/mlenv"
+        su - $k8s_user -c "source $k8s_user_home/mlenv/bin/activate; pip3 install ruamel.yaml "
+        #pip3 install ruamel.yaml > /dev/null 
         if [[ $k8s_distro == "microk8s" ]]; then 
             printf "   install snapd\n"
             apt install snapd -y > /dev/null 2>&1
@@ -514,7 +518,7 @@ if [[ "$mode" == "install" ]]  ; then
     printf "==> kubernetes distro:[%s] version:[%s] is now configured for user [%s] and ready for mojaloop deployment \n" \
                 "$k8s_distro" "$K8S_VERSION" "$k8s_user"
     printf "    To deploy mojaloop, please su - %s from root or login as user [%s] and then \n"  "$k8s_user" "$k8s_user"
-    printf "    please execute %s/mojaloop-install.sh\n" "$SCRIPTS_DIR"
+    printf "    please execute %s/mini-loop-vnext.sh\n" "$RUN_DIR"
     print_end_message 
 elif [[ "$mode" == "delete" ]]  ; then
     delete_k8s 
