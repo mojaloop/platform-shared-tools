@@ -43,7 +43,7 @@ function run_docker_container {
     --interactive --tty --rm \
     --volume "$AWS_CREDENTIALS_DIR":/home/${USER_NAME}/.aws \
     --volume "$HOME/.kube":/home/${USER_NAME}/.kube \
-    --volume "$REPO_DIR":/home/${USER_NAME}/vnext/platform-shared-tools \
+    --volume "$REPO_BASE_DIR":/home/${USER_NAME}/vnext/platform-shared-tools \
     --volume "$HOME/logs":/logs \
     --env AWS_PROFILE="$aws_profile" \
     --env TERRAFORM_CLUSTER_DIR="/home/${USER_NAME}/vnext/platform-shared-tools/packages/installer/aws/terraform/$TERRAFORM_CLUSTER_DIR" \

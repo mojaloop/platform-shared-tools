@@ -104,8 +104,8 @@ set_and_create_namespace
 set_mojaloop_timeout
 printf "\n"
 
-update_k8s_images_from_docker_files 
-exit 1 
+# update_k8s_images_from_docker_files 
+# exit 1 
 
 if [[ "$mode" == "delete_ml" ]]; then
   delete_mojaloop_layer "ttk" $MANIFESTS_DIR/ttk

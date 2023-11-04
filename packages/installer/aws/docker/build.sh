@@ -64,7 +64,8 @@ echo "REPO_BASE_DIR = $REPO_BASE_DIR"
 COMMON_SCRIPTS_DIR=$REPO_BASE_DIR/packages/installer/scripts
 echo "COMMON_SCRIPTS_DIR = $COMMON_SCRIPTS_DIR"
 
-
+pwd
+ls
 
 source $COMMON_SCRIPTS_DIR/common.sh 
 set_arch 
@@ -89,7 +90,7 @@ while getopts "v:nhH" OPTION ; do
 	esac
 done
 
-cd $RUN_DIR
+cd $SCRIPT_DIR
 if  [[ ! -z {$NOCACHE+x} ]] ; then
 	printf "\nrebuilding from scratch  (docker nocache flag)  \n"
 	docker_build_nocache
