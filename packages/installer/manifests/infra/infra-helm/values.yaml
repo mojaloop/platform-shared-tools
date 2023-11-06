@@ -94,7 +94,8 @@ kafka:
           value: SchedulingBcCommands
       -   name: SchedulingBcEvents
           value: SchedulingBcEvents
-
+      -   name: SecurityBcAuthorizationEvents
+          value: SecurityBcAuthorizationEvents
           
     # nodeSelector: {}
 
