@@ -104,10 +104,11 @@ set_and_create_namespace
 set_mojaloop_timeout
 printf "\n"
 
-# update_k8s_images_from_docker_files 
-# exit 1 
-
-if [[ "$mode" == "delete_ml" ]]; then
+if  [[ "$mode" == "update_images" ]]; then
+  print "<<<< for development only >>>>>\n"
+  update_k8s_images_from_docker_files 
+  print "<<<< for development only >>>>>\n"
+elif [[ "$mode" == "delete_ml" ]]; then
   delete_mojaloop_layer "ttk" $MANIFESTS_DIR/ttk
   delete_mojaloop_layer "apps" $MANIFESTS_DIR/apps
   delete_mojaloop_layer "crosscut" $MANIFESTS_DIR/crosscut

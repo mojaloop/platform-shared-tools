@@ -40,7 +40,7 @@ spec:
           value: http://platform-configuration-svc:3100
         - name: BUILTIN_IAM_BASE_URL
           value: http://identity-svc:3203
-        image: mojaloop/security-bc-authentication-svc:0.3.3
+        image: mojaloop/security-bc-authentication-svc:0.3.4
         name: authentication-svc
         ports:
         - containerPort: 3201
