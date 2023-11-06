@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {SettingsService} from "src/app/_services_and_types/settings.service";
 import {HttpClient} from "@angular/common/http";
-import {AllPrivilegesResp} from "./security_types";
+import {PrivilegeWithOwnerAppInfo} from "./security_types";
 import {Observable} from "rxjs";
 import {PlatformRole} from "@mojaloop/security-bc-public-types-lib";
 import {UnauthorizedError} from "./errors";
@@ -17,10 +17,10 @@ export class AuthorizationService {
 
 	}
 
-	getAllPrivileges(): Observable<AllPrivilegesResp[]> {
-		return new Observable<AllPrivilegesResp[]>(subscriber => {
-			this._http.get<AllPrivilegesResp[]>(AUTH_Z_SVC_BASEURL + "/appPrivileges").subscribe(
-				(result: AllPrivilegesResp[]) => {
+	getAllPrivileges(): Observable<PrivilegeWithOwnerAppInfo[]> {
+		return new Observable<PrivilegeWithOwnerAppInfo[]>(subscriber => {
+			this._http.get<PrivilegeWithOwnerAppInfo[]>(AUTH_Z_SVC_BASEURL + "/appPrivileges").subscribe(
+				(result: PrivilegeWithOwnerAppInfo[]) => {
 					console.log(`got response: ${result}`);
 
 					subscriber.next(result);
@@ -68,6 +68,48 @@ export class AuthorizationService {
 					} else {
 						console.error(error);
 						subscriber.error(error.error?.msg || "Could not create role");
+					}
+					return subscriber.complete();
+				});
+		});
+	}
+
+	addPrivilegesToRole(roleId:string, privilegeIds:string[]):Observable<void>{
+		return new Observable<void>((subscriber) => {
+			this._http.post<void>(`${AUTH_Z_SVC_BASEURL}/platformRoles/${roleId}/add_privileges`, privilegeIds)
+				.subscribe(value => {
+					console.log(`got response - successfully added privileges to role: ${roleId}`);
+
+					subscriber.next();
+					return subscriber.complete();
+				}, error => {
+					if (error && error.status === 403) {
+						console.warn("UnauthorizedError received on addPrivilegesToRole");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg || "Could not addPrivilegesToRole");
+					}
+					return subscriber.complete();
+				});
+		});
+	}
+
+	removePrivilegesFromRole(roleId:string, privilegeIds:string[]):Observable<void>{
+		return new Observable<void>((subscriber) => {
+			this._http.post<void>(`${AUTH_Z_SVC_BASEURL}/platformRoles/${roleId}/remove_privileges`, privilegeIds)
+				.subscribe(value => {
+					console.log(`got response - successfully removed privileges from role: ${roleId}`);
+
+					subscriber.next();
+					return subscriber.complete();
+				}, error => {
+					if (error && error.status === 403) {
+						console.warn("UnauthorizedError received on removePrivilegesFromRole");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg || "Could not removePrivilegesFromRole");
 					}
 					return subscriber.complete();
 				});

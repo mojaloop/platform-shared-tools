@@ -2,6 +2,7 @@ import {Component, Directive, OnDestroy, OnInit} from "@angular/core";
 import {BehaviorSubject, Subscription} from "rxjs";
 import {BuiltinIamService} from "../../_services_and_types/builtin_iam.service";
 import {IBuiltinIamUser} from "../../_services_and_types/security_types";
+import {MessageService} from "src/app/_services_and_types/message.service";
 
 
 @Component({
@@ -12,7 +13,7 @@ export class BuiltinIamUsersListComponent implements OnInit, OnDestroy {
 	users: BehaviorSubject<IBuiltinIamUser[]> = new BehaviorSubject<IBuiltinIamUser[]>([]);
 	usersSubs?: Subscription;
 
-	constructor(private _builtinIamSvc:BuiltinIamService) {
+	constructor(private _builtinIamSvc:BuiltinIamService, private _messageService: MessageService) {
 	}
 
 	ngOnInit(): void {
@@ -49,6 +50,8 @@ export class BuiltinIamUsersListComponent implements OnInit, OnDestroy {
 
 		this.usersSubs = this._builtinIamSvc.getAllUsers(type, id, name, state).subscribe((users) => {
 			this.users.next(users);
+		}, error => {
+			this._messageService.addError(error.message || error);
 		});
 	}
 }

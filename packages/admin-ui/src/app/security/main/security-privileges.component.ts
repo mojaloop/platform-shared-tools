@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {BehaviorSubject, Subscription} from "rxjs";
-import {AllPrivilegesResp} from "src/app/_services_and_types/security_types";
+import {PrivilegeWithOwnerAppInfo} from "src/app/_services_and_types/security_types";
 import {AuthorizationService} from "src/app/_services_and_types/authorization.service";
 import {PlatformRole} from "@mojaloop/security-bc-public-types-lib";
 
@@ -9,7 +9,7 @@ import {PlatformRole} from "@mojaloop/security-bc-public-types-lib";
 	templateUrl: './security-privileges.component.html'
 })
 export class SecurityPrivilegesComponent implements OnInit, OnDestroy {
-	privileges: BehaviorSubject<AllPrivilegesResp[]> = new BehaviorSubject<AllPrivilegesResp[]>([]);
+	privileges: BehaviorSubject<PrivilegeWithOwnerAppInfo[]> = new BehaviorSubject<PrivilegeWithOwnerAppInfo[]>([]);
 	privilegesSubs?: Subscription;
 
 	constructor(private _authorizationSvc: AuthorizationService) {

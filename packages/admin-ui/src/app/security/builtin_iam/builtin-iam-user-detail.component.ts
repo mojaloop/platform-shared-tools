@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {BehaviorSubject, Subscription} from "rxjs";
 import {BuiltinIamService} from "../../_services_and_types/builtin_iam.service";
-import {AllPrivilegesResp, IBuiltinIamUser} from "../../_services_and_types/security_types";
+import {PrivilegeWithOwnerAppInfo, IBuiltinIamUser} from "../../_services_and_types/security_types";
 import {MessageService} from "../../_services_and_types/message.service";
 import {ActivatedRoute} from "@angular/router";
 import {PlatformRole} from "@mojaloop/security-bc-public-types-lib";
@@ -9,7 +9,7 @@ import {AuthorizationService} from "../../_services_and_types/authorization.serv
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {ParticipantFundsMovementDirections} from "@mojaloop/participant-bc-public-types-lib";
 
-export type UserPrivileges = AllPrivilegesResp & {
+export type UserPrivileges = PrivilegeWithOwnerAppInfo & {
 	fromRoleLabel: string
 }
 
@@ -64,8 +64,7 @@ export class BuiltinIamUserDetailComponent implements OnInit, OnDestroy {
 			this.user.next(value);
 			this._fetchRolesAndPrivileges();
 		}, error => {
-			this.user.next(null);
-			console.log(error);
+			this._messageService.addError(error.message || error);
 		});
 	}
 
@@ -79,7 +78,7 @@ export class BuiltinIamUserDetailComponent implements OnInit, OnDestroy {
 
 		// Major enhancement opportunity below!!!
 
-		this._alllPrivsSubs = this._authorizationService.getAllPrivileges().subscribe((appPrivs: AllPrivilegesResp[]) => {
+		this._alllPrivsSubs = this._authorizationService.getAllPrivileges().subscribe((appPrivs: PrivilegeWithOwnerAppInfo[]) => {
 
 			this._alllRolesSubs = this._authorizationService.getAllPlatformRoles().subscribe((platformRoles: PlatformRole[]) => {
 				this.allRoles.next(platformRoles);
@@ -99,7 +98,7 @@ export class BuiltinIamUserDetailComponent implements OnInit, OnDestroy {
 				});
 
 				privIdsList.forEach(item => {
-					const foundAppPriv: AllPrivilegesResp | undefined = appPrivs.find(appPriv => appPriv.id === item.id);
+					const foundAppPriv: PrivilegeWithOwnerAppInfo | undefined = appPrivs.find(appPriv => appPriv.id === item.id);
 					if (foundAppPriv) {
 						privsList.push({
 							...foundAppPriv,

@@ -1,0 +1,116 @@
+<div class="row">
+  <div class="col-md-8 align-self-center">
+    <h2>Bulk Transfer Details</h2>
+  </div>
+
+  <div class="col-md-4 align-self-center">
+    <small><strong>ID: </strong> {{(bulkTransfer | async)?.bulkTransferId}}
+      <a (click)="copyTransferIdToClipboard()"
+         ngbTooltip="Copy ID to clipboard"><i class="bi bi-clipboard-plus"></i></a></small>
+  </div>
+</div>
+<hr>
+
+<div class="row">
+  <div class="col-6"> <!-- left col with form -->
+
+    <div class="mb-2">
+      <label class="col-form-label text-secondary">Payer Fsp Identifier</label>
+      <div>{{(bulkTransfer | async)?.payerFsp ? (bulkTransfer | async)?.payerFsp : "None" }}</div>
+    </div>
+
+    <div class="mb-2">
+      <label class="col-form-label text-secondary">Payee Fsp Identifier</label>
+      <div>{{(bulkTransfer | async)?.payeeFsp ? (bulkTransfer | async)?.payeeFsp : "None" }}</div>
+    </div>
+
+    <div class="mb-2">
+      <label class="col-form-label text-secondary">Status</label>
+      <div [ngClass]="(bulkTransfer | async)?.status==='ACCEPTED'?'text-success':'text-danger'">{{(bulkTransfer | async)?.status}}</div>
+    </div>
+
+  </div> <!-- left col with form -->
+
+  <div class="col-3"> <!-- right col with action buttons -->
+    
+    <div class="mb-2">
+      <label class="col-form-label text-secondary">Total Transfers</label>
+      <div>{{(bulkTransfer | async)?.individualTransfers?.length}}</div>
+    </div>
+
+    <div class="mb-2">
+      <label class="col-form-label text-secondary">Total Transfers Not Processed</label>
+      <div>{{(bulkTransfer | async)?.transfersNotProcessedIds?.length}}</div>
+    </div>
+
+  </div> <!-- right col with action buttons -->
+
+  <div class="col-3"> <!-- right col with action buttons -->
+    <!-- <ng-container >
+      <a href="/bulk-transfers/new">
+        <button class="btn btn-primary btn-block" disabled>
+          Create Bulk Transfer
+        </button>
+      </a>
+    </ng-container> -->
+
+    <ng-container>
+      <a href="/bulk-transfers">
+        <button class="btn btn-secondary btn-block mt-1">
+          Back to list
+        </button>
+      </a>
+    </ng-container>
+  </div> <!-- right col with action buttons -->
+</div>
+
+
+<ul ngbNav #nav="ngbNav" class="mt-4 nav-tabs" (navChange)="tabChange($event)">
+  <li ngbNavItem="individualTransfers">  <!-- individualTransfers -->
+    <a ngbNavLink>Individual Transfers</a>
+    <ng-template ngbNavContent>
+      <h4 class="mt-3">List of all the individual transfers</h4>
+      <table class="table table-hover mt-3">
+        <thead class="thead-light">
+        <tr>
+          <th scope="col">FSP Type</th>
+          <th scope="col">Payer FspId</th>
+          <th scope="col">Payee FspId</th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of (allTransfers | async)">
+            <td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
+            <td>{{item?.payerFspId}}</td>
+            <td>{{item?.payeeFspId}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-template>
+  </li><!-- individualTransfers -->
+
+  <li ngbNavItem="transfersNotProcessed">  <!-- transfersNotProcessed -->
+      <a ngbNavLink>Individual Transfers Not Processed</a>
+      <ng-template ngbNavContent>
+        <h4 class="mt-3">List of transfers that were not able to process</h4>
+        <table class="table table-hover mt-3">
+          <thead class="thead-light">
+          <tr>
+            <th scope="col">FSP Type</th>
+            <th scope="col">Payer FspId</th>
+            <th scope="col">Payee FspId</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of (transfersNotProcessed | async)">
+              <td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
+              <td>{{item?.payerFspId}}</td>
+              <td>{{item?.payeeFspId}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-template>
+    </li><!-- transfersNotProcessed -->
+</ul>
+
+<div class="mt-6" [ngbNavOutlet]="nav"></div>

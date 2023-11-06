@@ -13,6 +13,7 @@ import {
 } from "@mojaloop/platform-configuration-bc-public-types-lib";
 
 import semver from "semver";
+import {UnauthorizedError} from "src/app/_services_and_types/errors";
 
 const SVC_BASEURL = "/_platform-configuration-svc";
 
@@ -38,8 +39,13 @@ export class PlatformConfigService {
 					return subscriber.complete();
 				},
 				error => {
-					console.error(error);
-					subscriber.error(error);
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on getAllBcConfigs");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
 					return subscriber.complete();
 				}
 			);
@@ -56,8 +62,13 @@ export class PlatformConfigService {
 					return subscriber.complete();
 				},
 				error => {
-					console.error(error);
-					subscriber.error(error);
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on getAllGlobalConfigs");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
 					return subscriber.complete();
 				}
 			);

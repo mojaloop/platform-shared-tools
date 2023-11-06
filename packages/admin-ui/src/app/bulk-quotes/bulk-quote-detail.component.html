@@ -96,7 +96,7 @@
           </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of allQuotes">
+            <tr *ngFor="let item of (allQuotes | async)">
               <td><a routerLink="/quotes/{{item.quoteId}}">{{item.quoteId}}</a></td>
               <td>{{item?.payer?.partyIdInfo?.partyIdType}}</td>
               <td>{{item?.payer?.partyIdInfo?.partyIdentifier}}</td>
@@ -123,7 +123,7 @@
             </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let item of quotesNotProcessed">
+              <tr *ngFor="let item of (quotesNotProcessed | async)">
                 <td><a routerLink="/quotes/{{item.quoteId}}">{{item.quoteId}}</a></td>
                 <td>{{item?.payer?.partyIdInfo?.partyIdType}}</td>
                 <td>{{item?.payer?.partyIdInfo?.partyIdentifier}}</td>

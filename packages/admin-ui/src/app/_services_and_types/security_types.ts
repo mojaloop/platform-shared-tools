@@ -30,6 +30,8 @@
 
 "use strict";
 
+import { Privilege } from "@mojaloop/security-bc-public-types-lib";
+
 // TODO use the sec public lib instead of local types
 
 export type UserType = "HUB" | "DFSP";
@@ -94,11 +96,9 @@ export interface IBuiltinIamApplicationCreate extends IBuiltinIamApplication{
 	clientSecret:string | null;
 }
 
-export type AllPrivilegesResp = {
-	id: string;
-	labelName: string;
-	description: string;
-	boundedContextName: string;
-	applicationName: string;
-	applicationVersion: string;
+
+export type PrivilegeWithOwnerAppInfo = Privilege & {
+	boundedContextName: string;     // bounded context it belongs to
+	applicationName: string;        // application it belongs to
+	applicationVersion: string;     // semver
 }

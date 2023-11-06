@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from "@angular/core";
 import {BehaviorSubject, Subscription} from "rxjs";
 import {BuiltinIamService} from "../../_services_and_types/builtin_iam.service";
 import {IBuiltinIamApplication, IBuiltinIamUser} from "../../_services_and_types/security_types";
+import {MessageService} from "src/app/_services_and_types/message.service";
 
 @Component({
 	selector: 'app-security',
@@ -11,7 +12,7 @@ export class BuiltinIamAppsListComponent implements OnInit, OnDestroy {
 	apps: BehaviorSubject<IBuiltinIamApplication[]> = new BehaviorSubject<IBuiltinIamApplication[]>([]);
 	appsSubs?: Subscription;
 
-	constructor(private _builtinIamSvc:BuiltinIamService) {
+	constructor(private _builtinIamSvc:BuiltinIamService,private _messageService: MessageService) {
 	}
 
 	ngOnInit(): void {
@@ -43,6 +44,8 @@ export class BuiltinIamAppsListComponent implements OnInit, OnDestroy {
 
 		this.appsSubs = this._builtinIamSvc.getAllApps(clientId, canLogin, appState).subscribe((apps) => {
 			this.apps.next(apps);
+		}, error => {
+			this._messageService.addError(error.message || error);
 		});
 	}
 }

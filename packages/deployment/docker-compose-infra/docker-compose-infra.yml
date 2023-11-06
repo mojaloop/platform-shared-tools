@@ -200,6 +200,7 @@ services:
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic ParticipantsBcEvents
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic SchedulingBcCommands
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic SchedulingBcEvents
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic SecurityBcAuthorizationEvents
       echo -e '\nSuccessfully created the following topics:'
       kafka-topics --bootstrap-server kafka:19092 --list
       "

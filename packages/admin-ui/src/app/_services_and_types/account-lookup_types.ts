@@ -45,9 +45,16 @@ export type Association = {
 	partyId: string,
 	fspId: string,
 	partyType: string,
-	partySubId: string | null,
+	partySubType: string | null,
 	currency: string
 }
 
+
+export declare type AssociationsSearchResults = {
+	pageSize: number;
+	totalPages: number;
+	pageIndex: number;
+	items: Association[];
+}
 
 

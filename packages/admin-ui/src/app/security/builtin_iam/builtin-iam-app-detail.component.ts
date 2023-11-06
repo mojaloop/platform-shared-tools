@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {BehaviorSubject, Subscription} from "rxjs";
 import {BuiltinIamService} from "../../_services_and_types/builtin_iam.service";
-import {AllPrivilegesResp, IBuiltinIamApplication} from "../../_services_and_types/security_types";
+import {PrivilegeWithOwnerAppInfo, IBuiltinIamApplication} from "../../_services_and_types/security_types";
 import {MessageService} from "../../_services_and_types/message.service";
 import {ActivatedRoute} from "@angular/router";
 import {PlatformRole} from "@mojaloop/security-bc-public-types-lib";
@@ -9,7 +9,7 @@ import {AuthorizationService} from "../../_services_and_types/authorization.serv
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 
 
-export type AppPrivileges = AllPrivilegesResp & {
+export type AppPrivileges = PrivilegeWithOwnerAppInfo & {
 	fromRoleLabel: string
 }
 
@@ -79,7 +79,7 @@ export class BuiltinIamAppDetailComponent implements OnInit, OnDestroy {
 
 		// Major enhancement opportunity below!!!
 
-		this._allPrivsSubs = this._authorizationService.getAllPrivileges().subscribe((appPrivs: AllPrivilegesResp[]) => {
+		this._allPrivsSubs = this._authorizationService.getAllPrivileges().subscribe((appPrivs: PrivilegeWithOwnerAppInfo[]) => {
 
 			this._allRolesSubs = this._authorizationService.getAllPlatformRoles().subscribe((platformRoles: PlatformRole[]) => {
 				this.allRoles.next(platformRoles);
@@ -99,7 +99,7 @@ export class BuiltinIamAppDetailComponent implements OnInit, OnDestroy {
 				});
 
 				privIdsList.forEach(item => {
-					const foundAppPriv: AllPrivilegesResp | undefined = appPrivs.find(appPriv => appPriv.id === item.id);
+					const foundAppPriv: PrivilegeWithOwnerAppInfo | undefined = appPrivs.find(appPriv => appPriv.id === item.id);
 					if (foundAppPriv) {
 						privsList.push({
 							...foundAppPriv,
