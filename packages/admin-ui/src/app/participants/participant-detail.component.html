@@ -1,16 +1,20 @@
-<div class="row">
-	<div class="col-md-8 align-self-center">
-		<h2>{{ (participant | async)?.name }}
-			<span class="badge badge-danger" *ngIf="!(participant | async)?.isActive">Inactive</span>
-		</h2>
-	</div>
+<ng-container *ngIf="(participant | async) as participant_item">
+	<div class="row">
+		<div class="col-md-8 align-self-center">
+			<h2>{{ participant_item.name }}
+				<ng-container *ngIf="!participant_item.isActive">
+				<span class="badge badge-danger" >Inactive</span>
+				</ng-container>
+			</h2>
+		</div>
 
-	<div class="col-md-4 align-self-center">
-		<small><strong>ID: </strong> {{ (participant | async)?.id }}
-			<a [hidden]="(participant | async)?.type === 'HUB'" (click)="copyParticipantIdToClipboard()"
-			   ngbTooltip="Copy ID to clipboard"><i class="bi bi-clipboard-plus"></i></a></small>
+		<div class="col-md-4 align-self-center">
+			<small><strong>ID: </strong> {{ (participant | async)?.id }}
+				<a [hidden]="(participant | async)?.type === 'HUB'" (click)="copyParticipantIdToClipboard()"
+				   ngbTooltip="Copy ID to clipboard"><i class="bi bi-clipboard-plus"></i></a></small>
+		</div>
 	</div>
-</div>
+</ng-container>
 <hr/>
 
 <div class="row">

@@ -11,6 +11,7 @@ import {IParticipant} from "@mojaloop/participant-bc-public-types-lib";
 import {ParticipantsService} from "../_services_and_types/participants.service";
 import * as uuid from "uuid";
 import {removeEmpty} from "../_utils";
+import {DEFAULT_TEST_CALL_REDIRECT_WAIT_MS} from "src/app/_services_and_types/settings.service";
 
 @Component({
 	selector: 'app-quote-create',
@@ -133,7 +134,7 @@ export class QuoteCreateComponent implements OnInit {
 			this._messageService.addSuccess("Quote Created");
 			setTimeout(() => {
 				this._router.navigateByUrl(`/quotes/${this.activeQuote!.quoteId}?live`);
-			}, 500);
+			}, DEFAULT_TEST_CALL_REDIRECT_WAIT_MS);
 		}, error => {
 			console.error(error);
 			this._messageService.addError("Quote Creation error: " + error.toString());
