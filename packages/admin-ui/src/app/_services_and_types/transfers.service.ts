@@ -8,7 +8,7 @@ import { UnauthorizedError } from "src/app/_services_and_types/errors";
 const SVC_BASEURL = "/_transfers";
 
 const DEFAULT_PAGE_SIZE = 10;
-const DEFAULT_PAGE_INDEX = 1;
+const DEFAULT_PAGE_INDEX = 0;
 
 @Injectable({
 	providedIn: "root",
@@ -101,6 +101,7 @@ export class TransfersService {
 		payeeDfspName?: string,
 		payerIdValue?: string,
 		payeeIdValue?: string,
+		bulkTransferId?: string,
 		pageSize: number = DEFAULT_PAGE_SIZE,
 		pageIndex: number = DEFAULT_PAGE_INDEX,
 	): Observable<TransfersSearchResults> {
@@ -116,7 +117,8 @@ export class TransfersService {
 		if (payeeDfspName) searchParams.append("payeeDfspName", payeeDfspName);
 		if (payerIdValue) searchParams.append("payerIdValue", payerIdValue);
 		if (payeeIdValue) searchParams.append("payeeIdValue", payeeIdValue);
-		if (pageIndex) searchParams.append("pageIndex", (pageIndex - 1).toString()); //pageIndex is starting from 0
+		if (bulkTransferId) searchParams.append("bulkTransferId", bulkTransferId);
+		if (pageIndex) searchParams.append("pageIndex", (pageIndex).toString());
 		if (pageSize) searchParams.append("pageSize", pageSize.toString());
 
 		const url = `${SVC_BASEURL}/transfers?${searchParams.toString()}`;

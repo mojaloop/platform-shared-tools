@@ -21,14 +21,15 @@ export class TransfersComponent implements OnInit, OnDestroy {
 	transfers: BehaviorSubject<TransfersSearchResults> = new BehaviorSubject<TransfersSearchResults>({
 		pageSize: 10,
 		totalPages: 1,
-		pageIndex: 1,
+		pageIndex: 0,
 		items: []
 	});
 	transfersSubs?: Subscription;
 	participantsSubs?: Subscription;
 	filterForm: FormGroup;
-	pageIndex: number = 1;
+	pageIndex: number = 0;
 	pageSize: number = 10;
+	userPageIndex: number = 1; //for UI control to show current page number
 
 	//Filters
 	keywordState: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
@@ -79,8 +80,6 @@ export class TransfersComponent implements OnInit, OnDestroy {
 					// remove the hub from the list
 					const onlyDfsps = result.items.filter(value => value.id !== HUB_PARTICIPANT_ID);
 
-					console.log('onlyDfsps', onlyDfsps)
-
 					this.participants.next(onlyDfsps);
 				},
 				(error) => {
@@ -106,30 +105,41 @@ export class TransfersComponent implements OnInit, OnDestroy {
 
 	//paginations
 	onPrevious() {
-		this.pageIndex--;
-		this.search()
+		if (this.userPageIndex >= 1) {
+			this.pageIndex--;
+			this.userPageIndex--;
+			this.search()
+		}
 	}
 
 	onNext() {
 		if (this.transfers.value.totalPages && this.pageIndex < this.transfers.value.totalPages) {
 			this.pageIndex++;
+			this.userPageIndex++;
 			this.search();
 		}
 	}
 
 	toFirstPage() {
-		this.pageIndex = 1
+		this.pageIndex = 0
+		this.userPageIndex = 1;
 		this.search()
 	}
 
 	toLastPage() {
 		if (this.transfers.value.totalPages) {
-			this.pageIndex = this.transfers.value.totalPages;
+			this.pageIndex = this.transfers.value.totalPages - 1;
+			this.userPageIndex = this.transfers.value.totalPages;
 			this.search();
 		}
 	}
 
 	onPageSizeChange() {
+		this.search();
+	}
+
+	onPageIndexChange() {
+		this.pageIndex = this.userPageIndex - 1
 		this.search();
 	}
 
@@ -174,8 +184,9 @@ export class TransfersComponent implements OnInit, OnDestroy {
 			payeeDfspName,
 			payerIdValue,
 			payeeIdValue,
+			undefined, // TODO: add bulk filter box
 			this.pageSize,
-			this.pageIndex
+			this.pageIndex,
 		).subscribe((result) => {
 			console.log("TransfersComponent search - got TransfersSearchResults");
 
