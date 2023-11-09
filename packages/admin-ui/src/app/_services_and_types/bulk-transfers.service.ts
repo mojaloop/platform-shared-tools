@@ -65,4 +65,21 @@ export class BulkTransfersService {
 		});
 	}
 
+	
+	createEmptyBulkTransfer(): BulkTransfer {
+		return {
+			bulkTransferId: "",
+			bulkQuoteId: "",
+			payerFsp: "",
+			payeeFsp: "",
+			completedTimestamp: null,
+			expiration: null,
+			individualTransfers: [],
+			extensionList: null,
+			transfersPreparedProcessedIds: [],
+			transfersNotProcessedIds: [],
+			transfersFulfiledProcessedIds: [],
+			status: null
+		};
+	}
 }
