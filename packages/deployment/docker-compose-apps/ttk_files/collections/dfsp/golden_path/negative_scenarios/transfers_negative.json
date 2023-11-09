@@ -166,8 +166,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "Date": "{$function.generic.curDate}",
             "FSPIOP-Source": "{$inputs.fromFspId}"
           },
@@ -224,7 +224,7 @@
                 "id": 6,
                 "description": "Callback content-type to be transfers",
                 "exec": [
-                  "expect(callback.headers['content-type']).to.equal('application/vnd.interoperability.transfers+json;version=1.0')"
+                  "expect(callback.headers['content-type']).to.equal('application/vnd.interoperability.transfers+json;version=1.1')"
                 ]
               },
               {
@@ -267,8 +267,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "FSPIOP-Source": "{$inputs.fromFspId}"
           },
           "body": {
@@ -345,7 +345,7 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
             "FSPIOP-Source": "{$inputs.fromFspId}",
             "Date": "{$function.generic.curDate}"
           },
@@ -416,8 +416,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "Date": "{$function.generic.curDate}"
           },
           "body": {
@@ -494,7 +494,7 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "FSPIOP-Source": "{$inputs.fromFspId}",
             "Date": "{$function.generic.curDate}"
           },
@@ -724,8 +724,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "Date": "{$function.generic.curDate}",
             "FSPIOP-Source": "{$inputs.fromFspId}"
           },
@@ -782,7 +782,7 @@
                 "id": 6,
                 "description": "Callback content-type to be transfers",
                 "exec": [
-                  "expect(callback.headers['content-type']).to.equal('application/vnd.interoperability.transfers+json;version=1.0')"
+                  "expect(callback.headers['content-type']).to.equal('application/vnd.interoperability.transfers+json;version=1.1')"
                 ]
               },
               {
@@ -825,8 +825,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "FSPIOP-Source": "{$inputs.fromFspId}",
             "Date": "Thursday"
           },
@@ -898,7 +898,7 @@
           "method": "post",
           "headers": {
             "Accept": "application/vnd.interoperability.transfers+json;version=1000",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "FSPIOP-Source": "{$inputs.fromFspId}",
             "Date": "{$function.generic.curDate}"
           },
@@ -1121,8 +1121,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "Date": "{$function.generic.curDate}",
             "FSPIOP-Source": "{$inputs.fromFspId}"
           },
@@ -1179,7 +1179,7 @@
                 "id": 6,
                 "description": "Callback content-type to be transfers",
                 "exec": [
-                  "expect(callback.headers['content-type']).to.equal('application/vnd.interoperability.transfers+json;version=1.0')"
+                  "expect(callback.headers['content-type']).to.equal('application/vnd.interoperability.transfers+json;version=1.1')"
                 ]
               },
               {
@@ -1222,8 +1222,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "FSPIOP-Source": "{$inputs.fromFspId}",
             "Date": "{$function.generic.curDate}"
           },
@@ -1301,8 +1301,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "FSPIOP-Source": "{$inputs.fromFspId}",
             "Date": "{$function.generic.curDate}"
           },
@@ -1380,8 +1380,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "FSPIOP-Source": "{$inputs.fromFspId}",
             "Date": "{$function.generic.curDate}"
           },
@@ -1459,8 +1459,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "FSPIOP-Source": "{$inputs.fromFspId}",
             "Date": "{$function.generic.curDate}"
           },
@@ -1538,8 +1538,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "FSPIOP-Source": "{$inputs.fromFspId}",
             "Date": "{$function.generic.curDate}"
           },
@@ -1617,8 +1617,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "FSPIOP-Source": "{$inputs.fromFspId}",
             "Date": "{$function.generic.curDate}"
           },
@@ -1696,8 +1696,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "FSPIOP-Source": "{$inputs.fromFspId}",
             "Date": "{$function.generic.curDate}"
           },
@@ -1775,8 +1775,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "FSPIOP-Source": "{$inputs.fromFspId}",
             "Date": "{$function.generic.curDate}"
           },
@@ -2006,8 +2006,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "Date": "{$function.generic.curDate}",
             "FSPIOP-Source": "{$inputs.fromFspId}"
           },
@@ -2064,7 +2064,7 @@
                 "id": 6,
                 "description": "Callback content-type to be transfers",
                 "exec": [
-                  "expect(callback.headers['content-type']).to.equal('application/vnd.interoperability.transfers+json;version=1.0')"
+                  "expect(callback.headers['content-type']).to.equal('application/vnd.interoperability.transfers+json;version=1.1')"
                 ]
               },
               {
@@ -2107,8 +2107,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "FSPIOP-Source": "{$inputs.fromFspId}",
             "Date": "{$function.generic.curDate}"
           },
@@ -2186,8 +2186,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "FSPIOP-Source": "{$inputs.fromFspId}",
             "Date": "{$function.generic.curDate}"
           },
@@ -2265,8 +2265,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "FSPIOP-Source": "{$inputs.fromFspId}",
             "Date": "{$function.generic.curDate}"
           },
@@ -2344,8 +2344,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "FSPIOP-Source": "{$inputs.fromFspId}",
             "Date": "{$function.generic.curDate}"
           },
@@ -2575,8 +2575,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "Date": "{$function.generic.curDate}",
             "FSPIOP-Source": "{$inputs.fromFspId}",
             "FSPIOP-URI": "GET"
@@ -2634,7 +2634,7 @@
                 "id": 6,
                 "description": "Callback content-type to be transfers",
                 "exec": [
-                  "expect(callback.headers['content-type']).to.equal('application/vnd.interoperability.transfers+json;version=1.0')"
+                  "expect(callback.headers['content-type']).to.equal('application/vnd.interoperability.transfers+json;version=1.1')"
                 ]
               },
               {
@@ -2820,8 +2820,8 @@
           "operationPath": "/transfers",
           "method": "post",
           "headers": {
-            "Accept": "application/vnd.interoperability.transfers+json;version=1.0",
-            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.0",
+            "Accept": "application/vnd.interoperability.transfers+json;version=1.1",
+            "Content-Type": "application/vnd.interoperability.transfers+json;version=1.1",
             "Date": "{$function.generic.curDate}",
             "FSPIOP-Source": "{$inputs.fromFspId}"
           },
@@ -2879,7 +2879,7 @@
                 "id": 6,
                 "description": "Callback content-type to be transfers",
                 "exec": [
-                  "expect(callback.headers['content-type']).to.equal('application/vnd.interoperability.transfers+json;version=1.0')"
+                  "expect(callback.headers['content-type']).to.equal('application/vnd.interoperability.transfers+json;version=1.1')"
                 ]
               },
               {
