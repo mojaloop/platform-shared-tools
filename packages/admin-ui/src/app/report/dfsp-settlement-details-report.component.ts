@@ -3,20 +3,20 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { MessageService } from "../_services_and_types/message.service";
 
 interface DetailsReport {
-	senderDfspId: string
-	senderDfspName: string
-	receiverDfspId: string
-	receiverDfspName: string
-	transferId: string
-	txType: string
-	transactionDate: string
-	senderIdType: string
-	senderId: string
-	receiverIdType: string
-	receiverId: string
-	receivedAmount: number
-	sentAmount: number
-	fee?: number
+	senderDfspId: string;
+	senderDfspName: string;
+	receiverDfspId: string;
+	receiverDfspName: string;
+	transferId: string;
+	txType: string;
+	transactionDate: string;
+	senderIdType: string;
+	senderId: string;
+	receiverIdType: string;
+	receiverId: string;
+	receivedAmount: number;
+	sentAmount: number;
+	fee?: number;
 }
 
 @Component({
@@ -59,7 +59,7 @@ export class DFSPSettlementDetailsReport implements OnInit {
 			receivedAmount: 0,
 			sentAmount: 5000,
 		},
-	]
+	];
 
 	constructor(private _messageService: MessageService) {}
 
