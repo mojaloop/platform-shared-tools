@@ -26,7 +26,7 @@
 
     <div class="mb-2">
       <label class="col-form-label text-secondary">Status</label>
-      <div [ngClass]="(bulkTransfer | async)?.status==='ACCEPTED'?'text-success':'text-danger'">{{(bulkTransfer | async)?.status}}</div>
+      <div [ngClass]="(bulkTransfer | async)?.status==='COMPLETED'?'text-success':'text-danger'">{{(bulkTransfer | async)?.status}}</div>
     </div>
 
   </div> <!-- left col with form -->

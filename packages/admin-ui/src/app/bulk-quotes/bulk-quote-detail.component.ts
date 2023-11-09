@@ -7,6 +7,7 @@ import {BehaviorSubject, Subscription} from "rxjs";
 import {NgbModal, NgbNav} from "@ng-bootstrap/ng-bootstrap";
 import {BulkQuote} from '../_services_and_types/bulk_quote_types';
 import {BulkQuotesService} from '../_services_and_types/bulk-quotes.service';
+import { PaginateResult } from "../_utils";
 
 
 @Component({
@@ -19,6 +20,14 @@ export class BulkQuoteDetailComponent implements OnInit {
 	public allQuotes: BehaviorSubject<Quote[] | null> = new BehaviorSubject<Quote[] | null>(null);
 	public quotesNotProcessed: BehaviorSubject<Quote[] | null> = new BehaviorSubject<Quote[] | null>(null);
 
+	private _live: boolean = false;
+	private _reloadRequested: boolean = false;
+
+	private _reloadCount = 0;
+
+	paginateResult: BehaviorSubject<PaginateResult | null> = new BehaviorSubject<PaginateResult | null>(null);
+
+	
 	@ViewChild("nav") // Get a reference to the ngbNav
 	navBar!: NgbNav;
 
@@ -41,14 +50,40 @@ export class BulkQuoteDetailComponent implements OnInit {
 		await this._fetchQuote(this._bulkQuoteId);
 
 		await this._fetchAllQuotes(this._bulkQuoteId);
+
+		console.log(this._route.snapshot.routeConfig?.path);
+
+		this._live = this._route.snapshot.queryParamMap.has('live');
+
+		this._route.params.subscribe(params => {
+			this._bulkQuoteId = params['id'];
+
+			if (this._bulkQuoteId) {
+				this._fetchQuote(this._bulkQuoteId);
+			} else {
+				throw new Error("invalid parameter");
+			}
+		});
 	}
 
 	private async _fetchQuote(id: string): Promise<void> {
-		return new Promise(resolve => {
-			this._bulkQuotesSvc.getBulkQuote(id).subscribe(bulkQuote => {
-				this.bulkQuote.next(bulkQuote);
-				resolve();
-			});
+		this._bulkQuotesSvc.getBulkQuote(id).subscribe(bulkQuote => {
+			this.bulkQuote.next(bulkQuote);
+
+			if (this._live && !bulkQuote || !(bulkQuote?.status === "REJECTED" || bulkQuote?.status === "ACCEPTED")) {
+
+				if (this._reloadCount > 30) return;
+
+				this._reloadCount++;
+				this._reloadRequested = true;
+				setTimeout(() => {
+					this._reloadCount++;
+					this._fetchQuote(id);
+				}, 1000);
+
+			} else if (this._live && this._reloadRequested) {
+				this._messageService.addSuccess("Quote reloaded");
+			}
 		});
 	}
 
@@ -59,7 +94,9 @@ export class BulkQuoteDetailComponent implements OnInit {
 				undefined,
 				undefined,
 				undefined,
-				bulkQuoteId
+				bulkQuoteId,
+				undefined,
+				100
 			).subscribe(quotesSearchResult => {
 				this.allQuotes.next(quotesSearchResult.items);
 				resolve();
@@ -73,5 +110,24 @@ export class BulkQuoteDetailComponent implements OnInit {
 
 	async copyQuoteIdToClipboard() {
 		await navigator.clipboard.writeText(this.bulkQuote.value!.bulkQuoteId || "");
+	}
+
+	search(pageIndex: number = 0):Promise<void> {
+
+		return new Promise(resolve => {
+			this._quotesSvc.search(
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				this._bulkQuoteId!,
+				undefined,
+				pageIndex
+			).subscribe(quotesSearchResult => {
+				this.allQuotes.next(quotesSearchResult.items);
+				resolve();
+			});
+		});
+
 	}
 }
