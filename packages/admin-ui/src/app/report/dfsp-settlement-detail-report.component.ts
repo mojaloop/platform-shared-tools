@@ -10,11 +10,28 @@ import { UnauthorizedError } from "../_services_and_types/errors";
 import { MessageService } from "../_services_and_types/message.service";
 import { ParticipantsService } from "../_services_and_types/participants.service";
 import { ReportService } from "../_services_and_types/report.service";
-import type {
-	DetailReport,
-	MatrixId,
-} from "../_services_and_types/report_types";
+import type { MatrixId } from "../_services_and_types/report_types";
 import type { SettlementInfo } from "./dfsp-settlement-report.component";
+import { formatNumber } from "../_utils";
+
+interface ModifiedDetailReport {
+	matrixId: string;
+	settlementDate: string;
+	payerFspId: string;
+	payerParticipantName: string;
+	payeeFspId: string;
+	payeeParticipantName: string;
+	transferId: string;
+	transactionType: string;
+	transactionDate: string;
+	payerIdType: string;
+	payerIdentifier: string;
+	payeeIdType: string;
+	payeeIdentifier: string;
+	sentAmount: string;
+	receivedAmount: string;
+	currency: string;
+}
 
 @Component({
 	selector: "app-dfsp-settlement-detail-report",
@@ -39,9 +56,8 @@ export class DFSPSettlementDetailReport implements OnInit {
 	);
 	matrixIdsSubs?: Subscription;
 
-	detailReports: BehaviorSubject<DetailReport[]> = new BehaviorSubject<
-		DetailReport[]
-	>([]);
+	detailReports: BehaviorSubject<ModifiedDetailReport[]> =
+		new BehaviorSubject<ModifiedDetailReport[]>([]);
 	detailReportsSubs?: Subscription;
 
 	constructor(
@@ -133,11 +149,21 @@ export class DFSPSettlementDetailReport implements OnInit {
 							dfspName: chosenDfsp?.name || "",
 						};
 					}
+
 					const detailReport = result.map((detailReport) => ({
 						...detailReport,
 						transactionDate: new Date(
 							detailReport.transactionDate
 						).toLocaleString(),
+						sentAmount:
+							this.chosenDfspId === detailReport.payerFspId
+								? formatNumber(detailReport.Amount)
+								: "-",
+						receivedAmount:
+							this.chosenDfspId === detailReport.payeeFspId
+								? formatNumber(detailReport.Amount)
+								: "-",
+						currency: detailReport.Currency,
 					}));
 					this.detailReports.next(detailReport);
 				},

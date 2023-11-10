@@ -149,6 +149,7 @@
 				<th scope="col" style="min-width: 160px">Received Amount</th>
 				<th scope="col" style="min-width: 160px">Sent Amount</th>
 				<th scope="col" style="min-width: 160px">Fee</th>
+				<th scope="col" style="min-width: 160px">Currency</th>
 			</tr>
 		</thead>
 
@@ -164,13 +165,11 @@
 				<td>{{ detailReport.payerIdType }}</td>
 				<td>{{ detailReport.payerIdentifier }}</td>
 				<td>{{ detailReport.payeeIdType }}</td>
-				<!-- TODO: Change payeeIdType to payeeIdentifier -->
-				<td>{{ detailReport.payeeIdType }}</td>
-				<!-- TODO: Add received amount and sent amount -->
-				<td>{{ detailReport.Amount }}</td>
-				<td>{{ detailReport.Amount }}</td>
-				<!-- TODO: Add this or remove the fee column -->
-				<!-- <td>{{ detailReport.fee ?? "-" }}</td> -->
+				<td>{{ detailReport.payeeIdentifier }}</td>
+				<td>{{ detailReport.receivedAmount }}</td>
+				<td>{{ detailReport.sentAmount }}</td>
+				<td>-</td>
+				<td>{{ detailReport.currency }}</td>
 			</tr>
 		</tbody>
 	</table>

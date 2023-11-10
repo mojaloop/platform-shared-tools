@@ -24,10 +24,11 @@ export interface DetailReport {
 	payeeParticipantName: string;
 	transferId: string;
 	transactionType: string;
-	transactionDate: number | string;
+	transactionDate: number;
 	payerIdType: string;
 	payerIdentifier: string;
 	payeeIdType: string;
+	payeeIdentifier: string;
 	Amount: string;
 	Currency: string;
 }
