@@ -161,21 +161,35 @@
 
 		<tbody>
 			<tr *ngFor="let detailReport of detailReports | async">
-				<td>{{ detailReport.payerFspId }}</td>
-				<td>{{ detailReport.payerParticipantName }}</td>
-				<td>{{ detailReport.payeeFspId }}</td>
-				<td>{{ detailReport.payeeParticipantName }}</td>
-				<td>{{ detailReport.transferId }}</td>
-				<td>{{ detailReport.transactionType }}</td>
-				<td>{{ detailReport.transactionDate }}</td>
-				<td>{{ detailReport.payerIdType }}</td>
-				<td>{{ detailReport.payerIdentifier }}</td>
-				<td>{{ detailReport.payeeIdType }}</td>
-				<td>{{ detailReport.payeeIdentifier }}</td>
-				<td>{{ detailReport.receivedAmount }}</td>
-				<td>{{ detailReport.sentAmount }}</td>
-				<td>-</td>
-				<td>{{ detailReport.currency }}</td>
+				<td style="min-width: 160px">{{ detailReport.payerFspId }}</td>
+				<td style="min-width: 180px">
+					{{ detailReport.payerParticipantName }}
+				</td>
+				<td style="min-width: 160px">{{ detailReport.payeeFspId }}</td>
+				<td style="min-width: 190px">
+					{{ detailReport.payeeParticipantName }}
+				</td>
+				<td style="min-width: 200px">{{ detailReport.transferId }}</td>
+				<td style="min-width: 160px">
+					{{ detailReport.transactionType }}
+				</td>
+				<td style="min-width: 160px">
+					{{ detailReport.transactionDate }}
+				</td>
+				<td style="min-width: 160px">{{ detailReport.payerIdType }}</td>
+				<td style="min-width: 160px">
+					{{ detailReport.payerIdentifier }}
+				</td>
+				<td style="min-width: 160px">{{ detailReport.payeeIdType }}</td>
+				<td style="min-width: 160px">
+					{{ detailReport.payeeIdentifier }}
+				</td>
+				<td style="min-width: 160px">
+					{{ detailReport.receivedAmount }}
+				</td>
+				<td style="min-width: 160px">{{ detailReport.sentAmount }}</td>
+				<td style="min-width: 160px">-</td>
+				<td style="min-width: 160px">{{ detailReport.currency }}</td>
 			</tr>
 		</tbody>
 	</table>

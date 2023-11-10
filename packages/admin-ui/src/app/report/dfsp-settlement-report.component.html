@@ -156,6 +156,7 @@
 				<th scope="col" style="min-width: 160px">
 					Net Position vs. Each DFSP
 				</th>
+				<th scope="col" style="min-width: 160px">Currency</th>
 			</tr>
 		</thead>
 
@@ -165,15 +166,26 @@
 
 		<tbody>
 			<tr *ngFor="let report of reports | async">
-				<td>{{ report.relateParticipantId }}</td>
-				<td>{{ report.relateParticipantName }}</td>
-				<td>{{ report.totalSentCount }}</td>
-				<td>{{ report.totalAmountSent }}</td>
-				<td>{{ report.totalReceivedCount }}</td>
-				<td>{{ report.totalAmountReceived }}</td>
-				<td>{{ report.totalTransactionCount }}</td>
-				<td>{{ report.totalAmount }}</td>
-				<td>{{ report.netPosition }}</td>
+				<td style="min-width: 160px">
+					{{ report.relateParticipantId }}
+				</td>
+				<td style="min-width: 160px">
+					{{ report.relateParticipantName }}
+				</td>
+				<td style="min-width: 160px">{{ report.totalSentCount }}</td>
+				<td style="min-width: 160px">{{ report.totalAmountSent }}</td>
+				<td style="min-width: 160px">
+					{{ report.totalReceivedCount }}
+				</td>
+				<td style="min-width: 160px">
+					{{ report.totalAmountReceived }}
+				</td>
+				<td style="min-width: 160px">
+					{{ report.totalTransactionCount }}
+				</td>
+				<td style="min-width: 160px">{{ report.totalAmount }}</td>
+				<td style="min-width: 160px">{{ report.netPosition }}</td>
+				<td style="min-width: 160px">{{ report.currency }}</td>
 			</tr>
 		</tbody>
 	</table>

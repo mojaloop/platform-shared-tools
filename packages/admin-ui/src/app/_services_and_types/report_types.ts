@@ -13,6 +13,7 @@ export interface Report {
 	paramParticipantName: string;
 	relateParticipantId: string;
 	relateParticipantName: string;
+	currency: string;
 }
 
 export interface DetailReport {
