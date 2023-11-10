@@ -1,14 +1,14 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
-import {BehaviorSubject, Subscription} from "rxjs";
-import {UnauthorizedError} from "src/app/_services_and_types/errors";
-import {MessageService} from "src/app/_services_and_types/message.service";
-import {SettlementsService} from "src/app/_services_and_types/settlements.service";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { BehaviorSubject, Subscription } from "rxjs";
+import { UnauthorizedError } from "src/app/_services_and_types/errors";
+import { MessageService } from "src/app/_services_and_types/message.service";
+import { SettlementsService } from "src/app/_services_and_types/settlements.service";
 import {
 	ISettlementBatch,
 	ISettlementBatchTransfer,
 	ISettlementMatrix
 } from "@mojaloop/settlements-bc-public-types-lib";
-import {ActivatedRoute} from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 
 
 @Component({
@@ -34,6 +34,7 @@ export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 	matrixSubs?: Subscription;
 
 	transfers: BehaviorSubject<ISettlementBatchTransfer[]> = new BehaviorSubject<ISettlementBatchTransfer[]>([]);
+	excelFileUrl: any;
 
 	constructor(private _route: ActivatedRoute, private _settlementsService: SettlementsService, private _messageService: MessageService) {
 
@@ -129,6 +130,28 @@ export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 		}, error => {
 			throw error;
 		});
+	}
+
+	export() {
+		this._settlementsService.exportSettlementMatrix(this._matrixId!).subscribe(
+			(data) => {
+				const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+				this.excelFileUrl = window.URL.createObjectURL(blob);
+
+				// Programmatically trigger the download link's click event
+				const downloadLink = document.createElement('a');
+				downloadLink.href = this.excelFileUrl;
+				downloadLink.download = 'settlementInitiation.xlsx';
+				downloadLink.style.display = 'none';
+				document.body.appendChild(downloadLink);
+				downloadLink.click();
+				document.body.removeChild(downloadLink);
+			},
+			(error) => {
+				console.error(error);
+				throw error;
+			}
+		);
 	}
 
 	lock() {
