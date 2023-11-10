@@ -14,3 +14,20 @@ export interface Report {
 	relateParticipantId: string;
 	relateParticipantName: string;
 }
+
+export interface DetailsReport {
+	matrixId: string;
+	settlementDate: string;
+	payerFspId: string;
+	payerParticipantName: string;
+	payeeFspId: string;
+	payeeParticipantName: string;
+	transferId: string;
+	transactionType: string;
+	transactionDate: number | string;
+	payerIdType: string;
+	payerIdentifier: string;
+	payeeIdType: string;
+	Amount: string;
+	Currency: string;
+}

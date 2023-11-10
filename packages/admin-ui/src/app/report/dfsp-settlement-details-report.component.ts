@@ -1,23 +1,20 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { MessageService } from "../_services_and_types/message.service";
+import { BehaviorSubject, Subscription } from "rxjs";
+import {
+	HUB_PARTICIPANT_ID,
+	IParticipant,
+} from "@mojaloop/participant-bc-public-types-lib";
 
-interface DetailsReport {
-	senderDfspId: string;
-	senderDfspName: string;
-	receiverDfspId: string;
-	receiverDfspName: string;
-	transferId: string;
-	txType: string;
-	transactionDate: string;
-	senderIdType: string;
-	senderId: string;
-	receiverIdType: string;
-	receiverId: string;
-	receivedAmount: number;
-	sentAmount: number;
-	fee?: number;
-}
+import { UnauthorizedError } from "../_services_and_types/errors";
+import { MessageService } from "../_services_and_types/message.service";
+import { ParticipantsService } from "../_services_and_types/participants.service";
+import { ReportService } from "../_services_and_types/report.service";
+import type {
+	DetailsReport,
+	MatrixId,
+} from "../_services_and_types/report_types";
+import type { SettlementInfo } from "./dfsp-settlement-report.component";
 
 @Component({
 	selector: "app-dfsp-settlement-details-report",
@@ -26,52 +23,55 @@ interface DetailsReport {
 export class DFSPSettlementDetailsReport implements OnInit {
 	public dfspFilterForm!: FormGroup;
 	public settlementIdForm!: FormGroup;
+
 	showSettlementIdForm: boolean = false;
 	showResults: boolean = false;
-	reports: DetailsReport[] = [
-		{
-			senderDfspId: "thitsawallet1",
-			senderDfspName: "Thitsa Wallet",
-			receiverDfspId: "visionfund/ 010",
-			receiverDfspName: "Vision Fund Myanmar MFI",
-			transferId: "a2f13f10-a41a-437a-95a7-68d3e25e5561",
-			txType: "TRANSFER",
-			transactionDate: "01-Mar-2023 10:21:01 AM",
-			senderIdType: "MSISDN",
-			senderId: "091234567",
-			receiverIdType: "ACCOUNT_ID",
-			receiverId: "10512",
-			receivedAmount: 1000,
-			sentAmount: 0,
-		},
-		{
-			senderDfspId: "visionfund/ 010",
-			senderDfspName: "Vision Fund Myanmar MFI",
-			receiverDfspId: "020",
-			receiverDfspName: "ABC Wallet",
-			transferId: "593fbce9-9862-4fb3-8b58-f18e321960fd",
-			txType: "TRANSFER",
-			transactionDate: "01-Mar-2023 10:25:08 AM",
-			senderIdType: "ACCOUNT_ID",
-			senderId: "10545632",
-			receiverIdType: "MSISDN",
-			receiverId: "09798465123",
-			receivedAmount: 0,
-			sentAmount: 5000,
-		},
-	];
+	chosenDfspId: string = "";
+	settlementInfo: SettlementInfo | null = null;
 
-	constructor(private _messageService: MessageService) {}
+	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<
+		IParticipant[]
+	>([]);
+	participantsSubs?: Subscription;
+
+	matrixIds: BehaviorSubject<MatrixId[]> = new BehaviorSubject<MatrixId[]>(
+		[]
+	);
+	matrixIdsSubs?: Subscription;
+
+	detailsReports: BehaviorSubject<DetailsReport[]> = new BehaviorSubject<
+		DetailsReport[]
+	>([]);
+	detailsReportsSubs?: Subscription;
+
+	constructor(
+		private _participantsSvc: ParticipantsService,
+		private _reportSvc: ReportService,
+		private _messageService: MessageService
+	) {}
 
 	async ngOnInit(): Promise<void> {
 		this._initForms();
+		this.getParticipants();
+	}
+
+	ngOnDestroy() {
+		if (this.participantsSubs) {
+			this.participantsSubs.unsubscribe();
+		}
+		if (this.matrixIdsSubs) {
+			this.matrixIdsSubs.unsubscribe();
+		}
+		if (this.detailsReportsSubs) {
+			this.detailsReportsSubs.unsubscribe();
+		}
 	}
 
 	private _initForms() {
 		this.dfspFilterForm = new FormGroup({
 			dfspName: new FormControl("", [Validators.required]),
-			startDate: new FormControl("", []),
-			endDate: new FormControl("", []),
+			startDate: new FormControl("", [Validators.required]),
+			endDate: new FormControl("", [Validators.required]),
 		});
 
 		this.settlementIdForm = new FormGroup({
@@ -79,17 +79,91 @@ export class DFSPSettlementDetailsReport implements OnInit {
 		});
 	}
 
-	searchSettlementId() {
+	getParticipants() {
+		this.participantsSubs = this._participantsSvc
+			.getAllParticipants()
+			.subscribe(
+				(result) => {
+					const onlyDfsps = result.items.filter(
+						(value) => value.id !== HUB_PARTICIPANT_ID
+					);
+
+					this.participants.next(onlyDfsps);
+				},
+				(error) => {
+					if (error && error instanceof UnauthorizedError) {
+						this._messageService.addError(error.message);
+					}
+				}
+			);
+	}
+
+	getMatrixIds(participantId: string, startDate: number, endDate: number) {
+		this.matrixIdsSubs = this._reportSvc
+			.getAllSettlementMatrixIds(participantId, startDate, endDate)
+			.subscribe(
+				(result) => {
+					this.matrixIds.next(result);
+				},
+				(error) => {
+					if (error && error instanceof UnauthorizedError) {
+						this._messageService.addError(error.message);
+					}
+				}
+			);
+	}
+
+	getDetailsReports(participantId: string, matrixId: string) {
+		this.detailsReportsSubs = this._reportSvc
+			.getAllSettlementDetailsReports(participantId, matrixId)
+			.subscribe(
+				(result) => {
+					if (result.length > 0) {
+						const formattedDate = new Date(
+							result[0].settlementDate
+						).toLocaleString();
+						const chosenDfsp = this.participants.value.find(
+							(value) => value.id === this.chosenDfspId
+						);
+
+						this.settlementInfo = {
+							settlementId: result[0].matrixId,
+							settlementCreatedDate: formattedDate,
+							dfspId: chosenDfsp?.id || "",
+							dfspName: chosenDfsp?.name || "",
+						};
+					}
+					const detailsReport = result.map((detailsReport) => ({
+						...detailsReport,
+						transactionDate: new Date(
+							detailsReport.transactionDate
+						).toLocaleString(),
+					}));
+					this.detailsReports.next(detailsReport);
+				},
+				(error) => {
+					if (error && error instanceof UnauthorizedError) {
+						this._messageService.addError(error.message);
+					}
+				}
+			);
+	}
+
+	searchSettlementIds() {
 		if (!this.dfspFilterForm.valid) {
 			this._messageService.addError("Fill all the required fields!");
 			return;
 		}
 
-		const dfspName = this.dfspFilterForm.controls.dfspName.value;
+		const dfspId = this.dfspFilterForm.controls.dfspName.value;
 		const startDate = this.dfspFilterForm.controls.startDate.value;
 		const endDate = this.dfspFilterForm.controls.endDate.value;
+		const startDateTimestamp = new Date(startDate).getTime();
+		const endDateTimestamp = new Date(endDate).getTime();
+
+		this.getMatrixIds(dfspId, startDateTimestamp, endDateTimestamp);
 		this.showSettlementIdForm = true;
-		console.log(dfspName, startDate, endDate);
+		this.chosenDfspId = dfspId;
 	}
 
 	searchReports() {
@@ -99,7 +173,8 @@ export class DFSPSettlementDetailsReport implements OnInit {
 		}
 
 		const settlementId = this.settlementIdForm.controls.settlementId.value;
+
+		this.getDetailsReports(this.chosenDfspId, settlementId);
 		this.showResults = true;
-		console.log(settlementId);
 	}
 }

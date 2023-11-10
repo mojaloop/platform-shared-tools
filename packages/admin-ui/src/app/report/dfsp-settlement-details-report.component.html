@@ -3,7 +3,7 @@
 <div class="filterbox">
 	<form
 		[formGroup]="dfspFilterForm"
-		(ngSubmit)="searchSettlementId()"
+		(ngSubmit)="searchSettlementIds()"
 		class="d-flex justify-content-between align-items-end mx-3"
 	>
 		<div class="d-flex" style="gap: 30px">
@@ -13,10 +13,15 @@
 					id="dfspName"
 					formControlName="dfspName"
 					class="form-control"
+					required
+					aria-required="true"
 				>
-					<option value="DFSP 1">DFSP 1</option>
-					<option value="DFSP 2">DFSP 2</option>
-					<option value="DFSP 3">DFSP 3</option>
+					<option
+						*ngFor="let participant of participants | async"
+						value="{{ participant.id }}"
+					>
+						{{ participant.name }}
+					</option>
 				</select>
 			</div>
 
@@ -27,6 +32,8 @@
 					type="datetime-local"
 					formControlName="startDate"
 					class="form-control"
+					required
+					aria-required="true"
 				/>
 			</div>
 
@@ -37,6 +44,8 @@
 					type="datetime-local"
 					formControlName="endDate"
 					class="form-control"
+					required
+					aria-required="true"
 				/>
 			</div>
 		</div>
@@ -64,10 +73,15 @@
 				id="settlementId"
 				formControlName="settlementId"
 				class="form-control"
+				required
+				aria-required="true"
 			>
-				<option value="44">44</option>
-				<option value="45">45</option>
-				<option value="46">46</option>
+				<option
+					*ngFor="let matrixId of matrixIds | async"
+					value="{{ matrixId.id }}"
+				>
+					{{ matrixId.id }}
+				</option>
 			</select>
 		</div>
 
@@ -82,39 +96,36 @@
 <div *ngIf="showResults">
 	<div class="px-3 d-flex flex-column" style="margin-top: 30px; gap: 6px">
 		<div class="d-flex justify-content-between">
-			<h3 style="font-size: 22px; margin-bottom: 15px">VisionFund</h3>
+			<h3 style="font-size: 22px; margin-bottom: 15px">
+				{{ settlementInfo?.dfspName }}
+			</h3>
 
 			<button class="btn btn-primary">Export</button>
 		</div>
 
 		<div class="d-flex">
 			<p style="min-width: 250px">Settlement ID</p>
-			<p>44</p>
+			<p>{{ settlementInfo?.settlementId || "-" }}</p>
 		</div>
 
 		<div class="d-flex">
 			<p style="min-width: 250px">Settlement Created Date</p>
-			<p>01-Mar-2023 10:25:08 AM</p>
+			<p>{{ settlementInfo?.settlementCreatedDate || "-" }}</p>
 		</div>
 
 		<div class="d-flex">
 			<p style="min-width: 250px">DFSP ID</p>
-			<p>visionfund/ 010</p>
+			<p>{{ settlementInfo?.dfspId || "-" }}</p>
 		</div>
 
 		<div class="d-flex">
 			<p style="min-width: 250px">DFSP Name</p>
-			<p>Vision Fund Myanmar MFI</p>
-		</div>
-
-		<div class="d-flex">
-			<p style="min-width: 250px">Currency</p>
-			<p>MMK</p>
+			<p>{{ settlementInfo?.dfspName || "-" }}</p>
 		</div>
 
 		<div class="d-flex">
 			<p style="min-width: 250px">Time Zone OffSet</p>
-			<p>+06:30</p>
+			<p>UTC±00:00</p>
 		</div>
 	</div>
 
@@ -142,21 +153,24 @@
 		</thead>
 
 		<tbody>
-			<tr *ngFor="let report of reports">
-				<td>{{ report.senderDfspId }}</td>
-				<td>{{ report.senderDfspName }}</td>
-				<td>{{ report.receiverDfspId }}</td>
-				<td>{{ report.receiverDfspName }}</td>
-				<td>{{ report.transferId }}</td>
-				<td>{{ report.txType }}</td>
-				<td>{{ report.transactionDate }}</td>
-				<td>{{ report.senderIdType }}</td>
-				<td>{{ report.senderId }}</td>
-				<td>{{ report.receiverIdType }}</td>
-				<td>{{ report.receiverId }}</td>
-				<td>{{ report.receivedAmount }}</td>
-				<td>{{ report.sentAmount }}</td>
-				<td>{{ report.fee ?? "-" }}</td>
+			<tr *ngFor="let detailsReport of detailsReports | async">
+				<td>{{ detailsReport.payerFspId }}</td>
+				<td>{{ detailsReport.payerParticipantName }}</td>
+				<td>{{ detailsReport.payeeFspId }}</td>
+				<td>{{ detailsReport.payeeParticipantName }}</td>
+				<td>{{ detailsReport.transferId }}</td>
+				<td>{{ detailsReport.transactionType }}</td>
+				<td>{{ detailsReport.transactionDate }}</td>
+				<td>{{ detailsReport.payerIdType }}</td>
+				<td>{{ detailsReport.payerIdentifier }}</td>
+				<td>{{ detailsReport.payeeIdType }}</td>
+				<!-- TODO: Change payeeIdType to payeeIdentifier -->
+				<td>{{ detailsReport.payeeIdType }}</td>
+				<!-- TODO: Add received amount and sent amount -->
+				<td>{{ detailsReport.Amount }}</td>
+				<td>{{ detailsReport.Amount }}</td>
+				<!-- TODO: Add this or remove the fee column -->
+				<!-- <td>{{ detailsReport.fee ?? "-" }}</td> -->
 			</tr>
 		</tbody>
 	</table>
