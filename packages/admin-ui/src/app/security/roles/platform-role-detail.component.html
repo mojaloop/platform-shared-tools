@@ -67,20 +67,43 @@
 		</div>  <!-- column 3 - buttons -->
 	</div>
 
-	<ul ngbNav #nav="ngbNav" class="mt-4 nav-tabs">
+	<ul ngbNav #nav="ngbNav" class="mt-4 nav-tabs" (navChange)="filterChanged()">
 		<li ngbNavItem="currentPrivileges"> <!-- currentPrivileges -->
 			<a ngbNavLink>Current Privileges</a>
 			<ng-template ngbNavContent>
+
 				<div class="row">
-					<div class="col-md-9">
+					<div class="col-md-12">
 						<h4>Privileges already associated to this Role</h4>
 					</div>
-					<div class="form-group col-md-3">
+				</div>
+				<hr/>
+				<div class="row">
+					<div class="col-md-2">
+						<div class="form-group">
+							<label for="filterIncludedBcNames">Bounded Context:</label>
+							<select class="form-control" id="filterIncludedBcNames" (change)="filterChanged()">
+								<option value="{{ALL_STR_ID}}">(All)</option>
+								<option value="{{item}}" *ngFor="let item of (boundedContextNames | async)">{{item}}</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div class="form-group">
+							<label for="filterIncludedAppNames">Application:</label>
+							<select class="form-control" id="filterIncludedAppNames"  (change)="filterChanged()">
+								<option value="{{ALL_STR_ID}}">(All)</option>
+								<option value="{{item}}" *ngFor="let item of (applicationNames | async)">{{item}}</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group col-md-4"> <!-- spacer --></div>
+					<div class="form-group col-md-4">
 						<label for="removeSelectedPrivs">&nbsp;</label>
 						<button type="button" class="form-control btn btn-success" id="removeSelectedPrivs"
 								[disabled]="curPrivsSelectedIds.length<=0"
 								(click)="removePrivileges()"
-								ngbTooltip="Remove selected privileges from role">Remove Privilege(s) from Role
+								ngbTooltip="Remove selected privileges from role">Remove selected Privilege(s) from Role
 						</button>
 					</div>
 				</div>
@@ -117,10 +140,32 @@
 			<a ngbNavLink>Add Privileges</a>
 			<ng-template ngbNavContent>
 				<div class="row">
-					<div class="col-md-9">
+					<div class="col-md-12">
 						<h4>Privileges available to be associated with this Role</h4>
 					</div>
-					<div class="form-group col-md-3">
+				</div>
+				<hr/>
+				<div class="row">
+					<div class="col-md-2">
+						<div class="form-group">
+							<label for="filterExcludedBcNames">Bounded Context:</label>
+							<select class="form-control" id="filterExcludedBcNames" (change)="filterChanged()">
+								<option value="{{ALL_STR_ID}}">(All)</option>
+								<option value="{{item}}" *ngFor="let item of (boundedContextNames | async)">{{item}}</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div class="form-group">
+							<label for="filterExcludedAppNames">Application:</label>
+							<select class="form-control" id="filterExcludedAppNames" (change)="filterChanged()">
+								<option value="{{ALL_STR_ID}}">(All)</option>
+								<option value="{{item}}" *ngFor="let item of (applicationNames | async)">{{item}}</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group col-md-4"> <!-- spacer --></div>
+					<div class="form-group col-md-4">
 						<label for="addSelectedPrivs">&nbsp;</label>
 						<button type="button" class="form-control btn btn-success" id="addSelectedPrivs"
 								[disabled]="addPrivsSelectedIds.length<=0"

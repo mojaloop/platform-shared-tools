@@ -164,7 +164,17 @@ Go to **(top left burger icon) -> Analytics / Discover**, and then use the Open 
 
 Go to **(top left burger icon) -> Analytics / Discover**, and then use the Open option on the top right to open the imported `"MojaloopDefaultLogView"` view.
 
+## Mongo Express
+To access mongo express web service, use http://localhost:8081/ with the default credentials:
+- username: admin
+- password: pass
+
+Ref:
+- https://github.com/mongo-express/mongo-express-docker
+
 # Additional information
+
+
 
 ### Useful Commands
 
