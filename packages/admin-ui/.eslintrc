@@ -29,7 +29,7 @@
     "parserOptions": {
         "sourceType": "module",
         // Allows for the use of imports
-        "project": "./tsconfig.json"
+        "project": "./packages/admin-ui/tsconfig.json"
     },
     "ignorePatterns": [
         "**/*.d.ts",

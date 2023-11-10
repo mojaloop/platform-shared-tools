@@ -1,17 +1,22 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { MessageService } from "../_services_and_types/message.service";
+import { BehaviorSubject, Subscription } from "rxjs";
+import {
+	HUB_PARTICIPANT_ID,
+	IParticipant,
+} from "@mojaloop/participant-bc-public-types-lib";
 
-interface Report {
-	dfspId: string
-	dfspName: string
-	sentVolume: number
-	sentValue: number
-	receivedVolume: number
-	receivedValue: number
-	totalTransactionVolume: number
-	totalValue: number
-	netPoition: string
+import { UnauthorizedError } from "../_services_and_types/errors";
+import { MessageService } from "../_services_and_types/message.service";
+import { ParticipantsService } from "../_services_and_types/participants.service";
+import { ReportService } from "../_services_and_types/report.service";
+import type { MatrixId, Report } from "../_services_and_types/report_types";
+
+interface SettlementInfo {
+	settlementId: string;
+	settlementCreatedDate: string;
+	dfspId: string;
+	dfspName: string;
 }
 
 @Component({
@@ -21,49 +26,126 @@ interface Report {
 export class DFSPSettlementReport implements OnInit {
 	public dfspFilterForm!: FormGroup;
 	public settlementIdForm!: FormGroup;
+
 	showSettlementIdForm: boolean = false;
 	showResults: boolean = false;
-	reports: Report[] = [
-		{
-			dfspId: 'cnp/ 007',
-			dfspName: 'CNP',
-			sentVolume: 2,
-			sentValue: 2000,
-			receivedVolume: 1,
-			receivedValue: 1500,
-			totalTransactionVolume: 3,
-			totalValue: 3500,
-			netPoition: "(500)",
-		},
-		{
-			dfspId: 'demomfi/ 006',
-			dfspName: 'DEMO MFI',
-			sentVolume: 0,
-			sentValue: 0,
-			receivedVolume: 1,
-			receivedValue: 1000,
-			totalTransactionVolume: 3,
-			totalValue: 1000,
-			netPoition: "1000",
-		},
-	]
+	chosenDfspId: string = "";
+	settlementInfo: SettlementInfo | null = null;
 
-	constructor(private _messageService: MessageService) {}
+	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<
+		IParticipant[]
+	>([]);
+	participantsSubs?: Subscription;
 
-	async ngOnInit(): Promise<void> {
+	matrixIds: BehaviorSubject<MatrixId[]> = new BehaviorSubject<MatrixId[]>(
+		[]
+	);
+	matrixIdsSubs?: Subscription;
+
+	reports: BehaviorSubject<Report[]> = new BehaviorSubject<Report[]>([]);
+	reportSubs?: Subscription;
+
+	constructor(
+		private _participantsSvc: ParticipantsService,
+		private _reportSvc: ReportService,
+		private _messageService: MessageService
+	) {}
+
+	ngOnInit() {
 		this._initForms();
+		this.getParticipants();
+	}
+
+	ngOnDestroy() {
+		if (this.participantsSubs) {
+			this.participantsSubs.unsubscribe();
+		}
+		if (this.matrixIdsSubs) {
+			this.matrixIdsSubs.unsubscribe();
+		}
+		if (this.reportSubs) {
+			this.reportSubs.unsubscribe();
+		}
 	}
 
 	private _initForms() {
 		this.dfspFilterForm = new FormGroup({
 			dfspName: new FormControl("", [Validators.required]),
-			startDate: new FormControl("", []),
-			endDate: new FormControl("", []),
+			startDate: new FormControl("", [Validators.required]),
+			endDate: new FormControl("", [Validators.required]),
 		});
 
 		this.settlementIdForm = new FormGroup({
 			settlementId: new FormControl("", [Validators.required]),
 		});
+	}
+
+	getParticipants() {
+		this.participantsSubs = this._participantsSvc
+			.getAllParticipants()
+			.subscribe(
+				(result) => {
+					const onlyDfsps = result.items.filter(
+						(value) => value.id !== HUB_PARTICIPANT_ID
+					);
+
+					this.participants.next(onlyDfsps);
+				},
+				(error) => {
+					if (error && error instanceof UnauthorizedError) {
+						this._messageService.addError(error.message);
+					}
+				}
+			);
+	}
+
+	getMatrixIds(participantId: string, startDate: number, endDate: number) {
+		this.matrixIdsSubs = this._reportSvc
+			.getAllSettlementMatrixIds(participantId, startDate, endDate)
+			.subscribe(
+				(result) => {
+					this.matrixIds.next(result);
+				},
+				(error) => {
+					if (error && error instanceof UnauthorizedError) {
+						this._messageService.addError(error.message);
+					}
+				}
+			);
+	}
+
+	getReports(participantId: string, matrixId: string) {
+		this.reportSubs = this._reportSvc
+			.getAllSettlementReports(participantId, matrixId)
+			.subscribe(
+				(result) => {
+					if (result.length > 0) {
+						const formattedDate = new Date(
+							result[0].settlementDate
+						).toLocaleString();
+
+						this.settlementInfo = {
+							settlementId: result[0].matrixId,
+							settlementCreatedDate: formattedDate,
+							dfspId: result[0].paramParticipantId,
+							dfspName: result[0].paramParticipantName,
+						};
+					}
+					this.reports.next(result);
+				},
+				(error) => {
+					if (error && error instanceof UnauthorizedError) {
+						this._messageService.addError(error.message);
+					}
+				}
+			);
+	}
+
+	// to format net postion in UI
+	formatNetPosition(netPosition: number) {
+		return netPosition < 0
+			? `(${netPosition.toString().replace("-", "")})`
+			: netPosition;
 	}
 
 	searchSettlementId() {
@@ -72,11 +154,15 @@ export class DFSPSettlementReport implements OnInit {
 			return;
 		}
 
-		const dfspName = this.dfspFilterForm.controls.dfspName.value;
+		const dfspId = this.dfspFilterForm.controls.dfspName.value;
 		const startDate = this.dfspFilterForm.controls.startDate.value;
 		const endDate = this.dfspFilterForm.controls.endDate.value;
+		const startDateTimestamp = new Date(startDate).getTime();
+		const endDateTimestamp = new Date(endDate).getTime();
+
+		this.getMatrixIds(dfspId, startDateTimestamp, endDateTimestamp);
 		this.showSettlementIdForm = true;
-		console.log(dfspName, startDate, endDate);
+		this.chosenDfspId = dfspId;
 	}
 
 	searchReports() {
@@ -86,7 +172,8 @@ export class DFSPSettlementReport implements OnInit {
 		}
 
 		const settlementId = this.settlementIdForm.controls.settlementId.value;
+
+		this.getReports(this.chosenDfspId, settlementId);
 		this.showResults = true;
-		console.log(settlementId);
 	}
 }
