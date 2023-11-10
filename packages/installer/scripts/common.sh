@@ -532,6 +532,8 @@ check_status() {
 
 function restore_demo_data {
   local mongo_data_dir=$1
+  echo $mongo_data_dir 
+  
   local ttk_files_dir=$2
 
   error_message=" restoring the mongo database data failed "
