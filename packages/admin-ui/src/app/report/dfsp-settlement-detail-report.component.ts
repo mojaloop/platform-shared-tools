@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { BehaviorSubject, Subscription } from "rxjs";
+import moment from "moment";
 import {
 	HUB_PARTICIPANT_ID,
 	IParticipant,
@@ -135,9 +136,9 @@ export class DFSPSettlementDetailReport implements OnInit {
 			.subscribe(
 				(result) => {
 					if (result.length > 0) {
-						const formattedDate = new Date(
+						const formattedDate = moment(
 							result[0].settlementDate
-						).toLocaleString();
+						).format("DD-MMM-YYYY hh:mm:ss A");
 						const chosenDfsp = this.participants.value.find(
 							(value) => value.id === this.chosenDfspId
 						);
@@ -152,9 +153,9 @@ export class DFSPSettlementDetailReport implements OnInit {
 
 					const detailReport = result.map((detailReport) => ({
 						...detailReport,
-						transactionDate: new Date(
+						transactionDate: moment(
 							detailReport.transactionDate
-						).toLocaleString(),
+						).format("DD-MMM-YYYY hh:mm:ss A"),
 						sentAmount:
 							this.chosenDfspId === detailReport.payerFspId
 								? formatNumber(detailReport.Amount)
