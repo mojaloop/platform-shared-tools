@@ -165,17 +165,9 @@
 				<td>{{ report.totalAmountSent }}</td>
 				<td>{{ report.totalReceivedCount }}</td>
 				<td>{{ report.totalAmountReceived }}</td>
-				<td>{{ report.totalSentCount + report.totalReceivedCount }}</td>
-				<td>
-					{{ report.totalAmountSent + report.totalAmountReceived }}
-				</td>
-				<td>
-					{{
-						formatNetPosition(
-							report.totalAmountReceived - report.totalAmountSent
-						)
-					}}
-				</td>
+				<td>{{ report.totalTransactionCount }}</td>
+				<td>{{ report.totalAmount }}</td>
+				<td>{{ report.netPosition }}</td>
 			</tr>
 		</tbody>
 	</table>

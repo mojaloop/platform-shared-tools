@@ -11,6 +11,16 @@ import { MessageService } from "../_services_and_types/message.service";
 import { ParticipantsService } from "../_services_and_types/participants.service";
 import { ReportService } from "../_services_and_types/report.service";
 import type { MatrixId, Report } from "../_services_and_types/report_types";
+import { formatNumber } from "../_utils";
+
+interface ModifiedReport
+	extends Omit<Report, "totalAmountSent" | "totalAmountReceived"> {
+	totalAmountSent: string;
+	totalAmountReceived: string;
+	totalTransactionCount: number;
+	totalAmount: string;
+	netPosition: string;
+}
 
 export interface SettlementInfo {
 	settlementId: string;
@@ -42,7 +52,9 @@ export class DFSPSettlementReport implements OnInit {
 	);
 	matrixIdsSubs?: Subscription;
 
-	reports: BehaviorSubject<Report[]> = new BehaviorSubject<Report[]>([]);
+	reports: BehaviorSubject<ModifiedReport[]> = new BehaviorSubject<
+		ModifiedReport[]
+	>([]);
 	reportSubs?: Subscription;
 
 	constructor(
@@ -131,7 +143,23 @@ export class DFSPSettlementReport implements OnInit {
 							dfspName: result[0].paramParticipantName,
 						};
 					}
-					this.reports.next(result);
+					const reports = result.map((report) => ({
+						...report,
+						totalAmountSent: formatNumber(report.totalAmountSent),
+						totalAmountReceived: formatNumber(
+							report.totalAmountReceived
+						),
+						totalTransactionCount:
+							report.totalSentCount + report.totalReceivedCount,
+						totalAmount: formatNumber(
+							report.totalAmountSent + report.totalAmountReceived
+						),
+						netPosition: this.formatNetPosition(
+							report.totalAmountReceived - report.totalAmountSent
+						),
+					}));
+
+					this.reports.next(reports);
 				},
 				(error) => {
 					if (error && error instanceof UnauthorizedError) {
@@ -144,8 +172,8 @@ export class DFSPSettlementReport implements OnInit {
 	// to format net postion in UI
 	formatNetPosition(netPosition: number) {
 		return netPosition < 0
-			? `(${netPosition.toString().replace("-", "")})`
-			: netPosition;
+			? `(${formatNumber(netPosition.toString().replace("-", ""))})`
+			: formatNumber(netPosition);
 	}
 
 	searchSettlementIds() {
