@@ -52,7 +52,7 @@ import {SettlementsModelsComponent} from "./settlements/settlements.models.compo
 import {SettlementsModelsCreateComponent} from './settlements/settlements.models.create.component';
 import {AuditingComponent} from "./auditing/auditing.component";
 import { DFSPSettlementReport } from "./report/dfsp-settlement-report.component";
-import { DFSPSettlementDetailsReport } from "./report/dfsp-settlement-details-report.component";
+import { DFSPSettlementDetailReport } from "./report/dfsp-settlement-detail-report.component";
 import {BuiltinIamUsersListComponent} from "./security/builtin_iam/builtin-iam-users-list.component";
 import {BuiltinIamUserCreateComponent} from "./security/builtin_iam/builtin-iam-user-create.component";
 import {BuiltinIamUserDetailComponent} from "./security/builtin_iam/builtin-iam-user-detail.component";
@@ -102,7 +102,7 @@ import {PlatformRoleCreateComponent} from "./security/roles/platform-role-create
 		SettlementsModelsCreateComponent,
 		AuditingComponent,
 		DFSPSettlementReport,
-		DFSPSettlementDetailsReport,
+		DFSPSettlementDetailReport,
 		BuiltinIamUsersListComponent,
 		BuiltinIamUserCreateComponent,
 		BuiltinIamUserDetailComponent,

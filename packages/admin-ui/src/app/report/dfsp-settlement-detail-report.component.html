@@ -1,4 +1,4 @@
-<h2 class="mb-4">DFSP Settlement Details Report</h2>
+<h2 class="mb-4">DFSP Settlement Detail Report</h2>
 
 <div class="filterbox">
 	<form
@@ -153,24 +153,24 @@
 		</thead>
 
 		<tbody>
-			<tr *ngFor="let detailsReport of detailsReports | async">
-				<td>{{ detailsReport.payerFspId }}</td>
-				<td>{{ detailsReport.payerParticipantName }}</td>
-				<td>{{ detailsReport.payeeFspId }}</td>
-				<td>{{ detailsReport.payeeParticipantName }}</td>
-				<td>{{ detailsReport.transferId }}</td>
-				<td>{{ detailsReport.transactionType }}</td>
-				<td>{{ detailsReport.transactionDate }}</td>
-				<td>{{ detailsReport.payerIdType }}</td>
-				<td>{{ detailsReport.payerIdentifier }}</td>
-				<td>{{ detailsReport.payeeIdType }}</td>
+			<tr *ngFor="let detailReport of detailReports | async">
+				<td>{{ detailReport.payerFspId }}</td>
+				<td>{{ detailReport.payerParticipantName }}</td>
+				<td>{{ detailReport.payeeFspId }}</td>
+				<td>{{ detailReport.payeeParticipantName }}</td>
+				<td>{{ detailReport.transferId }}</td>
+				<td>{{ detailReport.transactionType }}</td>
+				<td>{{ detailReport.transactionDate }}</td>
+				<td>{{ detailReport.payerIdType }}</td>
+				<td>{{ detailReport.payerIdentifier }}</td>
+				<td>{{ detailReport.payeeIdType }}</td>
 				<!-- TODO: Change payeeIdType to payeeIdentifier -->
-				<td>{{ detailsReport.payeeIdType }}</td>
+				<td>{{ detailReport.payeeIdType }}</td>
 				<!-- TODO: Add received amount and sent amount -->
-				<td>{{ detailsReport.Amount }}</td>
-				<td>{{ detailsReport.Amount }}</td>
+				<td>{{ detailReport.Amount }}</td>
+				<td>{{ detailReport.Amount }}</td>
 				<!-- TODO: Add this or remove the fee column -->
-				<!-- <td>{{ detailsReport.fee ?? "-" }}</td> -->
+				<!-- <td>{{ detailReport.fee ?? "-" }}</td> -->
 			</tr>
 		</tbody>
 	</table>

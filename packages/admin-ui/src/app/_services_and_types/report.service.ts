@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 
 import { UnauthorizedError } from "./errors";
-import type { DetailsReport, MatrixId, Report } from "./report_types";
+import type { DetailReport, MatrixId, Report } from "./report_types";
 
 const SVC_BASEURL = "/_reporting";
 
@@ -82,18 +82,18 @@ export class ReportService {
 		});
 	}
 
-	getAllSettlementDetailsReports(
+	getAllSettlementDetailReports(
 		participantId: string,
 		matrixId: string
-	): Observable<DetailsReport[]> {
-		return new Observable<DetailsReport[]>((subscriber) => {
+	): Observable<DetailReport[]> {
+		return new Observable<DetailReport[]>((subscriber) => {
 			this._http
-				.get<DetailsReport[]>(
+				.get<DetailReport[]>(
 					SVC_BASEURL +
 						`/dfspSettlementDetail?participantId=${participantId}&matrixId=${matrixId}`
 				)
 				.subscribe(
-					(result: DetailsReport[]) => {
+					(result: DetailReport[]) => {
 						subscriber.next(result);
 						return subscriber.complete();
 					},

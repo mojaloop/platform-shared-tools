@@ -15,7 +15,7 @@ export interface Report {
 	relateParticipantName: string;
 }
 
-export interface DetailsReport {
+export interface DetailReport {
 	matrixId: string;
 	settlementDate: string;
 	payerFspId: string;

@@ -11,16 +11,16 @@ import { MessageService } from "../_services_and_types/message.service";
 import { ParticipantsService } from "../_services_and_types/participants.service";
 import { ReportService } from "../_services_and_types/report.service";
 import type {
-	DetailsReport,
+	DetailReport,
 	MatrixId,
 } from "../_services_and_types/report_types";
 import type { SettlementInfo } from "./dfsp-settlement-report.component";
 
 @Component({
-	selector: "app-dfsp-settlement-details-report",
-	templateUrl: "./dfsp-settlement-details-report.component.html",
+	selector: "app-dfsp-settlement-detail-report",
+	templateUrl: "./dfsp-settlement-detail-report.component.html",
 })
-export class DFSPSettlementDetailsReport implements OnInit {
+export class DFSPSettlementDetailReport implements OnInit {
 	public dfspFilterForm!: FormGroup;
 	public settlementIdForm!: FormGroup;
 
@@ -39,10 +39,10 @@ export class DFSPSettlementDetailsReport implements OnInit {
 	);
 	matrixIdsSubs?: Subscription;
 
-	detailsReports: BehaviorSubject<DetailsReport[]> = new BehaviorSubject<
-		DetailsReport[]
+	detailReports: BehaviorSubject<DetailReport[]> = new BehaviorSubject<
+		DetailReport[]
 	>([]);
-	detailsReportsSubs?: Subscription;
+	detailReportsSubs?: Subscription;
 
 	constructor(
 		private _participantsSvc: ParticipantsService,
@@ -62,8 +62,8 @@ export class DFSPSettlementDetailsReport implements OnInit {
 		if (this.matrixIdsSubs) {
 			this.matrixIdsSubs.unsubscribe();
 		}
-		if (this.detailsReportsSubs) {
-			this.detailsReportsSubs.unsubscribe();
+		if (this.detailReportsSubs) {
+			this.detailReportsSubs.unsubscribe();
 		}
 	}
 
@@ -113,9 +113,9 @@ export class DFSPSettlementDetailsReport implements OnInit {
 			);
 	}
 
-	getDetailsReports(participantId: string, matrixId: string) {
-		this.detailsReportsSubs = this._reportSvc
-			.getAllSettlementDetailsReports(participantId, matrixId)
+	getDetailReports(participantId: string, matrixId: string) {
+		this.detailReportsSubs = this._reportSvc
+			.getAllSettlementDetailReports(participantId, matrixId)
 			.subscribe(
 				(result) => {
 					if (result.length > 0) {
@@ -133,13 +133,13 @@ export class DFSPSettlementDetailsReport implements OnInit {
 							dfspName: chosenDfsp?.name || "",
 						};
 					}
-					const detailsReport = result.map((detailsReport) => ({
-						...detailsReport,
+					const detailReport = result.map((detailReport) => ({
+						...detailReport,
 						transactionDate: new Date(
-							detailsReport.transactionDate
+							detailReport.transactionDate
 						).toLocaleString(),
 					}));
-					this.detailsReports.next(detailsReport);
+					this.detailReports.next(detailReport);
 				},
 				(error) => {
 					if (error && error instanceof UnauthorizedError) {
@@ -174,7 +174,7 @@ export class DFSPSettlementDetailsReport implements OnInit {
 
 		const settlementId = this.settlementIdForm.controls.settlementId.value;
 
-		this.getDetailsReports(this.chosenDfspId, settlementId);
+		this.getDetailReports(this.chosenDfspId, settlementId);
 		this.showResults = true;
 	}
 }

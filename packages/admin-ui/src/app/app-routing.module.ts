@@ -42,7 +42,7 @@ import {SettlementsModelsComponent} from "./settlements/settlements.models.compo
 import {SettlementsModelsCreateComponent} from './settlements/settlements.models.create.component';
 import {AuditingComponent} from "./auditing/auditing.component";
 import { DFSPSettlementReport } from "./report/dfsp-settlement-report.component";
-import { DFSPSettlementDetailsReport } from "./report/dfsp-settlement-details-report.component";
+import { DFSPSettlementDetailReport } from "./report/dfsp-settlement-detail-report.component";
 import {BuiltinIamUsersListComponent} from "./security/builtin_iam/builtin-iam-users-list.component";
 import {BuiltinIamUserCreateComponent} from "./security/builtin_iam/builtin-iam-user-create.component";
 import {BuiltinIamUserDetailComponent} from "./security/builtin_iam/builtin-iam-user-detail.component";
@@ -140,7 +140,7 @@ const routes: Routes = [
 	{path: "settlements/models", component: SettlementsModelsComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/models/new", component: SettlementsModelsCreateComponent},
 	{path: "report/dfsp-settlement-report", component: DFSPSettlementReport},
-	{path: "report/dfsp-settlement-details-report", component: DFSPSettlementDetailsReport},
+	{path: "report/dfsp-settlement-detail-report", component: DFSPSettlementDetailReport},
 	{path: "auditing", component: AuditingComponent},
 ];
 
