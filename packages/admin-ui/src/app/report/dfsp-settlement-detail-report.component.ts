@@ -149,6 +149,8 @@ export class DFSPSettlementDetailReport implements OnInit {
 							dfspId: chosenDfsp?.id || "",
 							dfspName: chosenDfsp?.name || "",
 						};
+					} else {
+						this.settlementInfo = null;
 					}
 
 					const detailReport = result.map((detailReport) => ({

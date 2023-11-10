@@ -143,7 +143,10 @@ export class DFSPSettlementReport implements OnInit {
 							dfspId: result[0].paramParticipantId,
 							dfspName: result[0].paramParticipantName,
 						};
+					} else {
+						this.settlementInfo = null;
 					}
+
 					const reports = result.map((report) => ({
 						...report,
 						totalAmountSent: formatNumber(report.totalAmountSent),
