@@ -8,7 +8,7 @@
 <!--    </button>-->
   </div>
 </div>
-
+  
 <!--filter-->
 <div class="filterbox">
   <form>
@@ -16,16 +16,16 @@
       <tr class="form-row justify-content-end">
         <div class="form-group col-md-2">
           <label for="filterQuoteAmountType">Amount Type</label>
-					<select class="form-control" id="filterQuoteAmountType">
-						<option value="{{ALL_STR_ID}}">(All)</option>
-						<option value="{{item}}" *ngFor="let item of (keywordQuoteAmountType | async)">{{item}}</option>
-					</select>
+          <select class="form-control" id="filterQuoteAmountType">
+            <option value="{{ALL_STR_ID}}">(All)</option>
+            <option value="{{item}}" *ngFor="let item of (keywordQuoteAmountType | async)">{{item}}</option>
+          </select>
         </div>
         <div class="form-group col-md-2">
           <label for="filterQuoteTransactionType">Transaction Type</label>
           <select class="form-control" id="filterQuoteTransactionType">
-						<option value="{{ALL_STR_ID}}">(All)</option>
-						<option value="{{item}}" *ngFor="let item of (keywordQuoteTransactionType | async)">{{item}}</option>
+            <option value="{{ALL_STR_ID}}">(All)</option>
+            <option value="{{item}}" *ngFor="let item of (keywordQuoteTransactionType | async)">{{item}}</option>
           </select>
         </div>
 
@@ -49,7 +49,7 @@
             class="form-control btn btn-primary"
             id="filterBtn"
             (click)="search()">
-			  Search&nbsp;&nbsp;<i class="bi bi-search"></i>
+        Search&nbsp;&nbsp;<i class="bi bi-search"></i>
           </button>
         </div>
       </tr>
@@ -57,60 +57,69 @@
   </form>
 </div>
 
-<div>
-  <table class="table">
-    <thead class="thead-light">
-      <tr>
-        <th scope="col">Quote ID</th>
-        <th scope="col">BulkQuote ID</th>
-        <th scope="col">Transaction ID</th>
-        <th scope="col">Amount Type</th>
-        <th scope="col">Transaction Type</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of (quotes | async)">
-        <td>
-          <a routerLink="/quotes/{{ item.quoteId }}">{{ item.quoteId }}</a>
-        </td>
-        <td>{{ item.bulkQuoteId ? item.bulkQuoteId : "None" }}</td>
-        <td>{{ item.transactionId }}</td>
-        <td>{{ item.amountType }}</td>
-        <td>{{ item.transactionType?.scenario }}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+<ng-container *ngIf="(quotes | async)?.length==0 else listQuotes">
+  <div class="alert alert-warning" role="alert">
+    No quotes found.
+  </div>
+</ng-container>
 
-<!--pagination
-TODO: put in component
--->
-<hr>
-<nav aria-label="Page navigation"  *ngIf="paginateResult | async; let paginateObj">
-	<ul class="pagination justify-content-end">
-		<li class="page-item" [ngClass]="{'disabled' : paginateObj.prev == null}">
-			<a class="page-link" aria-label="Previous" (click)="search(paginateObj.prev ? paginateObj.prev-1 : 0)">
-				<span aria-hidden="true">&laquo;</span>
-				<span class="sr-only">Previous</span>
-			</a>
-		</li>
 
-		<ng-container *ngFor="let item of paginateObj.items">
-			<li class="page-item" *ngIf="item != null" [ngClass]="{'active' : item === paginateObj.current}">
-				<a class="page-link" (click)="search(item-1)" >{{item}}
-					<span class="sr-only" *ngIf="item === paginateObj.current">(current)</span>
-				</a>
-			</li>
-			<li class="page-item disabled" *ngIf="item == null">
-				<a class="page-link disabled" *ngIf="!item" >...</a>
-			</li>
-		</ng-container>
+<ng-template #listQuotes>
+  <div>
+    <table class="table">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">Quote ID</th>
+          <th scope="col">BulkQuote ID</th>
+          <th scope="col">Transaction ID</th>
+          <th scope="col">Amount Type</th>
+          <th scope="col">Transaction Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of (quotes | async)">
+          <td>
+            <a routerLink="/quotes/{{ item.quoteId }}">{{ item.quoteId }}</a>
+          </td>
+          <td>{{ item.bulkQuoteId ? item.bulkQuoteId : "None" }}</td>
+          <td>{{ item.transactionId }}</td>
+          <td>{{ item.amountType }}</td>
+          <td>{{ item.transactionType?.scenario }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-		<li class="page-item"  [ngClass]="{'disabled' : paginateObj.next == null}">
-			<a class="page-link" aria-label="Next" (click)="search(paginateObj.next ? paginateObj.next-1 : 0)">
-				<span aria-hidden="true">&raquo;</span>
-				<span class="sr-only">Next</span>
-			</a>
-		</li>
-	</ul>
-</nav>
+  <!--pagination
+  TODO: put in component
+  -->
+  <hr>
+  <nav aria-label="Page navigation"  *ngIf="paginateResult | async; let paginateObj">
+    <ul class="pagination justify-content-end">
+      <li class="page-item" [ngClass]="{'disabled' : paginateObj.prev == null}">
+        <a class="page-link" aria-label="Previous" (click)="search(paginateObj.prev ? paginateObj.prev-1 : 0)">
+          <span aria-hidden="true">&laquo;</span>
+          <span class="sr-only">Previous</span>
+        </a>
+      </li>
+
+      <ng-container *ngFor="let item of paginateObj.items">
+        <li class="page-item" *ngIf="item != null" [ngClass]="{'active' : item === paginateObj.current}">
+          <a class="page-link" (click)="search(item-1)" >{{item}}
+            <span class="sr-only" *ngIf="item === paginateObj.current">(current)</span>
+          </a>
+        </li>
+        <li class="page-item disabled" *ngIf="item == null">
+          <a class="page-link disabled" *ngIf="!item" >...</a>
+        </li>
+      </ng-container>
+
+      <li class="page-item"  [ngClass]="{'disabled' : paginateObj.next == null}">
+        <a class="page-link" aria-label="Next" (click)="search(paginateObj.next ? paginateObj.next-1 : 0)">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">Next</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</ng-template>

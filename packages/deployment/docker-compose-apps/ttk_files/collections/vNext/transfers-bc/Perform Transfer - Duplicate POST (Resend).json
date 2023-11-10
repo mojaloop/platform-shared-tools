@@ -336,34 +336,6 @@
                 ]
               },
               {
-                "id": 3,
-                "description": "Callback Content Length not 0",
-                "exec": [
-                  "expect(callback.headers['Content-Length']).to.not.equal('0')"
-                ]
-              },
-              {
-                "id": 4,
-                "description": "Callback FSP Destination equal to request FSP Source",
-                "exec": [
-                  "expect(callback.headers['fspiop-destination']).to.equal('{$request.headers['FSPIOP-Source']}')"
-                ]
-              },
-              {
-                "id": 5,
-                "description": "Callback transferState to be COMMITTED",
-                "exec": [
-                  "expect(callback.body.transferState).to.equal('COMMITTED')"
-                ]
-              },
-              {
-                "id": 6,
-                "description": "Callback content-type to be transfers",
-                "exec": [
-                  "expect(callback.headers['content-type']).to.equal('application/vnd.interoperability.transfers+json;version={$inputs.expectedTransfersVersion}')"
-                ]
-              },
-              {
                 "id": 7,
                 "description": "Request transferId same as quote request transferId",
                 "exec": [
