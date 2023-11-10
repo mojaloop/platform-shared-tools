@@ -16,6 +16,7 @@
 					required
 					aria-required="true"
 				>
+					<option value="">Choose DFSP</option>
 					<option
 						*ngFor="let participant of participants | async"
 						value="{{ participant.id }}"
@@ -76,6 +77,7 @@
 				required
 				aria-required="true"
 			>
+				<option value="">Choose Settlement ID</option>
 				<option
 					*ngFor="let matrixId of matrixIds | async"
 					value="{{ matrixId.id }}"
@@ -156,6 +158,10 @@
 				</th>
 			</tr>
 		</thead>
+
+		<div *ngIf="(reports | async)?.length === 0">
+			<p class="text-center my-5">No data available</p>
+		</div>
 
 		<tbody>
 			<tr *ngFor="let report of reports | async">
