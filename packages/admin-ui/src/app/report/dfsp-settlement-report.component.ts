@@ -12,7 +12,7 @@ import { ParticipantsService } from "../_services_and_types/participants.service
 import { ReportService } from "../_services_and_types/report.service";
 import type { MatrixId, Report } from "../_services_and_types/report_types";
 
-interface SettlementInfo {
+export interface SettlementInfo {
 	settlementId: string;
 	settlementCreatedDate: string;
 	dfspId: string;
@@ -148,7 +148,7 @@ export class DFSPSettlementReport implements OnInit {
 			: netPosition;
 	}
 
-	searchSettlementId() {
+	searchSettlementIds() {
 		if (!this.dfspFilterForm.valid) {
 			this._messageService.addError("Fill all the required fields!");
 			return;
