@@ -62,23 +62,35 @@ function k8s_already_installed {
 }
 
 function set_linux_os_distro {
-   
-    LINUX_VERSION="Unknown"
     if [ -x "/usr/bin/lsb_release" ]; then
         LINUX_OS=`lsb_release --d | perl -ne 'print  if s/^.*Ubuntu.*(\d+).(\d+).*$/Ubuntu/' `
         LINUX_VERSION=`/usr/bin/lsb_release --d | perl -ne 'print $&  if m/(\d+)/' `
     else
         LINUX_OS="Untested"
     fi 
-    printf "==> Linux OS is [%s] " "$LINUX_OS"
+    printf "==> Linux OS is [%s] version [ %s ] " "$LINUX_OS" "$LINUX_VERSION"
+
 }
 
 function check_os_ok {
     printf "==> checking OS and kubernetes distro is tested with mini-loop scripts\n"
     set_linux_os_distro
-
     if [[ ! $LINUX_OS == "Ubuntu" ]]; then
         printf "** Error , mini-loop $MINILOOP_VERSION is only tested with Ubuntu OS at this time   **\n"
+        exit 1
+    fi 
+    local os_version_ok=false
+    for i in "${UBUNTU_OK_VERSIONS_LIST[@]}"; do
+        if  [[ "$LINUX_VERSION" == "$i" ]]; then
+            os_version_ok=true
+            break
+        fi  
+    done
+    if [[ ! "$os_version_ok" == true ]]; then 
+        printf "** Error , mini-loop $MINILOOP_VERSION is not tested with Ubuntu OS version [ %s ] at this time \n" "$LINUX_VERSION"
+        printf "           current tested Ubuntu versions are :-  " 
+        printf " [ %s ] " "${UBUNTU_OK_VERSIONS_LIST[@]}"
+        printf "   **\n" 
         exit 1
     fi 
 } 
@@ -438,18 +450,17 @@ SCRIPTS_DIR="$( cd $(dirname "$0")/../scripts ; pwd )"
 DEFAULT_K8S_DISTRO="k3s"   # default to microk8s as this is what is in the mojaloop linux deploy docs.
 K8S_VERSION="" 
 MINILOOP_VERSION="vNext"
-
 HELM_VERSION="3.12.0"  # Feb 2023 
-OS_VERSIONS_LIST=( 20 22 ) 
-K8S_CURRENT_RELEASE_LIST=( "1.26" "1.27" )
+K8S_CURRENT_RELEASE_LIST=( "1.27" "1.28" )
 CURRENT_RELEASE="false"
 k8s_user_home=""
 k8s_arch=`uname -p`  # what arch
 # Set the minimum amount of RAM in GB
 MIN_RAM=4
 MIN_FREE_SPACE=30
+LINUX_VERSION=""
 LINUX_OS_LIST=( "Ubuntu" )
-UBUNTU_OK_VERSIONS_LIST=(20 22)
+UBUNTU_OK_VERSIONS_LIST=( "22" ) 
 
 # ensure we are running as root 
 if [ "$EUID" -ne 0 ]

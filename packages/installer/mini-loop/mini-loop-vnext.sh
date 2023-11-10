@@ -45,11 +45,11 @@ Options:
 MINI_LOOP_SCRIPTS_DIR="$( cd $(dirname "$0") ; pwd )"
 #echo "DBG> MINI_LOOP_SCRIPTS_DIR X = $MINI_LOOP_SCRIPTS_DIR"
 REPO_BASE_DIR="$( cd $(dirname "$MINI_LOOP_SCRIPTS_DIR")/../.. ; pwd )"
-echo "DBG> REPO_BASE_DIR = $REPO_BASE_DIR"
+#echo "DBG> REPO_BASE_DIR = $REPO_BASE_DIR"
 COMMON_SCRIPTS_DIR=$REPO_BASE_DIR/packages/installer/scripts
 #echo "DBG> COMMON SCRIPTS_DIR X = $COMMON_SCRIPTS_DIR"
 MANIFESTS_DIR=$REPO_BASE_DIR/packages/installer/manifests
-echo "DBG> MANIFESTS_DIR = $MANIFESTS_DIR"
+#echo "DBG> MANIFESTS_DIR = $MANIFESTS_DIR"
 ETC_DIR=$REPO_BASE_DIR/packages/installer/etc
 MONGO_IMPORT_DIR=$REPO_BASE_DIR/packages/deployment/docker-compose-apps/ttk_files/mongodb
 #echo "DBG> ETC_DIR X = $ETC_DIR"
@@ -59,9 +59,6 @@ ERRFILE="/tmp/miniloop-install.err"
 
 # read in the functions and common global vars 
 source $REPO_BASE_DIR/packages/installer/scripts/common.sh 
-
-
-
 record_memory_use "at_start"
 
 # Process command line options as required
@@ -91,7 +88,6 @@ while getopts "d:m:t:l:o:hH" OPTION ; do
     esac
 done
 
-
 print_start_banner "mini-loop"
 check_not_inside_docker_container
 check_repo_owner_not_root $REPO_BASE_DIR
@@ -106,9 +102,6 @@ set_logfiles
 set_and_create_namespace 
 set_mojaloop_timeout
 printf "\n"
-
-# restore_demo_data $MONGO_IMPORT_DIR $REPO_BASE_DIR/packages/deployment/docker-compose-apps/ttk_files
-# exit 1
 
 if  [[ "$mode" == "update_images" ]]; then
   print "<<<< for development only >>>>>\n"
