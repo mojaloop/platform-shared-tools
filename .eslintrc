@@ -27,9 +27,7 @@
         ]
     },
     "parserOptions": {
-        "sourceType": "module",
-        // Allows for the use of imports
-        "project": "./tsconfig.json"
+        "sourceType": "module"
     },
     "ignorePatterns": [
         "**/*.d.ts",
