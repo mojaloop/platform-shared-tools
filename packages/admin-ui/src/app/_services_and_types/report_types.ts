@@ -1,3 +1,14 @@
+export interface SettlementInitiationReport {
+	matrixId: string;
+	participantId: string;
+	externalBankAccountId: string;
+	externalBankAccountName: string;
+	participantCurrencyCode: string;
+	participantDebitBalance: string;
+	participantCreditBalance: string;
+	settlementCreatedDate: number;
+}
+
 export interface MatrixId {
 	id: string;
 }

@@ -153,7 +153,7 @@ export class DFSPSettlementDetailReport implements OnInit {
 						this.settlementInfo = null;
 					}
 
-					const detailReport = result.map((detailReport) => ({
+					const detailReports = result.map((detailReport) => ({
 						...detailReport,
 						transactionDate: moment(
 							detailReport.transactionDate
@@ -168,7 +168,7 @@ export class DFSPSettlementDetailReport implements OnInit {
 								: "-",
 						currency: detailReport.Currency,
 					}));
-					this.detailReports.next(detailReport);
+					this.detailReports.next(detailReports);
 				},
 				(error) => {
 					if (error && error instanceof UnauthorizedError) {

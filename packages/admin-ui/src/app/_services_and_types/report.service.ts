@@ -3,7 +3,12 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 
 import { UnauthorizedError } from "./errors";
-import type { DetailReport, MatrixId, Report } from "./report_types";
+import type {
+	DetailReport,
+	MatrixId,
+	Report,
+	SettlementInitiationReport,
+} from "./report_types";
 
 const SVC_BASEURL = "/_reporting";
 
@@ -12,6 +17,38 @@ const SVC_BASEURL = "/_reporting";
 })
 export class ReportService {
 	constructor(private _http: HttpClient) {}
+
+	getAllSettlementInitiationReportsByMatrixId(
+		matrixId: string
+	): Observable<SettlementInitiationReport[]> {
+		return new Observable<SettlementInitiationReport[]>((subscriber) => {
+			this._http
+				.get<SettlementInitiationReport[]>(
+					SVC_BASEURL + `/settlementInitiationByMatrixId/${matrixId}`
+				)
+				.subscribe(
+					(result: SettlementInitiationReport[]) => {
+						subscriber.next(result);
+						return subscriber.complete();
+					},
+					(error) => {
+						if (error && error.status === 403) {
+							console.warn(
+								"UnauthorizedError received on getAllParticipants"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
+						} else {
+							console.error(error);
+							subscriber.error(error.error?.msg);
+						}
+
+						return subscriber.complete();
+					}
+				);
+		});
+	}
 
 	getAllSettlementMatrixIds(
 		participantId: string,
