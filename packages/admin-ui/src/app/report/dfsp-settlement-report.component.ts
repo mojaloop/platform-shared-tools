@@ -42,6 +42,7 @@ export class DFSPSettlementReport implements OnInit {
 	showResults: boolean = false;
 	chosenDfspId: string = "";
 	settlementInfo: SettlementInfo | null = null;
+	aggregatedNetPositions: string = "0.00";
 
 	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<
 		IParticipant[]
@@ -162,6 +163,17 @@ export class DFSPSettlementReport implements OnInit {
 							report.totalAmountReceived - report.totalAmountSent
 						),
 					}));
+
+					const aggregatedNetPositions = reports.reduce(
+						(acc, report) =>
+							acc +
+							(Number(report.totalAmountReceived) -
+								Number(report.totalAmountSent)),
+						0
+					);
+					this.aggregatedNetPositions = formatNumber(
+						aggregatedNetPositions
+					);
 
 					this.reports.next(reports);
 				},
