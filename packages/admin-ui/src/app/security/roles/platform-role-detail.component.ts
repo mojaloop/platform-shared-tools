@@ -12,10 +12,14 @@ import {MessageService} from "src/app/_services_and_types/message.service";
 	templateUrl: './platform-role-detail.component.html'
 })
 export class PlatformRoleDetailComponent implements OnInit {
+	readonly ALL_STR_ID = "(All)";
 	private readonly _roleId: string | null;
 	public role: BehaviorSubject<PlatformRole | null> = new BehaviorSubject<PlatformRole | null>(null);
 	public includedPrivileges: BehaviorSubject<PrivilegeWithOwnerAppInfo[]> = new BehaviorSubject<PrivilegeWithOwnerAppInfo[]>([]);
 	public excludedPrivileges: BehaviorSubject<PrivilegeWithOwnerAppInfo[]> = new BehaviorSubject<PrivilegeWithOwnerAppInfo[]>([]);
+
+	public boundedContextNames: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+	public applicationNames: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
 	@ViewChild("addPrivilegesModal") // Get a reference to the addRolesModal
 	addPrivilegesModal!: NgbModal;
@@ -26,6 +30,8 @@ export class PlatformRoleDetailComponent implements OnInit {
 
 	addPrivsSelPrefix = "addPrivs_";
 	addPrivsSelectedIds: string[] = [];
+
+	privs: PrivilegeWithOwnerAppInfo[] = [];
 
 	constructor(
 		private _authorizationSvc: AuthorizationService,
@@ -50,34 +56,84 @@ export class PlatformRoleDetailComponent implements OnInit {
 			if(!role) return;
 
 			this._fetchPrivileges(role);
-
 		});
 	}
 
 	private _fetchPrivileges(role:PlatformRole){
-		const rolePrivs: PrivilegeWithOwnerAppInfo[] = [];
-
 		this._authorizationSvc.getAllPrivileges().subscribe((privsList: PrivilegeWithOwnerAppInfo[]) => {
 			if(!privsList || privsList.length<=0) {
 				this.includedPrivileges.next([]);
 				this.excludedPrivileges.next([]);
+				this.boundedContextNames.next([]);
+				this.applicationNames.next([]);
 				return;
 			}
 
-			const included:PrivilegeWithOwnerAppInfo[] = [];
-			const excluded:PrivilegeWithOwnerAppInfo[] = [];
-
-			privsList.forEach(priv => {
-				if(role.privileges.includes(priv.id)){
-					included.push(priv);
-				}else{
-					excluded.push(priv);
-				}
-			});
-
-			this.includedPrivileges.next(included);
-			this.excludedPrivileges.next(excluded);
+			this.privs = privsList;
+			this._filterPrivs();
 		});
+	}
+
+	private _filterPrivs(){
+		const role = this.role.getValue();
+		if(!role) return;
+
+		let included:PrivilegeWithOwnerAppInfo[] = [];
+		let excluded:PrivilegeWithOwnerAppInfo[] = [];
+
+		const boundedContexts:string[] = [];
+		const applications:string[] = [];
+
+		this.privs.forEach(priv => {
+			if(role.privileges.includes(priv.id)){
+				included.push(priv);
+			}else{
+				excluded.push(priv);
+			}
+
+			if(!boundedContexts.includes(priv.boundedContextName)) boundedContexts.push(priv.boundedContextName);
+			if(!applications.includes(priv.applicationName)) applications.push(priv.applicationName);
+		});
+
+		// filter out included
+		const filterCurrentBcNamesStr = (document.getElementById("filterIncludedBcNames") as HTMLSelectElement)?.value || this.ALL_STR_ID;
+		const filterCurrentAppNamesStr = (document.getElementById("filterIncludedAppNames") as HTMLSelectElement)?.value || this.ALL_STR_ID;
+		if(filterCurrentBcNamesStr !== this.ALL_STR_ID || filterCurrentAppNamesStr !== this.ALL_STR_ID){
+			included = included.filter(item =>
+				(filterCurrentBcNamesStr===this.ALL_STR_ID || item.boundedContextName===filterCurrentBcNamesStr) &&
+				(filterCurrentAppNamesStr===this.ALL_STR_ID || item.applicationName===filterCurrentAppNamesStr)
+			);
+		}
+		// filter out excluded (these might not exist in the DOM, need a nullable with default
+		const filterExcludedBcNamesStr = (document.getElementById("filterExcludedBcNames") as HTMLSelectElement)?.value || this.ALL_STR_ID;
+		const filterExcludedAppNamesStr = (document.getElementById("filterExcludedAppNames") as HTMLSelectElement)?.value || this.ALL_STR_ID;
+		if(filterExcludedBcNamesStr !== this.ALL_STR_ID || filterExcludedAppNamesStr !== this.ALL_STR_ID){
+			excluded = excluded.filter(item =>
+				(filterExcludedBcNamesStr===this.ALL_STR_ID || item.boundedContextName===filterExcludedBcNamesStr) &&
+				(filterExcludedAppNamesStr===this.ALL_STR_ID || item.applicationName===filterExcludedAppNamesStr)
+			);
+		}
+
+		// Sort alphabetically
+		included.sort((a,b)=>
+			a.boundedContextName.localeCompare(b.boundedContextName) ||
+			a.applicationName.localeCompare(b.applicationName) ||
+			a.id.localeCompare(b.id)
+		);
+
+		excluded.sort((a,b)=>
+			a.boundedContextName.localeCompare(b.boundedContextName) ||
+			a.applicationName.localeCompare(b.applicationName) ||
+			a.id.localeCompare(b.id)
+		);
+
+		boundedContexts.sort((a,b)=>a.localeCompare(b));
+		applications.sort((a,b)=>a.localeCompare(b));
+
+		this.includedPrivileges.next(included);
+		this.excludedPrivileges.next(excluded);
+		this.boundedContextNames.next(boundedContexts);
+		this.applicationNames.next(applications);
 	}
 
 	async copyIdToClipboard() {
@@ -160,6 +216,10 @@ export class PlatformRoleDetailComponent implements OnInit {
 			if (this.addPrivsSelectedIds.includes(privId))
 				this.addPrivsSelectedIds = this.addPrivsSelectedIds.filter(item => item != privId);
 		}
+	}
+
+	filterChanged() {
+		this._filterPrivs();
 	}
 
 }

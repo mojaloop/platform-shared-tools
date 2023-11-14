@@ -9,40 +9,6 @@
       },
       "requests": [
         {
-          "id": 1,
-          "meta": {
-            "info": "Add Participant to ALS"
-          },
-          "description": "Add Participant to ALS",
-          "apiVersion": {
-            "minorVersion": 1,
-            "majorVersion": 1,
-            "type": "fspiop",
-            "asynchronous": true
-          },
-          "operationPath": "/participants/{Type}/{ID}/{SubId}",
-          "path": "/participants/{$inputs.toIdType}/{$inputs.toIdValue}/31",
-          "method": "post",
-          "params": {
-            "Type": "{$inputs.toIdType}",
-            "ID": "{$inputs.toIdValue}",
-            "SubId": "31"
-          },
-          "headers": {
-            "FSPIOP-Source": "{$inputs.toFspId}",
-            "Accept": "{$inputs.acceptParticipants}",
-            "Content-Type": "{$inputs.contentTypeParticipants}",
-            "Date": "{$function.generic.curDate}",
-            "Authorization": "{$inputs.PAYEE_BEARER_TOKEN}"
-          },
-          "body": {
-            "fspId": "{$inputs.toFspId}",
-            "currency": "{$inputs.currency}"
-          },
-          "url": "{$inputs.HOST_ACCOUNT_LOOKUP_SERVICE}",
-          "ignoreCallbacks": true
-        },
-        {
           "id": 3,
           "meta": {
             "info": "Get party information"

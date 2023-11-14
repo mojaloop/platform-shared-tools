@@ -11,7 +11,7 @@ import {MessagesComponent} from './messages/messages.component';
 import {HomeComponent} from './home/home.component';
 
 import {CanLoadIsLoggedIn} from "src/app/_pipes_and_guards/canload_guard";
-import {SecurityPrivilegesComponent} from 'src/app/security/main/security-privileges.component';
+import {SecurityPrivilegesComponent} from 'src/app/security/privileges/security-privileges.component';
 import {PlatformRoleDetailComponent} from './security/roles/platform-role-detail.component';
 import {ParticipantsComponent} from './participants/participants.component';
 import {MyAccountComponent} from './my-account/my-account.component';
@@ -43,6 +43,7 @@ import {TransferDetailComponent} from './transfers/transfer-detail.component';
 import {TransferCreateComponent} from './transfers/transfer-create.component';
 import {BulkTransfersComponent} from './bulk-transfers/bulk-transfers.component';
 import {BulkTransferDetailComponent} from './bulk-transfers/bulk-transfer-detail.component';
+import {BulkTransferCreateComponent} from "./bulk-transfers/bulk-transfer-create.component";
 import {AccountLookupAssociationsListComponent} from './account-lookup/associations-list.component';
 import {SettlementsBatchesComponent} from 'src/app/settlements/settlements.batches.component';
 import {SettlementsMatrixDetailComponent} from "src/app/settlements/settlements.matrix-detail.component";
@@ -95,6 +96,7 @@ import {PlatformRoleCreateComponent} from "./security/roles/platform-role-create
 		TransferCreateComponent,
 		BulkTransfersComponent,
 		BulkTransferDetailComponent,
+		BulkTransferCreateComponent,
 		SettlementsBatchesComponent,
 		SettlementsMatrixDetailComponent,
 		SettlementsMatricesComponent,

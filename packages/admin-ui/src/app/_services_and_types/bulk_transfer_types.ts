@@ -63,7 +63,7 @@ export declare type BulkTransfer = {
             }[]
         } | null;
     }[];
-    expiration: number;
+    expiration: number | null;
     extensionList: {
         extension: {
             key: string;
@@ -73,5 +73,5 @@ export declare type BulkTransfer = {
     transfersPreparedProcessedIds: string[]
     transfersNotProcessedIds: string[];
     transfersFulfiledProcessedIds: string[];
-    status: BulkTransferState;
+    status: BulkTransferState | null;
 }

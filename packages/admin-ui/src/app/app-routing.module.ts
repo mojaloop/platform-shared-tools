@@ -3,7 +3,7 @@ import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
 import {HomeComponent} from "src/app/home/home.component";
 import {CanLoadIsLoggedIn} from "src/app/_pipes_and_guards/canload_guard";
-import {SecurityPrivilegesComponent} from "src/app/security/main/security-privileges.component";
+import {SecurityPrivilegesComponent} from "src/app/security/privileges/security-privileges.component";
 import {PlatformRoleDetailComponent} from "src/app/security/roles/platform-role-detail.component";
 import {ParticipantsComponent} from "src/app/participants/participants.component";
 import {MyAccountComponent} from "src/app/my-account/my-account.component";
@@ -35,6 +35,7 @@ import {TransferDetailComponent} from './transfers/transfer-detail.component';
 import {TransferCreateComponent} from './transfers/transfer-create.component';
 import {BulkTransfersComponent} from "src/app/bulk-transfers/bulk-transfers.component";
 import {BulkTransferDetailComponent} from "./bulk-transfers/bulk-transfer-detail.component";
+import {BulkTransferCreateComponent} from "./bulk-transfers/bulk-transfer-create.component";
 import {SettlementsMatrixDetailComponent} from "src/app/settlements/settlements.matrix-detail.component";
 import {SettlementsMatricesComponent} from "src/app/settlements/settlements.matrices.component";
 import {SettlementsTransfersComponent} from "src/app/settlements/settlements.transfers.component";
@@ -117,6 +118,7 @@ const routes: Routes = [
 	{path: "transfers/new", component: TransferCreateComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "transfers/:id", component: TransferDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "bulk-transfers", component: BulkTransfersComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "bulk-transfers/new", component: BulkTransferCreateComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "bulk-transfers/:id", component: BulkTransferDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "account-lookup/oracles/:id", component: QuoteDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{

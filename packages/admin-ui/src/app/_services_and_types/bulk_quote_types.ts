@@ -113,5 +113,5 @@ export declare type BulkQuote = {
 		}[]
 	} | null;
 	quotesNotProcessedIds: string[];
-	status?: string
+	status?: string;
 }
