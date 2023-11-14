@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { BehaviorSubject, Subscription } from "rxjs";
 import moment from "moment";
+import * as XLSX from "xlsx";
 import {
 	HUB_PARTICIPANT_ID,
 	IParticipant,
@@ -41,6 +42,7 @@ export class DFSPSettlementReport implements OnInit {
 	showSettlementIdForm: boolean = false;
 	showResults: boolean = false;
 	chosenDfspId: string = "";
+	chosenSettlementId: string = "";
 	settlementInfo: SettlementInfo | null = null;
 	aggregatedNetPositions: string = "0.00";
 
@@ -218,6 +220,49 @@ export class DFSPSettlementReport implements OnInit {
 		const settlementId = this.settlementIdForm.controls.settlementId.value;
 
 		this.getReports(this.chosenDfspId, settlementId);
+		this.chosenSettlementId = settlementId;
 		this.showResults = true;
+	}
+
+	downloadReport() {
+		const data: (string | number)[][] = [
+			[
+				"DFSP ID",
+				"DFSP Name",
+				"Sent to FSP Volume",
+				"Sent to FSP Value",
+				"Received from FSP Volume",
+				"Received from FSP Value",
+				"Total Transaction Volume",
+				"Total Value of All Transactions",
+				"Currency",
+				"Net Position vs. Each DFSP",
+			],
+		];
+		this.reports.value.forEach((report) => {
+			data.push([
+				report.relateParticipantId,
+				report.relateParticipantName,
+				report.totalSentCount,
+				report.totalAmountSent,
+				report.totalReceivedCount,
+				report.totalAmountReceived,
+				report.totalTransactionCount,
+				report.totalAmount,
+				report.currency,
+				report.netPosition,
+			]);
+		});
+		data.push(["Aggregated Net Positions", this.aggregatedNetPositions]);
+
+		// Create a new workbook
+		const wb = XLSX.utils.book_new();
+
+		// Add a worksheet to the workbook
+		const ws = XLSX.utils.aoa_to_sheet(data);
+		XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+		// Save the workbook as an Excel file
+		XLSX.writeFile(wb, `report-${this.chosenSettlementId}.xlsx`);
 	}
 }

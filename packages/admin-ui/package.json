@@ -26,12 +26,12 @@
     "@angular/platform-browser": "~12.2.6",
     "@angular/platform-browser-dynamic": "~12.2.6",
     "@angular/router": "~12.2.6",
-    "@mojaloop/logging-bc-public-types-lib": "~0.1.19",
-    "@mojaloop/platform-configuration-bc-public-types-lib": "~0.3.3",
     "@mojaloop/auditing-bc-public-types-lib": "~0.0.15",
+    "@mojaloop/logging-bc-public-types-lib": "~0.1.19",
+    "@mojaloop/participant-bc-public-types-lib": "~0.0.19",
+    "@mojaloop/platform-configuration-bc-public-types-lib": "~0.3.3",
     "@mojaloop/security-bc-public-types-lib": "~0.3.2",
     "@mojaloop/settlements-bc-public-types-lib": "~0.2.2",
-    "@mojaloop/participant-bc-public-types-lib": "~0.0.19",
     "@ng-bootstrap/ng-bootstrap": "^10.0.0",
     "bootstrap": "^4.5.3",
     "buffer": "^6.0.3",
@@ -42,6 +42,7 @@
     "semver": "^7.3.7",
     "tslib": "^2.3.0",
     "uuid": "^8.3.2",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {

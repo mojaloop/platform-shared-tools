@@ -102,7 +102,9 @@
 				{{ settlementInfo?.dfspName || "-" }}
 			</h3>
 
-			<button class="btn btn-primary">Export</button>
+			<button class="btn btn-primary" (click)="downloadReport()">
+				Export
+			</button>
 		</div>
 
 		<div class="d-flex">
@@ -153,10 +155,10 @@
 				<th scope="col" style="min-width: 160px">
 					Total Value of All Transactions
 				</th>
+				<th scope="col" style="min-width: 160px">Currency</th>
 				<th scope="col" style="min-width: 160px">
 					Net Position vs. Each DFSP
 				</th>
-				<th scope="col" style="min-width: 160px">Currency</th>
 			</tr>
 		</thead>
 
@@ -184,8 +186,8 @@
 					{{ report.totalTransactionCount }}
 				</td>
 				<td style="min-width: 160px">{{ report.totalAmount }}</td>
-				<td style="min-width: 160px">{{ report.netPosition }}</td>
 				<td style="min-width: 160px">{{ report.currency }}</td>
+				<td style="min-width: 160px">{{ report.netPosition }}</td>
 			</tr>
 		</tbody>
 	</table>

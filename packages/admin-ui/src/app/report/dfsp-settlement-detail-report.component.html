@@ -102,7 +102,9 @@
 				{{ settlementInfo?.dfspName || "-" }}
 			</h3>
 
-			<button class="btn btn-primary">Export</button>
+			<button class="btn btn-primary" (click)="downloadDetailReport()">
+				Export
+			</button>
 		</div>
 
 		<div class="d-flex">

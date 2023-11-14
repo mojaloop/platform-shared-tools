@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { BehaviorSubject, Subscription } from "rxjs";
 import moment from "moment";
+import * as XLSX from "xlsx";
 import {
 	HUB_PARTICIPANT_ID,
 	IParticipant,
@@ -45,6 +46,7 @@ export class DFSPSettlementDetailReport implements OnInit {
 	showSettlementIdForm: boolean = false;
 	showResults: boolean = false;
 	chosenDfspId: string = "";
+	chosenSettlementId: string = "";
 	settlementInfo: SettlementInfo | null = null;
 
 	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<
@@ -204,6 +206,58 @@ export class DFSPSettlementDetailReport implements OnInit {
 		const settlementId = this.settlementIdForm.controls.settlementId.value;
 
 		this.getDetailReports(this.chosenDfspId, settlementId);
+		this.chosenSettlementId = settlementId;
 		this.showResults = true;
+	}
+
+	downloadDetailReport() {
+		const data = [
+			[
+				"Sender DFSP ID",
+				"Sender DFSP Name",
+				"Receiver DFSP ID",
+				"Receiver DFSP Name",
+				"Transfer ID",
+				"Tx Type",
+				"Transaction Date",
+				"Sender ID Type",
+				"Sender ID",
+				"Receiver ID Type",
+				"Receiver ID",
+				"Received Amount",
+				"Sent Amount",
+				"Fee",
+				"Currency",
+			],
+		];
+		this.detailReports.value.forEach((detailReport) => {
+			data.push([
+				detailReport.payerFspId,
+				detailReport.payerParticipantName,
+				detailReport.payeeFspId,
+				detailReport.payeeParticipantName,
+				detailReport.transferId,
+				detailReport.transactionType,
+				detailReport.transactionDate,
+				detailReport.payerIdType,
+				detailReport.payerIdentifier,
+				detailReport.payeeIdType,
+				detailReport.payeeIdentifier,
+				detailReport.receivedAmount,
+				detailReport.sentAmount,
+				"-",
+				detailReport.currency,
+			]);
+		});
+
+		// Create a new workbook
+		const wb = XLSX.utils.book_new();
+
+		// Add a worksheet to the workbook
+		const ws = XLSX.utils.aoa_to_sheet(data);
+		XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+		// Save the workbook as an Excel file
+		XLSX.writeFile(wb, `detail-report-${this.chosenSettlementId}.xlsx`);
 	}
 }
