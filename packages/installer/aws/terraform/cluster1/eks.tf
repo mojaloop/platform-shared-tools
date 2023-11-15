@@ -1,6 +1,6 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "19.16.0"
+  version = "19.20.0"
 
   cluster_name    = var.cluster_name
   cluster_version = var.k8s_version
@@ -41,9 +41,9 @@ module "eks" {
       min_size     = 1
       max_size     = 3
 
-      labels = {
-        role = "infra"
-      }
+      # labels = {
+      #   role = "infra"
+      # }
 
       instance_types = ["t3.xlarge"]
       capacity_type  = "ON_DEMAND"
@@ -53,10 +53,9 @@ module "eks" {
       desired_size = 1
       min_size     = 1
       max_size     = 3
-
-      labels = {
-        role = "spot"
-      }
+      # labels = {
+      #   role = "spot"
+      # }
 
       taints = [{
         key    = "market"
@@ -80,7 +79,7 @@ data "aws_iam_policy" "ebs_csi_policy" {
 
 module "irsa-ebs-csi" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version = "4.7.0"
+  version = "5.31.0"
 
   create_role                   = true
   role_name                     = "AmazonEKSTFEBSCSIRole-${module.eks.cluster_name}"
@@ -92,7 +91,7 @@ module "irsa-ebs-csi" {
 resource "aws_eks_addon" "ebs-csi" {
   cluster_name             = module.eks.cluster_name
   addon_name               = "aws-ebs-csi-driver"
-  addon_version            = "v1.19.0-eksbuild.2"
+  addon_version            = "v1.24.1-eksbuild.1"
   service_account_role_arn = module.irsa-ebs-csi.iam_role_arn
   tags = {
     "eks_addon" = "ebs-csi"

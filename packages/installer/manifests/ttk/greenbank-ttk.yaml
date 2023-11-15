@@ -347,7 +347,7 @@ spec:
       initContainers:
       containers:
       - name: ml-greenbank-frontend
-        image: mojaloop/ml-testing-toolkit-ui:v15.0.0
+        image: mojaloop/ml-testing-toolkit-ui:v17.0.0
         imagePullPolicy: IfNotPresent
         command: ["sh", "/usr/share/nginx/start.sh"]
         ports:
@@ -390,7 +390,7 @@ spec:
       initContainers:
       containers:
       - name: ml-greenbank-backend
-        image: mojaloop/ml-testing-toolkit:v15.0.0
+        image: mojaloop/ml-testing-toolkit:v17.0.0
         imagePullPolicy: IfNotPresent
         securityContext:
           runAsUser: 1001

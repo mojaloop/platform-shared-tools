@@ -56,22 +56,30 @@ function configure_kubectl {
 }
 
 function deploy_nginx_configure_nlb {
-  printf "==> deploy nginx with meta-data set to provision load balancer  " 
-  nginx_exists=`helm ls -a --namespace $NGINX_NAMESPACE  | grep "nginx" | awk '{print $1}' `
-  if [ ! -z $nginx_exists ] && [ "$nginx_exists" == "nginx" ]; then 
-    printf "    [ nginx already installed .. skipping]  \n"
-  else 
-    helm install nginx ingress-nginx/ingress-nginx \
-      --set controller.service.type=LoadBalancer \
-      --set controller.ingressClassResource.default=true \
-      --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type"="nlb" > /dev/null 2>&1 
-    if [[ $? -eq 0 ]]; then 
-      printf "[ok]\n"
-    else 
-      printf "\n    *** warning   : some error occurred while deploying nginx \n"
-    fi 
-  fi
-}
+  local nginx_yaml_dir="$1"
+  nginx_secret_yaml="$nginx_yaml_dir/nginx-secret.yaml"
+  nginx_deploy_yaml="$nginx_yaml_dir/nginx-deploy.yaml" 
+  echo "kubectl apply -f $nginx_secret_yaml > /dev/null 2>&1" 
+  echo "kubectl apply -f $nginx_deploy_yaml > /dev/null 2>&1" 
+} 
+
+# function deploy_nginx_configure_nlb {
+#   printf "==> deploy nginx with meta-data set to provision load balancer  " 
+#   nginx_exists=`helm ls -a --namespace $NGINX_NAMESPACE  | grep "nginx" | awk '{print $1}' `
+#   if [ ! -z $nginx_exists ] && [ "$nginx_exists" == "nginx" ]; then 
+#     printf "    [ nginx already installed .. skipping]  \n"
+#   else 
+#     helm install nginx ingress-nginx/ingress-nginx \
+#       --set controller.service.type=LoadBalancer \
+#       --set controller.ingressClassResource.default=true \
+#       --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type"="nlb" > /dev/null 2>&1 
+#     if [[ $? -eq 0 ]]; then 
+#       printf "[ok]\n"
+#     else 
+#       printf "\n    *** warning   : some error occurred while deploying nginx \n"
+#     fi 
+#   fi
+# }
 
 function add_helm_repos { 
     printf "==> add the helm repos required to install and run Mojaloop vnext-alpha \n" 
@@ -147,14 +155,24 @@ Options:
 # MAIN
 ################################################################################
 
-BASE_DIR=$( cd $(dirname "$0")/../.. ; pwd )
+#BASE_DIR=$( cd $(dirname "$0")/../.. ; pwd )
+
+EKS_SCRIPTS_DIR="$( cd $(dirname "$0") ; pwd )"
+echo "EKS_SCRIPTS_DIR = $EKS_SCRIPTS_DIR"
+REPO_BASE_DIR="$( cd $(dirname "$MINI_LOOP_SCRIPTS_DIR")/../../.. ; pwd )"
+echo "REPOSITORY_BASE_DIR = $REPO_BASE_DIR"
+MANIFESTS_DIR=$REPO_BASE_DIR/packages/installer/manifests
+echo "MANIFESTS_DIR = $MANIFESTS_DIR"
+NGINX_YAML_DEST_DIR=$MANIFESTS_DIR/infra/nginx/eks
+echo "NGINX_YAML_DEST_DIR = $NGINX_YAML_DEST_DIR"
+
 # RUN_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # the directory that this script is run from 
 # SCRIPTS_DIR="$( cd $(dirname "$0")/../scripts ; pwd )"
 
 TERRAFORM_RUN_DIR="$TERRAFORM_CLUSTER_DIR"  # TERRFORM_CLUSTER_DIR should already be set in the environment of the container
 CLUSTER_NAME=`grep cluster_name $TERRAFORM_RUN_DIR/terraform.tfvars | cut -d "\"" -f2`
 CLUSTER_EXISTS=""
-NGINX_NAMESPACE="default" 
+#NGINX_NAMESPACE="default" 
 
 # Check arguments
 if [ $# -lt 1 ] ; then
@@ -178,11 +196,16 @@ while getopts "m:hH" OPTION ; do
     esac
 done
 
+#deploy_nginx_configure_nlb $NGINX_YAML_DEST_DIR
+
+
 printf "\n\n*********************************************************************************\n"
 printf "            -- AWS EKS managed kubernetes cluster -- \n"
 printf "  utilities for deploying kubernetes in preparation for Mojaloop deployment   \n"
 printf "************************* << start >> *******************************************\n\n"
 cd $TERRAFORM_RUN_DIR   
+currdir=`pwd`
+printf "Current Directory is [ %s ] \n" "$currdir"
 verify_credentials
 
 if [[ "$mode" == "create" ]]  ; then
@@ -192,7 +215,7 @@ if [[ "$mode" == "create" ]]  ; then
     create_cluster    # run terraform 
     configure_kubectl # enable kubectl access to the cluster, and test it works 
     add_helm_repos
-    deploy_nginx_configure_nlb 
+    deploy_nginx_configure_nlb $NGINX_YAML_DEST_DIR
     print_end_message 
 elif [[ "$mode" == "delete" ]]  ; then
     printf "Deleting Cluster [%s] in directory [%s] ... \n" $CLUSTER_NAME $TERRAFORM_RUN_DIR 

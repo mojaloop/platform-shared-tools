@@ -103,6 +103,10 @@ set_and_create_namespace
 set_mojaloop_timeout
 printf "\n"
 
+# restore_demo_data $MONGO_IMPORT_DIR $REPO_BASE_DIR/packages/deployment/docker-compose-apps/ttk_files
+# exit 1
+
+
 if  [[ "$mode" == "update_images" ]]; then
   print "<<<< for development only >>>>>\n"
   update_k8s_images_from_docker_files 

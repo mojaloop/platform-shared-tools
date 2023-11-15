@@ -23,7 +23,8 @@ LOGFILE=/tmp/ttk-interim-fix.log
 
 
 ## set image details 
-IMAGE_BUILD_LIST=( "ml-testing-toolkit" "ml-testing-toolkit-ui" ) 
+IMAGE_BUILD_LIST=( "ml-testing-toolkit" "ml-testing-toolkit-ui" "ml-testing-toolkit-client-lib" ) 
+#IMAGE_BUILD_LIST=(  "ml-testing-toolkit-client-lib" ) 
 local_tag="vnext"
 
 source $REPO_BASE_DIR/packages/installer/scripts/common.sh 
