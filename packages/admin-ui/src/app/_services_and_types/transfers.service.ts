@@ -101,6 +101,7 @@ export class TransfersService {
 		payeeDfspName?: string,
 		payerIdValue?: string,
 		payeeIdValue?: string,
+		transferType?:string,
 		bulkTransferId?: string,
 		pageSize: number = DEFAULT_PAGE_SIZE,
 		pageIndex: number = DEFAULT_PAGE_INDEX,
@@ -117,6 +118,7 @@ export class TransfersService {
 		if (payeeDfspName) searchParams.append("payeeDfspName", payeeDfspName);
 		if (payerIdValue) searchParams.append("payerIdValue", payerIdValue);
 		if (payeeIdValue) searchParams.append("payeeIdValue", payeeIdValue);
+		if (transferType) searchParams.append("transferType", transferType);
 		if (bulkTransferId) searchParams.append("bulkTransferId", bulkTransferId);
 		if (pageIndex) searchParams.append("pageIndex", (pageIndex).toString());
 		if (pageSize) searchParams.append("pageSize", pageSize.toString());

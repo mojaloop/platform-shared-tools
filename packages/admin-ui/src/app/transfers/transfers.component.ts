@@ -41,9 +41,9 @@ export class TransfersComponent implements OnInit, OnDestroy {
 	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
 	partyNameList = [this.ALL_STR_ID, "VisionFund_Myanmar", "OkDollar", "Company_A_Limited"];
 	partyIdTypeList = [this.ALL_STR_ID, "MSISDN", "PERSONAL_ID", "BUSINESS", "DEVICE", "ACCOUNT_ID", "IBAN", "ALIAS"];
-	transferTypeList = [this.ALL_STR_ID, "DEPOSIT", "WITHDRAWAL", "REFUND"];
+	transferTypeList = [this.ALL_STR_ID, "DEPOSIT", "WITHDRAWAL", "REFUND", "TRANSFER"];
 
-	isFilterShow: boolean = false;
+	isFilterShow: boolean = true;
 	initialFilterValues = {
 		filterPayerDfspName: this.ALL_STR_ID,
 		filterPayeeDfspName: this.ALL_STR_ID,
@@ -144,7 +144,6 @@ export class TransfersComponent implements OnInit, OnDestroy {
 	}
 
 	search() {
-
 		const {
 			filterTransferState,
 			filterCurrency,
@@ -169,8 +168,10 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		const payeeIdType = filterPayeeIdType === this.ALL_STR_ID ? undefined : filterPayeeIdType;
 		const payerDfspName = filterPayerDfspName === this.ALL_STR_ID ? undefined : filterPayerDfspName;
 		const payeeDfspName = filterPayeeDfspName === this.ALL_STR_ID ? undefined : filterPayeeDfspName;
+		const transferType = filterTransferType === this.ALL_STR_ID ? undefined : filterTransferType;
 		const payerIdValue = filterPayerValue || undefined;
 		const payeeIdValue = filterPayeeIdValue || undefined;
+		
 
 		this.transfersSubs = this._transfersSvc.search(
 			transferState,
@@ -184,6 +185,7 @@ export class TransfersComponent implements OnInit, OnDestroy {
 			payeeDfspName,
 			payerIdValue,
 			payeeIdValue,
+			transferType,
 			undefined, // TODO: add bulk filter box
 			this.pageSize,
 			this.pageIndex,
