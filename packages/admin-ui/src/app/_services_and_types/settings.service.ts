@@ -8,6 +8,9 @@ const ACCESSTOKEN_KEYNAME = "accessToken";
 const DEVELOPMENT_ENV_NAME = "dev";
 const PRODUCTION_ENV_NAME = "prod";
 
+//constants shared
+export const DEFAULT_TEST_CALL_REDIRECT_WAIT_MS = 750;
+
 @Injectable({
 	providedIn: 'root',
 })

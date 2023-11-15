@@ -12,18 +12,22 @@ import {IParticipant} from "@mojaloop/participant-bc-public-types-lib";
 import {ParticipantsService} from "../_services_and_types/participants.service";
 import * as uuid from "uuid";
 import {removeEmpty} from '../_utils';
-import {DEFAULT_TEST_CALL_REDIRECT_WAIT_MS} from "src/app/_services_and_types/settings.service";
+import { BulkQuotesService } from "../_services_and_types/bulk-quotes.service";
+import { BulkTransfersService } from "../_services_and_types/bulk-transfers.service";
+import { BulkTransfer } from "../_services_and_types/bulk_transfer_types";
+import { debug } from "console";
 
 @Component({
-	selector: 'app-transfer-create',
-	templateUrl: './transfer-create.component.html'
+	selector: 'app-bulk-transfer-create',
+	templateUrl: './bulk-transfer-create.component.html'
 })
-export class TransferCreateComponent implements OnInit {
+export class BulkTransferCreateComponent implements OnInit {
 	public form!: FormGroup;
 	public isNewTransfer: boolean = false;
 	public submitted: boolean = false;
 	public inputQuoteId: string | null = null;
 
+	public activeBulkTransfer: BulkTransfer | null = null;
 	public activeTransfer: Transfer | null = null;
 	public selectedQuoteId: string | null = null;
 
@@ -35,7 +39,7 @@ export class TransferCreateComponent implements OnInit {
 	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
 	participantsSubs?: Subscription;
 
-	constructor(private _router: Router, private _route: ActivatedRoute, private _transfersSvc: TransfersService, private _interopSvc: InteropService, private _quotesSvc: QuotesService, private _participantsSvc: ParticipantsService, private _messageService: MessageService) {
+	constructor(private _router: Router, private _route: ActivatedRoute, private _bulkTransfersSvc: BulkTransfersService, private _transfersSvc: TransfersService, private _interopSvc: InteropService, private _bulkQuotesSvc: BulkQuotesService, private _quotesSvc: QuotesService, private _participantsSvc: ParticipantsService, private _messageService: MessageService) {
 	}
 
 	async ngOnInit(): Promise<void> {
@@ -75,11 +79,13 @@ export class TransferCreateComponent implements OnInit {
 	}
 
 	newTransfer() {
+		this.activeBulkTransfer = this._bulkTransfersSvc.createEmptyBulkTransfer();
 		this.activeTransfer = this._transfersSvc.createEmptyTransfer();
 	}
 
 	private _initForm() {
 		this.form = new FormGroup({
+			"bulkTransferId": new FormControl(this.activeBulkTransfer?.bulkTransferId, Validators.required),
 			"selectedQuoteId": new FormControl(this.selectedQuoteId),
 			"transferId": new FormControl(this.activeTransfer?.transferId, Validators.required),
 			"payeeFsp": new FormControl(this.activeTransfer?.payeeFsp),
@@ -93,6 +99,7 @@ export class TransferCreateComponent implements OnInit {
 	}
 
 	async saveTransfer() {
+		if (!this.activeBulkTransfer) throw new Error("invalid activeBulkTransfer");
 		if (!this.activeTransfer) throw new Error("invalid activeTransfer");
 
 		this.submitted = true;
@@ -104,6 +111,8 @@ export class TransferCreateComponent implements OnInit {
 		}
 
 		// update active Transfer from form
+		this.activeBulkTransfer.bulkTransferId = this.form.controls["bulkTransferId"].value;
+
 		this.activeTransfer.transferId = this.form.controls["transferId"].value;
 		this.activeTransfer.payeeFsp = this.form.controls["payeeFsp"].value;
 		this.activeTransfer.payerFsp = this.form.controls["payerFsp"].value;
@@ -123,12 +132,36 @@ export class TransferCreateComponent implements OnInit {
 
 
 		const transfer = removeEmpty(this.activeTransfer) as Transfer;
-		const success = this._interopSvc.createTransferRequest(transfer).subscribe(success => {
-			this._messageService.addSuccess("Transfer Created");
+
+		const individualTransfers = [];
+
+		for(let i=1 ; i<51 ; i+=1) {
+			individualTransfers.push({
+				"transferId": i >= 10 ? i + transfer.transferId.slice(2) : i + transfer.transferId.slice(1),
+				"transferAmount": {
+					"currency": "USD",
+					"amount": "10"
+				},
+				"ilpPacket": "AYICbQAAAAAAAAPoHGcuYmx1ZWJhbmsubXNpc2RuLmJsdWVfYWNjXzGCAkRleUowY21GdWMyRmpkR2x2Ymtsa0lqb2lPV1kxWkRrM09EUXRNMkUxTnkwMU9EWTFMVGxoWVRBdE4yUmtaVGMzT1RFMU5EZ3hJaXdpY1hWdmRHVkpaQ0k2SW1ZMU5UaGtORFE0TFRCbU1UQXROREF4TmkwNE9ESXpMVEU1TjJObU5qZ3haamhrWmlJc0luQmhlV1ZsSWpwN0luQmhjblI1U1dSSmJtWnZJanA3SW5CaGNuUjVTV1JVZVhCbElqb2lUVk5KVTBST0lpd2ljR0Z5ZEhsSlpHVnVkR2xtYVdWeUlqb2lZbXgxWlY5aFkyTmZNU0lzSW1aemNFbGtJam9pWW14MVpXSmhibXNpZlgwc0luQmhlV1Z5SWpwN0luQmhjblI1U1dSSmJtWnZJanA3SW5CaGNuUjVTV1JVZVhCbElqb2lUVk5KVTBST0lpd2ljR0Z5ZEhsSlpHVnVkR2xtYVdWeUlqb2laM0psWlc1ZllXTmpYekVpTENKbWMzQkpaQ0k2SW1keVpXVnVZbUZ1YXlKOWZTd2lZVzF2ZFc1MElqcDdJbU4xY25KbGJtTjVJam9pUlZWU0lpd2lZVzF2ZFc1MElqb2lNVEFpZlN3aWRISmhibk5oWTNScGIyNVVlWEJsSWpwN0luTmpaVzVoY21sdklqb2lSRVZRVDFOSlZDSXNJbWx1YVhScFlYUnZjaUk2SWxCQldVVlNJaXdpYVc1cGRHbGhkRzl5Vkhsd1pTSTZJa0pWVTBsT1JWTlRJbjE5AA",
+				"condition": "STksBXN1-J5HnG_4owlzKnbmzCfiOlrKDPgiR-QZ7Kg"
+			})
+		}
+		
+		const bulkTransfer = {
+			"bulkTransferId": "0fbee1f3-c58e-5afe-8cdd-7e65eea2fca9",
+			"bulkQuoteId": "3854fdbe-5dea-3abd-a210-8780e7f2f1f4",
+			"payeeFsp": "greenbank",
+			"payerFsp": "bluebank",
+			"expiration": this.activeTransfer.expiration,
+			"individualTransfers": individualTransfers
+		} as unknown as BulkTransfer
+
+		this._interopSvc.createBulkTransferRequest(bulkTransfer).subscribe(success => {
+			this._messageService.addSuccess("Bulk Transfer Created");
 
 			setTimeout(() => {
-				this._router.navigateByUrl(`/transfers/${this.activeTransfer!.transferId}`);
-			}, DEFAULT_TEST_CALL_REDIRECT_WAIT_MS);
+				this._router.navigateByUrl(`/bulk-transfers/${this.activeBulkTransfer!.bulkTransferId}?live`);
+			}, 250);
 		}, error => {
 			this._messageService.addError(error.message);
 		});
@@ -144,15 +177,16 @@ export class TransferCreateComponent implements OnInit {
 			quoteId = elem.value;
 		}
 		const selectedQuote = this.quotes.value.find(quote => quote.quoteId === quoteId);
-
-		this.form.controls["transferId"].setValue(selectedQuote?.transactionId);
+		
+		this.form.controls["bulkTransferId"].setValue("0fbee1f3-c58e-5afe-8cdd-7e65eea2fca9");
+		this.form.controls["transferId"].setValue("1fbee2f3-c58e-5afe-8cdd-6e65eea2fca9");
 		this.form.controls["payeeFsp"].setValue(selectedQuote?.payee?.partyIdInfo.fspId);
-		this.form.controls["payerFsp"].setValue(selectedQuote?.payer?.partyIdInfo.fspId);
+		this.form.controls["payerFsp"].setValue("bluebank");
 		this.form.controls["amount"].setValue(selectedQuote?.amount?.amount);
 		this.form.controls["currency"].setValue(selectedQuote?.amount?.currency);
 		this.form.controls["ilpPacket"].setValue(selectedQuote?.ilpPacket);
 		this.form.controls["condition"].setValue(selectedQuote?.condition);
-		this.form.controls["expiration"].setValue(selectedQuote?.expiration);
+		this.form.controls["expiration"].setValue(new Date(Date.now() + 3600 * 1000).toISOString());
 	}
 
 	genNewId() {

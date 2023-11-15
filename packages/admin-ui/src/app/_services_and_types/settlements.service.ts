@@ -37,9 +37,9 @@ import {Observable} from "rxjs";
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
 import {
-	ISettlementBatch,
+	ISettlementBatch, BatchTransferSearchResults,MatrixSearchResults,
 	ISettlementBatchTransfer, ISettlementConfig,
-	ISettlementMatrix
+	ISettlementMatrix, BatchSearchResults
 } from "@mojaloop/settlements-bc-public-types-lib";
 import * as uuid from "uuid";
 
@@ -82,8 +82,8 @@ export class SettlementsService {
 		});
 	}
 
-	getBatchesByCriteria(fromDate: number, toDate: number, settlementModel: string, currencyCodes: string[], batchStatuses: string[]): Observable<ISettlementBatch[]> {
-		return new Observable<ISettlementBatch[]>(subscriber => {
+	getBatchesByCriteria(fromDate: number, toDate: number, settlementModel: string, currencyCodes: string[], batchStatuses: string[]): Observable<BatchSearchResults> {
+		return new Observable<BatchSearchResults>(subscriber => {
 
 			const searchParams = new URLSearchParams();
 			// mandatory
@@ -96,8 +96,8 @@ export class SettlementsService {
 			if (batchStatuses && batchStatuses.length > 0) searchParams.append("batchStatuses", encodeURIComponent(JSON.stringify(batchStatuses)));
 
 			const url = `${SVC_BASEURL}/batches?${searchParams.toString()}`;
-			this._http.get<ISettlementBatch[]>(url).subscribe(
-				(result: ISettlementBatch[]) => {
+			this._http.get<BatchSearchResults>(url).subscribe(
+				(result: BatchSearchResults) => {
 					console.log(`got response: ${result}`);
 
 					subscriber.next(result);
@@ -107,7 +107,7 @@ export class SettlementsService {
 						console.warn("Access forbidden received on getBatchesByCriteria");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else if (error && error.status === 404) {
-						subscriber.next([]);
+						subscriber.next();
 						return subscriber.complete();
 					} else {
 						console.error(error);
@@ -120,11 +120,11 @@ export class SettlementsService {
 		});
 	}
 
-	getTransfersByBatch(batchId: string): Observable<ISettlementBatchTransfer[]> {
-		return new Observable<ISettlementBatchTransfer[]>(subscriber => {
+	getTransfersByBatch(batchId: string): Observable<BatchTransferSearchResults> {
+		return new Observable<BatchTransferSearchResults>(subscriber => {
 			const url = `${SVC_BASEURL}/transfers?batchId=${batchId}`;
-			this._http.get<ISettlementBatchTransfer[]>(url).subscribe(
-				(result: ISettlementBatchTransfer[]) => {
+			this._http.get<BatchTransferSearchResults>(url).subscribe(
+				(result: BatchTransferSearchResults) => {
 					console.log(`got response: ${result}`);
 
 					subscriber.next(result);
@@ -135,7 +135,7 @@ export class SettlementsService {
 						console.warn("Access forbidden received on getTransfersByBatchName");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else if (error && error.status === 404) {
-						subscriber.next([]);
+						subscriber.next();
 						return subscriber.complete();
 					} else {
 						console.error(error);
@@ -291,14 +291,14 @@ export class SettlementsService {
 		});
 	}
 
-	getMatrices(state?: string): Observable<ISettlementMatrix[]> {
-		return new Observable<ISettlementMatrix[]>(subscriber => {
+	getMatrices(state?: string): Observable<MatrixSearchResults> {
+		return new Observable<MatrixSearchResults>(subscriber => {
 			let url = `${SVC_BASEURL}/matrix`;
 			if (state)
 				url += `?state=${state.toUpperCase()}`;
 
-			this._http.get<ISettlementMatrix[]>(url).subscribe(
-				(result: ISettlementMatrix[]) => {
+			this._http.get<MatrixSearchResults>(url).subscribe(
+				(result: MatrixSearchResults) => {
 					console.log(`got response: ${result}`);
 
 					subscriber.next(result);
@@ -309,7 +309,7 @@ export class SettlementsService {
 						console.warn("Access forbidden received on getMatrices");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else if (error && error.status === 404) {
-						subscriber.next([]);
+						subscriber.next();
 						return subscriber.complete();
 					} else {
 						console.error(error);
