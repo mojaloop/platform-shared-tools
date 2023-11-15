@@ -11,7 +11,7 @@ import {MessagesComponent} from './messages/messages.component';
 import {HomeComponent} from './home/home.component';
 
 import {CanLoadIsLoggedIn} from "src/app/_pipes_and_guards/canload_guard";
-import {SecurityPrivilegesComponent} from 'src/app/security/main/security-privileges.component';
+import {SecurityPrivilegesComponent} from 'src/app/security/privileges/security-privileges.component';
 import {PlatformRoleDetailComponent} from './security/roles/platform-role-detail.component';
 import {ParticipantsComponent} from './participants/participants.component';
 import {MyAccountComponent} from './my-account/my-account.component';

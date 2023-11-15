@@ -3,7 +3,7 @@ import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
 import {HomeComponent} from "src/app/home/home.component";
 import {CanLoadIsLoggedIn} from "src/app/_pipes_and_guards/canload_guard";
-import {SecurityPrivilegesComponent} from "src/app/security/main/security-privileges.component";
+import {SecurityPrivilegesComponent} from "src/app/security/privileges/security-privileges.component";
 import {PlatformRoleDetailComponent} from "src/app/security/roles/platform-role-detail.component";
 import {ParticipantsComponent} from "src/app/participants/participants.component";
 import {MyAccountComponent} from "src/app/my-account/my-account.component";

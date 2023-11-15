@@ -27,8 +27,13 @@ export class AuthorizationService {
 					return subscriber.complete();
 				},
 				error => {
-					console.error(error);
-					subscriber.next([]);
+					if (error && error.status === 403) {
+						console.warn("UnauthorizedError received on getAllPrivileges");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg || "Could not getAllPrivileges");
+					}
 					return subscriber.complete();
 				}
 			);
@@ -45,8 +50,13 @@ export class AuthorizationService {
 					return subscriber.complete();
 				},
 				error => {
-					console.error(error);
-					subscriber.next([]);
+					if (error && error.status === 403) {
+						console.warn("UnauthorizedError received on getAllPlatformRoles");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg || "Could not getAllPlatformRoles");
+					}
 					return subscriber.complete();
 				}
 			);
