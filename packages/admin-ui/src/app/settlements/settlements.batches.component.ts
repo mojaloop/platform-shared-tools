@@ -75,7 +75,7 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 			criteriaFrom.valueOf(), criteriaTo.valueOf(),
 			criteriaModel, criteriaCurrencyCodes, criteriaBatchStates
 		).subscribe(list => {
-			const filtered = list.filter(value => {
+			const filtered = list.items.filter(value => {
 				if (criteriaBatchId && value.id.toUpperCase() !== criteriaBatchId.toUpperCase())
 					return false;
 
@@ -148,7 +148,7 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 		this.batchTransfersSubs = this._settlementsService.getTransfersByBatch(batchId).subscribe(list => {
 			console.log("SettlementsBatchesComponent ngOnInit - got transfers By getTransfersByBatch");
 
-			this.batchTransfers.next(list);
+			this.batchTransfers.next(list.items);
 		}, error => {
 			if (error && error instanceof UnauthorizedError) {
 				this._messageService.addError(error.message);

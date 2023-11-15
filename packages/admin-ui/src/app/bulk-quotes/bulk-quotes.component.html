@@ -1,23 +1,31 @@
 <h3>Bulk Quotes</h3>
 
-<div>
-  <table class="table">
-    <thead class="thead-light">
-    <tr>
-      <th scope="col">BulkQuote ID</th>
-      <th scope="col">Total Quotes</th>
-      <th scope="col">Total Quotes Not Processed</th>
-      <th scope="col">Status</th>
+<ng-container *ngIf="(bulkQuotes | async)?.length==0 else listBulkQuotes">
+  <div class="alert alert-warning" role="alert">
+    No bulk quotes found, please create one.
+  </div>
+</ng-container>
 
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let item of (bulkQuotes | async)">
-      <td><a routerLink="/bulk-quotes/{{item.bulkQuoteId}}">{{item.bulkQuoteId}}</a></td>
-      <td>{{item.individualQuotes.length}}</td>
-      <td>{{item.quotesNotProcessedIds.length}}</td>
-      <td>{{item.status}}</td>
-    </tr>
-    </tbody>
-  </table>
-</div>
+<ng-template #listBulkQuotes>
+  <div>
+    <table class="table">
+      <thead class="thead-light">
+      <tr>
+        <th scope="col">BulkQuote ID</th>
+        <th scope="col">Total Quotes</th>
+        <th scope="col">Total Quotes Not Processed</th>
+        <th scope="col">Status</th>
+
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let item of (bulkQuotes | async)">
+        <td><a routerLink="/bulk-quotes/{{item.bulkQuoteId}}">{{item.bulkQuoteId}}</a></td>
+        <td>{{item.individualQuotes.length}}</td>
+        <td>{{item.quotesNotProcessedIds.length}}</td>
+        <td>{{item.status}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-template>
