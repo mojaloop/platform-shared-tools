@@ -533,8 +533,8 @@ check_status() {
 function restore_demo_data {
   local mongo_data_dir=$1
   echo $mongo_data_dir 
-  
   local ttk_files_dir=$2
+
 
   error_message=" restoring the mongo database data failed "
   trap 'handle_warning $LINENO "$error_message"' ERR
@@ -544,7 +544,7 @@ function restore_demo_data {
   mongopod=`kubectl get pods --namespace $NAMESPACE | grep -i mongodb |awk '{print $1}'` 
   mongo_root_pw=`kubectl get secret mongodb -o jsonpath='{.data.MONGO_INITDB_ROOT_PASSWORD}'| base64 -d` 
   #kubectl cp $mongo_data_dir/mongodata.gz $mongopod:/tmp >/dev/null 2>&1 # copy the demo / test data into the mongodb pod
-  kubectl cp $mongo_data_dir/mongodata_no_ttk_data_6Nov2023.gz $mongopod:/tmp >/dev/null 2>&1 # copy the demo / test data into the mongodb pod
+  kubectl cp $mongo_data_dir/mongodata_with_ttk_data_13Nov2023.gz $mongopod:/tmp/mongodata.gz >/dev/null 2>&1 # copy the demo / test data into the mongodb pod
   # run the mongorestore 
   kubectl exec --stdin --tty $mongopod -- mongorestore  -u root -p $mongo_root_pw \
                --gzip --archive=/tmp/mongodata.gz --authenticationDatabase admin > /dev/null 2>&1
