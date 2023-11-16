@@ -1,10 +1,10 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
-import {ParticipantsService} from "src/app/_services_and_types/participants.service";
-import {BehaviorSubject, Subscription} from "rxjs";
-import {HUB_PARTICIPANT_ID, IParticipant} from "@mojaloop/participant-bc-public-types-lib";
-import {MessageService} from "src/app/_services_and_types/message.service";
-import {UnauthorizedError} from "src/app/_services_and_types/errors";
-import {paginate, PaginateResult} from "../_utils";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { ParticipantsService } from "src/app/_services_and_types/participants.service";
+import { BehaviorSubject, Subscription } from "rxjs";
+import { HUB_PARTICIPANT_ID, IParticipant } from "@mojaloop/participant-bc-public-types-lib";
+import { MessageService } from "src/app/_services_and_types/message.service";
+import { UnauthorizedError } from "src/app/_services_and_types/errors";
+import { paginate, PaginateResult } from "../_utils";
 
 @Component({
 	selector: "app-participants",
@@ -46,6 +46,31 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 		}
 	}
 
+
+	onFileDropped(event: any) {
+		event.preventDefault();
+		this.readAndConvertFile(event.dataTransfer.files);
+	}
+
+	onDragOver(event: any) {
+		event.preventDefault();
+	}
+
+	onFileSelected(event: any) {
+		const selectedFile = event.target.files[0];
+		if (selectedFile) {
+			this.readAndConvertFile(selectedFile);
+		}
+	}
+
+	readAndConvertFile(file: File) {
+		const fileReader = new FileReader();
+		fileReader.readAsBinaryString(file)
+		fileReader.onload = (event) => {
+			let binaryData = event.target?.result; //to send backend later
+		}
+	}
+
 	search(pageIndex: number = 0) {
 
 		const filterParticipantState = (document.getElementById("filterParticipantState") as HTMLSelectElement).value || undefined;
@@ -60,7 +85,7 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 		).subscribe((result) => {
 			console.log("ParticipantsComponent search - got ParticipantsSearchResults");
 
-			const onlyDfsps = result.items.filter(value => value.id!==HUB_PARTICIPANT_ID);
+			const onlyDfsps = result.items.filter(value => value.id !== HUB_PARTICIPANT_ID);
 
 			this.participants.next(onlyDfsps);
 

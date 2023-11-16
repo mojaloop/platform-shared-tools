@@ -98,12 +98,12 @@
 		},
 		"logLevel": "debug"
 	},
-	"_reporting":{
-		"target": "http://172.22.154.148:5005/",
-		"secure":true,
-		"changeOrigin":true,
-		"pathRewrite":{
-		 "^/_reporting" : ""
+	"/_reporting": {
+		"target": "http://localhost:5005/",
+		"secure": true,
+		"changeOrigin": true,
+		"pathRewrite": {
+			"^/_reporting": ""
 		},
 		"logLevel": "debug"
 	},
@@ -126,4 +126,3 @@
 		"logLevel": "debug"
 	}
 }
-
