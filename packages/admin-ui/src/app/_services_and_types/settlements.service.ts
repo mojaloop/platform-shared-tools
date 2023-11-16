@@ -31,19 +31,21 @@
 "use strict";
 
 
-import {HttpClient} from "@angular/common/http";
-import {Injectable} from "@angular/core";
-import {Observable} from "rxjs";
-import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
-import {UnauthorizedError} from "src/app/_services_and_types/errors";
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { AuthenticationService } from "src/app/_services_and_types/authentication.service";
+import { UnauthorizedError } from "src/app/_services_and_types/errors";
 import {
-	ISettlementBatch, BatchTransferSearchResults,MatrixSearchResults,
+	ISettlementBatch, BatchTransferSearchResults, MatrixSearchResults,
 	ISettlementBatchTransfer, ISettlementConfig,
 	ISettlementMatrix, BatchSearchResults
 } from "@mojaloop/settlements-bc-public-types-lib";
 import * as uuid from "uuid";
 
 const SVC_BASEURL = "/_settlements";
+
+const DEFAULT_PAGE_SIZE = 20;
 
 @Injectable({
 	providedIn: "root",
@@ -296,6 +298,54 @@ export class SettlementsService {
 			let url = `${SVC_BASEURL}/matrix`;
 			if (state)
 				url += `?state=${state.toUpperCase()}`;
+
+			this._http.get<MatrixSearchResults>(url).subscribe(
+				(result: MatrixSearchResults) => {
+					console.log(`got response: ${result}`);
+
+					subscriber.next(result);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on getMatrices");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else if (error && error.status === 404) {
+						subscriber.next();
+						return subscriber.complete();
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+	searchMatrices(
+		matrixId?: string,
+		type?: string,
+		state?: string,
+		model?: string,
+		currencyCodes?: string,
+		createdAt?: number,
+		pageIndex?: number,
+		pageSize: number = DEFAULT_PAGE_SIZE
+	): Observable<MatrixSearchResults> {
+		return new Observable<MatrixSearchResults>(subscriber => {
+			const searchParams = new URLSearchParams();
+			if (matrixId) searchParams.append("matrixId", matrixId);
+			if (type) searchParams.append("type", type);
+			if (state) searchParams.append("state", state);
+			if (model) searchParams.append("model", model);
+			if (currencyCodes) searchParams.append("currencyCodes", currencyCodes);
+			if (createdAt) searchParams.append("createdAt", createdAt.toString());
+			if (pageIndex) searchParams.append("pageIndex", pageIndex.toString());
+			if (pageSize) searchParams.append("pageSize", pageSize.toString());
+
+			const url = `${SVC_BASEURL}/matrix?${searchParams.toString()}`;
 
 			this._http.get<MatrixSearchResults>(url).subscribe(
 				(result: MatrixSearchResults) => {

@@ -1,37 +1,149 @@
 <h3>Settlement Matrices</h3>
 
+<!--filter-->
+<div class="filterbox">
+	<form [formGroup]="filterForm" (ngSubmit)="search()">
+		<table class="table">
+			<tr class="form-row">
+				<div class="form-group col-md-3">
+					<label for="filterMatrixId">ID</label>
+					<input type="text" formControlName="filterMatrixId" id="filterMatrixId" step=300
+						class="form-control">
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterMatrixType">Type</label>
+					<select formControlName="filterMatrixType" id="filterMatrixType" class="form-control">
+						<option value="{{ALL_STR_ID}}">{{ALL_STR_ID}}</option>
+						<option *ngFor="let item of matrixTypeList" value="{{item}}">{{item}}</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterMatrixState">State</label>
+					<select formControlName="filterMatrixState" id="filterMatrixState" class="form-control">
+						<option value="{{ALL_STR_ID}}">{{ALL_STR_ID}}</option>
+						<option *ngFor="let item of matrixStateList" value="{{item}}">
+							{{item}}
+						</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterMatrixModel">Model</label>
+					<select formControlName="filterMatrixModel" id="filterMatrixModel" class="form-control">
+						<option value="{{ALL_STR_ID}}">{{ALL_STR_ID}}</option>
+						<option *ngFor="let item of matrixModelList" value="{{item}}">
+							{{item}}
+						</option>
+					</select>
+				</div>
+
+				<div class="form-grofilterCurrencyup col-md-3">
+					<label for="filterCurrency">Currency</label>
+					<select formControlName="filterCurrency" id="filterCurrency" class="form-control">
+						<option value="{{ALL_STR_ID}}">{{ALL_STR_ID}}</option>
+						<option *ngFor="let item of currencyCodeList" value="{{item}}">
+							{{item}}
+						</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterCreatedDate">Created Date</label>
+					<input type="datetime-local" formControlName="filterCreatedDate" id="filterCreatedDate" step=300
+						class="form-control">
+				</div>
+
+				<div class="col-md-3"></div>
+
+
+
+				<div class="col-md-3 d-flex">
+					<div class="form-group w-50">
+						<label for="clearBtn">&nbsp;</label>
+						<button type="button" class="form-control btn btn-outline-primary" id="clearBtn"
+							(click)="clearFilters()">Clear</button>
+					</div>
+
+					<div class="form-group ml-3 w-50">
+						<label for="filterBtn">&nbsp;</label>
+						<button type="submit" class="form-control btn btn-primary" id="filterBtn">
+							Search&nbsp;&nbsp;<i class="bi bi-search"></i>
+						</button>
+					</div>
+				</div>
+			</tr>
+		</table>
+	</form>
+</div>
+
 <div>
 	<table class="table">
 		<thead class="thead-light">
-		<tr>
-			<th scope="col">Id</th>
-			<th scope="col">Type</th>
-			<th scope="col">State</th>
-			<th scope="col">Model</th>
-			<th scope="col">Currency</th>
-			<th scope="col">Batch Count</th>
-			<th scope="col">Created at</th>
-			<th scope="col">Updated at</th>
-		</tr>
+			<tr>
+				<th scope="col">Id</th>
+				<th scope="col">Type</th>
+				<th scope="col">State</th>
+				<th scope="col">Model</th>
+				<th scope="col">Currency</th>
+				<th scope="col">Batch Count</th>
+				<th scope="col">Created at</th>
+				<th scope="col">Updated at</th>
+			</tr>
 		</thead>
 		<tbody>
-		<ng-container *ngIf="(matrices | async)?.length==0">
-			<tr class="">
-				<td colspan="6">No matrices found</td>
+			<ng-container *ngIf="(matrices | async)?.length==0">
+				<tr class="">
+					<td colspan="6">No matrices found</td>
+				</tr>
+			</ng-container>
+			<tr *ngFor="let item of (matrices | async)">
+				<td><a routerLink="/settlements/matrix/{{item.id}}">{{item.id}}</a></td>
+				<td>{{item.type}}</td>
+				<td>{{item.state}}</td>
+				<td>{{item.settlementModel}}</td>
+				<td>{{item.currencyCodes ? item.currencyCodes.join(", ") : "(All)"}}</td>
+
+				<td>{{item.batches.length}}</td>
+				<td>{{item.createdAt | date: 'medium'}}</td>
+				<td>{{item.updatedAt | date: 'medium'}}</td>
+
 			</tr>
-		</ng-container>
-		<tr *ngFor="let item of (matrices | async)">
-			<td><a routerLink="/settlements/matrix/{{item.id}}">{{item.id}}</a></td>
-			<td>{{item.type}}</td>
-			<td>{{item.state}}</td>
-			<td>{{item.settlementModel}}</td>
-			<td>{{item.currencyCodes ? item.currencyCodes.join(", ") : "(All)"}}</td>
-
-			<td>{{item.batches.length}}</td>
-			<td>{{item.createdAt | date: 'medium'}}</td>
-			<td>{{item.updatedAt | date: 'medium'}}</td>
-
-		</tr>
 		</tbody>
 	</table>
+
+
+	<!--pagination
+	TODO: put in component
+	-->
+	<hr>
+	<nav aria-label="Page navigation" *ngIf="paginateResult | async; let paginateObj">
+		<ul class="pagination justify-content-end">
+			<li class="page-item" [ngClass]="{'disabled' : paginateObj.prev == null}">
+				<a class="page-link" aria-label="Previous" (click)="search(paginateObj.prev ? paginateObj.prev-1 : 0)">
+					<span aria-hidden="true">&laquo;</span>
+					<span class="sr-only">Previous</span>
+				</a>
+			</li>
+
+			<ng-container *ngFor="let item of paginateObj.items">
+				<li class="page-item" *ngIf="item != null" [ngClass]="{'active' : item === paginateObj.current}">
+					<a class="page-link" (click)="search(item-1)">{{item}}
+						<span class="sr-only" *ngIf="item === paginateObj.current">(current)</span>
+					</a>
+				</li>
+				<li class="page-item disabled" *ngIf="item == null">
+					<a class="page-link disabled" *ngIf="!item">...</a>
+				</li>
+			</ng-container>
+
+			<li class="page-item" [ngClass]="{'disabled' : paginateObj.next == null}">
+				<a class="page-link" aria-label="Next" (click)="search(paginateObj.next ? paginateObj.next-1 : 0)">
+					<span aria-hidden="true">&raquo;</span>
+					<span class="sr-only">Next</span>
+				</a>
+			</li>
+		</ul>
+	</nav>
 </div>
