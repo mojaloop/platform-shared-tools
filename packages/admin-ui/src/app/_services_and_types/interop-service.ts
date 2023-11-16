@@ -39,6 +39,7 @@ import {AuthenticationService} from "src/app/_services_and_types/authentication.
 import {Quote} from "./quote_types";
 import {BulkQuote} from "./bulk_quote_types";
 import {Transfer} from "./transfer_types";
+import { BulkTransfer } from "./bulk_transfer_types";
 //  import {} from "./interop_types";
 
 const SVC_BASEURL = "/_interop";
@@ -178,9 +179,14 @@ export class InteropService {
 		const URL = `${SVC_BASEURL}/bulkQuotes`;
 
 		return new Observable<any>(subscriber => {
+			const headers = new HttpHeaders()
+			.set("fspiop-source", bulkQuote?.payer?.partyIdInfo.fspId as string)
+			.set("fspiop-destination", bulkQuote?.individualQuotes[0].payee?.partyIdInfo.fspId as string)
+			.set("fspiop-date", new Date().toISOString());
+
 			const body = {...bulkQuote};
 
-			this._http.post<any>(URL, body).subscribe(
+			this._http.post<any>(URL, body, {headers}).subscribe(
 				(result: any) => {
 					console.log(`GET bulk quote response: ${result}`);
 
@@ -211,6 +217,34 @@ export class InteropService {
 					console.log(`GET transfer response: ${result}`);
 
 					subscriber.next();
+					return subscriber.complete();
+				},
+				error => {
+					console.error(error);
+					subscriber.error(error);
+
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+	createBulkTransferRequest(bulkTransfer: BulkTransfer): Observable<any> {
+		const URL = `${SVC_BASEURL}/bulkTransfers`;
+
+		return new Observable<any>(subscriber => {
+			const headers = new HttpHeaders()
+			.set("fspiop-source", bulkTransfer.payerFsp)
+			.set("fspiop-destination", bulkTransfer.payeeFsp)
+			.set("fspiop-date", new Date().toISOString());
+
+			const body = {...bulkTransfer};
+
+			this._http.post<any>(URL, body, {headers}).subscribe(
+				(result: any) => {
+					console.log(`GET bulk transfer response: ${result}`);
+
+					subscriber.next(result);
 					return subscriber.complete();
 				},
 				error => {

@@ -32,8 +32,8 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 
 	private async _fetchMatrices(state?: string): Promise<void> {
 		return new Promise(resolve => {
-			this._settlementsService.getMatrices(state).subscribe(matrix => {
-				this.matrices.next(matrix);
+			this._settlementsService.getMatrices(state).subscribe(matricesResult => {
+				this.matrices.next(matricesResult.items || []);
 				resolve();
 			});
 		});

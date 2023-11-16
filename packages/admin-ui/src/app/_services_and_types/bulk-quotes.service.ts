@@ -65,4 +65,36 @@ export class BulkQuotesService {
 		});
 	}
 
+	createBulkQuote(item: BulkQuote): Observable<string | null> {
+		return new Observable<string>((subscriber) => {
+			this._http.post<{ id: string }>(SVC_BASEURL + "/bulk-quotes/", item).subscribe(
+				(resp: { id: string }) => {
+					console.log(`got response - bulkQuoteId: ${resp.id}`);
+
+					subscriber.next(resp.id);
+					return subscriber.complete();
+				},
+				(error) => {
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on createBulkQuote");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
+	createEmptyBulkQuote(): BulkQuote {
+		return {
+			bulkQuoteId: "",
+			payer: null,
+			individualQuotes: [],
+			extensionList: null,
+			quotesNotProcessedIds: [],
+		};
+	}
 }

@@ -55,7 +55,7 @@
 
       <div class="mb-2">
         <label class="col-form-label text-secondary">Location</label>
-        <div>{{(bulkQuote | async)?.geoCode?.latitude}} {{(bulkQuote | async)?.geoCode?.longitude}}</div>
+        <div>{{(bulkQuote | async)?.geoCode?.latitude !== 'walking' ? 'No Location Specified' : (bulkQuote | async)?.geoCode?.latitude}} {{(bulkQuote | async)?.geoCode?.longitude}}</div>
       </div>
   
     </div> <!-- right col with action buttons -->
@@ -98,10 +98,10 @@
           <tbody>
             <tr *ngFor="let item of (allQuotes | async)">
               <td><a routerLink="/quotes/{{item.quoteId}}">{{item.quoteId}}</a></td>
-              <td>{{item?.payer?.partyIdInfo?.partyIdType}}</td>
-              <td>{{item?.payer?.partyIdInfo?.partyIdentifier}}</td>
-              <td>{{item?.payer?.partyIdInfo?.partySubIdOrType}}</td>
-              <td>{{item?.payer?.partyIdInfo?.fspId}}</td>
+              <td>{{item?.payee?.partyIdInfo?.partyIdType}}</td>
+              <td>{{item?.payee?.partyIdInfo?.partyIdentifier}}</td>
+              <td>{{item?.payee?.partyIdInfo?.partySubIdOrType}}</td>
+              <td>{{item?.payee?.partyIdInfo?.fspId}}</td>
             </tr>
           </tbody>
         </table>
@@ -125,10 +125,10 @@
             <tbody>
               <tr *ngFor="let item of (quotesNotProcessed | async)">
                 <td><a routerLink="/quotes/{{item.quoteId}}">{{item.quoteId}}</a></td>
-                <td>{{item?.payer?.partyIdInfo?.partyIdType}}</td>
-                <td>{{item?.payer?.partyIdInfo?.partyIdentifier}}</td>
-                <td>{{item?.payer?.partyIdInfo?.partySubIdOrType}}</td>
-                <td>{{item?.payer?.partyIdInfo?.fspId}}</td>
+                <td>{{item?.payee?.partyIdInfo?.partyIdType}}</td>
+                <td>{{item?.payee?.partyIdInfo?.partyIdentifier}}</td>
+                <td>{{item?.payee?.partyIdInfo?.partySubIdOrType}}</td>
+                <td>{{item?.payee?.partyIdInfo?.fspId}}</td>
               </tr>
             </tbody>
           </table>
@@ -138,3 +138,35 @@
   
   <div class="mt-6" [ngbNavOutlet]="nav"></div>
   
+  <!--pagination
+TODO: put in component
+-->
+<hr>
+<nav aria-label="Page navigation"  *ngIf="paginateResult | async; let paginateObj">
+	<ul class="pagination justify-content-end">
+		<li class="page-item" [ngClass]="{'disabled' : paginateObj.prev == null}">
+			<a class="page-link" aria-label="Previous" (click)="search(paginateObj.prev ? paginateObj.prev-1 : 0)">
+				<span aria-hidden="true">&laquo;</span>
+				<span class="sr-only">Previous</span>
+			</a>
+		</li>
+
+		<ng-container *ngFor="let item of paginateObj.items">
+			<li class="page-item" *ngIf="item != null" [ngClass]="{'active' : item === paginateObj.current}">
+				<a class="page-link" (click)="search(item-1)" >{{item}}
+					<span class="sr-only" *ngIf="item === paginateObj.current">(current)</span>
+				</a>
+			</li>
+			<li class="page-item disabled" *ngIf="item == null">
+				<a class="page-link disabled" *ngIf="!item" >...</a>
+			</li>
+		</ng-container>
+
+		<li class="page-item"  [ngClass]="{'disabled' : paginateObj.next == null}">
+			<a class="page-link" aria-label="Next" (click)="search(paginateObj.next ? paginateObj.next-1 : 0)">
+				<span aria-hidden="true">&raquo;</span>
+				<span class="sr-only">Next</span>
+			</a>
+		</li>
+	</ul>
+</nav>
