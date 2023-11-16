@@ -99,6 +99,8 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 		return new Promise(resolve => {
 			this._settlementsService.getMatrices(state).subscribe(matricesResult => {
 				this.matrices.next(matricesResult.items || []);
+				const pageRes = paginate(matricesResult.pageIndex, matricesResult.totalPages);
+				this.paginateResult.next(pageRes);
 				resolve();
 			});
 		});
