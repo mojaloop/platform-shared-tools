@@ -5,13 +5,13 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: scheduling-svc
-    mojaloop.layer: apps
+    mojaloop.layer: crosscut
   name: scheduling-svc
 spec:
   ports:
-    - name: "1234"
-      port: 1234
-      targetPort: 1234
+    - name: "3150"
+      port: 3150
+      targetPort: 3150
   selector:
     mojaloop.service: scheduling-svc
 status:

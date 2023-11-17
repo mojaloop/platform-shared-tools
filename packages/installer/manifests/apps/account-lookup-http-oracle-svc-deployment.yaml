@@ -30,7 +30,7 @@ spec:
           value: logs
         - name: KAFKA_URL
           value: kafka:9092
-        image: mojaloop/account-lookup-bc-http-oracle-svc:0.3.1
+        image: mojaloop/account-lookup-bc-http-oracle-svc:0.3.2
         livenessProbe:
           exec:
             command:
