@@ -151,11 +151,11 @@ export class SettlementsService {
 	getTransfersByMatrixId(matrixId: string): Observable<ISettlementBatchTransfer[]> {
 		return new Observable<ISettlementBatchTransfer[]>(subscriber => {
 			const url = `${SVC_BASEURL}/transfers?matrixId=${matrixId}`;
-			this._http.get<ISettlementBatchTransfer[]>(url).subscribe(
-				(result: ISettlementBatchTransfer[]) => {
-					console.log(`got response: ${result}`);
+			this._http.get<BatchTransferSearchResults>(url).subscribe(
+				(result: BatchTransferSearchResults) => {
+					console.log(`got response: ${result.items}`);
 
-					subscriber.next(result);
+					subscriber.next(result.items);
 					return subscriber.complete();
 				},
 				error => {
@@ -209,11 +209,11 @@ export class SettlementsService {
 	getTransfersByBatchName(batchName: string): Observable<ISettlementBatchTransfer[]> {
 		return new Observable<ISettlementBatchTransfer[]>(subscriber => {
 			const url = `${SVC_BASEURL}/transfers?batchName=${batchName}`;
-			this._http.get<ISettlementBatchTransfer[]>(url).subscribe(
-				(result: ISettlementBatchTransfer[]) => {
-					console.log(`got response: ${result}`);
+			this._http.get<BatchTransferSearchResults>(url).subscribe(
+				(result: BatchTransferSearchResults) => {
+					console.log(`got response: ${result.items}`);
 
-					subscriber.next(result);
+					subscriber.next(result.items);
 					return subscriber.complete();
 				},
 				error => {
