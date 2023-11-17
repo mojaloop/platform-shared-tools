@@ -1,0 +1,42 @@
+.circular-progress {
+	position: relative;
+	width: 100px;
+	height: 100px;
+	background-color: green;
+	border-radius: 50%;
+	background: conic-gradient(green 3.6deg, #eee 0deg);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.circular-progress::before {
+	content: "";
+	position: absolute;
+	height: 90px;
+	width: 90px;
+	border-radius: 50%;
+	background-color: #fff;
+}
+
+.bi-cloud-arrow-up {
+	position: relative;
+}
+
+.bi-exclamation-circle {
+	font-size: 1.4rem;
+}
+
+.warning-text {
+	font-weight: 500;
+	font-size: 0.8rem;
+}
+
+.file-uploader {
+	cursor: pointer;
+	transition: 500 ease-out filter;
+}
+
+.file-uploader:hover {
+	filter: brightness(90%);
+}

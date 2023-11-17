@@ -9,6 +9,7 @@ import { paginate, PaginateResult } from "../_utils";
 @Component({
 	selector: "app-participants",
 	templateUrl: "./participants.component.html",
+	styleUrls: ["./participants.component.css"],
 })
 export class ParticipantsComponent implements OnInit, OnDestroy {
 
@@ -68,6 +69,7 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 		fileReader.readAsBinaryString(file)
 		fileReader.onload = (event) => {
 			let binaryData = event.target?.result; //to send backend later
+
 		}
 	}
 
