@@ -26,10 +26,10 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 	paginateResult: BehaviorSubject<PaginateResult | null> = new BehaviorSubject<PaginateResult | null>(null);
 
 	//searchKeywords
-	matrixTypeList = ["STATIC", "DYNAMIC"];
-	matrixStateList = ["IDLE", "BUSY", "FINALIZED", "OUT_OF_SYNC", "LOCKED"];
-	matrixModelList = ["DEFAULT"];
-	currencyCodeList = ["USD", "EUR"];
+	matrixTypeList = ["STATIC", "DYNAMIC"]; //TODO
+	matrixStateList = ["IDLE", "BUSY", "FINALIZED", "OUT_OF_SYNC", "LOCKED"]; //TODO
+	matrixModelList = ["DEFAULT"]; //TODO
+	currencyCodeList = ["USD", "EUR"]; //TODO
 
 	initialFilterValues = {
 		filterMatrixId: null,
