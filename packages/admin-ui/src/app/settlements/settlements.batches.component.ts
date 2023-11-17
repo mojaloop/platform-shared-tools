@@ -1,11 +1,12 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
-import {BehaviorSubject, Subscription} from "rxjs";
-import {UnauthorizedError} from "src/app/_services_and_types/errors";
-import {MessageService} from "src/app/_services_and_types/message.service";
-import {SettlementsService} from "src/app/_services_and_types/settlements.service";
-import {ISettlementBatch, ISettlementBatchTransfer} from "@mojaloop/settlements-bc-public-types-lib";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { BehaviorSubject, Subscription } from "rxjs";
+import { UnauthorizedError } from "src/app/_services_and_types/errors";
+import { MessageService } from "src/app/_services_and_types/message.service";
+import { SettlementsService } from "src/app/_services_and_types/settlements.service";
+import { ISettlementBatch, ISettlementBatchTransfer } from "@mojaloop/settlements-bc-public-types-lib";
 import * as uuid from "uuid";
-import {ActivatedRoute, Router} from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
+import { paginate, PaginateResult } from "../_utils";
 
 const DEFAULT_TIME_FILTER_HOURS = 8;
 
@@ -21,6 +22,10 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 	batchTransfers: BehaviorSubject<ISettlementBatchTransfer[]> = new BehaviorSubject<ISettlementBatchTransfer[]>([]);
 	batchTransfersSubs?: Subscription;
 
+	transfersPaginateResult: BehaviorSubject<PaginateResult | null> = new BehaviorSubject<PaginateResult | null>(null);
+	batchesPaginateResult: BehaviorSubject<PaginateResult | null> = new BehaviorSubject<PaginateResult | null>(null);
+
+	selectBatchId: string = "";
 
 	batchSelPrefix = "batchSel_";
 	selectedBatchIds: string[] = [];
@@ -54,7 +59,8 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 
 	}
 
-	applyCriteria() {
+	applyCriteria(pageIndex: number = 0) {
+
 		const criteriaModel = (document.getElementById("criteriaSettlementModel") as HTMLSelectElement).value;
 
 		const criteriaCurrencyCodeElemVal = (document.getElementById("criteriaCurrencyCode") as HTMLSelectElement).value;
@@ -73,7 +79,7 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 
 		this.batchesSubs = this._settlementsService.getBatchesByCriteria(
 			criteriaFrom.valueOf(), criteriaTo.valueOf(),
-			criteriaModel, criteriaCurrencyCodes, criteriaBatchStates
+			criteriaModel, criteriaCurrencyCodes, criteriaBatchStates, pageIndex
 		).subscribe(list => {
 			const filtered = list.items.filter(value => {
 				if (criteriaBatchId && value.id.toUpperCase() !== criteriaBatchId.toUpperCase())
@@ -82,6 +88,8 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 				return true;
 			});
 
+			const pageRes = paginate(list.pageIndex, list.totalPages);
+			this.batchesPaginateResult.next(pageRes);
 
 			this.batches.next(filtered);
 		}, error => {
@@ -144,11 +152,26 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 	}
 
 
-	selectBatch(batchId: string) {
-		this.batchTransfersSubs = this._settlementsService.getTransfersByBatch(batchId).subscribe(list => {
+	selectBatch(batchId: string, pageIndex: number = 0) {
+		this.selectBatchId = batchId;
+		this.batchTransfersSubs = this._settlementsService.getTransfersByBatch(batchId, pageIndex).subscribe(list => {
 			console.log("SettlementsBatchesComponent ngOnInit - got transfers By getTransfersByBatch");
 
 			this.batchTransfers.next(list.items);
+			const pageRes = paginate(list.pageIndex, list.totalPages);
+			this.transfersPaginateResult.next(pageRes);
+		}, error => {
+			if (error && error instanceof UnauthorizedError) {
+				this._messageService.addError(error.message);
+			}
+		});
+	}
+
+	onTransferPageChange(pageIndex: number) {
+		this.batchTransfersSubs = this._settlementsService.getTransfersByBatch(this.selectBatchId, pageIndex).subscribe(list => {
+			this.batchTransfers.next(list.items);
+			const pageRes = paginate(list.pageIndex, list.totalPages);
+			this.transfersPaginateResult.next(pageRes);
 		}, error => {
 			if (error && error instanceof UnauthorizedError) {
 				this._messageService.addError(error.message);
@@ -169,6 +192,8 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 				this.selectedBatchIds = this.selectedBatchIds.filter(item => item != batchId);
 		}
 	}
+
+	//pagination
 
 	ngOnDestroy() {
 		if (this.batchesSubs) {

@@ -139,10 +139,11 @@
 TODO: put in component
 -->
 	<hr>
-	<!-- <nav aria-label="Page navigation" *ngIf="paginateResult | async; let paginateObj">
+	<nav aria-label="Page navigation" *ngIf="batchesPaginateResult | async; let paginateObj">
 		<ul class="pagination justify-content-end">
 			<li class="page-item" [ngClass]="{'disabled' : paginateObj.prev == null}">
-				<a class="page-link" aria-label="Previous" (click)="search(paginateObj.prev ? paginateObj.prev-1 : 0)">
+				<a class="page-link" aria-label="Previous"
+					(click)="applyCriteria(paginateObj.prev ? paginateObj.prev-1 : 0)">
 					<span aria-hidden="true">&laquo;</span>
 					<span class="sr-only">Previous</span>
 				</a>
@@ -150,7 +151,7 @@ TODO: put in component
 
 			<ng-container *ngFor="let item of paginateObj.items">
 				<li class="page-item" *ngIf="item != null" [ngClass]="{'active' : item === paginateObj.current}">
-					<a class="page-link" (click)="search(item-1)">{{item}}
+					<a class="page-link" (click)="applyCriteria(item-1)">{{item}}
 						<span class="sr-only" *ngIf="item === paginateObj.current">(current)</span>
 					</a>
 				</li>
@@ -160,13 +161,14 @@ TODO: put in component
 			</ng-container>
 
 			<li class="page-item" [ngClass]="{'disabled' : paginateObj.next == null}">
-				<a class="page-link" aria-label="Next" (click)="search(paginateObj.next ? paginateObj.next-1 : 0)">
+				<a class="page-link" aria-label="Next"
+					(click)="applyCriteria(paginateObj.next ? paginateObj.next-1 : 0)">
 					<span aria-hidden="true">&raquo;</span>
 					<span class="sr-only">Next</span>
 				</a>
 			</li>
 		</ul>
-	</nav> -->
+	</nav>
 </div>
 
 
@@ -206,10 +208,11 @@ TODO: put in component
 TODO: put in component
 -->
 	<hr>
-	<!-- <nav aria-label="Page navigation" *ngIf="paginateResult | async; let paginateObj">
+	<nav aria-label="Page navigation" *ngIf="transfersPaginateResult | async; let paginateObj">
 		<ul class="pagination justify-content-end">
 			<li class="page-item" [ngClass]="{'disabled' : paginateObj.prev == null}">
-				<a class="page-link" aria-label="Previous" (click)="search(paginateObj.prev ? paginateObj.prev-1 : 0)">
+				<a class="page-link" aria-label="Previous"
+					(click)="onTransferPageChange(paginateObj.prev ? paginateObj.prev-1 : 0)">
 					<span aria-hidden="true">&laquo;</span>
 					<span class="sr-only">Previous</span>
 				</a>
@@ -217,7 +220,7 @@ TODO: put in component
 
 			<ng-container *ngFor="let item of paginateObj.items">
 				<li class="page-item" *ngIf="item != null" [ngClass]="{'active' : item === paginateObj.current}">
-					<a class="page-link" (click)="search(item-1)">{{item}}
+					<a class="page-link" (click)="onTransferPageChange(item-1)">{{item}}
 						<span class="sr-only" *ngIf="item === paginateObj.current">(current)</span>
 					</a>
 				</li>
@@ -227,11 +230,12 @@ TODO: put in component
 			</ng-container>
 
 			<li class="page-item" [ngClass]="{'disabled' : paginateObj.next == null}">
-				<a class="page-link" aria-label="Next" (click)="search(paginateObj.next ? paginateObj.next-1 : 0)">
+				<a class="page-link" aria-label="Next"
+					(click)="onTransferPageChange(paginateObj.next ? paginateObj.next-1 : 0)">
 					<span aria-hidden="true">&raquo;</span>
 					<span class="sr-only">Next</span>
 				</a>
 			</li>
 		</ul>
-	</nav> -->
+	</nav>
 </div>

@@ -31,13 +31,13 @@
 "use strict";
 
 
-import {HttpClient} from "@angular/common/http";
-import {Injectable} from "@angular/core";
-import {Observable} from "rxjs";
-import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
-import {UnauthorizedError} from "src/app/_services_and_types/errors";
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { AuthenticationService } from "src/app/_services_and_types/authentication.service";
+import { UnauthorizedError } from "src/app/_services_and_types/errors";
 import {
-	ISettlementBatch, BatchTransferSearchResults,MatrixSearchResults,
+	ISettlementBatch, BatchTransferSearchResults, MatrixSearchResults,
 	ISettlementBatchTransfer, ISettlementConfig,
 	ISettlementMatrix, BatchSearchResults
 } from "@mojaloop/settlements-bc-public-types-lib";
@@ -82,7 +82,7 @@ export class SettlementsService {
 		});
 	}
 
-	getBatchesByCriteria(fromDate: number, toDate: number, settlementModel: string, currencyCodes: string[], batchStatuses: string[]): Observable<BatchSearchResults> {
+	getBatchesByCriteria(fromDate: number, toDate: number, settlementModel: string, currencyCodes: string[], batchStatuses: string[], pageIndex: number): Observable<BatchSearchResults> {
 		return new Observable<BatchSearchResults>(subscriber => {
 
 			const searchParams = new URLSearchParams();
@@ -90,6 +90,7 @@ export class SettlementsService {
 			searchParams.append("fromDate", fromDate.toString());
 			searchParams.append("toDate", toDate.toString());
 			searchParams.append("settlementModel", settlementModel);
+			searchParams.append("pageIndex", pageIndex.toString());
 
 			// optional
 			if (currencyCodes && currencyCodes.length > 0) searchParams.append("currencyCodes", encodeURIComponent(JSON.stringify(currencyCodes)));
@@ -120,9 +121,16 @@ export class SettlementsService {
 		});
 	}
 
-	getTransfersByBatch(batchId: string): Observable<BatchTransferSearchResults> {
+	getTransfersByBatch(batchId: string, pageIndex: number): Observable<BatchTransferSearchResults> {
 		return new Observable<BatchTransferSearchResults>(subscriber => {
-			const url = `${SVC_BASEURL}/transfers?batchId=${batchId}`;
+			const searchParams = new URLSearchParams();
+
+			searchParams.append("batchId", batchId.toString());
+			searchParams.append("pageIndex", pageIndex.toString());
+
+			const url = `${SVC_BASEURL}/transfers?${searchParams.toString()}`;
+
+
 			this._http.get<BatchTransferSearchResults>(url).subscribe(
 				(result: BatchTransferSearchResults) => {
 					console.log(`got response: ${result}`);
