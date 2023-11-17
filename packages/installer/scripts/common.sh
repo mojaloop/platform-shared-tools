@@ -97,6 +97,26 @@ function check_manifests_dir_exists  {
   fi 
 }
 
+function set_deploy_target {
+  # determine where we are deploying Mojaloop vNext 
+  # e.g.  into mini-loop in a single OS or EKS cluster in AWS 
+  # note the options will expland if we add support for installs into AKS, OKE and other environments 
+  # this is necessary as there are (very) subtle differences between environments 
+  # but we still want to have essentiall one vNext install script no matter the environment 
+  local script_name=`basename $0`
+  if [[ "$script_name" == "mini-loop-vnext.sh" ]]; then 
+      ML_DEPLOY_TARGET="mini-loop"
+  elif [[ "$script_name" == "eks-vnext.sh" ]]; then 
+      ML_DEPLOY_TARGET="eks"
+  else 
+    printf "** Error the deploy target for Mojaloop vNext can't be determined from the script name \n"
+    printf "   the program name used is [ %s ] but expected mini-loop-vnext.sh or eks-vnext.sh ** \n" "$script_name" 
+    exit 1 
+  fi 
+}
+
+
+
 function set_k8s_distro { 
   # various settings can differ between kubernetes releases and distributions 
   # so we need to figure out what kubernetes distribution is installed and running
@@ -442,7 +462,7 @@ function check_pods_are_running() {
 check_pods_status() {
   local layer_value="$1"
   local selector="mojaloop.layer=$layer_value"
-  local wait_secs=30
+  local wait_secs=40
   local seconds=0 
   local end_time=$((seconds + $wait_secs )) 
 
@@ -463,11 +483,7 @@ check_pods_status() {
 function delete_mojaloop_layer() { 
   local app_layer="$1"
   local layer_yaml_dir="$2"
-  if [[ "$mode" == "delete_ml" ]]; then
-    printf "==> delete resources  in the mojaloop [ %s ] application layer " $app_layer
-  else 
-    printf "    delete resources in the mojaloop [ %s ] application layer " $app_layer
-  fi 
+  printf "==> delete resources  in the mojaloop [ %s ] application layer " $app_layer
   current_dir=`pwd`
   cd $layer_yaml_dir
   yaml_non_dataresource_files=$(ls *.yaml | grep -v '^docker-' | grep -v "\-data\-" )
@@ -704,6 +720,37 @@ function print_success_message {
   printf " ==>  mojaloop vNext deployed \n" 
   printf "      no endpoint tests configured yet this is still WIP \n" 
 }
+
+################################################################################
+# Function: showUsage
+################################################################################
+# Description:		Display usage message
+# Arguments:		none
+# Return values:	none
+#
+function showUsage {
+	if [ $# -lt 0 ] ; then
+		echo "Incorrect number of arguments passed to function $0"
+		exit 1
+	else
+echo  "USAGE: $0 -m <mode> [-d dns domain] [-n namespace] [-t secs] [-o options] [-f] 
+Example 1 : $0 -m install_ml  # install mojaloop (vnext) 
+Example 2 : $0 -m install_ml -n namespace1  # install mojaloop (vnext)
+Example 3 : $0 -m delete_ml  # delete mojaloop  (vnext)  
+
+Options:
+-m mode ............ install_ml|delete_ml
+-d domain name ..... domain name for ingress hosts e.g mydomain.com (TBD) 
+-n namespace ....... the kubernetes namespace to deploy mojaloop into 
+-t secs ............ number of seconds (timeout) to wait for pods to all be reach running state
+-o options(s) .......ml vNext options to toggle on ( logging )
+-h|H ............... display this message
+"
+	fi
+}
+
+
+
 
 ## Common Environment Config & global vars 
 ##
