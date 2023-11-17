@@ -41,6 +41,8 @@ spec:
               value: kafka:9092
           image: mojaloop/auditing-bc-auditing-svc:0.3.2
           name: auditing-svc
+          ports:
+            - containerPort: 3050
           resources: {}
       restartPolicy: Always
 status: {}

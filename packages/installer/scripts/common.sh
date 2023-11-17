@@ -239,7 +239,7 @@ function copy_k8s_yaml_files_to_tmp {
   # do this so that any dynamic local changes to the kubernetes manifest (*yaml) files won't
   # accidentally be written to the vNext git repo
   # echo "before copy MANIFESTS_DIR=$MANIFESTS_DIR"
-  # rm -rf /tmp/$MANIFESTS_DIR 
+  rm -rf /tmp/manifests
   cp -r $MANIFESTS_DIR /tmp
   # and update the location of the manifests 
   MANIFESTS_DIR="/tmp/manifests" 
@@ -335,19 +335,19 @@ function add_helm_repos {
     printf "==> add the helm repos required to install and run Mojaloop vnext-alpha \n" 
     helm repo add kiwigrid https://kiwigrid.github.io > /dev/null 2>&1
     helm repo add kokuwa https://kokuwaio.github.io/helm-charts > /dev/null 2>&1  #fluentd 
-    helm repo add elastic https://helm.elastic.co > /dev/null 2>&1
+    helm repo add elastic https://helm.elastic.co > /dev/null 2>&1  #elastic search 
     helm repo add codecentric https://codecentric.github.io/helm-charts > /dev/null 2>&1 # keycloak for TTK
-    helm repo add bitnami https://charts.bitnami.com/bitnami > /dev/null 2>&1
-    helm repo add mojaloop http://mojaloop.io/helm/repo/ > /dev/null 2>&1
+    helm repo add bitnami https://charts.bitnami.com/bitnami > /dev/null 2>&1 #kafka 
+    helm repo add mojaloop http://mojaloop.io/helm/repo/ > /dev/null 2>&1   # JIC we want to test vNow in EKS
     helm repo add cowboysysop https://cowboysysop.github.io/charts/ > /dev/null 2>&1  # mongo-express
     helm repo add redpanda-data https://charts.redpanda.com/ > /dev/null 2>&1   # kafka console 
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx   # nginx 
     helm repo update 
 }
 
+
 function delete_mojaloop_infra_release {
-  printf "==> delete resources in the mojaloop [infrastructure] layer " 
-  #helm delete %s --namespace %s" "$NAMESPACE" "$HELM_INFRA_RELEASE"
+  printf "==> delete resources in the mojaloop [ infrastructure ] layer " 
   ml_exists=`helm ls -a --namespace $NAMESPACE | grep $HELM_INFRA_RELEASE | awk '{print $1}' `
   if [ ! -z $ml_exists ] && [ "$ml_exists" == "$HELM_INFRA_RELEASE" ]; then 
     helm delete $HELM_INFRA_RELEASE --namespace $NAMESPACE >> $LOGFILE 2>>$ERRFILE
@@ -394,7 +394,6 @@ function delete_mojaloop_infra_release {
   # if we get to here then we are reasonably confident infrastructure resources are cleanly deleted
   printf " [ ok ] \n"
 }
-
 
 function install_infra_from_local_chart  {
   local infra_dir=$1
@@ -749,9 +748,6 @@ Options:
 	fi
 }
 
-
-
-
 ## Common Environment Config & global vars 
 ##
 ARCH=""
@@ -759,10 +755,6 @@ HELM_INFRA_RELEASE="infra"        # the name of the helm release for all the inf
 DEFAULT_HELM_TIMEOUT_SECS="1200s" # default timeout for deplying helm chart 
 TIMEOUT_SECS=0                    # user override for TIMEOUT
 DEFAULT_NAMESPACE="default"
-# INFRA_DIR=$MANIFESTS_DIR/infra
-# CROSSCUT_DIR=$MANIFESTS_DIR/crosscut
-# APPS_DIR=$MANIFESTS_DIR/apps
-#TTK_DIR=$MANIFESTS_DIR/ttk
 K8S_CURRENT_RELEASE_LIST=( "1.27" "1.28" )
 CURRENT_IMAGES_FROM_DOCKER_FILES=[]
 
