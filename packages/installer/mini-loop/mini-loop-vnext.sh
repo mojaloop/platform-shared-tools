@@ -44,7 +44,7 @@ LOGFILE="/tmp/$ML_DEPLOY_TARGET-install.log"
 ERRFILE="/tmp/$ML_DEPLOY_TARGET-install.err"
 
 # read in the functions and common global vars
-source $REPO_BASE_DIR/packages/installer/scripts/common.sh 
+source $REPO_BASE_DIR/packages/installer/scripts/shared-functions.sh 
 # read in the main mojaloop install function 
 source $REPO_BASE_DIR/packages/installer/scripts/install.sh 
 

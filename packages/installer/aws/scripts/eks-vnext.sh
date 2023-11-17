@@ -15,9 +15,9 @@
 ##
 ML_DEPLOY_TARGET="" 
 set_deploy_target 
-EKS_SCRIPTS_DIR="$( cd $(dirname "$0") ; pwd )"
-echo "DBG> EKS SCRIPTS_DIR X = $EKS_SCRIPTS_DIR"
-REPO_BASE_DIR="$( cd $(dirname "$EKS_SCRIPTS_DIR")/../../.. ; pwd )"
+SCRIPTS_DIR="$( cd $(dirname "$0") ; pwd )"
+echo "DBG> EKS SCRIPTS_DIR X = $SCRIPTS_DIR"
+REPO_BASE_DIR="$( cd $(dirname "$SCRIPTS_DIR")/../../.. ; pwd )"
 echo "DBG> REPO_BASE_DIR = $REPO_BASE_DIR"
 COMMON_SCRIPTS_DIR=$REPO_BASE_DIR/packages/installer/scripts
 echo "DBG> COMMON SCRIPTS_DIR X = $COMMON_SCRIPTS_DIR"
@@ -31,8 +31,10 @@ ERRFILE="/tmp/$ML_DEPLOY_TARGET-install.err"
 
 exit 1 
 # read in the functions and common global vars 
-source $REPO_BASE_DIR/packages/installer/scripts/common.sh 
+source $REPO_BASE_DIR/packages/installer/scripts/shared-functions.sh 
 check_access_to_cluster  # eks only 
+# read in the main mojaloop install function 
+source $REPO_BASE_DIR/packages/installer/scripts/install.sh 
 
 
 record_memory_use "at_start"

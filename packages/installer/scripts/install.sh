@@ -15,6 +15,8 @@ function install_vnext {
     set_arch  
     set_k8s_distro  
     #check_arch   # mini-loop only 
+  elif [[ $ml_deploy_target == "EKS" ]]; then 
+    check_access_to_cluster  # eks only 
   fi 
   check_repo_owner_not_root $REPO_BASE_DIR
   check_user
