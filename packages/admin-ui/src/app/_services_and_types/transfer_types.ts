@@ -35,6 +35,7 @@ export declare type Transfer = {
 	createdAt: number;
 	updatedAt: number;
 	transferId: string;
+	bulkTransferId: string;
 	payeeFsp: string;
 	payerFsp: string;
 	amount: {
