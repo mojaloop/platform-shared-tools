@@ -2,97 +2,95 @@
 
 <!--filter-->
 <div class="filterbox">
-	<form >
-	<table class="table">
-		<tr class="form-row">
-			<div class="form-group col-md-2">
-				<label for="criteriaSettlementModel">Model:</label>
-				<select class="form-control" id="criteriaSettlementModel">
-					<option value="DEFAULT">DEFAULT</option>
-				</select>
-			</div>
+	<form>
+		<table class="table">
+			<tr class="form-row">
+				<div class="form-group col-md-2">
+					<label for="criteriaSettlementModel">Model:</label>
+					<select class="form-control" id="criteriaSettlementModel">
+						<option value="DEFAULT">DEFAULT</option>
+					</select>
+				</div>
 
 
-			<div class="form-group col-md-1">
-				<label for="criteriaCurrencyCode">Currency:</label>
-				<select class="form-control" id="criteriaCurrencyCode" [ngModel]="criteriaCurrencyCode"
+				<div class="form-group col-md-1">
+					<label for="criteriaCurrencyCode">Currency:</label>
+					<select class="form-control" id="criteriaCurrencyCode" [ngModel]="criteriaCurrencyCode"
 						[ngModelOptions]="{standalone: true}">
-					<option value="{{ALL_STR_ID}}">{{ALL_STR_ID}}</option>
-					<option value="USD">USD</option>
-					<option value="EUR">EUR</option>
-				</select>
-			</div>
+						<option value="{{ALL_STR_ID}}">{{ALL_STR_ID}}</option>
+						<option value="USD">USD</option>
+						<option value="EUR">EUR</option>
+					</select>
+				</div>
 
-			<div class="form-group col-md-2">
-				<label for="criteriaFromDate">Start:</label>
-				<input class="form-control" type="datetime-local" id="criteriaFromDate"
-					   [ngModel]="criteriaFromDate" step=300
-					   [ngModelOptions]="{standalone: true}">
-			</div>
+				<div class="form-group col-md-2">
+					<label for="criteriaFromDate">Start:</label>
+					<input class="form-control" type="datetime-local" id="criteriaFromDate" [ngModel]="criteriaFromDate"
+						step=300 [ngModelOptions]="{standalone: true}">
+				</div>
 
 
-			<div class="form-group col-md-2">
-				<label for="criteriaToDate">End:</label>
-				<input class="form-control" type="datetime-local" id="criteriaToDate"
-					   [ngModel]="criteriaToDate" step=300
-					   [ngModelOptions]="{standalone: true}">
-			</div>
+				<div class="form-group col-md-2">
+					<label for="criteriaToDate">End:</label>
+					<input class="form-control" type="datetime-local" id="criteriaToDate" [ngModel]="criteriaToDate"
+						step=300 [ngModelOptions]="{standalone: true}">
+				</div>
 
-<!--			<div class="form-group col-md-1">
+				<!--			<div class="form-group col-md-1">
 				<label for="criteriaToDate">Settled?</label>
 				<input class="form-control" type="checkbox" id="criteriaIncludeSettled"
 					   [ngModel]="criteriaIncludeSettled" [ngModelOptions]="{standalone: true}">
 			</div>-->
 
-			<div class="form-group col-md-2">
-				<label for="criteriaBatchState">Batch State:</label>
-				<select class="form-control" id="criteriaBatchState">
-					<option value="{{ALL_STR_ID}}">{{ALL_STR_ID}}</option>
-					<option value="OPEN">OPEN</option>
-					<option value="CLOSED">CLOSED</option>
-					<option value="DISPUTED">DISPUTED</option>
-					<option value="AWAITING_SETTLEMENT">AWAITING_SETTLEMENT</option>
-					<option value="SETTLED">SETTLED</option>
-				</select>
-			</div>
+				<div class="form-group col-md-2">
+					<label for="criteriaBatchState">Batch State:</label>
+					<select class="form-control" id="criteriaBatchState">
+						<option value="{{ALL_STR_ID}}">{{ALL_STR_ID}}</option>
+						<option value="OPEN">OPEN</option>
+						<option value="CLOSED">CLOSED</option>
+						<option value="DISPUTED">DISPUTED</option>
+						<option value="AWAITING_SETTLEMENT">AWAITING_SETTLEMENT</option>
+						<option value="SETTLED">SETTLED</option>
+					</select>
+				</div>
 
-			<div class="form-group col-md-3">
-				<label for="criteriaToDate">Batch Id</label>
-				<input class="form-control" type="text" id="criteriaBatchId"
-					   [ngModel]="criteriaBatchId" [ngModelOptions]="{standalone: true}">
-			</div>
-		</tr>
-		<tr class="form-row">
-			<div class="form-group col-md-10">
-				&nbsp;
-			</div>
-			<div class="form-group col-md-2 ">
-				<label for="filterBtn">&nbsp;</label>
-					<button type="submit" class="form-control btn btn-primary" id="filterBtn" (click)="applyCriteria()">Search&nbsp;&nbsp;<i class="bi bi-search"></i></button>
-			</div>
+				<div class="form-group col-md-3">
+					<label for="criteriaToDate">Batch Id</label>
+					<input class="form-control" type="text" id="criteriaBatchId" [ngModel]="criteriaBatchId"
+						[ngModelOptions]="{standalone: true}">
+				</div>
+			</tr>
+			<tr class="form-row">
+				<div class="form-group col-md-10">
+					&nbsp;
+				</div>
+				<div class="form-group col-md-2 ">
+					<label for="filterBtn">&nbsp;</label>
+					<button type="submit" class="form-control btn btn-primary" id="filterBtn"
+						(click)="applyCriteria()">Search&nbsp;&nbsp;<i class="bi bi-search"></i></button>
+				</div>
 
-		</tr>
-	</table>
+			</tr>
+		</table>
 	</form>
 </div>
 
 <form>
-	<tr class="form-row" >
+	<tr class="form-row">
 		<div class="col-md-8">&nbsp;</div>
 		<div class="form-group col-md-2">
 			<label for="createDynamicMatrixBtn">&nbsp;</label>
 			<button type="button" class="form-control btn btn-success" id="createDynamicMatrixBtn"
-					[disabled]="!batches || (batches | async)?.length==0 || selectedBatchIds.length>0"
-					(click)="createDynamicMatrix()"
-					ngbTooltip="Create a Dynamic Settlement Matrix using the selected criteria">Create Dynamic Matrix
+				[disabled]="!batches || (batches | async)?.length==0 || selectedBatchIds.length>0"
+				(click)="createDynamicMatrix()"
+				ngbTooltip="Create a Dynamic Settlement Matrix using the selected criteria">Create Dynamic Matrix
 			</button>
 		</div>
 		<div class="form-group col-md-2">
 			<label for="createStaticMatrixBtn">&nbsp;</label>
 			<button type="button" class="form-control btn btn-success" id="createStaticMatrixBtn"
-					[disabled]="selectedBatchIds.length<=0"
-					(click)="createStaticMatrix()"
-					ngbTooltip="Create a Static Settlement Matrix using the selected criteria">Create Static Matrix
+				[disabled]="selectedBatchIds.length<=0" (click)="createStaticMatrix()"
+				ngbTooltip="Create a Static Settlement Matrix using the selected criteria">Create Static Matrix
 			</button>
 		</div>
 	</tr>
@@ -102,39 +100,73 @@
 <div>
 	<table class="table">
 		<thead class="thead-light">
-		<tr>
-			<th scope="col">Sel?</th>
-			<th scope="col">Batch ID</th>
-			<th scope="col">Model</th>
-			<th scope="col">Currency</th>
-			<th scope="col">Created</th>
-			<th scope="col">Seq#</th>
-			<th scope="col">Name</th>
-			<th scope="col">State</th>
-		</tr>
+			<tr>
+				<th scope="col">Sel?</th>
+				<th scope="col">Batch ID</th>
+				<th scope="col">Model</th>
+				<th scope="col">Currency</th>
+				<th scope="col">Created</th>
+				<th scope="col">Seq#</th>
+				<th scope="col">Name</th>
+				<th scope="col">State</th>
+			</tr>
 		</thead>
 		<tbody>
-		<ng-container *ngIf="(batches | async)?.length==0">
-			<tr class="" >
-				<td colspan="6">No batches found, please try again with different criteria</td>
-			</tr>
-		</ng-container>
-		<tr *ngFor="let item of (batches | async)">
-			<td>
-				<input type="checkbox" class="form-control" *ngIf="item.state!=='SETTLED'"
-					   (change)="batchSelectionChanged($event)" [id]="batchSelPrefix+item.id">
-			</td>
-			<td><a (click)="selectBatch(item.id);" class="link">{{item.id}}</a></td>
-			<td>{{item.settlementModel}}</td>
-			<td>{{item.currencyCode}}</td>
-			<td>{{item.timestamp | date: 'medium'}}</td>
-			<td>{{item.batchSequence}}</td>
-			<td>{{item.batchName}}</td>
-			<td>{{item.state}}</td>
+			<ng-container *ngIf="(batches | async)?.length==0">
+				<tr class="">
+					<td colspan="6">No batches found, please try again with different criteria</td>
+				</tr>
+			</ng-container>
+			<tr *ngFor="let item of (batches | async)">
+				<td>
+					<input type="checkbox" class="form-control" *ngIf="item.state!=='SETTLED'"
+						(change)="batchSelectionChanged($event)" [id]="batchSelPrefix+item.id">
+				</td>
+				<td><a (click)="selectBatch(item.id);" class="link">{{item.id}}</a></td>
+				<td>{{item.settlementModel}}</td>
+				<td>{{item.currencyCode}}</td>
+				<td>{{item.timestamp | date: 'medium'}}</td>
+				<td>{{item.batchSequence}}</td>
+				<td>{{item.batchName}}</td>
+				<td>{{item.state}}</td>
 
-		</tr>
+			</tr>
 		</tbody>
 	</table>
+
+
+	<!--pagination
+TODO: put in component
+-->
+	<hr>
+	<!-- <nav aria-label="Page navigation" *ngIf="paginateResult | async; let paginateObj">
+		<ul class="pagination justify-content-end">
+			<li class="page-item" [ngClass]="{'disabled' : paginateObj.prev == null}">
+				<a class="page-link" aria-label="Previous" (click)="search(paginateObj.prev ? paginateObj.prev-1 : 0)">
+					<span aria-hidden="true">&laquo;</span>
+					<span class="sr-only">Previous</span>
+				</a>
+			</li>
+
+			<ng-container *ngFor="let item of paginateObj.items">
+				<li class="page-item" *ngIf="item != null" [ngClass]="{'active' : item === paginateObj.current}">
+					<a class="page-link" (click)="search(item-1)">{{item}}
+						<span class="sr-only" *ngIf="item === paginateObj.current">(current)</span>
+					</a>
+				</li>
+				<li class="page-item disabled" *ngIf="item == null">
+					<a class="page-link disabled" *ngIf="!item">...</a>
+				</li>
+			</ng-container>
+
+			<li class="page-item" [ngClass]="{'disabled' : paginateObj.next == null}">
+				<a class="page-link" aria-label="Next" (click)="search(paginateObj.next ? paginateObj.next-1 : 0)">
+					<span aria-hidden="true">&raquo;</span>
+					<span class="sr-only">Next</span>
+				</a>
+			</li>
+		</ul>
+	</nav> -->
 </div>
 
 
@@ -143,30 +175,63 @@
 <div>
 	<table class="table">
 		<thead class="thead-light">
-		<tr>
-			<th scope="col">Id</th>
-			<th scope="col">Date</th>
-			<th scope="col">PayerFspId</th>
-			<th scope="col">PayeeFspId</th>
-			<th scope="col">Amount</th>
-			<th scope="col">Currency</th>
-		</tr>
+			<tr>
+				<th scope="col">Id</th>
+				<th scope="col">Date</th>
+				<th scope="col">PayerFspId</th>
+				<th scope="col">PayeeFspId</th>
+				<th scope="col">Amount</th>
+				<th scope="col">Currency</th>
+			</tr>
 		</thead>
 		<tbody>
-		<ng-container *ngIf="(batchTransfers | async)?.length==0">
-			<tr class="">
-				<td colspan="6">Please select a batch to see its transfers</td>
-			</tr>
-		</ng-container>
-		<tr *ngFor="let item of (batchTransfers | async)">
-			<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
-			<td>{{item.transferTimestamp | date: 'medium'}}</td>
-			<td>{{item.payerFspId}}</td>
-			<td>{{item.payeeFspId}}</td>
-			<td>{{item.amount}}</td>
-			<td>{{item.currencyCode}}</td>
+			<ng-container *ngIf="(batchTransfers | async)?.length==0">
+				<tr class="">
+					<td colspan="6">Please select a batch to see its transfers</td>
+				</tr>
+			</ng-container>
+			<tr *ngFor="let item of (batchTransfers | async)">
+				<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
+				<td>{{item.transferTimestamp | date: 'medium'}}</td>
+				<td>{{item.payerFspId}}</td>
+				<td>{{item.payeeFspId}}</td>
+				<td>{{item.amount}}</td>
+				<td>{{item.currencyCode}}</td>
 
-		</tr>
+			</tr>
 		</tbody>
 	</table>
+
+	<!--pagination
+TODO: put in component
+-->
+	<hr>
+	<!-- <nav aria-label="Page navigation" *ngIf="paginateResult | async; let paginateObj">
+		<ul class="pagination justify-content-end">
+			<li class="page-item" [ngClass]="{'disabled' : paginateObj.prev == null}">
+				<a class="page-link" aria-label="Previous" (click)="search(paginateObj.prev ? paginateObj.prev-1 : 0)">
+					<span aria-hidden="true">&laquo;</span>
+					<span class="sr-only">Previous</span>
+				</a>
+			</li>
+
+			<ng-container *ngFor="let item of paginateObj.items">
+				<li class="page-item" *ngIf="item != null" [ngClass]="{'active' : item === paginateObj.current}">
+					<a class="page-link" (click)="search(item-1)">{{item}}
+						<span class="sr-only" *ngIf="item === paginateObj.current">(current)</span>
+					</a>
+				</li>
+				<li class="page-item disabled" *ngIf="item == null">
+					<a class="page-link disabled" *ngIf="!item">...</a>
+				</li>
+			</ng-container>
+
+			<li class="page-item" [ngClass]="{'disabled' : paginateObj.next == null}">
+				<a class="page-link" aria-label="Next" (click)="search(paginateObj.next ? paginateObj.next-1 : 0)">
+					<span aria-hidden="true">&raquo;</span>
+					<span class="sr-only">Next</span>
+				</a>
+			</li>
+		</ul>
+	</nav> -->
 </div>
