@@ -39,9 +39,8 @@ export class TransfersComponent implements OnInit, OnDestroy {
 
 	//Filters
 	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
-	partyNameList = [this.ALL_STR_ID, "VisionFund_Myanmar", "OkDollar", "Company_A_Limited"];
-	partyIdTypeList = [this.ALL_STR_ID, "MSISDN", "PERSONAL_ID", "BUSINESS", "DEVICE", "ACCOUNT_ID", "IBAN", "ALIAS"];
-	transferTypeList = [this.ALL_STR_ID, "DEPOSIT", "WITHDRAWAL", "REFUND", "TRANSFER"];
+	partyIdTypeList = [this.ALL_STR_ID, "MSISDN", "PERSONAL_ID", "BUSINESS", "DEVICE", "ACCOUNT_ID", "IBAN", "ALIAS"]; //TODO : to add in getSearchKeywords() call
+	transferTypeList = [this.ALL_STR_ID, "DEPOSIT", "WITHDRAWAL", "REFUND", "TRANSFER"]; //TODO : to add in getSearchKeywords() call
 
 	isFilterShow: boolean = true;
 	initialFilterValues = {
@@ -135,11 +134,19 @@ export class TransfersComponent implements OnInit, OnDestroy {
 	}
 
 	onPageSizeChange() {
+		this.userPageIndex = 1
+		this.pageIndex = this.userPageIndex - 1
 		this.search();
 	}
 
 	onPageIndexChange() {
-		this.pageIndex = this.userPageIndex - 1
+		if (this.userPageIndex < 1) {
+			this.userPageIndex = 1
+			this.pageIndex = this.userPageIndex - 1
+		} else if (this.userPageIndex > this.transfers.value.totalPages) {
+			this.userPageIndex = this.transfers.value.totalPages
+			this.pageIndex = this.userPageIndex - 1
+		}
 		this.search();
 	}
 
@@ -171,7 +178,7 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		const transferType = filterTransferType === this.ALL_STR_ID ? undefined : filterTransferType;
 		const payerIdValue = filterPayerValue || undefined;
 		const payeeIdValue = filterPayeeIdValue || undefined;
-		
+
 
 		this.transfersSubs = this._transfersSvc.search(
 			transferState,

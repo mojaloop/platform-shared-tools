@@ -184,8 +184,8 @@
 	</li>
 	<li class="page-item d-flex align-items-center">
 		<span>Go to page</span>
-		<input [(ngModel)]="userPageIndex" [disabled]=" (transfers | async)?.totalPages === pageIndex"
-			(change)="onPageIndexChange()" type="number" min="1" class="form-control page-number ml-2">
+		<input [(ngModel)]="userPageIndex" (change)="onPageIndexChange()" type="number" min="1"
+			class="form-control page-number ml-2">
 	</li>
 	<li class="page-item">
 		Page {{ userPageIndex }} of {{(transfers | async)?.totalPages || 1}}
