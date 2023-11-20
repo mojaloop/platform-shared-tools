@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable } from "rxjs";
 
 import { UnauthorizedError } from "./errors";
@@ -17,6 +17,18 @@ const SVC_BASEURL = "/_reporting";
 })
 export class ReportService {
 	constructor(private _http: HttpClient) {}
+
+	exportSettlementInitiationByMatrixId(matrixId: string): Observable<Blob> {
+		const url =
+			SVC_BASEURL +
+			`/settlementInitiationByMatrixId/${matrixId}?format=excel`;
+		const headers = new HttpHeaders();
+
+		return this._http.get(url, {
+			responseType: "blob",
+			headers,
+		});
+	}
 
 	getAllSettlementInitiationReportsByMatrixId(
 		matrixId: string

@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { BehaviorSubject, Subscription } from "rxjs";
 import moment from "moment";
-import * as XLSX from "xlsx";
 
 import { MessageService } from "../_services_and_types/message.service";
 import { ReportService } from "../_services_and_types/report.service";
@@ -76,8 +75,8 @@ export class SettlementInitiationReport implements OnInit {
 						return {
 							participantId: initiationReport.participantId,
 							participantBankIdentifier:
-								initiationReport.externalBankAccountId +
-								initiationReport.externalBankAccountName,
+								initiationReport.externalBankAccountName +
+								initiationReport.externalBankAccountId,
 							balance: "",
 							settlementTransfer:
 								formatNumber(settlementTransfer),
@@ -108,33 +107,26 @@ export class SettlementInitiationReport implements OnInit {
 	}
 
 	downloadInitiationReport() {
-		const data = [
-			[
-				"Participant",
-				"Participant (Bank Identifier)",
-				"Balance",
-				"Settlement Transfer",
-				"Currency",
-			],
-		];
-		this.initiationReports.value.forEach((initiationReport) => {
-			data.push([
-				initiationReport.participantId,
-				initiationReport.participantBankIdentifier,
-				initiationReport.balance,
-				initiationReport.settlementTransfer,
-				initiationReport.currency,
-			]);
-		});
-
-		// Create a new workbook
-		const wb = XLSX.utils.book_new();
-
-		// Add a worksheet to the workbook
-		const ws = XLSX.utils.aoa_to_sheet(data);
-		XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
-
-		// Save the workbook as an Excel file
-		XLSX.writeFile(wb, `initiation-report-${this.chosenSettlementId}.xlsx`);
+		this._reportSvc
+			.exportSettlementInitiationByMatrixId(this.chosenSettlementId)
+			.subscribe(
+				(data) => {
+					const url = URL.createObjectURL(data);
+					const link = document.createElement("a");
+					link.href = url;
+					link.setAttribute(
+						"download",
+						`initiation-report-${this.chosenSettlementId}.xlsx`
+					);
+					document.body.appendChild(link);
+					link.click();
+					document.body.removeChild(link);
+					// Revoke the Object URL when it's no longer needed
+					URL.revokeObjectURL(url);
+				},
+				(error) => {
+					this._messageService.addError(error.message);
+				}
+			);
 	}
 }
