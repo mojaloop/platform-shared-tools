@@ -1,23 +1,20 @@
 <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap navbar-expand-lg p-0 shadow">
 	<a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/">{{title}}</a>
-	<!--	<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">-->
+<!--	<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">-->
 
-	<ng-container *ngIf="(isLoggedIn | async); else notLoggedIn">
+	<ng-container *ngIf="(isLoggedIn | async); else notLoggedIn" >
 		<ul class="navbar-nav ml-auto navbar-right">
 			<!--<li class="nav-item">
 				<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
 			</li>-->
 			<li class="nav-item ml-2">
 				<div class="btn-group">
-					<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown"
-						aria-expanded="false">
+					<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 						({{(username|async)}})
 					</button>
 					<div class="dropdown-menu dropdown-menu-right">
-						<button class="dropdown-item" type="button" routerLinkActive="active" routerLink="/myaccount"><i
-								class="bi bi-person-circle"></i> My Account</button>
-						<button class="dropdown-item" type="button" (click)="logout(true)"><i
-								class="bi bi-box-arrow-right"></i> Log out</button>
+						<button class="dropdown-item" type="button" routerLinkActive="active" routerLink="/myaccount"><i class="bi bi-person-circle"></i> My Account</button>
+						<button class="dropdown-item" type="button" (click)="logout(true)"><i class="bi bi-box-arrow-right"></i> Log out</button>
 					</div>
 				</div>
 
@@ -41,7 +38,7 @@
 
 				<div class="d-flex justify-content-center mt-1">
 					<!--    <img src="/assets/mojaloop-foundation-orange-300x95.png"/>-->
-					<img style="width: 200px;" src="/assets/mojaloop_logo.png" />
+					<img style="width: 200px;" src="/assets/mojaloop_logo.png"/>
 				</div>
 
 				<ul class="nav flex-column"><!-- main sidebar-->
@@ -52,7 +49,7 @@
 					</li>
 
 					<!--hub-->
-					<li class="nav-item" *ngIf="(isLoggedIn | async)">
+					<li class="nav-item"  *ngIf="(isLoggedIn | async)">
 						<a class="nav-link" routerLinkActive="active" routerLink="/hub">
 							<i class="bi bi-bullseye"></i>Hub
 						</a>
@@ -76,7 +73,7 @@
 					<!--lookup-->
 					<li class="nav-item has-submenu" *ngIf="(isLoggedIn | async)">
 						<a class="nav-link dropdown-toggle" routerLinkActive="active" href="#account-lookup-menu"
-							data-toggle="collapse" role="button">
+						   data-toggle="collapse" role="button">
 							<i class="bi bi-search"></i>Account Lookup
 						</a>
 						<ul class="submenu collapse" id="account-lookup-menu" routerLinkActive="show">
@@ -87,8 +84,7 @@
 								</a>
 							</li>
 							<li>
-								<a class="nav-link" hrouterLinkActive="active"
-									routerLink="/account-lookup-associations">
+								<a class="nav-link" hrouterLinkActive="active" routerLink="/account-lookup-associations">
 									Associations
 								</a>
 							</li>
@@ -103,10 +99,10 @@
 					<!--quotes-->
 					<li class="nav-item has-submenu" *ngIf="(isLoggedIn | async)">
 						<a class="nav-link dropdown-toggle" routerLinkActive="active" href="#quotes-menu"
-							data-toggle="collapse" role="button">
+						   data-toggle="collapse" role="button">
 							<i class="bi bi-receipt"></i>Quotes
 						</a>
-						<ul class="submenu collapse" id="quotes-menu" routerLinkActive="show">
+						<ul class="submenu collapse" id="quotes-menu"  routerLinkActive="show">
 							<li>
 								<a class="nav-link " routerLinkActive="active" routerLink="/quotes">
 									Quotes
@@ -121,12 +117,12 @@
 					</li>
 
 					<!--transfers-->
-					<li class="nav-item has-submenu" *ngIf="(isLoggedIn | async)">
+					<li class="nav-item has-submenu" *ngIf="(isLoggedIn | async)" >
 						<a class="nav-link dropdown-toggle" routerLinkActive="active" href="#transfers-menu"
-							data-toggle="collapse" role="button">
+						   data-toggle="collapse" role="button">
 							<i class="bi bi-receipt"></i>Transfers
 						</a>
-						<ul class="submenu collapse" id="transfers-menu" routerLinkActive="show">
+						<ul class="submenu collapse" id="transfers-menu"  routerLinkActive="show">
 							<li>
 								<a class="nav-link " routerLinkActive="active" routerLink="/transfers">
 									Transfers
@@ -141,12 +137,12 @@
 					</li>
 
 					<!--settlements-->
-					<li class="nav-item has-submenu" *ngIf="(isLoggedIn | async)">
+					<li class="nav-item has-submenu" *ngIf="(isLoggedIn | async)" >
 						<a class="nav-link dropdown-toggle" routerLinkActive="active" href="#settlements-menu"
-							data-toggle="collapse" role="button">
+						   data-toggle="collapse" role="button">
 							<i class="bi bi-arrow-left-right"></i>Settlements
 						</a>
-						<ul class="submenu collapse" id="settlements-menu" routerLinkActive="show">
+						<ul class="submenu collapse" id="settlements-menu"  routerLinkActive="show">
 							<li>
 								<a class="nav-link " routerLinkActive="active" routerLink="/settlements/models">
 									Models
@@ -171,41 +167,41 @@
 					</li>
 				</ul><!-- main sidebar-->
 
-				<h6 *ngIf="(isLoggedIn | async)"
-					class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+				<h6 *ngIf="(isLoggedIn | async)" class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
 					<span>Settings</span>
-					<!--					<a class="d-flex align-items-center text-muted" href="#">-->
-					<!--						&lt;!&ndash;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"-->
-					<!--							 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"-->
-					<!--							 class="feather feather-plus-circle">-->
-					<!--							<circle cx="12" cy="12" r="10"></circle>-->
-					<!--							<line x1="12" y1="8" x2="12" y2="16"></line>-->
-					<!--							<line x1="8" y1="12" x2="16" y2="12"></line>-->
-					<!--						</svg>&ndash;&gt;-->
-					<!--					</a>-->
+<!--					<a class="d-flex align-items-center text-muted" href="#">-->
+<!--						&lt;!&ndash;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"-->
+<!--							 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"-->
+<!--							 class="feather feather-plus-circle">-->
+<!--							<circle cx="12" cy="12" r="10"></circle>-->
+<!--							<line x1="12" y1="8" x2="12" y2="16"></line>-->
+<!--							<line x1="8" y1="12" x2="16" y2="12"></line>-->
+<!--						</svg>&ndash;&gt;-->
+<!--					</a>-->
 				</h6>
 
 				<ul class="nav flex-column" *ngIf="(isLoggedIn | async)"><!-- secondary sidebar-->
 					<!-- platform configuration -->
-					<li class="nav-item has-submenu">
+					<li class="nav-item has-submenu" >
 						<a class="nav-link dropdown-toggle" routerLinkActive="active" href="#platform-config-menu"
-							data-toggle="collapse" role="button"><i class="bi bi-sliders"></i>Platform Configuration
+						   data-toggle="collapse" role="button"><i class="bi bi-sliders"></i>Platform Configuration
 						</a>
 						<ul class="submenu collapse" id="platform-config-menu" routerLinkActive="show">
 							<li>
 								<a class="nav-link " routerLinkActive="active"
-									routerLink="/platform-configuration/main">
+								   routerLink="/platform-configuration/main">
 									Main
 								</a>
 							</li>
 							<li>
 								<a class="nav-link " routerLinkActive="active"
-									routerLink="/platform-configuration/global">
+								   routerLink="/platform-configuration/global">
 									Global Configurations
 								</a>
 							</li>
 							<li>
-								<a class="nav-link " routerLinkActive="active" routerLink="/platform-configuration/bcs">
+								<a class="nav-link " routerLinkActive="active"
+								   routerLink="/platform-configuration/bcs">
 									Bounded Context Configurations
 								</a>
 							</li>
@@ -213,9 +209,9 @@
 					</li>
 
 					<!-- security -->
-					<li class="nav-item has-submenu">
+					<li class="nav-item has-submenu" >
 						<a class="nav-link dropdown-toggle" routerLinkActive="active" href="#security-menu"
-							data-toggle="collapse" role="button"><i class="bi bi-shield-check"></i>Security
+						   data-toggle="collapse" role="button"><i class="bi bi-shield-check"></i>Security
 						</a>
 						<ul class="submenu collapse" id="security-menu" routerLinkActive="show">
 							<li>

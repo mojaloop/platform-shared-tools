@@ -31,11 +31,11 @@
 "use strict";
 
 
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { AuthenticationService } from "src/app/_services_and_types/authentication.service";
-import { UnauthorizedError } from "src/app/_services_and_types/errors";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Injectable} from "@angular/core";
+import {Observable} from "rxjs";
+import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
+import {UnauthorizedError} from "src/app/_services_and_types/errors";
 import {
 	ISettlementBatch, BatchTransferSearchResults,MatrixSearchResults,
 	ISettlementBatchTransfer, ISettlementConfig,
