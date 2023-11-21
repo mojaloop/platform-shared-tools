@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { ParticipantsService } from "src/app/_services_and_types/participants.service";
-import { BehaviorSubject, Subscription } from "rxjs";
-import { HUB_PARTICIPANT_ID, IParticipant } from "@mojaloop/participant-bc-public-types-lib";
-import { MessageService } from "src/app/_services_and_types/message.service";
-import { UnauthorizedError } from "src/app/_services_and_types/errors";
-import { paginate, PaginateResult } from "../_utils";
+import {Component, OnDestroy, OnInit} from "@angular/core";
+import {ParticipantsService} from "src/app/_services_and_types/participants.service";
+import {BehaviorSubject, Subscription} from "rxjs";
+import {HUB_PARTICIPANT_ID, IParticipant} from "@mojaloop/participant-bc-public-types-lib";
+import {MessageService} from "src/app/_services_and_types/message.service";
+import {UnauthorizedError} from "src/app/_services_and_types/errors";
+import {paginate, PaginateResult} from "../_utils";
 
 @Component({
 	selector: "app-participants",

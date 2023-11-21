@@ -1,14 +1,14 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { BehaviorSubject, Subscription } from "rxjs";
-import { UnauthorizedError } from "src/app/_services_and_types/errors";
-import { MessageService } from "src/app/_services_and_types/message.service";
-import { SettlementsService } from "src/app/_services_and_types/settlements.service";
+import {Component, OnDestroy, OnInit} from "@angular/core";
+import {BehaviorSubject, Subscription} from "rxjs";
+import {UnauthorizedError} from "src/app/_services_and_types/errors";
+import {MessageService} from "src/app/_services_and_types/message.service";
+import {SettlementsService} from "src/app/_services_and_types/settlements.service";
 import {
 	ISettlementBatch,
 	ISettlementBatchTransfer,
 	ISettlementMatrix
 } from "@mojaloop/settlements-bc-public-types-lib";
-import { ActivatedRoute } from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 
 
 @Component({

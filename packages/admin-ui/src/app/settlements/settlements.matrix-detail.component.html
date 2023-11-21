@@ -1,13 +1,11 @@
 <div class=" row"> <!--	Top header-->
 	<div class="col-md-8 align-self-center">
 		<h2 *ngIf="(matrix | async)?.state!=='OUT_OF_SYNC'">Matrix Details - {{(matrix | async)?.state}}</h2>
-		<h2 *ngIf="(matrix | async)?.state==='OUT_OF_SYNC'">Matrix Details <span class="text-danger"> - {{(matrix |
-				async)?.state}} (please recalculate<i class="bi bi-exclamation-triangle-fill"></i>)</span></h2>
+		<h2 *ngIf="(matrix | async)?.state==='OUT_OF_SYNC'">Matrix Details <span class="text-danger"> - {{(matrix | async)?.state}} (please recalculate<i class="bi bi-exclamation-triangle-fill"></i>)</span></h2>
 	</div>
 
 	<div class="col-md-4 align-self-center">
-		<small><strong>ID: </strong> {{(matrix | async)?.id}}<a ngbTooltip="Copy ID to clipboard"><i
-					class="bi bi-clipboard-plus"></i></a></small>
+		<small><strong>ID: </strong>  {{(matrix | async)?.id}}<a (click)="copyIdToClipboard()" ngbTooltip="Copy ID to clipboard" class="ml-1 text-dark"><i class="bi bi-clipboard-plus"></i></a></small>
 	</div>
 </div> <!--	Top header-->
 
@@ -48,8 +46,7 @@
 			<div class="col-4">
 				<div class="mb-2">
 					<label class="col-form-label text-secondary">Currencies</label>
-					<ng-container
-						*ngIf="!(matrix | async)?.currencyCodes || (matrix | async)?.currencyCodes?.length===0; else currencyList">
+					<ng-container *ngIf="!(matrix | async)?.currencyCodes || (matrix | async)?.currencyCodes?.length===0; else currencyList">
 						(All)
 					</ng-container>
 
@@ -107,17 +104,14 @@
 
 		<ng-container *ngIf="(matrix | async)?.state === 'IDLE'">
 			<button class="btn btn-success btn-block" (click)="recalculate()">Recalculate</button>
-			<button class="btn btn-warning btn-block" (click)="dispute()"
-				[disabled]="!(canDispute | async)">Dispute</button>
+			<button class="btn btn-warning btn-block" (click)="dispute()" [disabled]="!(canDispute | async)">Dispute</button>
 			<button class="btn btn-warning btn-block" (click)="close()" [disabled]="!(canClose | async)">Close</button>
-			<button class="btn btn-warning btn-block" (click)="lock()" [disabled]="!(canLock | async)">Lock for
-				Settlement</button>
+			<button class="btn btn-warning btn-block" (click)="lock()" [disabled]="!(canLock | async)">Lock for Settlement</button>
 		</ng-container>
 
 		<ng-container *ngIf="(matrix | async)?.state === 'LOCKED'">
-			<button class="btn btn-warning btn-block" (click)="settle()"
-				[disabled]="!(canSettle | async)">Settle</button>
-			<button class="btn btn-warning btn-block" (click)="unlock()">Unlock</button>
+			<button class="btn btn-warning btn-block" (click)="settle()" [disabled]="!(canSettle | async)">Settle</button>
+			<button class="btn btn-warning btn-block" (click)="unlock()" >Unlock</button>
 		</ng-container>
 
 		<ng-container *ngIf="(matrix | async)?.state === 'FINALIZED'">
@@ -142,7 +136,7 @@
 			<button class="btn btn-warning btn-block" (click)="settle()">Settle</button>
 		</ng-container>-->
 
-		<!--		<ng-container *ngIf="(matrix | async)?.state !== 'IDLE'">
+<!--		<ng-container *ngIf="(matrix | async)?.state !== 'IDLE'">
 			<button class="btn btn-primary btn-block" [disabled]="editing || (matrix | async)?.isActive"
 					(click)="approve()" [hidden]="(matrix | async)?.type ==='HUB'">Approve
 			</button>
@@ -153,139 +147,139 @@
 
 <ul ngbNav #nav="ngbNav" class="mt-4 nav-tabs" (navChange)="tabChange($event)">
 
-	<li ngbNavItem="batches"> <!-- batches -->
+	<li ngbNavItem="batches" > <!-- batches -->
 		<a ngbNavLink>Batches</a>
 		<ng-template ngbNavContent>
 			<h4 class="mt-3">Baches included in this matrix</h4>
 			<table class="table table-hover mt-3">
 				<thead class="thead-light">
-					<tr>
-						<th scope="col">Batch ID</th>
-						<th scope="col">Debit Balance</th>
-						<th scope="col">Credit Balance</th>
-						<!--					<th scope="col">Accounts</th>-->
-						<th scope="col">State</th>
+				<tr>
+					<th scope="col">Batch ID</th>
+					<th scope="col">Debit Balance</th>
+					<th scope="col">Credit Balance</th>
+<!--					<th scope="col">Accounts</th>-->
+					<th scope="col">State</th>
 
-					</tr>
+				</tr>
 				</thead>
 				<tbody>
-					<ng-container *ngIf="(matrix | async)?.batches?.length==0">
-						<tr class="">
-							<td colspan="6">No batches found, please try again with different criteria</td>
-						</tr>
-					</ng-container>
-					<tr *ngFor="let item of (matrix | async)?.batches">
-						<td>{{item.id}}</td>
-						<td>{{item.batchDebitBalance}}</td>
-						<td>{{item.batchCreditBalance}}</td>
-						<!--					<td>{{item.batchAccounts?.length}}</td>-->
-						<td>{{item.state}}</td>
+				<ng-container *ngIf="(matrix | async)?.batches?.length==0">
+					<tr class="" >
+						<td colspan="6">No batches found, please try again with different criteria</td>
 					</tr>
+				</ng-container>
+				<tr *ngFor="let item of (matrix | async)?.batches">
+					<td>{{item.id}}</td>
+					<td>{{item.batchDebitBalance}}</td>
+					<td>{{item.batchCreditBalance}}</td>
+<!--					<td>{{item.batchAccounts?.length}}</td>-->
+					<td>{{item.state}}</td>
+				</tr>
 				</tbody>
 			</table>
 		</ng-template>
 	</li> <!-- Batches -->
 
-	<li ngbNavItem="perParticipantTotals"> <!-- per participant totals -->
+	<li ngbNavItem="perParticipantTotals" > <!-- per participant totals -->
 		<a ngbNavLink>Balances by Participants</a>
 		<ng-template ngbNavContent>
 			<h4 class="mt-3">Per participant balances</h4>
 			<table class="table table-hover mt-3">
 				<thead class="thead-light">
-					<tr>
-						<th scope="col">Participant Id</th>
-						<th scope="col">State</th>
-						<th scope="col">Currency</th>
-						<th scope="col">Credit Balance</th>
-						<th scope="col">Debit Balance</th>
-					</tr>
+				<tr>
+					<th scope="col">Participant Id</th>
+					<th scope="col">State</th>
+					<th scope="col">Currency</th>
+					<th scope="col">Credit Balance</th>
+					<th scope="col">Debit Balance</th>
+				</tr>
 				</thead>
 				<tbody>
-					<tr *ngFor="let item of (matrix | async)?.balancesByParticipant">
-						<td><a routerLink="/participants/{{item.participantId}}">{{item.participantId}}</a></td>
-						<td>{{item.state}}</td>
-						<td>{{item.currencyCode}}</td>
-						<td>{{item.creditBalance}}</td>
-						<td>{{item.debitBalance}}</td>
-					</tr>
+				<tr *ngFor="let item of (matrix | async)?.balancesByParticipant">
+					<td><a routerLink="/participants/{{item.participantId}}">{{item.participantId}}</a></td>
+					<td>{{item.state}}</td>
+					<td>{{item.currencyCode}}</td>
+					<td>{{item.creditBalance}}</td>
+					<td>{{item.debitBalance}}</td>
+				</tr>
 				</tbody>
 			</table>
 		</ng-template>
 	</li> <!-- Per participant totals -->
 
-	<li ngbNavItem="perStateTotals"> <!-- per state totals -->
+	<li ngbNavItem="perStateTotals" > <!-- per state totals -->
 		<a ngbNavLink>Balances by State</a>
 		<ng-template ngbNavContent>
 			<h4 class="mt-3">Per State balances</h4>
 			<table class="table table-hover mt-3">
 				<thead class="thead-light">
-					<tr>
-						<th scope="col">State</th>
-						<th scope="col">Currency</th>
-						<th scope="col">Credit Balance</th>
-						<th scope="col">Debit Balance</th>
-					</tr>
+				<tr>
+					<th scope="col">State</th>
+					<th scope="col">Currency</th>
+					<th scope="col">Credit Balance</th>
+					<th scope="col">Debit Balance</th>
+				</tr>
 				</thead>
 				<tbody>
-					<tr *ngFor="let item of (matrix | async)?.balancesByStateAndCurrency">
-						<td>{{item.state}}</td>
-						<td>{{item.currencyCode}}</td>
-						<td>{{item.creditBalance}}</td>
-						<td>{{item.debitBalance}}</td>
-					</tr>
+				<tr *ngFor="let item of (matrix | async)?.balancesByStateAndCurrency">
+					<td>{{item.state}}</td>
+					<td>{{item.currencyCode}}</td>
+					<td>{{item.creditBalance}}</td>
+					<td>{{item.debitBalance}}</td>
+				</tr>
 				</tbody>
 			</table>
 		</ng-template>
 	</li> <!-- Per state totals -->
 
-	<li ngbNavItem="perCurrencyTotals"> <!-- per Currency totals -->
+	<li ngbNavItem="perCurrencyTotals" > <!-- per Currency totals -->
 		<a ngbNavLink>Balances by Currency</a>
 		<ng-template ngbNavContent>
 			<h4 class="mt-3">Per Currency balances</h4>
 			<table class="table table-hover mt-3">
 				<thead class="thead-light">
-					<tr>
-						<th scope="col">Currency</th>
-						<th scope="col">Credit Balance</th>
-						<th scope="col">Debit Balance</th>
-					</tr>
+				<tr>
+					<th scope="col">Currency</th>
+					<th scope="col">Credit Balance</th>
+					<th scope="col">Debit Balance</th>
+				</tr>
 				</thead>
 				<tbody>
-					<tr *ngFor="let item of (matrix | async)?.balancesByCurrency">
-						<td>{{item.currencyCode}}</td>
-						<td>{{item.creditBalance}}</td>
-						<td>{{item.debitBalance}}</td>
-					</tr>
+				<tr *ngFor="let item of (matrix | async)?.balancesByCurrency">
+					<td>{{item.currencyCode}}</td>
+					<td>{{item.creditBalance}}</td>
+					<td>{{item.debitBalance}}</td>
+				</tr>
 				</tbody>
 			</table>
 		</ng-template>
 	</li> <!-- Per Currency totals -->
 
 
-	<li ngbNavItem="transfers"> <!-- transfers -->
+	<li ngbNavItem="transfers" > <!-- transfers -->
 		<a ngbNavLink>Transfers</a>
 		<ng-template ngbNavContent>
 			<h4 class="mt-3">Transfers</h4>
 			<table class="table table-hover mt-3">
 				<thead class="thead-light">
-					<tr>
-						<th scope="col">Transfer Id</th>
-						<th scope="col">Payer Id</th>
-						<th scope="col">Payee Id</th>
-						<th scope="col">Amount</th>
-						<th scope="col">Timestamp</th>
-						<th scope="col">Batch Id</th>
-					</tr>
+				<tr>
+					<th scope="col">Transfer Id</th>
+					<th scope="col">Payer Id</th>
+					<th scope="col">Payee Id</th>
+					<th scope="col">Amount</th>
+					<th scope="col">Timestamp</th>
+					<th scope="col">Batch Id</th>
+				</tr>
 				</thead>
 				<tbody>
-					<tr *ngFor="let item of (transfers | async)">
-						<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
-						<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
-						<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
-						<td>{{item.amount}} ({{item.currencyCode}})</td>
-						<td>{{item.transferTimestamp | date:'medium'}}</td>
-						<td>{{item.batchId}}</td>
-					</tr>
+				<tr *ngFor="let item of (transfers | async)">
+					<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
+					<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
+					<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
+					<td>{{item.amount}} ({{item.currencyCode}})</td>
+					<td>{{item.transferTimestamp | date:'medium'}}</td>
+					<td>{{item.batchId}}</td>
+				</tr>
 				</tbody>
 			</table>
 		</ng-template>
