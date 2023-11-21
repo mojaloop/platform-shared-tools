@@ -1,27 +1,9 @@
 #!/usr/bin/env bash
-# vnext-install.sh
+# mini-loop-vnext.sh
 #    - install mojaloop vNext in a light-weight, simple and quick fashion 
 #      for demo's testing and development, this mode is affectionately known as mini-loop         
 # Author Tom Daly 
 # Date Nov 2023 
-
-# function set_deploy_target {
-#   # determine where we are deploying Mojaloop vNext 
-#   # e.g.  into mini-loop in a single OS or EKS cluster in AWS 
-#   # note the options will expland if we add support for installs into AKS, OKE and other environments 
-#   # this is necessary as there are (very) subtle differences between environments 
-#   # but we still want to have essentiall one vNext install script no matter the environment 
-#   local script_name=`basename $0`
-#   if [[ "$script_name" == "mini-loop-vnext.sh" ]]; then 
-#       ML_DEPLOY_TARGET="mini-loop"
-#   elif [[ "$script_name" == "eks-vnext.sh" ]]; then 
-#       ML_DEPLOY_TARGET="eks"
-#   else 
-#     printf "** Error the deploy target for Mojaloop vNext can't be determined from the script name \n"
-#     printf "   the program name used is [ %s ] but expected mini-loop-vnext.sh or eks-vnext.sh ** \n" "$script_name" 
-#     exit 1 
-#   fi 
-# }
 
 
 ################################################################################
@@ -49,7 +31,6 @@ source $REPO_BASE_DIR/packages/installer/scripts/shared-functions.sh
 source $REPO_BASE_DIR/packages/installer/scripts/install.sh 
 
 set_deploy_target  # deploy targets are mini-loop, EKS as at Nov 2023   
-echo "ML_DEPLOY_TARGET is $ML_DEPLOY_TARGET"
 
 # Process command line options as required
 while getopts "d:m:t:l:o:hH" OPTION ; do

@@ -425,15 +425,15 @@ function showUsage {
 		echo "Incorrect number of arguments passed to function $0"
 		exit 1
 	else
-echo  "USAGE: $0 -m [mode] -u [user] -v [k8 version] -k [distro] [-f] 
-Example 1 : k8s-install-current.sh -m install -v 1.25 # install k8s k3s version 1.24
-Example 2 : k8s-install-current.sh -m delete  -v 1.26 # delete  k8s microk8s version 1.26
+echo  "USAGE: $0 -m [mode] -v [k8 version] -k [distro] 
+Example 1 : k8s-install-current.sh -m install -v 1.28 -k k3s # install k8s k3s version 1.28
+Example 2 : k8s-install-current.sh -m delete  -v 1.27 -k k3s # delete  k8s microk8s version 1.27
 Example 3 : k8s-install-current.sh -m install -k microk8s -v 1.26 # install k8s microk8s distro version 1.26
 
 Options:
 -m mode ............... install|delete (-m is required)
 -k kubernetes distro... microk8s|k3s (default=k3s as it installs across multiple linux distros)
--v k8s version ........ 1.24|1.25|1.26 i.e. current k8s releases at time if this mini-loop release
+-v k8s version ........ 1.27|1.28 i.e. 2 latest k8s releases at time of vNext release
 -h|H .................. display this message
 "
 	fi
@@ -515,8 +515,9 @@ if [[ "$mode" == "install" ]]  ; then
     install_prerequisites 
     add_hosts
     if [[ "$k8s_distro" == "microk8s" ]]; then 
-        printf "** WIP: mini-loop for vNext with Microk8s is not yet sufficiently tested *** \n"
-        printf "        please select k3s \n"
+        printf "** WIP: mini-loop for vNext with Microk8s is not yet sufficiently tested \n"
+        printf "        for example microk8s v1.28 install on Ubuntu 22.04 ARM64 seemed to have some issues \n"
+        printf "        => please select k3s for now   *** \n"
         exit 1 
         #do_microk8s_install
     else 
