@@ -23,7 +23,7 @@ import {
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
 import * as uuid from "uuid";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
-import { ParticipantsSearchResults } from "./participant_types";
+import type {ParticipantsSearchResults, FundMovement} from "./participant_types";
 
 const SVC_BASEURL = "/_participants";
 
@@ -41,6 +41,79 @@ export class ParticipantsService {
 		private _authentication: AuthenticationService
 	) {
 		// this._http.
+	}
+
+	validateSettlementInitiationFile(
+		formData: FormData
+	): Observable<FundMovement[]> {
+		return new Observable<FundMovement[]>((subscriber) => {
+			this._http
+				.post<FundMovement[]>(
+					`${SVC_BASEURL}/participants/liquidityCheckValidate`,
+					formData
+				)
+				.subscribe(
+					(result) => {
+						subscriber.next(result);
+						return subscriber.complete();
+					},
+					(error) => {
+						if (error && error.status === 401) {
+							console.warn(
+								"UnauthorizedError received on validateSettlementInitiationFile"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
+						}
+						if (error && error.status === 403) {
+							console.warn(
+								"Forbidden received on validateSettlementInitiationFile"
+							);
+							subscriber.error(new Error(error.error?.msg));
+						} else {
+							console.error(error);
+							subscriber.error(error.error?.msg);
+						}
+						return subscriber.complete();
+					}
+				);
+		});
+	}
+
+	requestFundAdjustment(
+		fundAdjustments: FundMovement[],
+		ignoreDuplicate: boolean
+	): Observable<void> {
+		return new Observable((subscriber) => {
+			let url = `${SVC_BASEURL}/participants/liquidityCheckRequestAdjustment`;
+			if (ignoreDuplicate) url += "?ignoreDuplicate=true";
+
+			this._http.post(url, fundAdjustments).subscribe(
+				() => {
+					subscriber.next();
+					return subscriber.complete();
+				},
+				(error) => {
+					if (error && error.status === 401) {
+						console.warn(
+							"UnauthorizedError received on requestAdjustment"
+						);
+						subscriber.error(
+							new UnauthorizedError(error.error?.msg)
+						);
+					}
+					if (error && error.status === 403) {
+						console.warn("Forbidden received on requestAdjustment");
+						subscriber.error(new Error(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+					return subscriber.complete();
+				}
+			);
+		});
 	}
 
 	createEmptyParticipant(): IParticipant {
@@ -505,7 +578,7 @@ export class ParticipantsService {
 					`${SVC_BASEURL}/participants/${participantId}/funds/${fundsMovId}/approve`,
 					{}
 				).subscribe(
-					(resp: any) => {
+					() => {
 						console.log(`got success response from approveFundsMovement`);
 
 						subscriber.next();
@@ -852,7 +925,7 @@ export class ParticipantsService {
 			this._http
 				.post<{ id: string }>(`${SVC_BASEURL}/simulatetransfer`, body)
 				.subscribe(
-					(resp: any) => {
+					() => {
 						console.log(`got success response from simulateTransfer`);
 
 						subscriber.next();

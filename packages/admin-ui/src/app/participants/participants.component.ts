@@ -4,7 +4,8 @@ import {BehaviorSubject, Subscription} from "rxjs";
 import {HUB_PARTICIPANT_ID, IParticipant} from "@mojaloop/participant-bc-public-types-lib";
 import {MessageService} from "src/app/_services_and_types/message.service";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
-import {paginate, PaginateResult} from "../_utils";
+import type {FundMovement} from "../_services_and_types/participant_types";
+import {formatNumber, paginate, PaginateResult} from "../_utils";
 
 @Component({
 	selector: "app-participants",
@@ -16,6 +17,17 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 	readonly ALL_STR_ID = "(All)";
 	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
 	participantsSubs?: Subscription;
+
+	selectedFile: File | null = null;
+	fileUploadProgress: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+	strokeDashoffset = (190 - (190 * this.fileUploadProgress.value) / 100);
+	fileUploading = false;
+	transitionClass = 'circular-transition';
+	validated = false;
+
+	fundAdjustments: FundMovement[] = [];
+	fundMovements: BehaviorSubject<FundMovement[]> = new BehaviorSubject<FundMovement[]>([]);
+	fundMovementsSubs?: Subscription;
 
 	keywordParticipantState: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordParticipantId: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
@@ -35,6 +47,12 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 
 		await this.getSearchKeywords();
 
+		this.fileUploadProgress.subscribe((progress) => {
+			this.strokeDashoffset = (190 - (190 * progress) / 100);
+			// skip transition when progress's changed from 100 to 0
+			this.transitionClass = progress > 0 ? 'circular-transition' : '';
+		});
+
 		// wait for the page components to layout
 		setTimeout(() => {
 			this.search();
@@ -45,12 +63,13 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 		if (this.participantsSubs) {
 			this.participantsSubs.unsubscribe();
 		}
+		if (this.fundMovementsSubs) {
+			this.fundMovementsSubs.unsubscribe();
+		}
 	}
-
 
 	onFileDropped(event: any) {
 		event.preventDefault();
-		this.readAndConvertFile(event.dataTransfer.files);
 	}
 
 	onDragOver(event: any) {
@@ -59,18 +78,98 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 
 	onFileSelected(event: any) {
 		const selectedFile = event.target.files[0];
+
 		if (selectedFile) {
-			this.readAndConvertFile(selectedFile);
+			this.resetData();
+
+			this.fileUploadProgress.next(0);
+			this.selectedFile = selectedFile;
+			this.fileUploading = true;
+
+			const interval = setInterval(() => {
+				this.fileUploadProgress.next(this.fileUploadProgress.value + 10);
+
+				if (this.fileUploadProgress.value === 100) {
+					this.fileUploading = false;
+					clearInterval(interval);
+				}
+			}, 200);
 		}
 	}
 
-	readAndConvertFile(file: File) {
-		const fileReader = new FileReader();
-		fileReader.readAsBinaryString(file)
-		fileReader.onload = (event) => {
-			let binaryData = event.target?.result; //to send backend later
+	removeChosenFile() {
+		this.selectedFile = null;
+		const fileInput = document.getElementById("fileUpload") as HTMLInputElement;
+		fileInput.value = "";
+	}
 
-		}
+	resetData() {
+		this.fundAdjustments = [];
+		this.fundMovements.next([]);
+		this.validated = false;
+	}
+
+	validateFile() {
+		if (!this.selectedFile) return;
+
+		const formData = new FormData();
+		formData.append("settlementInitiation", this.selectedFile);
+
+		this.fundMovementsSubs = this._participantsSvc
+			.validateSettlementInitiationFile(formData)
+			.subscribe(
+				(result) => {
+					this.fundAdjustments = result
+						.map((fundMovement) => ({
+							...fundMovement,
+							updateAmount: formatNumber(
+								fundMovement.updateAmount
+							),
+						}))
+						.filter(
+							(fundMovement) => +fundMovement.updateAmount !== 0
+						);
+
+					this.validated = true;
+					this.fundMovements.next(result);
+				},
+				(error) => {
+					this._messageService.addError(error);
+				}
+			);
+	}
+
+	requestFundAdjustment() {
+		if (!this.fundAdjustments.length) return;
+
+		// need to recalulate the fundAdjustments as this.fundAdjustments' updateAmount are formatted
+		const fundAdjustments = this.fundMovements.value.filter(
+			(fundMovement) => +fundMovement.updateAmount !== 0
+		);
+		const ignoreDuplicate = fundAdjustments.some(
+			(fundAdjustment) => fundAdjustment.isDuplicate
+		);
+
+		this._participantsSvc
+			.requestFundAdjustment(fundAdjustments, ignoreDuplicate)
+			.subscribe(
+				() => {
+					const cancelButton = document.getElementById(
+						"btn-cancel"
+					) as HTMLButtonElement;
+					cancelButton.click();
+
+					this.removeChosenFile();
+					this.resetData();
+
+					this._messageService.addSuccess(
+						"Fund adjustment request submitted."
+					);
+				},
+				(error) => {
+					this._messageService.addError(error);
+				}
+			);
 	}
 
 	search(pageIndex: number = 0) {
