@@ -1,6 +1,6 @@
 <div class=" row"> <!--	Top header-->
 	<div class="col-md-8 align-self-center">
-		<h2 *ngIf="(matrix | async)?.state!=='OUT_OF_SYNC'">Matrix Details - {{(matrix | async)?.state}}</h2>
+		<h2 *ngIf="(matrix | async)?.state!=='OUT_OF_SYNC'">Matrix Details - <span  [ngClass]="{'text-success' : (matrix | async)?.state === 'FINALIZED'}">{{(matrix | async)?.state}}</span></h2>
 		<h2 *ngIf="(matrix | async)?.state==='OUT_OF_SYNC'">Matrix Details <span class="text-danger"> - {{(matrix | async)?.state}} (please recalculate<i class="bi bi-exclamation-triangle-fill"></i>)</span></h2>
 	</div>
 

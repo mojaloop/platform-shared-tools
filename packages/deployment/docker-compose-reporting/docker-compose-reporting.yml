@@ -2,9 +2,7 @@ version: "3.8"
 
 services:
   reporting-api-svc:
-    image: mojaloop/reporting-bc-reporting-api-svc:0.3.5
-    #    volumes:
-    #      - reporting-api-svc_data:/app/data
+    image: mojaloop/reporting-bc-reporting-api-svc:0.3.6
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -26,9 +24,7 @@ services:
     restart: unless-stopped
 
   participants-reporting-svc:
-    image: mojaloop/reporting-bc-participants-reporting-svc:0.3.2
-#    volumes:
-#      - participants-reporting-svc_data:/app/data
+    image: mojaloop/reporting-bc-participants-reporting-svc:0.3.4
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -46,9 +42,7 @@ services:
     restart: unless-stopped
 
   quotes-reporting-svc:
-    image: mojaloop/reporting-bc-quotes-reporting-svc:0.3.2
-#    volumes:
-#      - quotes-reporting-svc_data:/app/data
+    image: mojaloop/reporting-bc-quotes-reporting-svc:0.3.4
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -66,9 +60,7 @@ services:
     restart: unless-stopped
 
   transfers-reporting-svc:
-    image: mojaloop/reporting-bc-transfers-reporting-svc:0.3.2
-#    volumes:
-#      - transfers-reporting-svc_data:/app/data
+    image: mojaloop/reporting-bc-transfers-reporting-svc:0.3.4
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -85,9 +77,7 @@ services:
     restart: unless-stopped
 
   settlements-reporting-svc:
-    image: mojaloop/reporting-bc-settlements-reporting-svc:0.3.2
-#    volumes:
-#      - settlements-reporting-svc_data:/app/data
+    image: mojaloop/reporting-bc-settlements-reporting-svc:0.3.4
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -103,40 +93,3 @@ services:
     ports:
       - 5004:5004
     restart: unless-stopped
-
-#
-#volumes:
-#  participants-reporting-svc_data:
-#    driver: local
-#    driver_opts:
-#      o: bind
-#      type: none
-#      device: ${ROOT_VOLUME_DEVICE_PATH}/data/participants-reporting-svc
-#
-#  quotes-reporting-svc_data:
-#    driver: local
-#    driver_opts:
-#      o: bind
-#      type: none
-#      device: ${ROOT_VOLUME_DEVICE_PATH}/data/quotes-reporting-svc
-#
-#  transfers-reporting-svc_data:
-#    driver: local
-#    driver_opts:
-#      o: bind
-#      type: none
-#      device: ${ROOT_VOLUME_DEVICE_PATH}/data/transfers-reporting-svc_data
-#
-#  settlements-reporting-svc_data:
-#    driver: local
-#    driver_opts:
-#      o: bind
-#      type: none
-#      device: ${ROOT_VOLUME_DEVICE_PATH}/data/settlements-reporting-svc_data
-#
-#  reporting-api-svc_data:
-#    driver: local
-#    driver_opts:
-#      o: bind
-#      type: none
-#      device: ${ROOT_VOLUME_DEVICE_PATH}/data/reporting-api-svc
