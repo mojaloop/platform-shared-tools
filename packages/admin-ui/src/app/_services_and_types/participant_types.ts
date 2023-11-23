@@ -38,3 +38,17 @@ export declare type ParticipantsSearchResults = {
 	pageIndex: number;
 	items: IParticipant[];
 }
+
+export interface FundMovement {
+	matrixId: string
+	participantId: string
+	participantName: string
+	participantBankAccountInfo: string
+	bankBalance: number
+	settledTransferAmount: string
+	currencyCode: string
+	direction: string
+	updateAmount: string
+	settlementAccountId: string
+	isDuplicate: boolean
+}

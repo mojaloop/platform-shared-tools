@@ -50,6 +50,200 @@
   </form>
 </div>
 
+<!-- Liquidity balance check -->
+<div class="d-flex justify-content-end ">
+  <button data-toggle="modal" data-target="#liquidityBalanceModel" type="button"
+    class="btn btn-primary btn-labeled px-3 py-2 mb-2 mt-6" id="liquidityBalanceModelButton">
+    Liquidity Balance Check
+  </button>
+</div>
+
+<!-- Modal -->
+<aside class="modal fade" id="liquidityBalanceModel" tabindex="-1" role="dialog" aria-labelledby="liquidityBalanceModel">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-white shadow-sm">
+        <h5 class="modal-title font-weight-bolder text-dark" id="liquidityModelTitle">Liquidity Balance Check</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="font-weight-normal text-lg ">Please check and adjust funds to ensure balance after settlement.</p>
+        <div class="my-3 ">
+          <button data-toggle="modal" data-target="#fileUploadModel" class="btn btn-primary mr-3" type="button">
+            Choose Local File
+          </button>
+          
+          <span *ngIf="!selectedFile">No file chosen</span>
+
+          <span *ngIf="selectedFile" class="d-inline-flex align-items-center border rounded-pill" style="gap: 8px; padding: 5px 10px;">
+            <span style="font-size: 14px;">{{ selectedFile.name }}</span>
+
+            <button class="btn-reset" style="margin-top: -2px;" (click)="removeChosenFile()">
+              <i class="bi bi-x-lg" style="font-size: 12px;"></i>
+              <span class="sr-only">Remove file</span>
+            </button>
+          </span>
+        </div>
+        <div class="my-3">
+          <button class="btn btn-primary" [disabled]="!selectedFile" (click)="validateFile()">Validate</button>
+        </div>
+
+        <div *ngIf="!fundAdjustments.length && validated">
+          <div class="d-flex my-4">
+            <i class="bi bi-exclamation-circle text-success p-2"></i>
+            <span>
+              Liquidity balance checking is successful! System and bank balances aligned. No further action needed for the matrix.
+            </span>
+          </div>
+        </div>
+
+        <div *ngIf="fundAdjustments.length">
+          <div class="d-flex my-4">
+            <i class="bi bi-exclamation-circle text-primary p-2"></i>
+            <span>
+              It appears that the liquidity balance in the system doesn't match the balance in the file you provided. To
+              make things right, please make the following fund adjustment request to the checker.
+            </span>
+          </div>
+
+          <table class="table">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Participant Name</th>
+                <th scope="col">Activity</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Currency</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let fundAdjustment of fundAdjustments">
+                <td>{{ fundAdjustment.participantName }} 
+                  <span *ngIf="fundAdjustment.isDuplicate" class="text-danger">
+                    (Duplicated <i class="bi bi-exclamation-triangle-fill"></i>)
+                  </span>
+                </td>
+                <td>{{ fundAdjustment.direction }}</td>
+                <td>{{ fundAdjustment.updateAmount }}</td>
+                <td>{{ fundAdjustment.currencyCode }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" [disabled]="!fundAdjustments.length" (click)="requestFundAdjustment()">
+          Request fund adjustment
+        </button>
+        <button id="btn-cancel" type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!--File Upload Modal -->
+<aside class="modal fade" id="fileUploadModel" tabindex="-1" role="dialog" aria-labelledby="liquidityBalanceModel">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-white shadow-sm">
+        <h5 class="modal-title font-weight-bolder text-dark" id="liquidityModelTitle">Upload File</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body pb-0">
+        <p class="font-weight-normal text-lg ">Upload settlement finalization report.</p>
+        
+        <div
+          appDropZone
+          style="border-style: dashed !important;"
+          (dragOver)="onDragOver()"
+          (dragLeave)="onDragLeave()"
+          (fileDropped)="onFileDropped($event)"
+          [attr.class]="dropZoneClass"
+        >
+          <div style="position: relative; width: 5rem; height: 5rem; margin-bottom: 0.5rem;">
+            <i
+              *ngIf="!fileUploading && !selectedFile"
+              class="bi bi-cloud-arrow-up absolute-center"
+              style="font-size: 3rem;"
+            >
+            </i>
+
+            <i
+              *ngIf="fileUploading"
+              class="bi bi-file-earmark-text absolute-center"
+              style="font-size: 2rem;"
+            >
+            </i>
+
+            <i
+              *ngIf="fileUploadProgress.value === 100 && selectedFile"
+              class="bi bi-file-earmark-check text-success absolute-center"
+              style="font-size: 2rem;"
+            >
+            </i>
+
+            <div *ngIf="fileUploading || selectedFile">
+              <svg viewBox="0 0 80 80" style="transform: rotate(-90deg);">
+                <circle
+                  cx="40"
+                  cy="40"
+                  r="30"
+                  stroke="#DDE1E3"
+                  fill="none"
+                  style="stroke-width: 4px; stroke-dashoffset: 0; stroke-dasharray: 190; stroke-linecap: round;"
+                />
+                <circle
+                  cx="40"
+                  cy="40"
+                  r="30"
+                  stroke="#45a557"
+                  fill="none"
+                  [attr.stroke-dashoffset]="strokeDashoffset"
+                  style="stroke-width: 4px; stroke-dasharray: 190; stroke-linecap: round;"
+                  [attr.class]="transitionClass"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <ng-container *ngIf="!fileUploading && !selectedFile">
+            <p>Drag & Drop your CSV (or) excel file here</p>
+            <p>OR</p>
+            
+            <button class="btn btn-primary mb-2" (click)="openFileUpload()">Browse files</button>
+            <input id="fileUpload" type="file" class="sr-only" accept=".xls,.xlsx" (change)="onFileSelected($event)">
+          </ng-container>
+
+          <ng-container *ngIf="fileUploading">
+            <p>Uploading file...</p>
+          </ng-container>
+
+          <ng-container *ngIf="fileUploadProgress.value === 100 && selectedFile">
+            <p>Upload completed!</p>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 pt-0">
+        <button
+          *ngIf="fileUploadProgress.value === 100 && selectedFile"
+          type="button"
+          data-toggle="modal"
+          data-target="#fileUploadModel"
+          class="btn btn-primary"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- Table -->
 <div>
   <table class="table">
     <thead class="thead-light">
@@ -86,8 +280,6 @@
   </table>
 </div>
 
-<div></div>
-
 <!--pagination
 TODO: put in component
 -->
@@ -120,4 +312,3 @@ TODO: put in component
 		</li>
 	</ul>
 </nav>
-

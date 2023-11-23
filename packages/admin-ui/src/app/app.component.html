@@ -57,9 +57,17 @@
 
 					<!--participants-->
 					<li class="nav-item" *ngIf="(isLoggedIn | async)">
-						<a class="nav-link" routerLinkActive="active" routerLink="/participants">
+						<a class="nav-link dropdown-toggle" routerLinkActive="active" href="#participants-menu"
+							data-toggle="collapse" role="button">
 							<i class="bi bi-bank"></i>Participants
 						</a>
+						<ul class="submenu collapse" id="participants-menu" routerLinkActive="show">
+							<li>
+								<a class="nav-link" routerLinkActive="active" routerLink="/participants">
+									<i class="bi bi-bank"></i>Participant List
+								</a>
+							</li>
+						</ul>
 					</li>
 
 					<!--lookup-->

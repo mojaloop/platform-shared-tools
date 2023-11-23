@@ -63,6 +63,7 @@ import {PlatformRoleCreateComponent} from "./security/roles/platform-role-create
 import { SettlementInitiationReport } from "./reports/settlement-initiation-report.component";
 import {DFSPSettlementReport} from "./reports/dfsp-settlement-report.component";
 import {DFSPSettlementDetailReport} from "./reports/dfsp-settlement-detail-report.component";
+import { DropZoneDirective } from "./_pipes_and_guards/drop-zone.directive";
 
 @NgModule({
 	declarations: [
@@ -115,6 +116,7 @@ import {DFSPSettlementDetailReport} from "./reports/dfsp-settlement-detail-repor
 		SettlementInitiationReport,
 		DFSPSettlementReport,
 		DFSPSettlementDetailReport,
+		DropZoneDirective,
 	],
 	imports: [
 		BrowserModule,

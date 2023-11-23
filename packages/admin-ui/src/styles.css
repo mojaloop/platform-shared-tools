@@ -121,6 +121,15 @@ List page structures
 
 .list-page-body{
 	margin-bottom: 1rem !important;
-}.list-page-navigation{
-	margin-bottom: 1rem !important;
+}
+.list-page-navigation {
+	 margin-bottom: 1rem !important;
+}
+
+.btn-reset {
+	padding: 0;
+  border: none;
+  font: inherit;
+  color: inherit;
+  background-color: transparent;
 }

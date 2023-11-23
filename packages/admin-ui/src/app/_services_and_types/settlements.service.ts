@@ -31,7 +31,7 @@
 "use strict";
 
 
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
@@ -44,6 +44,7 @@ import {
 import * as uuid from "uuid";
 
 const SVC_BASEURL = "/_settlements";
+const REPORT_BASEURL = "/_reporting";
 
 @Injectable({
 	providedIn: "root",
@@ -532,6 +533,17 @@ export class SettlementsService {
 					return subscriber.complete();
 				}
 			);
+		});
+	}
+
+	exportSettlementMatrix(matrixId: string): Observable<Blob> {
+		const url = `/_reporting/settlementInitiationByMatrixIdExport/${matrixId}`;
+		const headers = new HttpHeaders();
+		headers.append('Accept', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+		return this._http.get(url, {
+			responseType: 'blob',
+			headers,
 		});
 	}
 

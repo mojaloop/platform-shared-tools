@@ -112,13 +112,9 @@ export function validatePorts(portString: string | undefined): boolean {
 	return true;
 }
 
-
 export function formatNumber(number: string | number) {
 	// const numberFormatter = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2 });
 	// TODO: take this format from use profile OR use default from browser, we can't assume everyone wants "en-US"
 	const numberFormatter = new Intl.NumberFormat(undefined, { minimumFractionDigits: 2 });
 	return numberFormatter.format(Number(number));
 }
-
-
-
