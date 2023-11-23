@@ -51,16 +51,15 @@
 </div>
 
 <!-- Liquidity balance check -->
-<section class="d-flex justify-content-end ">
+<div class="d-flex justify-content-end ">
   <button data-toggle="modal" data-target="#liquidityBalanceModel" type="button"
     class="btn btn-primary btn-labeled px-3 py-2 mb-2 mt-6" id="liquidityBalanceModelButton">
     Liquidity Balance Check
   </button>
-</section>
+</div>
 
 <!-- Modal -->
-<aside class="modal fade" id="liquidityBalanceModel" tabindex="-1" role="dialog" aria-labelledby="liquidityBalanceModel"
-  aria-hidden="true">
+<aside class="modal fade" id="liquidityBalanceModel" tabindex="-1" role="dialog" aria-labelledby="liquidityBalanceModel">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header bg-white shadow-sm">
@@ -144,8 +143,7 @@
 </aside>
 
 <!--File Upload Modal -->
-<aside class="modal fade" id="fileUploadModel" tabindex="-1" role="dialog" aria-labelledby="liquidityBalanceModel"
-  aria-hidden="true">
+<aside class="modal fade" id="fileUploadModel" tabindex="-1" role="dialog" aria-labelledby="liquidityBalanceModel">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header bg-white shadow-sm">
@@ -154,29 +152,31 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+
       <div class="modal-body">
         <p class="font-weight-normal text-lg ">Upload settlement finalization report.</p>
+        
         <div class="my-4 border p-4 rounded-lg d-flex flex-column gap-3 justify-content-center align-items-center"
           style="border-style: dashed !important;" (drop)="onFileDropped($event)" (dragover)="onDragOver($event)">
-          <div style="position: relative; width: 6rem; height: 6rem; margin-bottom: 0.5rem;">
+          <div style="position: relative; width: 5rem; height: 5rem; margin-bottom: 0.5rem;">
             <i
               *ngIf="!fileUploading && !selectedFile"
-              class="bi bi-cloud-arrow-up"
-              style="position: absolute; top: 22px; left: 24px; font-size: 3rem;"
+              class="bi bi-cloud-arrow-up absolute-center"
+              style="font-size: 3rem;"
             >
             </i>
 
             <i
               *ngIf="fileUploading"
-              class="bi bi-file-earmark-text"
-              style="position: absolute; top: 24px; left: 32px; font-size: 2rem;"
+              class="bi bi-file-earmark-text absolute-center"
+              style="font-size: 2rem;"
             >
             </i>
 
             <i
               *ngIf="fileUploadProgress.value === 100 && selectedFile"
-              class="bi bi-file-earmark-check text-success"
-              style="position: absolute; top: 24px; left: 32px; font-size: 2rem;"
+              class="bi bi-file-earmark-check text-success absolute-center"
+              style="font-size: 2rem;"
             >
             </i>
 
@@ -204,11 +204,21 @@
             </div>
           </div>
 
-          <p>Drag & Drop your CSV (or) excel file here</p>
-          <p>OR</p>
-          
-          <label class="file-uploader rounded-lg bg-primary text-white px-3 py-2" for="fileUpload">Browse files</label>
-          <input class="d-none" type="file" id="fileUpload" accept=".xls,.xlsx" (change)="onFileSelected($event)">
+          <ng-container *ngIf="!fileUploading && !selectedFile">
+            <p>Drag & Drop your CSV (or) excel file here</p>
+            <p>OR</p>
+            
+            <button class="btn btn-primary mb-2" (click)="openFileUpload()">Browse files</button>
+            <input id="fileUpload" type="file" class="sr-only" accept=".xls,.xlsx" (change)="onFileSelected($event)">
+          </ng-container>
+
+          <ng-container *ngIf="fileUploading">
+            <p>Uploading file...</p>
+          </ng-container>
+
+          <ng-container *ngIf="fileUploadProgress.value === 100 && selectedFile">
+            <p>Upload completed!</p>
+          </ng-container>
         </div>
       </div>
       <div class="modal-footer">

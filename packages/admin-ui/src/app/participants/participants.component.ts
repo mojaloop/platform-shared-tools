@@ -97,6 +97,11 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 		}
 	}
 
+	openFileUpload() {
+		const fileInput = document.getElementById("fileUpload") as HTMLInputElement;
+		fileInput.click();
+	}
+
 	removeChosenFile() {
 		this.selectedFile = null;
 		const fileInput = document.getElementById("fileUpload") as HTMLInputElement;
