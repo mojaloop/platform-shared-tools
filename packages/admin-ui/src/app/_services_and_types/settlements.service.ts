@@ -329,7 +329,7 @@ export class SettlementsService {
 		type?: string,
 		state?: string,
 		model?: string,
-		currencyCodes?: string,
+		currencyCodes?: string[],
 		createdAt?: number,
 		pageIndex?: number,
 		pageSize: number = DEFAULT_PAGE_SIZE
@@ -340,7 +340,7 @@ export class SettlementsService {
 			if (type) searchParams.append("type", type);
 			if (state) searchParams.append("state", state);
 			if (model) searchParams.append("model", model);
-			if (currencyCodes) searchParams.append("currencyCodes", currencyCodes);
+			if (currencyCodes) searchParams.append("currencyCodes", JSON.stringify(currencyCodes));
 			if (createdAt) searchParams.append("createdAt", createdAt.toString());
 			if (pageIndex) searchParams.append("pageIndex", pageIndex.toString());
 			if (pageSize) searchParams.append("pageSize", pageSize.toString());
