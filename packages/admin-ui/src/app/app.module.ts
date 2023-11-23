@@ -60,6 +60,7 @@ import {BuiltinIamAppsListComponent} from "./security/builtin_iam/builtin-iam-ap
 import {BuiltinIamAppCreateComponent} from "./security/builtin_iam/builtin-iam-app-create.component";
 import {BuiltinIamAppDetailComponent} from "./security/builtin_iam/builtin-iam-app-detail.component";
 import {PlatformRoleCreateComponent} from "./security/roles/platform-role-create.component";
+import {DropZoneDirective} from "./participants/drop-zone.directive";
 
 @NgModule({
 	declarations: [
@@ -108,7 +109,8 @@ import {PlatformRoleCreateComponent} from "./security/roles/platform-role-create
 		PlatformRoleCreateComponent,
 		BuiltinIamAppsListComponent,
 		BuiltinIamAppCreateComponent,
-		BuiltinIamAppDetailComponent
+		BuiltinIamAppDetailComponent,
+		DropZoneDirective,
 	],
 	imports: [
 		BrowserModule,

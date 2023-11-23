@@ -15,6 +15,7 @@ import {formatNumber, paginate, PaginateResult} from "../_utils";
 export class ParticipantsComponent implements OnInit, OnDestroy {
 
 	readonly ALL_STR_ID = "(All)";
+	readonly DROP_ZONE_CLASS = "my-4 border p-4 rounded-lg d-flex flex-column gap-3 justify-content-center align-items-center";
 	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
 	participantsSubs?: Subscription;
 
@@ -24,6 +25,7 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 	fileUploading = false;
 	transitionClass = 'circular-transition';
 	validated = false;
+	dropZoneClass = this.DROP_ZONE_CLASS;
 
 	fundAdjustments: FundMovement[] = [];
 	fundMovements: BehaviorSubject<FundMovement[]> = new BehaviorSubject<FundMovement[]>([]);
@@ -68,22 +70,36 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	onFileDropped(event: any) {
-		event.preventDefault();
+	onFileDropped(files: FileList) {
+		const selectedFile = files[0];
+		this.dropZoneClass = this.DROP_ZONE_CLASS;
+
+		if (selectedFile) {
+			this.uploadFile(selectedFile);
+		}
 	}
 
-	onDragOver(event: any) {
-		event.preventDefault();
+	onDragOver() {
+		this.dropZoneClass = `${this.DROP_ZONE_CLASS} dragging-over`;
+	}
+
+	onDragLeave() {
+		this.dropZoneClass = this.DROP_ZONE_CLASS;
 	}
 
 	onFileSelected(event: any) {
 		const selectedFile = event.target.files[0];
 
 		if (selectedFile) {
-			this.resetData();
+			this.uploadFile(selectedFile);
+		}
+	}
+
+	uploadFile(file: File) {
+		this.resetData();
 
 			this.fileUploadProgress.next(0);
-			this.selectedFile = selectedFile;
+			this.selectedFile = file;
 			this.fileUploading = true;
 
 			const interval = setInterval(() => {
@@ -94,7 +110,6 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 					clearInterval(interval);
 				}
 			}, 200);
-		}
 	}
 
 	openFileUpload() {
@@ -104,8 +119,8 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 
 	removeChosenFile() {
 		this.selectedFile = null;
-		const fileInput = document.getElementById("fileUpload") as HTMLInputElement;
-		fileInput.value = "";
+		const fileInput = document.getElementById("fileUpload") as HTMLInputElement | null;
+		if (fileInput) fileInput.value = "";
 	}
 
 	resetData() {
