@@ -70,7 +70,7 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 		const state = filterMatrixState === this.ALL_STR_ID ? undefined : filterMatrixState;
 		const model = filterMatrixModel === this.ALL_STR_ID ? undefined : filterMatrixModel;
 		const currencyCodes = filterCurrency === this.ALL_STR_ID ? undefined : [filterCurrency];
-		const createdAt = filterCreatedDate ? new Date(filterCreatedDate).valueOf() : undefined;
+		const createdAt = filterCreatedDate ? new Date(filterCreatedDate).getTime() : undefined;
 
 		this.matrixSubs = this._settlementsService.searchMatrices(
 			matrixId,
