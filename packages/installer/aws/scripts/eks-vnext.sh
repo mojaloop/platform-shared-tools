@@ -20,7 +20,7 @@ echo "DBG> REPO_BASE_DIR = $REPO_BASE_DIR"
 COMMON_SCRIPTS_DIR=$REPO_BASE_DIR/packages/installer/scripts
 echo "DBG> COMMON SCRIPTS_DIR X = $COMMON_SCRIPTS_DIR"
 MANIFESTS_DIR=$REPO_BASE_DIR/packages/installer/manifests
-echo "DBG> MANIFESTS_DIR = $MANIFESTS_DIR"
+MONGO_IMPORT_DIR=$REPO_BASE_DIR/packages/deployment/docker-compose-apps/ttk_files/mongodb
 ETC_DIR=$REPO_BASE_DIR/packages/installer/etc
 echo "DBG> ETC_DIR X = $ETC_DIR"
 MOJALOOP_CONFIGURE_FLAGS_STR=" -d $MANIFESTS_DIR " 
@@ -60,8 +60,10 @@ while getopts "n:d:m:t:l:hH" OPTION ; do
     esac
 done
 
+
 # call the common install script to install Mojaloop vNext into the kubernetes cluster
 install_vnext $ML_DEPLOY_TARGET
+export KUBECONFIG=/home/ubuntu/eks-iac/Terraform/kubeconfig
 
 # print_start_banner "EKS"
 # check_repo_owner_not_root $REPO_BASE_DIR
