@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   fspiop-api-svc:
-    image: mojaloop/interop-apis-bc-fspiop-api-svc:0.3.2
+    image: mojaloop/interop-apis-bc-fspiop-api-svc:0.3.10
     depends_on:
       settlements-api-svc:
         condition: service_healthy
@@ -29,7 +29,7 @@ services:
       - 4000:4000
 
   accounts_and_balances_builtin-ledger-grpc-svc:
-    image: mojaloop/accounts-and-balances-bc-builtin-ledger-grpc-svc:0.3.5
+    image: mojaloop/accounts-and-balances-bc-builtin-ledger-grpc-svc:0.3.6
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -55,7 +55,7 @@ services:
     restart: unless-stopped
 
   accounts_and_balances_coa-grpc-svc:
-    image: mojaloop/accounts-and-balances-bc-coa-grpc-svc:0.3.5
+    image: mojaloop/accounts-and-balances-bc-coa-grpc-svc:0.3.6
     depends_on:
       accounts_and_balances_builtin-ledger-grpc-svc:
         condition: service_healthy
@@ -87,7 +87,7 @@ services:
 # participants
 
   participants-svc:
-    image: mojaloop/participants-bc-participants-svc:0.3.10
+    image: mojaloop/participants-bc-participants-svc:0.3.11
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -138,7 +138,7 @@ services:
     restart: unless-stopped
 
   account-lookup-svc:
-    image: mojaloop/account-lookup-bc-account-lookup-svc:0.3.6
+    image: mojaloop/account-lookup-bc-account-lookup-svc:0.3.8
     depends_on:
       account-lookup-http-oracle-svc:
         condition: service_healthy
@@ -168,7 +168,7 @@ services:
 # quoting
 
   quoting-svc:
-    image: mojaloop/quoting-bc-quoting-svc:0.3.5
+    image: mojaloop/quoting-bc-quoting-svc:0.3.7
     depends_on:
       participants-svc:
         condition: service_healthy
@@ -198,7 +198,7 @@ services:
   # transfers
 
   transfers-api-svc:
-    image: mojaloop/transfers-bc-transfers-api-svc:0.3.7
+    image: mojaloop/transfers-bc-transfers-api-svc:0.3.9
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -228,7 +228,7 @@ services:
     restart: unless-stopped
 
   transfers-event-handler-svc:
-    image: mojaloop/transfers-bc-event-handler-svc:0.3.6
+    image: mojaloop/transfers-bc-event-handler-svc:0.3.9
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -249,7 +249,7 @@ services:
     restart: unless-stopped
 
   transfers-command-handler-svc:
-    image: mojaloop/transfers-bc-command-handler-svc:0.3.6
+    image: mojaloop/transfers-bc-command-handler-svc:0.3.9
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -276,7 +276,7 @@ services:
 # settlements
 
   settlements-api-svc:
-    image: mojaloop/settlements-bc-settlements-api-svc:0.3.6
+    image: mojaloop/settlements-bc-settlements-api-svc:0.3.7
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -307,7 +307,7 @@ services:
     restart: unless-stopped
 
   settlements-event-handler-svc:
-    image: mojaloop/settlements-bc-event-handler-svc:0.3.3
+    image: mojaloop/settlements-bc-event-handler-svc:0.3.4
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -328,7 +328,7 @@ services:
     restart: unless-stopped
 
   settlements-command-handler-svc:
-    image: mojaloop/settlements-bc-command-handler-svc:0.3.6
+    image: mojaloop/settlements-bc-command-handler-svc:0.3.7
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -350,7 +350,7 @@ services:
 
 
   admin-ui:
-    image: mojaloop/vnext-admin-ui-svc:0.1.42
+    image: mojaloop/vnext-admin-ui-svc:0.1.44
     depends_on:
       transfers-api-svc:
         condition: service_healthy

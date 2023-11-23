@@ -82,7 +82,7 @@ export class AccountLookupAssociationsListComponent implements OnInit {
 	}
 
 
-	
+
 	async getSearchKeywords() {
 		this.keywordsSubs = this._accountLookUpService.getSearchKeywords().subscribe((keywords) => {
 			console.log("AssociationsComponent search - got getSearchKeywords");

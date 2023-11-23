@@ -7,7 +7,8 @@ import {UnauthorizedError} from "src/app/_services_and_types/errors";
 
 const SVC_BASEURL = "/_transfers";
 
-const DEFAULT_PAGE_SIZE = 20;
+const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_INDEX = 0;
 
 @Injectable({
 	providedIn: "root",
@@ -90,27 +91,39 @@ export class TransfersService {
 
 	search(
 		state?: string,
-		currency?: string,
-		id?: string,
+		currencyCode?: string,
 		startDate?: number,
 		endDate?: number,
+		id?: string,
+		payerIdType?: string,
+		payeeIdType?: string,
+		payerDfspName?: string,
+		payeeDfspName?: string,
+		payerIdValue?: string,
+		payeeIdValue?: string,
+		transferType?:string,
 		bulkTransferId?: string,
-		pageIndex?: number,
-		pageSize: number = DEFAULT_PAGE_SIZE
+		pageIndex: number = DEFAULT_PAGE_INDEX,
+		pageSize: number = DEFAULT_PAGE_SIZE,
 	): Observable<TransfersSearchResults> {
 		const searchParams = new URLSearchParams();
 		if (id) searchParams.append("id", id);
 		if (state) searchParams.append("state", state);
-		if (currency) searchParams.append("currency", currency);
+		if (currencyCode) searchParams.append("currencyCode", currencyCode);
 		if (startDate) searchParams.append("startDate", startDate.toString());
 		if (endDate) searchParams.append("endDate", endDate.toString());
+		if (payerIdType) searchParams.append("payerIdType", payerIdType);
+		if (payeeIdType) searchParams.append("payeeIdType", payeeIdType);
+		if (payerDfspName) searchParams.append("payerDfspName", payerDfspName);
+		if (payeeDfspName) searchParams.append("payeeDfspName", payeeDfspName);
+		if (payerIdValue) searchParams.append("payerIdValue", payerIdValue);
+		if (payeeIdValue) searchParams.append("payeeIdValue", payeeIdValue);
+		if (transferType) searchParams.append("transferType", transferType);
 		if (bulkTransferId) searchParams.append("bulkTransferId", bulkTransferId);
-
-		if (pageIndex) searchParams.append("pageIndex", pageIndex.toString());
+		if (pageIndex) searchParams.append("pageIndex", (pageIndex).toString());
 		if (pageSize) searchParams.append("pageSize", pageSize.toString());
 
 		const url = `${SVC_BASEURL}/transfers?${searchParams.toString()}`;
-
 
 		return new Observable<TransfersSearchResults>(subscriber => {
 			this._http.get<TransfersSearchResults>(url).subscribe(
