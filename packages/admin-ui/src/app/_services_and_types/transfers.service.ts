@@ -19,7 +19,6 @@ export class TransfersService {
 	}
 
 	createEmptyTransfer(): Transfer {
-		const now = Date.now();
 		return {
 			transferId: "",
 			bulkTransferId: "",
@@ -97,8 +96,6 @@ export class TransfersService {
 		id?: string,
 		payerIdType?: string,
 		payeeIdType?: string,
-		payerDfspName?: string,
-		payeeDfspName?: string,
 		payerIdValue?: string,
 		payeeIdValue?: string,
 		transferType?:string,
@@ -114,8 +111,6 @@ export class TransfersService {
 		if (endDate) searchParams.append("endDate", endDate.toString());
 		if (payerIdType) searchParams.append("payerIdType", payerIdType);
 		if (payeeIdType) searchParams.append("payeeIdType", payeeIdType);
-		if (payerDfspName) searchParams.append("payerDfspName", payerDfspName);
-		if (payeeDfspName) searchParams.append("payeeDfspName", payeeDfspName);
 		if (payerIdValue) searchParams.append("payerIdValue", payerIdValue);
 		if (payeeIdValue) searchParams.append("payeeIdValue", payeeIdValue);
 		if (transferType) searchParams.append("transferType", transferType);

@@ -20,8 +20,8 @@
 		<table class="table">
 			<tr class="form-row">
 				<div class="form-group col-md-3">
-					<label for="filterPayerDfspName">Payer DFSP Name:</label>
-					<select formControlName="filterPayerDfspName" id="filterPayerDfspName" class="form-control">
+					<label for="filterPayerIdValue">Payer DFSP Name:</label>
+					<select formControlName="filterPayerIdValue" id="filterPayerIdValue" class="form-control">
 						<option value={{ALL_STR_ID}}>(All)</option>
 						<option *ngFor="let item of participants | async" value="{{item.id}}">
 							{{item.name}}
@@ -30,8 +30,8 @@
 				</div>
 
 				<div class="form-group col-md-3">
-					<label for="filterPayeeDfspName">Payee DFSP Name:</label>
-					<select formControlName="filterPayeeDfspName" id="filterPayeeDfspName" class="form-control">
+					<label for="filterPayeeIdValue">Payee DFSP Name:</label>
+					<select formControlName="filterPayeeIdValue" id="filterPayeeIdValue" class="form-control">
 						<option value={{ALL_STR_ID}}>(All)</option>
 						<option *ngFor="let item of participants | async" value="{{item.id}}">
 							{{item.name}}
@@ -42,27 +42,24 @@
 				<div class="form-group col-md-3">
 					<label for="filterPayerIdType">Payer ID Type:</label>
 					<select formControlName="filterPayerIdType" id="filterPayerIdType" class="form-control">
-						<option *ngFor="let partyIdType of partyIdTypeList" value="{{partyIdType}}">
-							{{partyIdType}}
-						</option>
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordPayerIdType | async)">{{item}}</option>
 					</select>
 				</div>
 
 				<div class="form-group col-md-3">
 					<label for="filterPayeeIdType">Payee ID Type:</label>
 					<select formControlName="filterPayeeIdType" id="filterPayeeIdType" class="form-control">
-						<option *ngFor="let partyIdType of partyIdTypeList" value="{{partyIdType}}">
-							{{partyIdType}}
-						</option>
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordPayeeIdType | async)">{{item}}</option>
 					</select>
 				</div>
 
 				<div class="form-group col-md-3">
 					<label for="filterTransferType">Transfer Type:</label>
 					<select formControlName="filterTransferType" id="filterTransferType" class="form-control">
-						<option *ngFor="let transferType of transferTypeList" value="{{transferType}}">
-							{{transferType}}
-						</option>
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordTransferType | async)">{{item}}</option>
 					</select>
 				</div>
 
@@ -87,7 +84,7 @@
 					<input type="text" formControlName="filterTransferId" id="filterTransferId" class="form-control">
 				</div>
 
-				<div class="form-group col-md-3">
+				<!-- <div class="form-group col-md-3">
 					<label for="filterPayerValue">Payer ID Value:</label>
 					<input type="text" formControlName="filterPayerValue" id="filterPayerValue" class="form-control">
 				</div>
@@ -96,7 +93,7 @@
 					<label for="filterPayeeIdValue">Payee ID Value:</label>
 					<input type="text" formControlName="filterPayeeIdValue" id="filterPayeeIdValue"
 						   class="form-control">
-				</div>
+				</div> -->
 
 				<div class="form-group col-md-3">
 					<label for="filterStartDate">Start date:</label>

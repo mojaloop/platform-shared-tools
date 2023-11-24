@@ -29,6 +29,9 @@ export class TransfersComponent implements OnInit, OnDestroy {
 	keywordState: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordCurrency: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordSourceAppName: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+	keywordTransferType: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+	keywordPayerIdType: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+	keywordPayeeIdType: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordsSubs?: Subscription;
 
 	//Filters
@@ -38,15 +41,13 @@ export class TransfersComponent implements OnInit, OnDestroy {
 
 	isFilterShow: boolean = true;
 	initialFilterValues = {
-		filterPayerDfspName: this.ALL_STR_ID,
-		filterPayeeDfspName: this.ALL_STR_ID,
 		filterTransferState: this.ALL_STR_ID,
 		filterTransferType: this.ALL_STR_ID,
 		filterPayerIdType: this.ALL_STR_ID,
 		filterPayeeIdType: this.ALL_STR_ID,
 		filterCurrency: this.ALL_STR_ID,
-		filterPayerValue: null,
-		filterPayeeIdValue: null,
+		filterPayerIdValue: this.ALL_STR_ID,
+		filterPayeeIdValue: this.ALL_STR_ID,
 		filterTransferId: null,
 		filterStartDate: null,
 		filterEndDate: null,
@@ -114,10 +115,8 @@ export class TransfersComponent implements OnInit, OnDestroy {
 			filterTransferId,
 			filterPayerIdType,
 			filterPayeeIdType,
-			filterPayeeDfspName,
-			filterPayerDfspName,
 			filterTransferType,
-			filterPayerValue,
+			filterPayerIdValue,
 			filterPayeeIdValue
 		} = this.filterForm.value;
 
@@ -128,11 +127,9 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		const bulkTransferId = filterTransferId || undefined;
 		const payerIdType = filterPayerIdType === this.ALL_STR_ID ? undefined : filterPayerIdType;
 		const payeeIdType = filterPayeeIdType === this.ALL_STR_ID ? undefined : filterPayeeIdType;
-		const payerDfspName = filterPayerDfspName === this.ALL_STR_ID ? undefined : filterPayerDfspName;
-		const payeeDfspName = filterPayeeDfspName === this.ALL_STR_ID ? undefined : filterPayeeDfspName;
 		const transferType = filterTransferType === this.ALL_STR_ID ? undefined : filterTransferType;
-		const payerIdValue = filterPayerValue || undefined;
-		const payeeIdValue = filterPayeeIdValue || undefined;
+		const payerIdValue = filterPayerIdValue === this.ALL_STR_ID ? undefined : filterPayerIdValue; 
+		const payeeIdValue = filterPayeeIdValue === this.ALL_STR_ID ? undefined : filterPayeeIdValue; 
 
 
 		this.transfersSubs = this._transfersSvc.search(
@@ -143,8 +140,6 @@ export class TransfersComponent implements OnInit, OnDestroy {
 			bulkTransferId,
 			payerIdType,
 			payeeIdType,
-			payerDfspName,
-			payeeDfspName,
 			payerIdValue,
 			payeeIdValue,
 			transferType,
@@ -176,6 +171,9 @@ export class TransfersComponent implements OnInit, OnDestroy {
 				if (value.fieldName == "state") this.keywordState.next(value.distinctTerms);
 				if (value.fieldName == "currency") this.keywordCurrency.next(value.distinctTerms);
 				if (value.fieldName == "id") this.keywordSourceAppName.next(value.distinctTerms);
+				if (value.fieldName == "transferType") this.keywordTransferType.next(value.distinctTerms);
+				if (value.fieldName == "payerIdType") this.keywordPayerIdType.next(value.distinctTerms);
+				if (value.fieldName == "payeeIdType") this.keywordPayeeIdType.next(value.distinctTerms);
 			});
 		}, error => {
 			if (error && error instanceof UnauthorizedError) {
