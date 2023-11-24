@@ -1,7 +1,7 @@
-# mini-loop vnext  - install Mojaloop vNext Nov 2023 release (using kubernetes v1.27 - 1.28 with rancher k3s ) 
+# mini-loop - rapid single node install of Mojaloop vNext (beta)
 
 ## Description 
-mini-loop vnext is a simple, scripted/automated installer for Mojaloop vNext. For details on the Mojaloop vNext please refer to the Mojaloop reference architecture available from (http://mojaloop.io). The mini-loop vNext install mode is for  showcasing Mojaloop, development, testing, workshops, integration testing, performance testing, learning, and more. mini-Loop mode is designed to support the adoption and usage of Mojaloop vNext. However, it is crucial to note that mini-loop mode is **not intended for production use.**" 
+mini-loop deployment of vNext (beta) is a simple, scripted/automated installer for Mojaloop vNext. For details on the Mojaloop vNext please refer to the Mojaloop reference architecture available from (http://mojaloop.io). The mini-loop vNext install mode is for  showcasing Mojaloop, development, testing, workshops, integration testing, performance testing, learning, and more. mini-Loop mode is designed to support the adoption and usage of Mojaloop vNext. However, it is crucial to note that mini-loop mode is **not intended for production use.**" 
 
 The goal is to make it realistic, easy, quick, scriptable and cost effective to deploy Mojaloop vNext in a variety of local or cloud environments. 
 - realistic: running a full kubernetes stack , so you can do real-world tests
