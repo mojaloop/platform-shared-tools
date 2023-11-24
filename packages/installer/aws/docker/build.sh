@@ -67,7 +67,7 @@ echo "COMMON_SCRIPTS_DIR = $COMMON_SCRIPTS_DIR"
 pwd
 ls
 
-source $COMMON_SCRIPTS_DIR/common.sh 
+source $COMMON_SCRIPTS_DIR/shared_functions.sh 
 set_arch 
 
 echo "ARCH is $ARCH"

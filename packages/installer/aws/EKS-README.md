@@ -8,28 +8,44 @@ It is important to note that these tools like Mojaloop vNext itself are of beta 
 
 # purpose and use 
 The EKS installation of Mojaloop vNext is designed to enable:-
--  Mojaloop deployers and HUB operators to easily and quickly deploy Mojaloop vNext for production use (again it is not there yet as it is only beta).
+-  Mojaloop deployers and HUB operators to easily and quickly deploy Mojaloop vNext for production use. Now again it is not there yet as it is only beta.
 - Enable Mojaloop deployers and operators to quickly spin up and down multiple environments such as dev/test , pre-prod etc 
 - Provide an easily accesible starting point from which Mojaloop deployers and Hub operators can further customise the cluster and vNext deployment    
 
 # pre-requisites / starting point 
-- AWS account and AWS credentials with mfa enabled (typically from authenticator on a smartphone)
+- use must have an AWS account and AWS credentials with mfa enabled (typically from authenticator on a smartphone)
 - from the deployment machine the deploying user needs to have ~/home/.aws/credentials file setup
 - docker installed 
-- assuming some sort of Unix or Linux as the client machine to 
+- git installed 
+- bash shell available 
+- assuming some sort of Unix or Linux as the client machine as the idea of $HOME/.aws/credentials on the host machine must make sense.  (Has been tested on Ubuntu, MacOS and other Linux) 
+
+# overview 
+![alt text](../images/eks-deploy-pic.jpg)
 
 
-# Installation and customisation instructions 
-Assuming you have an x86_64 or ARM64 environment running Ubuntu release 22 and are logged in as a non-root user (e.g. mluser)
+# Install instructions 
 ```bash
-login as mluser                                                       # login as  a non-root user e.g. mluser
+login as non root user e.g.  mluser                                    # login as  a non-root user e.g. mluser
 git clone --branch TODO  https://github.com/mojaloop/platform-shared-tools.git    # clone vNext repo 
-cd ./platform-shared-tools/packages/installer/mini-loop               # cd to mini-loop dir
-sudo ./mini-loop-k8s.sh -m install -k k3s -v 1.28                     # install and configure k3s v1.28
-source $HOME/.bashrc                                                  # or logout/log in again to set env
-sudo ./ttk-interim-fix.sh                                             # ** do this on ARM64 ONLY ** 
-./mini-loop-vNext.sh -m install_ml                                    # configure and deploy vNext 
+edit ./packages/installer/aws/terraform/env.hcl                       # adjust the settings for your cluster 
+cd ./platform-shared-tools/packages/installer/aws/docker              # move to Dockerfile directory 
+./build.sh                                                            # build the dockerfile 
+./run-aws-container.sh -p myprofile                                   # execute dockerfile with aws profile 
+aws-mfa                                                               # authenticate to AWS 
+eks-cluster.sh --apply                                                # apply terraform build/config the cluster
+eks-vnext.sh -m install_ml                                            # configure and deploy vNext 
 ```
+
+# To clean up and remove Mojaloop vNext and EKS cluster
+```bash
+login as same non root user e.g.  mluser                              # login as  a non-root 
+./run-aws-container.sh -p myprofile                                   # execute dockerfile with aws profile 
+aws-mfa                                                               # authenticate to AWS 
+eks-vnext.sh -m delete_ml                                             # undeploy/delete vNext app 
+eks-cluster.sh --destroy                                              # terraform destory of the cluster
+```
+
 
 # Customising the installation 
 modifying the 
@@ -98,3 +114,8 @@ A: see the section on accessing Mojaloop from a laptop and try accessing the htt
 
 2. Q: what about windows ?
 A: The best way to run on a windows laptop is to provision an Ubuntu 22 virtual machine using one of the popular Hypervisors available today (HyperV, VirtualBox, UTM etc) 
+
+3. Q: why are you not using help charts for deployent 
+A: We have chosen to use helm charts for the infrastructure layer , kafka , mongo etc but we were seeking to keep the deployment as simple as possible and accessible as possible for deployers, operators and even those who just want to try Mojaloop or even students and others that want to use Mojaloop as an exmple of a well comprised modern web application. To this end there is not an immediate benefit to packaging as helm and further the final target for deployment for the application is as a Kubernetes Operator.  Indeed the kubernetes Operator for vNext has been outlined by the vNext team and BizHub (an Australian web company) have been advancing the operator in parallel to the work you see in this installer directory.
+
+

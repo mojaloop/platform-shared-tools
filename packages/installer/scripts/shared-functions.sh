@@ -68,7 +68,6 @@ function check_repo_owner_not_root {
     fi
 }
 
-
 function check_not_inside_docker_container {
     if [ -f "/.dockerenv" ]; then
         printf " ** Error: can't run mini-loop inside docker container \n"
