@@ -36,9 +36,7 @@ export class TransfersComponent implements OnInit, OnDestroy {
 
 	//Filters
 	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
-	partyIdTypeList = [this.ALL_STR_ID, "MSISDN", "PERSONAL_ID", "BUSINESS", "DEVICE", "ACCOUNT_ID", "IBAN", "ALIAS"]; //TODO : to add in getSearchKeywords() call
-	transferTypeList = [this.ALL_STR_ID, "DEPOSIT", "WITHDRAWAL", "REFUND", "TRANSFER"]; //TODO : to add in getSearchKeywords() call
-
+	
 	isFilterShow: boolean = true;
 	initialFilterValues = {
 		filterTransferState: this.ALL_STR_ID,
