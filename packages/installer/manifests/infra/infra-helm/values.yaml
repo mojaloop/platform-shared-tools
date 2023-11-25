@@ -115,11 +115,18 @@ redpanda-console:
   ingress:
     enabled: true
     className: nginx
+    #annotations 
+      #external-dns.alpha.kubernetes.io/hostname: greenbank.vnext.mojaloop.live
+      #cert-manager.io/issuer: letsencrypt-staging
     hosts:
       -   host: redpanda-console.local
           paths:
             -   path: /
                 pathType: ImplementationSpecific
+    #tls: [] 
+      #  - secretName: quickstart-example-tls
+      #    hosts:
+      #      - redpanda-console.vnext.mojaloop.live
 
 ############### MongoDB  ####################
 # X64 only => https://github.com/bitnami/charts/tree/main/bitnami/mongodb
@@ -141,6 +148,7 @@ mongodb:
 
 ############### Mongo Express ####################
 # mongo express config
+# https://artifacthub.io/packages/helm/cowboysysop/mongo-express
 mongo-express:
   fullnameOverride: mongo-express
   enabled: true
@@ -150,7 +158,14 @@ mongo-express:
 
   ingress:
     enabled: true
-    ingressClassName: nginx
+    ingressClassName: nginx-ext
+    #annotations 
+      #external-dns.alpha.kubernetes.io/hostname: greenbank.vnext.mojaloop.live
+      #cert-manager.io/issuer: letsencrypt-staging
+    #tls: [] 
+      #  - secretName: quickstart-example-tls
+      #    hosts:
+      #      - mongo-express.vnext.mojaloop.live
 
   mongodbEnableAdmin: true
   mongodbAdminPassword: mongoDbPas42
@@ -175,7 +190,7 @@ redis:
       enabled: true
 
 ############### Elasticsearch and Kibana  ####################
-
+# https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch/#installing-the-chart
 elasticsearch:
   enabled: true
   #fullnameOverride: elastic 
@@ -201,10 +216,24 @@ elasticsearch:
     replicaCount: 0
 
   ingress:
-    ingressClassName: nginx
+    ingressClassName: nginx-ext
     enabled: true
-
+    #annotations 
+      #external-dns.alpha.kubernetes.io/hostname: greenbank.vnext.mojaloop.live
+      #cert-manager.io/issuer: letsencrypt-staging
+    #tls: [] 
+      #  - secretName: quickstart-example-tls
+      #    hosts:
+      #      - mongo-express.vnext.mojaloop.live
+      
   kibana:
     ingress:
-      ingressClassName: nginx
+      ingressClassName: nginx-ext
       enabled: true
+      #annotations 
+        #external-dns.alpha.kubernetes.io/hostname: greenbank.vnext.mojaloop.live
+        #cert-manager.io/issuer: letsencrypt-staging
+      #tls: [] 
+        #  - secretName: quickstart-example-tls
+        #    hosts:
+        #      - mongo-express.vnext.mojaloop.live

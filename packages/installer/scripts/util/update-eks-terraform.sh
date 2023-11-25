@@ -22,13 +22,23 @@ cd /tmp/eks-iac
 git fetch origin vnext_br
 git checkout vnext_br
 
+# copy aside the env.hcl file before we start to copy in the Thitsaworks terraform
+cp $EKS_TF_DIR/eks/env.hcl /tmp
+
+
 # now because we don't want to clone or copy one git repo into another we copy the specific directories into the 
 # Mojaloop vNext repo 
 #echo "rm -rf $EKS_TF_DIR/*" 
+
 for dir in "${TF_SUB_DIRS[@]}"; do
-    echo "rm -rf $dir"
-    echo "cp $dir to $EKS_TF_DIR/$dir"
+    rm -rf $EKS_TF_DIR/eks/$dir
+    cp -r Terraform/$dir $EKS_TF_DIR/eks
 done
+ls $EKS_TF_DIR/eks
+
+# restore the env.hcl file 
+cp /tmp/env.hcl $EKS_TF_DIR/eks
+
 
 
 

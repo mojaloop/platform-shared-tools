@@ -476,9 +476,15 @@ metadata:
     instance: ttk
     mojaloop.service: bluebank
     mojaloop.layer: ttk
-  annotations: null
+  annotations: 
+    #external-dns.alpha.kubernetes.io/hostname: bluebank.vnext.mojaloop.live
+    #cert-manager.io/issuer: letsencrypt-staging
 spec:
-  ingressClassName: nginx
+  ingressClassName: nginx-ext
+  # tls:
+  # - hosts: 
+  #   - bluebank.vnext.mojaloop.live 
+  #   secretName: quickstart-example-tls
   rules:
     - host: bluebank.local
       http:

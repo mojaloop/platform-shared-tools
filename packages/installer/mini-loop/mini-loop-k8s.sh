@@ -280,7 +280,9 @@ function do_k3s_install {
     
     #install nginx
     printf "==> installing nginx ingress chart and wait for it to be ready " 
-    su - $k8s_user -c "helm install --wait --timeout 300s ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx" > /dev/null 2>&1
+    su - $k8s_user -c "helm install --wait --timeout 300s ingress-nginx ingress-nginx \
+                      --repo https://kubernetes.github.io/ingress-nginx \
+                      -f $REPO_BASE_DIR/packages/installer/manifests/infra/nginx-values.yaml" > /dev/null 2>&1
     # TODO : check to ensure that the ingress is indeed running 
     nginx_pod_name=$(kubectl get pods | grep nginx | awk '{print $1}')
 
@@ -446,6 +448,9 @@ Options:
 BASE_DIR=$( cd $(dirname "$0")/../.. ; pwd )
 RUN_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # the directory that this script is run from 
 SCRIPTS_DIR="$( cd $(dirname "$0")/../scripts ; pwd )"
+echo "SCRIPTS_DIR=$SCRIPTS_DIR"
+REPO_BASE_DIR="$( cd $(dirname "$SCRIPTS_DIR")/../.. ; pwd )"
+echo "REPO_BASE_DIR=$REPO_BASE_DIR"
 
 DEFAULT_K8S_DISTRO="k3s"   # default to microk8s as this is what is in the mojaloop linux deploy docs.
 K8S_VERSION="" 

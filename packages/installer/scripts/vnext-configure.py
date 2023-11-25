@@ -88,18 +88,29 @@ def allocate_infra_pods(p,yaml):
 
 
 def modify_values_for_dns_domain_name(p,domain_name,verbose=False):
-    print(f" --domain_name flag NOT IMPLEMENTED FOR VNEXT YET ")
-    return 
-    # modify ingress hostname in values file to use DNS name     
-    # print(f"      <mojaloop-configure.py> : Modify values to use dns domain name {domain_name}" )
+    print(f" --domain_name ")
+    mydomain="vnext.mojaloop.fred"
+    #modify ingress hostname in values file to use DNS name     
+    print(f"      <mojaloop-configure.py> : Modify values to use dns domain name {domain_name}" )
     # for vf in p.glob('**/*values.yaml') :
-    #     with FileInput(files=[str(vf)], inplace=True) as f:
-    #         for line in f:
-    #             line = line.rstrip()
-    #             line = re.sub(r"(\s+)hostname: (\S+).local", f"\\1hostname: \\2.{domain_name}", line)
-    #             line = re.sub(r"(\s+)host: (\S+).local", f"\\1host: \\2.{domain_name}", line)
-    #             line = re.sub(r"testing-toolkit.local", f"testing-toolkit.{domain_name}", line)
-    #             print(line)
+    p1 = Path("/tmp/x")
+    for vf in p1.glob('**/*ingress*.yaml') :
+        print(f"file is {vf}")
+        with FileInput(files=[str(vf)], inplace=True) as f:
+            for line in f:
+                line = line.rstrip()
+                line = re.sub(r"#external-dns.alpha.kubernetes", "external-dns.alpha.kubernetes", line)
+                line = re.sub(r"#cert-manager.io/issuer:", "cert-manager.io/issuer:", line)
+                line = re.sub(r"# tls:", "tls:", line)
+                line = re.sub(r"#(\s+)- hosts:", "  - hosts:", line)
+                line = re.sub(r"#(\s+)- (\S+).vnext.mojaloop.live", f"      - \\2.{mydomain}", line)
+                line = re.sub(r"#(\s+)secretName: quickstart-example-tls", "    secretName: quickstart-example-tls", line)
+
+        #         line = re.sub(r"(\s+)hostname: (\S+).local", f"\\1hostname: \\2.{domain_name}", line)
+
+        #         line = re.sub(r"(\s+)host: (\S+).local", f"\\1host: \\2.{domain_name}", line)
+        #         line = re.sub(r"testing-toolkit.local", f"testing-toolkit.{domain_name}", line)
+                print(line)
 
 
 def parse_args(args=sys.argv[1:]):

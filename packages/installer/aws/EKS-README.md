@@ -35,6 +35,7 @@ cd ./platform-shared-tools/packages/installer/aws/docker              # move to 
 aws-mfa                                                               # authenticate to AWS 
 eks-cluster.sh --apply                                                # apply terraform build/config the cluster
 eks-vnext.sh -m install_ml                                            # configure and deploy vNext 
+kubectl get all -A                                                    # list all deployed components
 ```
 
 # To clean up and remove Mojaloop vNext and EKS cluster
@@ -49,6 +50,8 @@ eks-cluster.sh --destroy                                              # terrafor
 
 # Customising the installation 
 modifying the 
+
+# running the TTK 
 
 # desription of the resources 
 

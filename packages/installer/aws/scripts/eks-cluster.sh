@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# eks-create-cluster.sh 
-#    - run the terraform to create an EKS cluster for deploying Mojaloop vNext to       
+# eks-cluster.sh 
+# - script to run the Terraform from Thitsaworks so as to create an EKS cluster
+# Nov 2023 
 # Author Tom Daly 
-# Date Aug 2023
 
+# make sure user is authenticated via MFA to AWS 
 function verify_credentials {
   printf "==> verify credentials are current using aws-mfa ...        "
   timeout 2 aws-mfa > /dev/null 2>&1 
@@ -15,36 +16,16 @@ function verify_credentials {
   fi  
 }
 
-function check_if_cluster_already_created {  
-  printf "==> check if cluster [%s] already exists ...    " $CLUSTER_NAME
-  cluster_exists=`terraform plan | grep -i aws_eks_cluster | grep "will be created"`
-  if [[ $? -eq 0 ]]; then 
-    CLUSTER_EXISTS=false
-    printf "[no]\n"
-  else 
-    CLUSTER_EXISTS=true
-    printf "[yes]\n"
-  fi 
-}
-
-function create_cluster {
-  printf "==> creating cluster by running terraform ...    "
-  #check_if_cluster_already_created 
-  if [ "$CLUSTER_EXISTS" = true ]; then 
-    printf "\n    *** Error  : the cluster [%s] already exists   ** \n" $CLUSTER_NAME
-    printf "        you can remove the cluster and associated resources using :- \n"
-    printf "        $0 -m delete \n"
-    printf "        \n.... exiting and leaving current cluster in place and un-touched \n"
-    printf "    ***\n"
-    exit 1
-  fi
-  terraform apply 
-}
-
 function configure_kubectl {
   printf "==> configuring kubectl access to cluster...    "
-  aws eks --region $(terraform output -raw region) update-kubeconfig --name $(terraform output -raw cluster_name) > /dev/null 2>&1 
-  working=`kubectl get nodes | grep -i notready | wc -l`
+  # Store the current directory
+  local current_dir=$(pwd)
+  cd $TF_TOP_DIR/eks-setup
+  local region=`grep region $TF_TOP_DIR/env.hcl | cut -d "=" -f2 | tr -d "\"" | tr -d " "`
+  local cluster=`terraform output -raw cluster_name`
+  aws eks --region $region update-kubeconfig --name $(terraform output -raw cluster_name) > /dev/null 2>&1 
+  working=`kubectl get nodes | grep -i notready | wc -l` 
+  echo "working is : $working" 
   if [[ $? -eq 0 ]]; then 
     printf "[ok]\n"
   else 
@@ -55,136 +36,137 @@ function configure_kubectl {
   fi 
 }
 
-function deploy_nginx_configure_nlb {
-  local nginx_yaml_dir="$1"
-  nginx_secret_yaml="$nginx_yaml_dir/nginx-secret.yaml"
-  nginx_deploy_yaml="$nginx_yaml_dir/nginx-deploy.yaml" 
-  echo "kubectl apply -f $nginx_secret_yaml > /dev/null 2>&1" 
-  echo "kubectl apply -f $nginx_deploy_yaml > /dev/null 2>&1" 
-} 
-
-# function deploy_nginx_configure_nlb {
-#   printf "==> deploy nginx with meta-data set to provision load balancer  " 
-#   nginx_exists=`helm ls -a --namespace $NGINX_NAMESPACE  | grep "nginx" | awk '{print $1}' `
-#   if [ ! -z $nginx_exists ] && [ "$nginx_exists" == "nginx" ]; then 
-#     printf "    [ nginx already installed .. skipping]  \n"
-#   else 
-#     helm install nginx ingress-nginx/ingress-nginx \
-#       --set controller.service.type=LoadBalancer \
-#       --set controller.ingressClassResource.default=true \
-#       --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type"="nlb" > /dev/null 2>&1 
-#     if [[ $? -eq 0 ]]; then 
-#       printf "[ok]\n"
-#     else 
-#       printf "\n    *** warning   : some error occurred while deploying nginx \n"
-#     fi 
-#   fi
-# }
-
-function add_helm_repos { 
-    printf "==> add the helm repos required to install and run Mojaloop vnext-alpha \n" 
-    helm repo add kiwigrid https://kiwigrid.github.io > /dev/null 2>&1
-    helm repo add kokuwa https://kokuwaio.github.io/helm-charts > /dev/null 2>&1  #fluentd 
-    helm repo add elastic https://helm.elastic.co > /dev/null 2>&1
-    helm repo add codecentric https://codecentric.github.io/helm-charts > /dev/null 2>&1 # keycloak for TTK
-    helm repo add bitnami https://charts.bitnami.com/bitnami > /dev/null 2>&1
-    helm repo add mojaloop http://mojaloop.io/helm/repo/ > /dev/null 2>&1
-    helm repo add cowboysysop https://cowboysysop.github.io/charts/ > /dev/null 2>&1  # mongo-express
-    helm repo add redpanda-data https://charts.redpanda.com/ > /dev/null 2>&1   # kafka console 
-    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx   # nginx 
-    helm repo update 
+function validate_tfdir {
+    local tfdir=$1 
+    if [[ "$tfdir" == "backend" ]] || [[ "$tfdir" == "eks-setup" ]] || [[ "$tfdir" == "addons" ]] ; then 
+        return
+    else 
+        echo "got an invalid directory" 
+        printf "** Error unrecognised value for -d  ** \n" 
+        showUsage
+    fi 
 }
 
-function delete_nginx {
-  printf "==> delete nginx (and hence NLB) ...  " 
-  helm delete nginx --namespace $NGINX_NAMESPACE > /dev/null 2>&1
-  sleep 1 
-  nginx_exists=`helm ls -a --namespace $NGINX_NAMESPACE | grep "nginx" | awk '{print $1}' `
-  if [ ! -z $nginx_exists ] && [ "$nginx_exists" == "nginx" ]; then 
-    printf "\n    *** Error the nginx controller did not delete cleanly   ** \n" 
-    printf "         please ensure nginx and associated pods are gone before deleting cluster\n"
-    printf "         failure to remove the nginx prior to cluster delete will result in some cluster related resources \n"
-    printf "         not being removed cleanly \n"
-    printf "        exiting .... \n"
-    printf "    ***\n"
-  fi 
-  printf "[ok]\n" 
+function set_cluster_name {
+    # the eks-setup/eks.tf uses the name and environment from the env.hcl and 
+    # creates a cluster name of name-evironment-cluster 
+    name=`grep ^name $TF_VAR_FILE | cut -d "=" -f2 | tr -d " " | tr -d "\""`
+    environment=`grep ^environment $TF_VAR_FILE | cut -d "=" -f2 | tr -d " " | tr -d "\""`
+
+    # Construct the CLUSTER_NAME variable
+    CLUSTER_NAME="${name}-${environment}-cluster"
 }
 
-function delete_cluster {
-  printf "==> deleting cluster by running terraform destroy ...    "
-  #check_if_cluster_already_created  
-  if [ "$CLUSTER_EXISTS" = false ]; then 
-    printf "\n    *** Error  : the cluster [%s] does not yet exist    ** \n" $CLUSTER_NAME
-    printf "        you can create the cluster and associated resources using $0 -m create \n"
-    printf "        exiting .... \n"
-    printf "    ***\n"
-    exit 1
-  fi
-  printf "\n    running terraform destroy \n" 
-  terraform destroy
-}
+# Function to run Terraform commands
+function run_terraform {
+    local directory="$1"
+    local action="$2"
 
-function print_end_message { 
-    printf "\n\n*********************** << success >> *******************************************\n"
-    printf "            -- AWS EKS managed kubernetes cluster  -- \n"
-    printf "  utilities for deploying kubernetes in preparation for Mojaloop deployment   \n"
-    printf "************************** << end  >> *******************************************\n\n"
-} 
+    # Store the current directory
+    local current_dir=$(pwd)
+
+echo "dir is $directory" 
+    # Change to the specified directory
+    cd "$directory" || { echo "Error: Unable to change directory to $directory. Exiting..."; exit 1; }
+    
+    # Initialize Terraform
+    echo "directory is $directory"
+    terraform_init_config=" --backend-config=../backend/backend.hcl"
+    if [ `basename "$directory"` == "eks-setup" ] || [ `basename "$directory"`  == "addons" ]; then
+        terraform init $terraform_init_config 
+    else
+        terraform init
+    fi
+
+    # Run Terraform command based on the specified action
+    if [ "$action" == "apply" ]; then
+        # Run Terraform plan with the common HCL configuration file and output to a plan file
+        echo "==============================================================================="
+        echo "INFO: Running Terraform plan for $directory..."
+        echo "==============================================================================="
+        terraform plan -out=tfplan --var-file="$TF_VAR_FILE"
+        
+        # Check for errors in the plan
+        if [ $? -eq 0 ]; then
+            # Apply the Terraform plan
+            echo "==============================================================================="
+            echo "INFO: Applying Terraform plan for $directory..."
+            echo "==============================================================================="
+            terraform apply tfplan -compact-warnings
+        else
+            echo "Error: Terraform plan failed. Exiting..."
+            exit 1
+        fi
+        if [ `basename "$directory"` == "eks-setup" ]; then 
+            configure_kubectl 
+        fi 
+    elif [ "$action" == "destroy" ]; then
+        # Run Terraform destroy with the common HCL configuration file and auto-approve
+        echo "==============================================================================="
+        echo "INFO: Destroying Terraform resources for $directory..."
+        echo "==============================================================================="
+        terraform destroy --auto-approve --var-file="$TF_VAR_FILE"
+    else
+        echo "Error: Invalid action specified. Use '--apply' for apply or '--destroy' for destroy."
+        exit 1
+    fi
+
+    # Return to the original directory
+    cd "$current_dir" || exit 1
+}
 
 ################################################################################
 # Function: showUsage
 ################################################################################
 function showUsage {
-	if [ $# -ne 0 ] ; then
-		echo "Incorrect number of arguments passed to function $0"
-		exit 1
-	else
-echo  "USAGE: $0 -m [mode]
-Example 1 : $0 -m create  # create an EKS cluster for Mojaloop (vNext)
-Example 2 : $0 -m delete  # destroy the  existing EKS cluster 
+    echo  "USAGE: $0 -m [mode] -d [tfdir]
+    Example 1 : $0 -m create  # create EKS cluster Mojaloop (vNext)
+    Example 2 : $0 -m destroy # destroy the  existing EKS cluster 
+    Example 3 : $0 -m apply -d backend  # apply terraform for backend only 
 
-Options:
--m mode ............... create|delete (-m is required)
--h|H .................. display this message
-"
-	fi
+    Options:
+    -m mode ............... create|destroy  (-m is required)
+    -d tf directory ....... backend|eks-setup|addons  
+    -h|H .................. display this message
+
+    Note: order is important if using -d 
+    create in this order              destroy in this order           
+    1. backend                        addons 
+    2. eks-setup                      eks-setup
+    3. addons                         backend 
+
+    this will help to ensure resources clean up properly from AWS 
+    "
 }
 
 ################################################################################
 # MAIN
 ################################################################################
-
-#BASE_DIR=$( cd $(dirname "$0")/../.. ; pwd )
-
-EKS_SCRIPTS_DIR="$( cd $(dirname "$0") ; pwd )"
-echo "EKS_SCRIPTS_DIR = $EKS_SCRIPTS_DIR"
-REPO_BASE_DIR="$( cd $(dirname "$MINI_LOOP_SCRIPTS_DIR")/../../.. ; pwd )"
+SCRIPT_DIR="$( cd $(dirname "$0") ; pwd )"
+echo "SCRIPT_DIR = $SCRIPT_DIR"
+REPO_BASE_DIR="$( cd $(dirname "$SCRIPT_DIR")/../../.. ; pwd )"
 echo "REPOSITORY_BASE_DIR = $REPO_BASE_DIR"
-MANIFESTS_DIR=$REPO_BASE_DIR/packages/installer/manifests
-echo "MANIFESTS_DIR = $MANIFESTS_DIR"
-NGINX_YAML_DEST_DIR=$MANIFESTS_DIR/infra/nginx/eks
-echo "NGINX_YAML_DEST_DIR = $NGINX_YAML_DEST_DIR"
+TF_TOP_DIR=$REPO_BASE_DIR/packages/installer/aws/terraform/eks
+echo "TERRAFORM_DIR = $TF_TOP_DIR"
 
-# RUN_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # the directory that this script is run from 
-# SCRIPTS_DIR="$( cd $(dirname "$0")/../scripts ; pwd )"
+# Common HCL configuration file
+TF_VAR_FILE="$TF_TOP_DIR/env.hcl"
+echo "TF_VAR_FILE=$TF_VAR_FILE"
 
-TERRAFORM_RUN_DIR="$TERRAFORM_CLUSTER_DIR"  # TERRFORM_CLUSTER_DIR should already be set in the environment of the container
-CLUSTER_NAME=`grep cluster_name $TERRAFORM_RUN_DIR/terraform.tfvars | cut -d "\"" -f2`
+TF_SUB_DIRS=("backend" "eks-setup" "addons")  # subdirectories for terraform 
+CLUSTER_NAME=""
 CLUSTER_EXISTS=""
-#NGINX_NAMESPACE="default" 
 
-# Check arguments
-if [ $# -lt 1 ] ; then
-	showUsage
-	echo "Not enough arguments -m mode must be specified "
-	exit 1
+# Check for valid input parameters
+if [ "$#" -eq 0 ]; then
+    showUsage
 fi
-
 # Process command line options as required
-while getopts "m:hH" OPTION ; do
+while getopts "m:d:hH" OPTION ; do
    case "${OPTION}" in
         m)	    mode="${OPTARG}"
+        ;;
+        d)	    tfdir="${OPTARG}"
         ;;
         h|H)	showUsage
                 exit 0
@@ -196,34 +178,79 @@ while getopts "m:hH" OPTION ; do
     esac
 done
 
-#deploy_nginx_configure_nlb $NGINX_YAML_DEST_DIR
-
+if [[ ! -z "$tfdir" ]]; then 
+    validate_tfdir $tfdir
+fi 
 
 printf "\n\n*********************************************************************************\n"
 printf "            -- AWS EKS managed kubernetes cluster -- \n"
-printf "  utilities for deploying kubernetes in preparation for Mojaloop deployment   \n"
-printf "************************* << start >> *******************************************\n\n"
-cd $TERRAFORM_RUN_DIR   
-currdir=`pwd`
-printf "Current Directory is [ %s ] \n" "$currdir"
+printf "  utilities for deploying kubernetes in preparation for Mojaloop (vNext) deployment   \n"
+printf "************************* << start >> ***********************************************\n\n"
+
+set_cluster_name
 verify_credentials
 
-if [[ "$mode" == "create" ]]  ; then
-    printf "Creating  Cluster [%s] in directory [%s] ... \n" $CLUSTER_NAME $TERRAFORM_RUN_DIR 
-    terraform init > /dev/null 2>&1 
-    check_if_cluster_already_created   
-    create_cluster    # run terraform 
-    configure_kubectl # enable kubectl access to the cluster, and test it works 
-    add_helm_repos
-    deploy_nginx_configure_nlb $NGINX_YAML_DEST_DIR
-    print_end_message 
-elif [[ "$mode" == "delete" ]]  ; then
-    printf "Deleting Cluster [%s] in directory [%s] ... \n" $CLUSTER_NAME $TERRAFORM_RUN_DIR 
-    terraform init > /dev/null 2>&1 
-    check_if_cluster_already_created 
-    delete_nginx 
-    delete_cluster
-    print_end_message 
+if [[ "$mode" == "create" ]]; then
+    if [[ ! -z "$tfdir" ]]; then 
+        printf "==> Running terraform [%s] in directory [%s] ... \n" "$mode" "$TF_TOP_DIR/$tfdir"
+        echo "calling run_terraform apply  $tfdir"
+        run_terraform "$TF_TOP_DIR/$tfdir" "apply"
+    else 
+        printf "==> Creating  Cluster [%s] in directory [%s] ... \n" $CLUSTER_NAME $TF_TOP_DIR
+        for dir in "${TF_SUB_DIRS[@]}"; do
+            echo "run_terraform "$TF_TOP_DIR/$dir" "apply"" 
+            printf "    > run tf apply on [%s]\n" $dir
+        done
+    fi 
+elif [[ "$mode" == "destroy" ]]; then  
+    if [[ ! -z "$tfdir" ]]; then 
+        printf "==> Running terraform [%s] in directory [%s] ... \n" "$mode" "$TF_TOP_DIR/$tfdir"
+        run_terraform "$TF_TOP_DIR/$tfdir" "destroy"
+    else 
+        printf "==> Destroying  Cluster [%s] in directory [%s] ... \n" $CLUSTER_NAME $TF_TOP_DIR
+        # destroy in the reverse order 
+        for ((i=${#TF_SUB_DIRS[@]}-1; i>=0; i--)); do
+            printf "    > run tf destory on [%s]\n" ${TF_SUB_DIRS[$i]}
+            #run_terraform "$TF_TOP_DIR/${TF_SUB_DIRS[$i]}" "destroy"
+        done    
+    fi
 else 
+    printf "** Error unrecognised value for -m  ** \n" 
     showUsage
-fi 
+fi
+
+# while [ "$#" -gt 0 ]; do
+#     case "$1" in
+#         "--apply") 
+#             shift
+#             if [ -n "$1" ]; then
+#                 run_terraform "$TF_TOP_DIR/$1" "apply"
+#             else
+#                 # Process all directories for apply
+#                 for dir in "${TF_SUB_DIRS[@]}"; do
+#                     run_terraform "$TF_TOP_DIR/$dir" "apply"
+#                 done
+#             fi
+#             ;;
+#         "--destroy")
+#             shift
+#             if [ -n "$1" ]; then
+#                 run_terraform "$TF_TOP_DIR/$1" "destroy"
+#             else
+#                 # Process all directories for destroy in reverse order
+#                 for ((i=${#TF_SUB_DIRS[@]}-1; i>=0; i--)); do
+#                     echo "directory is $TF_TOP_DIR/${TF_SUB_DIRS[$i]}"
+#                     run_terraform "$TF_TOP_DIR/${TF_SUB_DIRS[$i]}" "destroy"
+#                 done
+#             fi
+#             ;;
+#         "-h" | "--help")
+#             usage
+#             ;;
+#         *)
+#             echo "Error: Invalid option. Use '-h' or '--help' for usage information."
+#             exit 1
+#             ;;
+#     esac
+#     shift
+# done
