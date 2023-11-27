@@ -120,7 +120,6 @@ export class TransfersComponent implements OnInit, OnDestroy {
 			filterBulkTransferId
 		} = this.filterForm.value;
 
-		debugger
 		const startDate = filterStartDate ? new Date(filterStartDate).valueOf() : undefined;
 		const endDate = filterEndDate ? new Date(filterEndDate).valueOf() : undefined;
 		const transferState = filterTransferState === this.ALL_STR_ID ? undefined : filterTransferState;
