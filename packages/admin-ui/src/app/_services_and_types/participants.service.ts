@@ -23,7 +23,7 @@ import {
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
 import * as uuid from "uuid";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
-import { IParticipantPendingApproval, IParticipantPendingApprovalSummary, ParticipantsSearchResults } from "./participant_types";
+import { ParticipantsSearchResults } from "./participant_types";
 
 const SVC_BASEURL = "/_participants";
 
@@ -824,75 +824,6 @@ export class ParticipantsService {
 				error => {
 					if (error && error.status === 403) {
 						console.warn("Access forbidden received on getSearchKeywords");
-						subscriber.error(new UnauthorizedError(error.error?.msg));
-					} else {
-						console.error(error);
-						subscriber.error(error.error?.msg);
-					}
-					return subscriber.complete();
-				}
-			);
-		});
-	}
-
-	getPendingApprovalsSummary() {
-		return new Observable<IParticipantPendingApprovalSummary>(subscriber => {
-			this._http.get<IParticipantPendingApprovalSummary>(`${SVC_BASEURL}/participants/pendingApprovalsSummary`).subscribe(
-				(result: IParticipantPendingApprovalSummary) => {
-					console.log(`got getPendingApprovalSummary response: ${result}`);
-
-					subscriber.next(result);
-					return subscriber.complete();
-				},
-				error => {
-					if (error && error.status === 403) {
-						console.warn("Access forbidden received on getPendingApprovalSummary");
-						subscriber.error(new UnauthorizedError(error.error?.msg));
-					} else {
-						console.error(error);
-						subscriber.error(error.error?.msg);
-					}
-					return subscriber.complete();
-				}
-			);
-		});
-	}
-
-	getPendingApprovals() {
-		return new Observable<IParticipantPendingApproval>(subscriber => {
-			this._http.get<IParticipantPendingApproval>(`${SVC_BASEURL}/participants/pendingApprovals`).subscribe(
-				(result: IParticipantPendingApproval) => {
-					console.log(`got getPendingApprovals response: ${result}`);
-
-					subscriber.next(result);
-					return subscriber.complete();
-				},
-				error => {
-					if (error && error.status === 403) {
-						console.warn("Access forbidden received on getPendingApprovals");
-						subscriber.error(new UnauthorizedError(error.error?.msg));
-					} else {
-						console.error(error);
-						subscriber.error(error.error?.msg);
-					}
-					return subscriber.complete();
-				}
-			);
-		});
-	}
-
-	submitPendingApprovals(data: IParticipantPendingApproval) {
-		return new Observable<IParticipantPendingApproval>(subscriber => {
-			this._http.post<IParticipantPendingApproval>(`${SVC_BASEURL}/participants/pendingApprovals`, data).subscribe(
-				(result: IParticipantPendingApproval) => {
-					console.log(`got submitPendingApprovals response: ${result}`);
-
-					subscriber.next(result);
-					return subscriber.complete();
-				},
-				error => {
-					if (error && error.status === 403) {
-						console.warn("Access forbidden received on submitPendingApprovals");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else {
 						console.error(error);

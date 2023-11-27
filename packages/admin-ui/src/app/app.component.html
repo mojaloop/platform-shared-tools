@@ -84,43 +84,13 @@
 
 					<!--participants-->
 					<li class="nav-item" *ngIf="isLoggedIn | async">
-						
-					</li>
-					<li class="nav-item has-submenu" *ngIf="isLoggedIn | async">
 						<a
-							class="nav-link dropdown-toggle"
+							class="nav-link"
 							routerLinkActive="active"
-							href="#account-lookup-menu"
-							data-toggle="collapse"
-							role="button"
+							routerLink="/participants"
 						>
-							<i class="bi bi-search"></i>Participants
+							<i class="bi bi-bank"></i>Participants
 						</a>
-						<ul
-							class="submenu collapse"
-							id="account-lookup-menu"
-							routerLinkActive="show"
-						>
-							<li>
-								<a
-									class="nav-link"
-									routerLinkActive="active"
-									routerLink="/participants"
-								>
-								<i class="bi bi-bank"></i>Participants List
-								</a>
-							</li>
-							<li>
-								<a
-									class="nav-link"
-									routerLinkActive="active"
-									routerLink="/pending-approvals"
-								>
-								<i class="bi bi-bank"></i>Pending Approval Requests
-								</a>
-							</li>
-							
-						</ul>
 					</li>
 
 					<!--lookup-->
@@ -151,7 +121,7 @@
 							<li>
 								<a
 									class="nav-link"
-									routerLinkActive="active"
+									hrouterLinkActive="active"
 									routerLink="/account-lookup-associations"
 								>
 									Associations
