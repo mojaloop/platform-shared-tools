@@ -44,9 +44,10 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		filterPayerIdType: this.ALL_STR_ID,
 		filterPayeeIdType: this.ALL_STR_ID,
 		filterCurrency: this.ALL_STR_ID,
-		filterPayerIdValue: this.ALL_STR_ID,
-		filterPayeeIdValue: this.ALL_STR_ID,
+		filterPayerId: this.ALL_STR_ID,
+		filterPayeeId: this.ALL_STR_ID,
 		filterTransferId: null,
+		filterBulkTransferId: null,
 		filterStartDate: null,
 		filterEndDate: null,
 		filterId: null,
@@ -114,34 +115,36 @@ export class TransfersComponent implements OnInit, OnDestroy {
 			filterPayerIdType,
 			filterPayeeIdType,
 			filterTransferType,
-			filterPayerIdValue,
-			filterPayeeIdValue
+			filterPayerId,
+			filterPayeeId,
+			filterBulkTransferId
 		} = this.filterForm.value;
 
+		debugger
 		const startDate = filterStartDate ? new Date(filterStartDate).valueOf() : undefined;
 		const endDate = filterEndDate ? new Date(filterEndDate).valueOf() : undefined;
 		const transferState = filterTransferState === this.ALL_STR_ID ? undefined : filterTransferState;
 		const currency = filterCurrency === this.ALL_STR_ID ? undefined : filterCurrency;
-		const bulkTransferId = filterTransferId || undefined;
+		const transferId = filterTransferId || undefined;
 		const payerIdType = filterPayerIdType === this.ALL_STR_ID ? undefined : filterPayerIdType;
 		const payeeIdType = filterPayeeIdType === this.ALL_STR_ID ? undefined : filterPayeeIdType;
 		const transferType = filterTransferType === this.ALL_STR_ID ? undefined : filterTransferType;
-		const payerIdValue = filterPayerIdValue === this.ALL_STR_ID ? undefined : filterPayerIdValue; 
-		const payeeIdValue = filterPayeeIdValue === this.ALL_STR_ID ? undefined : filterPayeeIdValue; 
-
+		const payerId = filterPayerId === this.ALL_STR_ID ? undefined : filterPayerId; 
+		const payeeId = filterPayeeId === this.ALL_STR_ID ? undefined : filterPayeeId; 
+		const bulkTransferId = filterBulkTransferId || undefined;
 
 		this.transfersSubs = this._transfersSvc.search(
 			transferState,
 			currency,
 			startDate,
 			endDate,
-			bulkTransferId,
+			transferId,
 			payerIdType,
 			payeeIdType,
-			payerIdValue,
-			payeeIdValue,
+			payerId,
+			payeeId,
 			transferType,
-			undefined, // TODO: add bulk filter box
+			bulkTransferId, // TODO: add bulk filter box
 			pageIndex,
 			pageSize,
 		).subscribe((result) => {
