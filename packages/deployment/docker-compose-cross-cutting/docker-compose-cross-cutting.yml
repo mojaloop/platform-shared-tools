@@ -128,8 +128,8 @@ services:
     restart: unless-stopped
 
   # scheduling
-  scheduling-svc:
-    image: mojaloop/scheduling-bc-scheduling-svc:0.3.
+  scheduling-api-svc:
+    image: mojaloop/scheduling-bc-scheduling-api-svc:0.3.6
     depends_on:
       authentication-svc:
         condition: service_healthy
@@ -149,13 +149,31 @@ services:
       - AUTH_N_TOKEN_AUDIENCE=${AUTH_N_TOKEN_AUDIENCE}
       - SCHEDULING_HOST_LOCKS=${REDIS_HOST}
     healthcheck:
-      test: nc -z localhost 1234 || exit -1
+      test: nc -z localhost 3150 || exit -1
       start_period: 30s
       interval: 10s
       timeout: 10s
       retries: 10
     ports:
       - 3150:3150
+    restart: unless-stopped
+
+  scheduling-command-handler-svc:
+    image: mojaloop/scheduling-bc-command-handler-svc:0.0.3
+    depends_on:
+      authentication-svc:
+        condition: service_healthy
+      authorization-svc:
+        condition: service_healthy
+      platform-configuration-svc:
+        condition: service_healthy
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
+      - MONGO_URL=${MONGO_URL}
+      - SCHEDULING_HOST_LOCKS=${REDIS_HOST}
     restart: unless-stopped
 
 volumes:
