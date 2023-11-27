@@ -57,6 +57,11 @@ export declare type Transfer = {
 	payerFspId?: string;
 	currencyCode?: string;
 	completedTimestamp?: string;
+	errorInformation?: IErrorInformation | null;
+}
+
+export interface IErrorInformation {
+	errorCode: string;
 }
 
 export declare type TransfersSearchResults = {

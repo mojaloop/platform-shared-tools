@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   auditing-svc:
-    image: mojaloop/auditing-bc-auditing-svc:0.3.2
+    image: mojaloop/auditing-bc-auditing-svc:0.3.3
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -16,7 +16,7 @@ services:
     restart: unless-stopped
 
   logging-svc:
-    image: mojaloop/logging-bc-logging-svc:0.3.3
+    image: mojaloop/logging-bc-logging-svc:0.3.4
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -103,7 +103,7 @@ services:
     restart: unless-stopped
 
   platform-configuration-svc:
-    image: mojaloop/platform-configuration-bc-configuration-svc:0.3.9
+    image: mojaloop/platform-configuration-bc-configuration-svc:0.3.11
     depends_on:
       authentication-svc:
         condition: service_healthy

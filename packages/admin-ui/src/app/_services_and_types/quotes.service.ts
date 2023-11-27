@@ -100,12 +100,12 @@ export class QuotesService {
 	getQuoteByTransactionId(transactionId: string): Observable<Quote | null> {
 		return new Observable<Quote | null>((subscriber) => {
 			this._http
-				.get<Quote[]>(SVC_BASEURL + `/quotes?transactionId=${transactionId}`)
+				.get<QuotingSearchResults>(SVC_BASEURL + `/quotes?transactionId=${transactionId}`)
 				.subscribe(
-					(result: Quote[]) => {
-						console.log(`got response: ${result}`);
+					(result: QuotingSearchResults) => {
+						console.log(`got response: ${result.items}`);
 
-						subscriber.next(result[0] ?? null);
+						subscriber.next(result.items[0] ?? null);
 						return subscriber.complete();
 					},
 					(error) => {
@@ -123,6 +123,7 @@ export class QuotesService {
 				);
 		});
 	}
+
 
 	createQuote(item: Quote): Observable<string | null> {
 		return new Observable<string>((subscriber) => {

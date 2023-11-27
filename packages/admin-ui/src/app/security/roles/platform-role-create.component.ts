@@ -54,7 +54,7 @@ export class PlatformRoleCreateComponent implements OnInit {
 		// TODO enable buttons after response
 		this._authorizationSvc.createRole(newRole).subscribe(value => {
 			this._messageService.addSuccess("Role Created");
-			this._router.navigateByUrl(`security/builtin_iam/roles/${newRole.id}`);
+			this._router.navigateByUrl(`security/roles/${newRole.id}`);
 		}, errorMsg => {
 			this._messageService.addError("Error creating role: "+errorMsg||"unknown");
 		});

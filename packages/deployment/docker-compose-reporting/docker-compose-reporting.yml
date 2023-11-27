@@ -1,0 +1,95 @@
+version: "3.8"
+
+services:
+  reporting-api-svc:
+    image: mojaloop/reporting-bc-reporting-api-svc:0.3.6
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - MONGO_URL=${MONGO_URL}
+      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
+      - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+      - AUTH_N_TOKEN_ISSUER_NAME=${AUTH_N_TOKEN_ISSUER_NAME}
+      - AUTH_N_TOKEN_AUDIENCE=${AUTH_N_TOKEN_AUDIENCE}
+    healthcheck:
+      test: nc -z localhost 5005 || exit -1
+      start_period: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    ports:
+      - 5000:5000
+    restart: unless-stopped
+
+  participants-reporting-svc:
+    image: mojaloop/reporting-bc-participants-reporting-svc:0.3.4
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - MONGO_URL=${MONGO_URL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+      - PARTICIPANTS_SVC_URL =${PARTICIPANTS_SVC_URL}
+    healthcheck:
+      test: nc -z localhost 5002 || exit -1
+      start_period: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    ports:
+      - 5002:5002
+    restart: unless-stopped
+
+  quotes-reporting-svc:
+    image: mojaloop/reporting-bc-quotes-reporting-svc:0.3.4
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - MONGO_URL=${MONGO_URL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+      - PARTICIPANTS_SVC_URL =${PARTICIPANTS_SVC_URL}
+    healthcheck:
+      test: nc -z localhost 5003 || exit -1
+      start_period: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    ports:
+      - 5003:5003
+    restart: unless-stopped
+
+  transfers-reporting-svc:
+    image: mojaloop/reporting-bc-transfers-reporting-svc:0.3.4
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - MONGO_URL=${MONGO_URL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+    healthcheck:
+      test: nc -z localhost 5001 || exit -1
+      start_period: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    ports:
+      - 5001:5001
+    restart: unless-stopped
+
+  settlements-reporting-svc:
+    image: mojaloop/reporting-bc-settlements-reporting-svc:0.3.4
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - MONGO_URL=${MONGO_URL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+      - SETTLEMENTS_SVC_URL=${SETTLEMENTS_SVC_URL}
+    healthcheck:
+      test: nc -z localhost 5004 || exit -1
+      start_period: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    ports:
+      - 5004:5004
+    restart: unless-stopped

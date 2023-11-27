@@ -62,6 +62,10 @@ import {BuiltinIamAppDetailComponent} from "./security/builtin_iam/builtin-iam-a
 import {PlatformRoleCreateComponent} from "./security/roles/platform-role-create.component";
 import {DropZoneDirective} from "./participants/drop-zone.directive";
 import {PendingApprovalsComponent} from './participants/pending-approvals.component'
+import { SettlementInitiationReport } from "./reports/settlement-initiation-report.component";
+import {DFSPSettlementReport} from "./reports/dfsp-settlement-report.component";
+import {DFSPSettlementDetailReport} from "./reports/dfsp-settlement-detail-report.component";
+import { DropZoneDirective } from "./_pipes_and_guards/drop-zone.directive";
 
 @NgModule({
 	declarations: [
@@ -111,6 +115,9 @@ import {PendingApprovalsComponent} from './participants/pending-approvals.compon
 		BuiltinIamAppsListComponent,
 		BuiltinIamAppCreateComponent,
 		BuiltinIamAppDetailComponent,
+		SettlementInitiationReport,
+		DFSPSettlementReport,
+		DFSPSettlementDetailReport,
 		DropZoneDirective,
 		PendingApprovalsComponent,
 	],
