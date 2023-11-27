@@ -430,8 +430,14 @@ metadata:
     mojaloop.layer: ttk
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "8m"
+    #external-dns.alpha.kubernetes.io/hostname: greenbank.local
+    #cert-manager.io/issuer: letsencrypt-staging
 spec:
-  ingressClassName: nginx
+  ingressClassName: nginx-ext
+  #tls:
+  # - hosts: 
+  #   - greenbank.local
+  #   secretName: quickstart-example-tls
   rules:
   - host: greenbank.local
     http:
@@ -472,13 +478,13 @@ metadata:
     mojaloop.service: greenbank
     mojaloop.layer: ttk
   annotations:
-    #external-dns.alpha.kubernetes.io/hostname: greenbank.vnext.mojaloop.live
+    #external-dns.alpha.kubernetes.io/hostname: greenbank.local
     #cert-manager.io/issuer: letsencrypt-staging
 spec:
   ingressClassName: nginx-ext
-  # tls:
+  #tls:
   # - hosts: 
-  #   - greenbank.vnext.mojaloop.live 
+  #   - greenbank.local
   #   secretName: quickstart-example-tls
   rules:
   - host: greenbank.local

@@ -5,13 +5,13 @@ metadata:
   annotations:
     ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/rewrite-target: /
-    #external-dns.alpha.kubernetes.io/hostname: fspiop.vnext.mojaloop.live
+    #external-dns.alpha.kubernetes.io/hostname: fspiop.local
     #cert-manager.io/issuer: letsencrypt-staging
 spec:
   ingressClassName: nginx-ext
-  # tls:
+  #tls:
   # - hosts: 
-  #   - vnextadmin.vnext.mojaloop.live 
+  #   - fspiop.local 
   #   secretName: quickstart-example-tls
   rules:
   - host: fspiop.local

@@ -435,8 +435,14 @@ metadata:
     mojaloop.layer: ttk
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: 8m
+    #external-dns.alpha.kubernetes.io/hostname: bluebank.local
+    #cert-manager.io/issuer: letsencrypt-staging
 spec:
   ingressClassName: nginx
+  #tls:
+  # - hosts: 
+  #   - bluebank.local
+  #   secretName: quickstart-example-tls
   rules:
     - host: bluebank.local
       http:
@@ -477,13 +483,13 @@ metadata:
     mojaloop.service: bluebank
     mojaloop.layer: ttk
   annotations: 
-    #external-dns.alpha.kubernetes.io/hostname: bluebank.vnext.mojaloop.live
+    #external-dns.alpha.kubernetes.io/hostname: bluebank.local
     #cert-manager.io/issuer: letsencrypt-staging
 spec:
   ingressClassName: nginx-ext
-  # tls:
+  #tls:
   # - hosts: 
-  #   - bluebank.vnext.mojaloop.live 
+  #   - bluebank.local
   #   secretName: quickstart-example-tls
   rules:
     - host: bluebank.local
