@@ -129,7 +129,7 @@ services:
 
   # scheduling
   scheduling-svc:
-    image: mojaloop/scheduling-bc-scheduling-svc:0.3.2
+    image: mojaloop/scheduling-bc-scheduling-svc:0.3.
     depends_on:
       authentication-svc:
         condition: service_healthy
