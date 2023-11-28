@@ -100,8 +100,6 @@ export class BulkTransferDetailComponent implements OnInit {
 				undefined,
 				undefined,
 				undefined,
-				undefined,
-				undefined,
 				bulkTransferId,
 				undefined,
 				undefined

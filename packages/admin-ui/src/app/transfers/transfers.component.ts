@@ -29,25 +29,25 @@ export class TransfersComponent implements OnInit, OnDestroy {
 	keywordState: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordCurrency: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordSourceAppName: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+	keywordTransferType: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+	keywordPayerIdType: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+	keywordPayeeIdType: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordsSubs?: Subscription;
 
 	//Filters
 	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
-	partyIdTypeList = [this.ALL_STR_ID, "MSISDN", "PERSONAL_ID", "BUSINESS", "DEVICE", "ACCOUNT_ID", "IBAN", "ALIAS"]; //TODO : to add in getSearchKeywords() call
-	transferTypeList = [this.ALL_STR_ID, "DEPOSIT", "WITHDRAWAL", "REFUND", "TRANSFER"]; //TODO : to add in getSearchKeywords() call
-
+	
 	isFilterShow: boolean = true;
 	initialFilterValues = {
-		filterPayerDfspName: this.ALL_STR_ID,
-		filterPayeeDfspName: this.ALL_STR_ID,
 		filterTransferState: this.ALL_STR_ID,
 		filterTransferType: this.ALL_STR_ID,
 		filterPayerIdType: this.ALL_STR_ID,
 		filterPayeeIdType: this.ALL_STR_ID,
 		filterCurrency: this.ALL_STR_ID,
-		filterPayerValue: null,
-		filterPayeeIdValue: null,
+		filterPayerId: this.ALL_STR_ID,
+		filterPayeeId: this.ALL_STR_ID,
 		filterTransferId: null,
+		filterBulkTransferId: null,
 		filterStartDate: null,
 		filterEndDate: null,
 		filterId: null,
@@ -114,41 +114,36 @@ export class TransfersComponent implements OnInit, OnDestroy {
 			filterTransferId,
 			filterPayerIdType,
 			filterPayeeIdType,
-			filterPayeeDfspName,
-			filterPayerDfspName,
 			filterTransferType,
-			filterPayerValue,
-			filterPayeeIdValue
+			filterPayerId,
+			filterPayeeId,
+			filterBulkTransferId
 		} = this.filterForm.value;
 
 		const startDate = filterStartDate ? new Date(filterStartDate).valueOf() : undefined;
 		const endDate = filterEndDate ? new Date(filterEndDate).valueOf() : undefined;
 		const transferState = filterTransferState === this.ALL_STR_ID ? undefined : filterTransferState;
 		const currency = filterCurrency === this.ALL_STR_ID ? undefined : filterCurrency;
-		const bulkTransferId = filterTransferId || undefined;
+		const transferId = filterTransferId || undefined;
 		const payerIdType = filterPayerIdType === this.ALL_STR_ID ? undefined : filterPayerIdType;
 		const payeeIdType = filterPayeeIdType === this.ALL_STR_ID ? undefined : filterPayeeIdType;
-		const payerDfspName = filterPayerDfspName === this.ALL_STR_ID ? undefined : filterPayerDfspName;
-		const payeeDfspName = filterPayeeDfspName === this.ALL_STR_ID ? undefined : filterPayeeDfspName;
 		const transferType = filterTransferType === this.ALL_STR_ID ? undefined : filterTransferType;
-		const payerIdValue = filterPayerValue || undefined;
-		const payeeIdValue = filterPayeeIdValue || undefined;
-
+		const payerId = filterPayerId === this.ALL_STR_ID ? undefined : filterPayerId; 
+		const payeeId = filterPayeeId === this.ALL_STR_ID ? undefined : filterPayeeId; 
+		const bulkTransferId = filterBulkTransferId || undefined;
 
 		this.transfersSubs = this._transfersSvc.search(
 			transferState,
 			currency,
 			startDate,
 			endDate,
-			bulkTransferId,
+			transferId,
 			payerIdType,
 			payeeIdType,
-			payerDfspName,
-			payeeDfspName,
-			payerIdValue,
-			payeeIdValue,
+			payerId,
+			payeeId,
 			transferType,
-			undefined, // TODO: add bulk filter box
+			bulkTransferId, // TODO: add bulk filter box
 			pageIndex,
 			pageSize,
 		).subscribe((result) => {
@@ -176,6 +171,9 @@ export class TransfersComponent implements OnInit, OnDestroy {
 				if (value.fieldName == "state") this.keywordState.next(value.distinctTerms);
 				if (value.fieldName == "currency") this.keywordCurrency.next(value.distinctTerms);
 				if (value.fieldName == "id") this.keywordSourceAppName.next(value.distinctTerms);
+				if (value.fieldName == "transferType") this.keywordTransferType.next(value.distinctTerms);
+				if (value.fieldName == "payerIdType") this.keywordPayerIdType.next(value.distinctTerms);
+				if (value.fieldName == "payeeIdType") this.keywordPayeeIdType.next(value.distinctTerms);
 			});
 		}, error => {
 			if (error && error instanceof UnauthorizedError) {

@@ -20,8 +20,8 @@
 		<table class="table">
 			<tr class="form-row">
 				<div class="form-group col-md-3">
-					<label for="filterPayerDfspName">Payer DFSP Name:</label>
-					<select formControlName="filterPayerDfspName" id="filterPayerDfspName" class="form-control">
+					<label for="filterPayerId">Payer DFSP Name:</label>
+					<select formControlName="filterPayerId" id="filterPayerId" class="form-control">
 						<option value={{ALL_STR_ID}}>(All)</option>
 						<option *ngFor="let item of participants | async" value="{{item.id}}">
 							{{item.name}}
@@ -30,8 +30,8 @@
 				</div>
 
 				<div class="form-group col-md-3">
-					<label for="filterPayeeDfspName">Payee DFSP Name:</label>
-					<select formControlName="filterPayeeDfspName" id="filterPayeeDfspName" class="form-control">
+					<label for="filterPayeeId">Payee DFSP Name:</label>
+					<select formControlName="filterPayeeId" id="filterPayeeId" class="form-control">
 						<option value={{ALL_STR_ID}}>(All)</option>
 						<option *ngFor="let item of participants | async" value="{{item.id}}">
 							{{item.name}}
@@ -42,27 +42,24 @@
 				<div class="form-group col-md-3">
 					<label for="filterPayerIdType">Payer ID Type:</label>
 					<select formControlName="filterPayerIdType" id="filterPayerIdType" class="form-control">
-						<option *ngFor="let partyIdType of partyIdTypeList" value="{{partyIdType}}">
-							{{partyIdType}}
-						</option>
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordPayerIdType | async)">{{item}}</option>
 					</select>
 				</div>
 
 				<div class="form-group col-md-3">
 					<label for="filterPayeeIdType">Payee ID Type:</label>
 					<select formControlName="filterPayeeIdType" id="filterPayeeIdType" class="form-control">
-						<option *ngFor="let partyIdType of partyIdTypeList" value="{{partyIdType}}">
-							{{partyIdType}}
-						</option>
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordPayeeIdType | async)">{{item}}</option>
 					</select>
 				</div>
 
 				<div class="form-group col-md-3">
 					<label for="filterTransferType">Transfer Type:</label>
 					<select formControlName="filterTransferType" id="filterTransferType" class="form-control">
-						<option *ngFor="let transferType of transferTypeList" value="{{transferType}}">
-							{{transferType}}
-						</option>
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordTransferType | async)">{{item}}</option>
 					</select>
 				</div>
 
@@ -88,17 +85,6 @@
 				</div>
 
 				<div class="form-group col-md-3">
-					<label for="filterPayerValue">Payer ID Value:</label>
-					<input type="text" formControlName="filterPayerValue" id="filterPayerValue" class="form-control">
-				</div>
-
-				<div class="form-group col-md-3">
-					<label for="filterPayeeIdValue">Payee ID Value:</label>
-					<input type="text" formControlName="filterPayeeIdValue" id="filterPayeeIdValue"
-						   class="form-control">
-				</div>
-
-				<div class="form-group col-md-3">
 					<label for="filterStartDate">Start date:</label>
 					<input type="datetime-local" formControlName="filterStartDate" id="filterStartDate" step=300
 						   class="form-control">
@@ -110,6 +96,10 @@
 						   class="form-control">
 				</div>
 
+				<div class="form-group col-md-3">
+					<label for="filterBulkTransferId">Bulk Transfer ID:</label>
+					<input type="text" formControlName="filterBulkTransferId" id="filterBulkTransferId" class="form-control">
+				</div>
 				<!-- Add filter controls here  -->
 			</tr>
 			<tr class="form-row">
@@ -147,6 +137,7 @@
 			<th scope="col" class="text-center">Payer DFSP Name</th>
 			<th scope="col" class="text-center">Payee DFSP Name</th>
 			<th scope="col">Date Submitted</th>
+			<th scope="col">Bulk Transfer ID</th>
 			<th scope="col">Error Code</th>
 		</tr>
 		</thead>
@@ -167,6 +158,7 @@
 			<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
 			<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
 			<td>{{item.updatedAt | date: 'medium' }}</td>
+			<td><a routerLink="/bulk-transfers/{{item.bulkTransferId}}">{{item.bulkTransferId}}</a></td>
 			<td>{{item?.errorInformation?.errorCode || '-'}}</td>
 		</tr>
 		</tbody>

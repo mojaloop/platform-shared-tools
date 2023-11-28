@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   fspiop-api-svc:
-    image: mojaloop/interop-apis-bc-fspiop-api-svc:0.3.10
+    image: mojaloop/interop-apis-bc-fspiop-api-svc:0.3.11
     depends_on:
       settlements-api-svc:
         condition: service_healthy
@@ -87,7 +87,7 @@ services:
 # participants
 
   participants-svc:
-    image: mojaloop/participants-bc-participants-svc:0.3.11
+    image: mojaloop/participants-bc-participants-svc:0.3.14
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -138,7 +138,7 @@ services:
     restart: unless-stopped
 
   account-lookup-svc:
-    image: mojaloop/account-lookup-bc-account-lookup-svc:0.3.8
+    image: mojaloop/account-lookup-bc-account-lookup-svc:0.3.9
     depends_on:
       account-lookup-http-oracle-svc:
         condition: service_healthy
@@ -168,7 +168,7 @@ services:
 # quoting
 
   quoting-svc:
-    image: mojaloop/quoting-bc-quoting-svc:0.3.7
+    image: mojaloop/quoting-bc-quoting-svc:0.3.8
     depends_on:
       participants-svc:
         condition: service_healthy
@@ -198,7 +198,7 @@ services:
   # transfers
 
   transfers-api-svc:
-    image: mojaloop/transfers-bc-transfers-api-svc:0.3.9
+    image: mojaloop/transfers-bc-transfers-api-svc:0.3.13
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -228,7 +228,7 @@ services:
     restart: unless-stopped
 
   transfers-event-handler-svc:
-    image: mojaloop/transfers-bc-event-handler-svc:0.3.9
+    image: mojaloop/transfers-bc-event-handler-svc:0.3.10
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -249,7 +249,7 @@ services:
     restart: unless-stopped
 
   transfers-command-handler-svc:
-    image: mojaloop/transfers-bc-command-handler-svc:0.3.9
+    image: mojaloop/transfers-bc-command-handler-svc:0.3.11
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -350,7 +350,7 @@ services:
 
 
   admin-ui:
-    image: mojaloop/vnext-admin-ui-svc:0.1.45
+    image: mojaloop/vnext-admin-ui-svc:0.1.48
     depends_on:
       transfers-api-svc:
         condition: service_healthy
