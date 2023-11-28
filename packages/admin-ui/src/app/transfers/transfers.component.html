@@ -1,131 +1,234 @@
-<div class="row mb-2">
-	<div class="col">
-		<h3>Transfers</h3>
+<div class="list-page-header d-flex justify-content-between align-items-center">
+	<div>
+		<h2>Transfers</h2>
+	</div>
+	<div>
+		<button (click)="filterToggle()" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
+				title="Filter">
+			<i class="bi bi-filter"></i>
+		</button>
+		<!-- <button class="d-inline-block btn btn-primary ml-3">Export </button> -->
 	</div>
 	<!--<div class="col text-right">
 		<button class="btn btn-warning" routerLink="/transfers/new">Create Test Transfer</button>
 	</div>-->
 </div>
-  
+
 <!--filter-->
-<div class="filterbox">
-	<form >
+<div *ngIf="isFilterShow" class="list-page-filterbox">
+	<form [formGroup]="filterForm" (ngSubmit)="search(0)">
 		<table class="table">
 			<tr class="form-row">
-				<div class="form-group col-md-1">
-					<label for="filterState">State:</label>
-					<select class="form-control" id="filterState">
-						<option value="{{ALL_STR_ID}}">(All)</option>
-						<option value="{{item}}" *ngFor="let item of (keywordState | async)">{{item}}</option>
+				<div class="form-group col-md-3">
+					<label for="filterPayerId">Payer DFSP Name:</label>
+					<select formControlName="filterPayerId" id="filterPayerId" class="form-control">
+						<option value={{ALL_STR_ID}}>(All)</option>
+						<option *ngFor="let item of participants | async" value="{{item.id}}">
+							{{item.name}}
+						</option>
 					</select>
 				</div>
 
-				<div class="form-group col-md-1">
+				<div class="form-group col-md-3">
+					<label for="filterPayeeId">Payee DFSP Name:</label>
+					<select formControlName="filterPayeeId" id="filterPayeeId" class="form-control">
+						<option value={{ALL_STR_ID}}>(All)</option>
+						<option *ngFor="let item of participants | async" value="{{item.id}}">
+							{{item.name}}
+						</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterPayerIdType">Payer ID Type:</label>
+					<select formControlName="filterPayerIdType" id="filterPayerIdType" class="form-control">
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordPayerIdType | async)">{{item}}</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterPayeeIdType">Payee ID Type:</label>
+					<select formControlName="filterPayeeIdType" id="filterPayeeIdType" class="form-control">
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordPayeeIdType | async)">{{item}}</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterTransferType">Transfer Type:</label>
+					<select formControlName="filterTransferType" id="filterTransferType" class="form-control">
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordTransferType | async)">{{item}}</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-3">
 					<label for="filterCurrency">Currency:</label>
-					<select class="form-control" id="filterCurrency">
+					<select formControlName="filterCurrency" id="filterCurrency" class="form-control">
 						<option value="{{ALL_STR_ID}}">(All)</option>
 						<option value="{{item}}" *ngFor="let item of (keywordCurrency | async)">{{item}}</option>
 					</select>
 				</div>
 
 				<div class="form-group col-md-3">
-					<label for="filterStartDate">Start date:</label>
-					<input class="form-control" type="datetime-local" id="filterStartDate" step=300
-						[ngModel]="criteriaFromDate"
-						[ngModelOptions]="{standalone: true}">
+					<label for="filterTransferState">Transfer State:</label>
+					<select formControlName="filterTransferState" id="filterTransferState" class="form-control">
+						<option value="{{ALL_STR_ID}}">(All)</option>
+						<option value="{{item}}" *ngFor="let item of (keywordState | async)">{{item}}</option>
+					</select>
 				</div>
 
+				<div class="form-group col-md-3">
+					<label for="filterTransferId">Transfer ID:</label>
+					<input type="text" formControlName="filterTransferId" id="filterTransferId" class="form-control">
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterStartDate">Start date:</label>
+					<input type="datetime-local" formControlName="filterStartDate" id="filterStartDate" step=300
+						   class="form-control">
+				</div>
 
 				<div class="form-group col-md-3">
 					<label for="filterEndDate">End date:</label>
-					<input class="form-control" type="datetime-local" id="filterEndDate" step=300>
+					<input type="datetime-local" formControlName="filterEndDate" id="filterEndDate" step=300
+						   class="form-control">
 				</div>
 
-				<div class="form-group col-md-2">
-					<label for="filterId">Id</label>
-					<input class="form-control" type="text" id="filterId">
+				<div class="form-group col-md-3">
+					<label for="filterBulkTransferId">Bulk Transfer ID:</label>
+					<input type="text" formControlName="filterBulkTransferId" id="filterBulkTransferId" class="form-control">
+				</div>
+				<!-- Add filter controls here  -->
+			</tr>
+			<tr class="form-row">
+				<div class="col-md-9">&nbsp;</div>
+
+				<div class="col-md-3 d-flex">
+					<div class="form-group w-50">
+						<label for="clearBtn">&nbsp;</label>
+						<button type="button" class="form-control btn btn-outline-primary" id="clearBtn"
+								(click)="clearFilters()">Clear</button>
+					</div>
+
+					<div class="form-group ml-3 w-50">
+						<label for="filterBtn">&nbsp;</label>
+						<button type="button" class="form-control btn btn-primary" id="filterBtn"
+								(click)="search(0)">Search&nbsp;&nbsp;<i class="bi bi-search"></i>
+						</button>
+					</div>
 				</div>
 
-				<div class="form-group col-md-2">
-					<label for="filterBtn">&nbsp;</label>
-					<button type="submit" class="form-control btn btn-primary" id="filterBtn" (click)="search()">Search &nbsp;&nbsp;<i class="bi bi-search"></i></button>
-				</div>
 			</tr>
 		</table>
 	</form>
 </div>
 
-<ng-container *ngIf="(transfers | async)?.length==0 else listTransfers">
-	<div class="alert alert-warning" role="alert">
-	  No transfers found.
-	</div>
-</ng-container>
-
-  
-<ng-template #listTransfers>
-	<div>
-		<table class="table">
-			<thead class="thead-light">
+<!-- Table -->
+<div class="list-page-body">
+	<table class="table table-sm table-hover">
+		<thead class="thead-light">
+		<tr>
+			<th scope="col">Transfer ID</th>
+			<th scope="col">State</th>
+			<th scope="col">Currency</th>
+			<th scope="col">Amount</th>
+			<th scope="col" class="text-center">Payer DFSP Name</th>
+			<th scope="col" class="text-center">Payee DFSP Name</th>
+			<th scope="col">Date Submitted</th>
+			<th scope="col">Bulk Transfer ID</th>
+			<th scope="col">Error Code</th>
+		</tr>
+		</thead>
+		<tbody>
+		<ng-container *ngIf="(transfers | async)?.length==0">
 			<tr>
-				<th scope="col">Timestamp</th>
-				<th scope="col">Transfer ID</th>
-				<th scope="col">Payer FSP</th>
-				<th scope="col">Payee FSP</th>
-				<th scope="col">Transfer State</th>
-				<th scope="col">Amount</th>
-				<th scope="col">Currency</th>
+				<td colspan="12">No transfers found</td>
 			</tr>
-			</thead>
-			<tbody>
-			<tr *ngFor="let item of (transfers | async)">
-				<td >{{item.updatedAt | date: 'medium'}}</td>
-				<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
-				<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
-				<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
+		</ng-container>
+		<tr *ngFor="let item of (transfers | async)">
+			<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
+			<td *ngIf="item.transferState==='COMMITTED'" class="text-success">{{item.transferState}}</td>
+			<td *ngIf="item.transferState==='RESERVED'" class="text-warning">{{item.transferState}}</td>
+			<td *ngIf="item.transferState!=='RESERVED' && item.transferState!=='COMMITTED'" class="text-danger">
+				{{item.transferState}}</td>
+			<td>{{item.currencyCode}}</td>
+			<td>{{item.amount}}</td>
+			<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
+			<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
+			<td>{{item.updatedAt | date: 'medium' }}</td>
+			<td><a routerLink="/bulk-transfers/{{item.bulkTransferId}}">{{item.bulkTransferId}}</a></td>
+			<td>{{item?.errorInformation?.errorCode || '-'}}</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
 
-				<td *ngIf="item.transferState==='COMMITTED'" class="text-success">{{item.transferState}}</td>
-				<td *ngIf="item.transferState==='RESERVED'" class="text-warning">{{item.transferState}}</td>
-				<td *ngIf="item.transferState!=='RESERVED' && item.transferState!=='COMMITTED'" class="text-danger">{{item.transferState}}</td>
 
-				<td>{{item.amount}}</td>
-				<td>{{item.currencyCode}}</td>
-			</tr>
-			</tbody>
-		</table>
-	</div>
+<!--pagination
+TODO: put in component
+-->
+<hr>
+<div class="list-page-navigation">
+<nav aria-label="Page navigation" *ngIf="paginateResult | async; let paginateObj">
+	<ul class="pagination justify-content-end">
+		<li class="pagesize d-flex align-items-center">
+			<span>Items per page:</span>
+			<select (change)="search()" class="rows-selector form-control ml-2"
+					id="pageSize">
+				<option value="5" [selected]="paginateObj.pageSize == 5">5</option>
+				<option value="10" [selected]="paginateObj.pageSize == 10">10</option>
+				<option value="25" [selected]="paginateObj.pageSize == 25">25</option>
+				<option value="50" [selected]="paginateObj.pageSize == 50">50</option>
+				<option value="100" [selected]="paginateObj.pageSize == 100">100</option>
+			</select>
+		</li>
 
+		<li class="gotopage d-flex align-items-center">
+			<span >Go to page</span>
+			<select (change)="search()" class="rows-selector form-control ml-2" id="pageIndex">
+				<option *ngFor="let item of [].constructor(paginateObj.totalPages); let i = index" [value]="i"
+						[selected]="paginateObj.current == i+1">{{i+1}}</option>
+			</select>
 
+		</li>
 
-	<!--pagination
-	TODO: put in component
-	-->
-	<hr>
-	<nav aria-label="Page navigation"  *ngIf="paginateResult | async; let paginateObj">
-		<ul class="pagination justify-content-end">
-			<li class="page-item" [ngClass]="{'disabled' : paginateObj.prev == null}">
-				<a class="page-link" aria-label="Previous" (click)="search(paginateObj.prev ? paginateObj.prev-1 : 0)">
-					<span aria-hidden="true">&laquo;</span>
-					<span class="sr-only">Previous</span>
-				</a>
-			</li>
+		<li class="d-flex align-items-center">
+			<span>Page {{paginateObj.current}} of {{paginateObj.totalPages}}</span>
+		</li>
 
-			<ng-container *ngFor="let item of paginateObj.items">
-				<li class="page-item" *ngIf="item != null" [ngClass]="{'active' : item === paginateObj.current}">
-					<a class="page-link" (click)="search(item-1)" >{{item}}
-						<span class="sr-only" *ngIf="item === paginateObj.current">(current)</span>
-					</a>
-				</li>
-				<li class="page-item disabled" *ngIf="item == null">
-					<a class="page-link disabled" *ngIf="!item" >...</a>
-				</li>
-			</ng-container>
+		<!-- first-->
+		<li [ngClass]="{'disabled' : paginateObj.prev == null}">
+			<a class="page-link" aria-label="Previous" (click)="search( 0)">
+				<span aria-hidden="true">&lt;&lt;</span>
+				<span class="sr-only">First</span>
+			</a>
+		</li>
 
-			<li class="page-item"  [ngClass]="{'disabled' : paginateObj.next == null}">
-				<a class="page-link" aria-label="Next" (click)="search(paginateObj.next ? paginateObj.next-1 : 0)">
-					<span aria-hidden="true">&raquo;</span>
-					<span class="sr-only">Next</span>
-				</a>
-			</li>
-		</ul>
-	</nav>
-</ng-template>
+		<!-- previous-->
+		<li [ngClass]="{'disabled' : paginateObj.prev == null}">
+			<a class="page-link" aria-label="Previous" (click)="search(paginateObj.prev ? paginateObj.prev-1 : 0)">
+				<span aria-hidden="true">&lt;</span>
+				<span class="sr-only">Previous</span>
+			</a>
+		</li>
+
+		<!-- next-->
+		<li [ngClass]="{'disabled' : paginateObj.next == null}">
+			<a class="page-link" aria-label="Next" (click)="search(paginateObj.next ? paginateObj.next-1 : 0)">
+				<span aria-hidden="true">&gt;</span>
+				<span class="sr-only">Next</span>
+			</a>
+		</li>
+
+		<!-- last-->
+		<li [ngClass]="{'disabled' : paginateObj.next == null}">
+			<a class="page-link" aria-label="Next" (click)="search(paginateObj.totalPages-1)">
+				<span aria-hidden="true">&gt;&gt;</span>
+				<span class="sr-only">Last</span>
+			</a>
+		</li>
+	</ul>
+</nav>
+</div>

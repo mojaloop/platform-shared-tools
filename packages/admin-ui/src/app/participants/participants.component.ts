@@ -4,17 +4,32 @@ import {BehaviorSubject, Subscription} from "rxjs";
 import {HUB_PARTICIPANT_ID, IParticipant} from "@mojaloop/participant-bc-public-types-lib";
 import {MessageService} from "src/app/_services_and_types/message.service";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
-import {paginate, PaginateResult} from "../_utils";
+import type {FundMovement} from "../_services_and_types/participant_types";
+import {formatNumber, paginate, PaginateResult} from "../_utils";
 
 @Component({
 	selector: "app-participants",
 	templateUrl: "./participants.component.html",
+	styleUrls: ["./participants.component.css"],
 })
 export class ParticipantsComponent implements OnInit, OnDestroy {
 
 	readonly ALL_STR_ID = "(All)";
+	readonly DROP_ZONE_CLASS = "my-4 border p-4 rounded-lg d-flex flex-column gap-3 justify-content-center align-items-center";
 	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
 	participantsSubs?: Subscription;
+
+	selectedFile: File | null = null;
+	fileUploadProgress: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+	strokeDashoffset = (190 - (190 * this.fileUploadProgress.value) / 100);
+	fileUploading = false;
+	transitionClass = 'circular-transition';
+	validated = false;
+	dropZoneClass = this.DROP_ZONE_CLASS;
+
+	fundAdjustments: FundMovement[] = [];
+	fundMovements: BehaviorSubject<FundMovement[]> = new BehaviorSubject<FundMovement[]>([]);
+	fundMovementsSubs?: Subscription;
 
 	keywordParticipantState: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordParticipantId: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
@@ -34,6 +49,12 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 
 		await this.getSearchKeywords();
 
+		this.fileUploadProgress.subscribe((progress) => {
+			this.strokeDashoffset = (190 - (190 * progress) / 100);
+			// skip transition when progress's changed from 100 to 0
+			this.transitionClass = progress > 0 ? 'circular-transition' : '';
+		});
+
 		// wait for the page components to layout
 		setTimeout(() => {
 			this.search();
@@ -44,6 +65,131 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 		if (this.participantsSubs) {
 			this.participantsSubs.unsubscribe();
 		}
+		if (this.fundMovementsSubs) {
+			this.fundMovementsSubs.unsubscribe();
+		}
+	}
+
+	onFileDropped(files: FileList) {
+		const selectedFile = files[0];
+		this.dropZoneClass = this.DROP_ZONE_CLASS;
+
+		if (selectedFile) {
+			this.uploadFile(selectedFile);
+		}
+	}
+
+	onDragOver() {
+		this.dropZoneClass = `${this.DROP_ZONE_CLASS} dragging-over`;
+	}
+
+	onDragLeave() {
+		this.dropZoneClass = this.DROP_ZONE_CLASS;
+	}
+
+	onFileSelected(event: any) {
+		const selectedFile = event.target.files[0];
+
+		if (selectedFile) {
+			this.uploadFile(selectedFile);
+		}
+	}
+
+	uploadFile(file: File) {
+		this.resetData();
+
+			this.fileUploadProgress.next(0);
+			this.selectedFile = file;
+			this.fileUploading = true;
+
+			const interval = setInterval(() => {
+				this.fileUploadProgress.next(this.fileUploadProgress.value + 10);
+
+				if (this.fileUploadProgress.value === 100) {
+					this.fileUploading = false;
+					clearInterval(interval);
+				}
+			}, 200);
+	}
+
+	openFileUpload() {
+		const fileInput = document.getElementById("fileUpload") as HTMLInputElement;
+		fileInput.click();
+	}
+
+	removeChosenFile() {
+		this.selectedFile = null;
+		const fileInput = document.getElementById("fileUpload") as HTMLInputElement | null;
+		if (fileInput) fileInput.value = "";
+	}
+
+	resetData() {
+		this.fundAdjustments = [];
+		this.fundMovements.next([]);
+		this.validated = false;
+	}
+
+	validateFile() {
+		if (!this.selectedFile) return;
+
+		const formData = new FormData();
+		formData.append("settlementInitiation", this.selectedFile);
+
+		this.fundMovementsSubs = this._participantsSvc
+			.validateSettlementInitiationFile(formData)
+			.subscribe(
+				(result) => {
+					this.fundAdjustments = result
+						.map((fundMovement) => ({
+							...fundMovement,
+							updateAmount: formatNumber(
+								fundMovement.updateAmount
+							),
+						}))
+						.filter(
+							(fundMovement) => +fundMovement.updateAmount !== 0
+						);
+
+					this.validated = true;
+					this.fundMovements.next(result);
+				},
+				(error) => {
+					this._messageService.addError(error);
+				}
+			);
+	}
+
+	requestFundAdjustment() {
+		if (!this.fundAdjustments.length) return;
+
+		// need to recalulate the fundAdjustments as this.fundAdjustments' updateAmount are formatted
+		const fundAdjustments = this.fundMovements.value.filter(
+			(fundMovement) => +fundMovement.updateAmount !== 0
+		);
+		const ignoreDuplicate = fundAdjustments.some(
+			(fundAdjustment) => fundAdjustment.isDuplicate
+		);
+
+		this._participantsSvc
+			.requestFundAdjustment(fundAdjustments, ignoreDuplicate)
+			.subscribe(
+				() => {
+					const cancelButton = document.getElementById(
+						"btn-cancel"
+					) as HTMLButtonElement;
+					cancelButton.click();
+
+					this.removeChosenFile();
+					this.resetData();
+
+					this._messageService.addSuccess(
+						"Fund adjustment request submitted."
+					);
+				},
+				(error) => {
+					this._messageService.addError(error);
+				}
+			);
 	}
 
 	search(pageIndex: number = 0) {
@@ -60,7 +206,7 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 		).subscribe((result) => {
 			console.log("ParticipantsComponent search - got ParticipantsSearchResults");
 
-			const onlyDfsps = result.items.filter(value => value.id!==HUB_PARTICIPANT_ID);
+			const onlyDfsps = result.items.filter(value => value.id !== HUB_PARTICIPANT_ID);
 
 			this.participants.next(onlyDfsps);
 

@@ -38,18 +38,17 @@ input[type="text"] {
   color: #fff;
 }
 
+p {
+	margin-bottom: 0;
+}
+
 /*
 Copyright Google LLC. All Rights Reserved.
 Use of this source code is governed by an MIT-style license that
 can be found in the LICENSE file at https://angular.io/license
 */
 
-.filterbox{
-	background-color:#f6f6f6;
-	padding:10px 15px;
-	margin-bottom:10px;
-	border-radius: 10px;
-}
+
 
 .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active{
 	background-color: whitesmoke;
@@ -76,4 +75,61 @@ can be found in the LICENSE file at https://angular.io/license
 .btn-labeled {
 	padding-top: 0;
 	padding-bottom: 0;
+}
+
+
+/*
+pagination
+*/
+.pagination, .pagination select{
+	font-size: 0.80rem;
+}
+.pagination .gotopage select,
+.pagination .pagesize select{
+	width: 60px;
+}
+.pagination .gotopage select{
+	width: 60px;
+}
+.pagination {
+	grid-gap: 10px;
+	gap: 10px;
+}
+.pagination .pagination-button{
+	grid-gap: 10px;
+	gap: 5px;
+}
+
+/*
+List page structures
+*/
+
+.list-page-filterbox{
+	background-color:#f6f6f6;
+	padding:10px 15px;
+	margin-bottom:10px;
+	border-radius: 10px;
+}
+
+.list-page-header{
+	margin-bottom: 1rem !important;
+}
+
+.list-page-header h2{
+	font-weight:bold;
+}
+
+.list-page-body{
+	margin-bottom: 1rem !important;
+}
+.list-page-navigation {
+	 margin-bottom: 1rem !important;
+}
+
+.btn-reset {
+	padding: 0;
+  border: none;
+  font: inherit;
+  color: inherit;
+  background-color: transparent;
 }

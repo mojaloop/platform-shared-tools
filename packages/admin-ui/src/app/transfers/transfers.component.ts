@@ -1,9 +1,12 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {TransfersService} from "src/app/_services_and_types/transfers.service";
+import {ParticipantsService} from "src/app/_services_and_types/participants.service";
 import {BehaviorSubject, Subscription} from "rxjs";
-import {Transfer} from "src/app/_services_and_types/transfer_types";
+import {Transfer, TransfersSearchResults} from "src/app/_services_and_types/transfer_types";
 import {MessageService} from "src/app/_services_and_types/message.service";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {HUB_PARTICIPANT_ID, IParticipant} from "@mojaloop/participant-bc-public-types-lib";
 import {paginate, PaginateResult} from "../_utils";
 
 @Component({
@@ -13,61 +16,145 @@ import {paginate, PaginateResult} from "../_utils";
 export class TransfersComponent implements OnInit, OnDestroy {
 
 	readonly ALL_STR_ID = "(All)";
-	transfers: BehaviorSubject<Transfer[]> = new BehaviorSubject<Transfer[]>([]);
-	transfersSubs?: Subscription;
+	public criteriaFromDate = "";
 
+	transfers: BehaviorSubject<Transfer[]> = new BehaviorSubject<Transfer[]>([]);
+	paginateResult: BehaviorSubject<PaginateResult | null> = new BehaviorSubject<PaginateResult | null>(null);
+
+	transfersSubs?: Subscription;
+	participantsSubs?: Subscription;
+	filterForm: FormGroup;
+
+	//Filters
 	keywordState: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordCurrency: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordSourceAppName: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+	keywordTransferType: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+	keywordPayerIdType: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+	keywordPayeeIdType: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordsSubs?: Subscription;
 
-	paginateResult: BehaviorSubject<PaginateResult | null> = new BehaviorSubject<PaginateResult | null>(null);
+	//Filters
+	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
+	
+	isFilterShow: boolean = true;
+	initialFilterValues = {
+		filterTransferState: this.ALL_STR_ID,
+		filterTransferType: this.ALL_STR_ID,
+		filterPayerIdType: this.ALL_STR_ID,
+		filterPayeeIdType: this.ALL_STR_ID,
+		filterCurrency: this.ALL_STR_ID,
+		filterPayerId: this.ALL_STR_ID,
+		filterPayeeId: this.ALL_STR_ID,
+		filterTransferId: null,
+		filterBulkTransferId: null,
+		filterStartDate: null,
+		filterEndDate: null,
+		filterId: null,
+		//add initial values for other form controls (filters)
+	};
 
-	public criteriaFromDate = "";
-
-	constructor(private _transfersSvc: TransfersService, private _messageService: MessageService) {
+	constructor(private _participantsSvc: ParticipantsService, private formBuilder: FormBuilder, private _transfersSvc: TransfersService, private _messageService: MessageService,) {
+		this.filterForm = this.formBuilder.group(this.initialFilterValues);
 		this.criteriaFromDate = this.criteriaFromDate.substring(0, this.criteriaFromDate.length - 8);
 		this.criteriaFromDate = this.criteriaFromDate.substring(0, this.criteriaFromDate.length - 8); // remove Z, ms and secs
+
+
 	}
 
-	ngOnInit(): void {
+	async ngOnInit(): Promise<void> {
 		console.log("TransfersComponent ngOnInit");
 
-		this.getSearchKeywords();
+		await this.getSearchKeywords();
 
-		// wait for the page components to layout
-		setTimeout(() => {
-			this.search();
-		}, 50);
+		this.participantsSubs = this._participantsSvc
+			.getAllParticipants()
+			.subscribe(
+				(result) => {
+					// remove the hub from the list
+					const onlyDfsps = result.items.filter(value => value.id !== HUB_PARTICIPANT_ID);
+					this.participants.next(onlyDfsps);
+
+					this.search();
+				},
+				(error) => {
+					if (error && error instanceof UnauthorizedError) {
+						this._messageService.addError(error.message);
+					}
+
+					this.search();
+				}
+			);
 	}
 
-	search(pageIndex: number = 0) {
+	filterToggle() {
+		this.isFilterShow = !this.isFilterShow;
+	}
 
-		const filterState = (document.getElementById("filterState") as HTMLSelectElement).value || undefined;
-		const filterCurrency = (document.getElementById("filterCurrency") as HTMLSelectElement).value || undefined;
-		const filterId = (document.getElementById("filterId") as HTMLSelectElement).value || undefined;
+	clearFilters() {
+		this.filterForm.reset(this.initialFilterValues);
+	}
 
-		const elemFilterStartDateStr = (document.getElementById("filterStartDate") as HTMLInputElement).value;
-		const filterStartDate = elemFilterStartDateStr ? new Date(elemFilterStartDateStr).valueOf() : undefined;
-		const elemFilterEndDateStr = (document.getElementById("filterEndDate") as HTMLInputElement).value;
-		const filterEndDate = elemFilterEndDateStr ? new Date(elemFilterEndDateStr).valueOf() : undefined;
 
-		this.transfersSubs = this._transfersSvc.search(
-			(filterState === this.ALL_STR_ID ? undefined : filterState),
-			(filterCurrency === this.ALL_STR_ID ? undefined : filterCurrency),
-			(filterId === this.ALL_STR_ID ? undefined : filterId),
+	search(pageIndex?: number, pageSize?:number) {
+		if(pageSize == undefined) {
+			const pageSizeElem = document.getElementById("pageSize") as HTMLSelectElement;
+			pageSize = parseInt(pageSizeElem?.value ?? 10);
+		}
+		if(pageIndex == undefined) {
+			const pageIndexElem = document.getElementById("pageIndex") as HTMLSelectElement;
+			pageIndex = parseInt(pageIndexElem?.value ?? 0);
+		}
+
+		const {
+			filterTransferState,
+			filterCurrency,
 			filterStartDate,
 			filterEndDate,
-			undefined, // TODO: add bulk filter box
-			pageIndex
+			filterTransferId,
+			filterPayerIdType,
+			filterPayeeIdType,
+			filterTransferType,
+			filterPayerId,
+			filterPayeeId,
+			filterBulkTransferId
+		} = this.filterForm.value;
+
+		const startDate = filterStartDate ? new Date(filterStartDate).valueOf() : undefined;
+		const endDate = filterEndDate ? new Date(filterEndDate).valueOf() : undefined;
+		const transferState = filterTransferState === this.ALL_STR_ID ? undefined : filterTransferState;
+		const currency = filterCurrency === this.ALL_STR_ID ? undefined : filterCurrency;
+		const transferId = filterTransferId || undefined;
+		const payerIdType = filterPayerIdType === this.ALL_STR_ID ? undefined : filterPayerIdType;
+		const payeeIdType = filterPayeeIdType === this.ALL_STR_ID ? undefined : filterPayeeIdType;
+		const transferType = filterTransferType === this.ALL_STR_ID ? undefined : filterTransferType;
+		const payerId = filterPayerId === this.ALL_STR_ID ? undefined : filterPayerId; 
+		const payeeId = filterPayeeId === this.ALL_STR_ID ? undefined : filterPayeeId; 
+		const bulkTransferId = filterBulkTransferId || undefined;
+
+		this.transfersSubs = this._transfersSvc.search(
+			transferState,
+			currency,
+			startDate,
+			endDate,
+			transferId,
+			payerIdType,
+			payeeIdType,
+			payerId,
+			payeeId,
+			transferType,
+			bulkTransferId, // TODO: add bulk filter box
+			pageIndex,
+			pageSize,
 		).subscribe((result) => {
 			console.log("TransfersComponent search - got TransfersSearchResults");
 
 			this.transfers.next(result.items);
 
-			const pageRes = paginate(result.pageIndex, result.totalPages);
-			console.log(pageRes);
-			this.paginateResult.next(pageRes);
+			const paginateResult = paginate(result.pageIndex, result.totalPages);
+			if(paginateResult) paginateResult.pageSize = pageSize;
+
+			this.paginateResult.next(paginateResult);
 		}, error => {
 			if (error && error instanceof UnauthorizedError) {
 				this._messageService.addError(error.message);
@@ -84,6 +171,9 @@ export class TransfersComponent implements OnInit, OnDestroy {
 				if (value.fieldName == "state") this.keywordState.next(value.distinctTerms);
 				if (value.fieldName == "currency") this.keywordCurrency.next(value.distinctTerms);
 				if (value.fieldName == "id") this.keywordSourceAppName.next(value.distinctTerms);
+				if (value.fieldName == "transferType") this.keywordTransferType.next(value.distinctTerms);
+				if (value.fieldName == "payerIdType") this.keywordPayerIdType.next(value.distinctTerms);
+				if (value.fieldName == "payeeIdType") this.keywordPayeeIdType.next(value.distinctTerms);
 			});
 		}, error => {
 			if (error && error instanceof UnauthorizedError) {
@@ -93,6 +183,9 @@ export class TransfersComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy() {
+		if (this.participantsSubs) {
+			this.participantsSubs.unsubscribe();
+		}
 		if (this.transfersSubs) {
 			this.transfersSubs.unsubscribe();
 		}

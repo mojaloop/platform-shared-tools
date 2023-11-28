@@ -139,22 +139,22 @@ export class BulkTransferCreateComponent implements OnInit {
 			individualTransfers.push({
 				"transferId": i >= 10 ? i + transfer.transferId.slice(2) : i + transfer.transferId.slice(1),
 				"transferAmount": {
-					"currency": "USD",
-					"amount": "10"
+					"currency": this.activeTransfer.amount.currency,
+					"amount": this.activeTransfer.amount.amount
 				},
-				"ilpPacket": "AYICbQAAAAAAAAPoHGcuYmx1ZWJhbmsubXNpc2RuLmJsdWVfYWNjXzGCAkRleUowY21GdWMyRmpkR2x2Ymtsa0lqb2lPV1kxWkRrM09EUXRNMkUxTnkwMU9EWTFMVGxoWVRBdE4yUmtaVGMzT1RFMU5EZ3hJaXdpY1hWdmRHVkpaQ0k2SW1ZMU5UaGtORFE0TFRCbU1UQXROREF4TmkwNE9ESXpMVEU1TjJObU5qZ3haamhrWmlJc0luQmhlV1ZsSWpwN0luQmhjblI1U1dSSmJtWnZJanA3SW5CaGNuUjVTV1JVZVhCbElqb2lUVk5KVTBST0lpd2ljR0Z5ZEhsSlpHVnVkR2xtYVdWeUlqb2lZbXgxWlY5aFkyTmZNU0lzSW1aemNFbGtJam9pWW14MVpXSmhibXNpZlgwc0luQmhlV1Z5SWpwN0luQmhjblI1U1dSSmJtWnZJanA3SW5CaGNuUjVTV1JVZVhCbElqb2lUVk5KVTBST0lpd2ljR0Z5ZEhsSlpHVnVkR2xtYVdWeUlqb2laM0psWlc1ZllXTmpYekVpTENKbWMzQkpaQ0k2SW1keVpXVnVZbUZ1YXlKOWZTd2lZVzF2ZFc1MElqcDdJbU4xY25KbGJtTjVJam9pUlZWU0lpd2lZVzF2ZFc1MElqb2lNVEFpZlN3aWRISmhibk5oWTNScGIyNVVlWEJsSWpwN0luTmpaVzVoY21sdklqb2lSRVZRVDFOSlZDSXNJbWx1YVhScFlYUnZjaUk2SWxCQldVVlNJaXdpYVc1cGRHbGhkRzl5Vkhsd1pTSTZJa0pWVTBsT1JWTlRJbjE5AA",
-				"condition": "STksBXN1-J5HnG_4owlzKnbmzCfiOlrKDPgiR-QZ7Kg"
-			})
+				"ilpPacket": this.activeTransfer.ilpPacket,
+				"condition": this.activeTransfer.condition
+			});
 		}
-		
+
 		const bulkTransfer = {
-			"bulkTransferId": "0fbee1f3-c58e-5afe-8cdd-7e65eea2fca9",
-			"bulkQuoteId": "3854fdbe-5dea-3abd-a210-8780e7f2f1f4",
-			"payeeFsp": "greenbank",
-			"payerFsp": "bluebank",
+			"bulkTransferId": this.activeBulkTransfer.bulkTransferId,//"0fbee1f3-c58e-5afe-8cdd-7e65eea2fca9",
+			"bulkQuoteId": this.selectedQuoteId, //"3854fdbe-5dea-3abd-a210-8780e7f2f1f4",
+			"payeeFsp": this.activeTransfer.payeeFsp, //"greenbank",
+			"payerFsp": this.activeTransfer.payerFsp, //"bluebank",
 			"expiration": this.activeTransfer.expiration,
 			"individualTransfers": individualTransfers
-		} as unknown as BulkTransfer
+		} as unknown as BulkTransfer;
 
 		this._interopSvc.createBulkTransferRequest(bulkTransfer).subscribe(success => {
 			this._messageService.addSuccess("Bulk Transfer Created");
@@ -176,12 +176,15 @@ export class BulkTransferCreateComponent implements OnInit {
 
 			quoteId = elem.value;
 		}
+
+		this.selectedQuoteId = quoteId;
 		const selectedQuote = this.quotes.value.find(quote => quote.quoteId === quoteId);
-		
-		this.form.controls["bulkTransferId"].setValue("0fbee1f3-c58e-5afe-8cdd-7e65eea2fca9");
+
+		this.form.controls["bulkTransferId"].setValue(uuid.v4());
+		//this.form.controls["transferId"].setValue(uuid.v4());
 		this.form.controls["transferId"].setValue("1fbee2f3-c58e-5afe-8cdd-6e65eea2fca9");
 		this.form.controls["payeeFsp"].setValue(selectedQuote?.payee?.partyIdInfo.fspId);
-		this.form.controls["payerFsp"].setValue("bluebank");
+		this.form.controls["payerFsp"].setValue(selectedQuote?.payer?.partyIdInfo.fspId);
 		this.form.controls["amount"].setValue(selectedQuote?.amount?.amount);
 		this.form.controls["currency"].setValue(selectedQuote?.amount?.currency);
 		this.form.controls["ilpPacket"].setValue(selectedQuote?.ilpPacket);

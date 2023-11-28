@@ -31,7 +31,7 @@
 "use strict";
 
 
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
@@ -44,6 +44,7 @@ import {
 import * as uuid from "uuid";
 
 const SVC_BASEURL = "/_settlements";
+const REPORT_BASEURL = "/_reporting";
 
 @Injectable({
 	providedIn: "root",
@@ -151,11 +152,11 @@ export class SettlementsService {
 	getTransfersByMatrixId(matrixId: string): Observable<ISettlementBatchTransfer[]> {
 		return new Observable<ISettlementBatchTransfer[]>(subscriber => {
 			const url = `${SVC_BASEURL}/transfers?matrixId=${matrixId}`;
-			this._http.get<ISettlementBatchTransfer[]>(url).subscribe(
-				(result: ISettlementBatchTransfer[]) => {
-					console.log(`got response: ${result}`);
+			this._http.get<BatchTransferSearchResults>(url).subscribe(
+				(result: BatchTransferSearchResults) => {
+					console.log(`got response: ${result.items}`);
 
-					subscriber.next(result);
+					subscriber.next(result.items);
 					return subscriber.complete();
 				},
 				error => {
@@ -209,11 +210,11 @@ export class SettlementsService {
 	getTransfersByBatchName(batchName: string): Observable<ISettlementBatchTransfer[]> {
 		return new Observable<ISettlementBatchTransfer[]>(subscriber => {
 			const url = `${SVC_BASEURL}/transfers?batchName=${batchName}`;
-			this._http.get<ISettlementBatchTransfer[]>(url).subscribe(
-				(result: ISettlementBatchTransfer[]) => {
-					console.log(`got response: ${result}`);
+			this._http.get<BatchTransferSearchResults>(url).subscribe(
+				(result: BatchTransferSearchResults) => {
+					console.log(`got response: ${result.items}`);
 
-					subscriber.next(result);
+					subscriber.next(result.items);
 					return subscriber.complete();
 				},
 				error => {
@@ -238,11 +239,11 @@ export class SettlementsService {
 	getAllTransfers(): Observable<ISettlementBatchTransfer[]> {
 		return new Observable<ISettlementBatchTransfer[]>(subscriber => {
 			const url = `${SVC_BASEURL}/transfers`;
-			this._http.get<ISettlementBatchTransfer[]>(url).subscribe(
-				(result: ISettlementBatchTransfer[]) => {
-					console.log(`got response: ${result}`);
+			this._http.get<BatchTransferSearchResults>(url).subscribe(
+				(result: BatchTransferSearchResults) => {
+					console.log(`got response: ${result.items}`);
 
-					subscriber.next(result);
+					subscriber.next(result.items);
 					return subscriber.complete();
 				},
 				error => {
@@ -250,7 +251,7 @@ export class SettlementsService {
 						console.warn("Access forbidden received on getAllTransfers");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else if (error && error.status === 404) {
-						subscriber.next([]);
+						subscriber.next();
 						return subscriber.complete();
 					} else {
 						console.error(error);
@@ -532,6 +533,17 @@ export class SettlementsService {
 					return subscriber.complete();
 				}
 			);
+		});
+	}
+
+	exportSettlementMatrix(matrixId: string): Observable<Blob> {
+		const url = `/_reporting/settlementInitiationByMatrixIdExport/${matrixId}`;
+		const headers = new HttpHeaders();
+		headers.append('Accept', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+		return this._http.get(url, {
+			responseType: 'blob',
+			headers,
 		});
 	}
 

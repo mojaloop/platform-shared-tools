@@ -26,7 +26,7 @@ export class BulkTransferDetailComponent implements OnInit {
 	private _reloadCount = 0;
 
 	paginateResult: BehaviorSubject<PaginateResult | null> = new BehaviorSubject<PaginateResult | null>(null);
-	
+
 	@ViewChild("nav") // Get a reference to the ngbNav
 	navBar!: NgbNav;
 
@@ -95,9 +95,14 @@ export class BulkTransferDetailComponent implements OnInit {
 				undefined,
 				undefined,
 				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
 				bulkTransferId,
 				undefined,
-				100
+				undefined
 			).subscribe(transfersSearchResult => {
 				this.allTransfers.next(transfersSearchResult.items);
 				resolve();

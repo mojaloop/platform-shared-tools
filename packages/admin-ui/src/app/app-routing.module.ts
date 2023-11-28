@@ -50,11 +50,20 @@ import { BuiltinIamAppsListComponent } from "./security/builtin_iam/builtin-iam-
 import {BuiltinIamAppCreateComponent} from "./security/builtin_iam/builtin-iam-app-create.component";
 import {BuiltinIamAppDetailComponent} from "./security/builtin_iam/builtin-iam-app-detail.component";
 import {PlatformRoleCreateComponent} from "./security/roles/platform-role-create.component";
+import {SettlementInitiationReport} from "./reports/settlement-initiation-report.component";
+import {DFSPSettlementReport} from "./reports/dfsp-settlement-report.component";
+import {DFSPSettlementDetailReport} from "./reports/dfsp-settlement-detail-report.component";
 
 const routes: Routes = [
 	{path: "", redirectTo: "/home", pathMatch: "full"},
 	{path: "login", component: LoginComponent},
 	{path: "home", component: HomeComponent},
+
+	// IMPORTANT!!!
+	// All routes after needs must include:
+	// canActivate: [CanLoadIsLoggedIn]
+	// to ensure valid login
+
 	{path: "tests", component: TestsComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "myaccount", component: MyAccountComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "security/builtin_iam/users", component: BuiltinIamUsersListComponent, canActivate: [CanLoadIsLoggedIn]},
@@ -138,8 +147,11 @@ const routes: Routes = [
 	{path: "settlements/batches", component: SettlementsBatchesComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/transfers", component: SettlementsTransfersComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "settlements/models", component: SettlementsModelsComponent, canActivate: [CanLoadIsLoggedIn]},
-	{path: "settlements/models/new", component: SettlementsModelsCreateComponent},
-	{path: "auditing", component: AuditingComponent},
+	{path: "settlements/models/new", component: SettlementsModelsCreateComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "auditing", component: AuditingComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "report/settlement-initiation-report", component: SettlementInitiationReport, canActivate: [CanLoadIsLoggedIn]},
+	{path: "report/dfsp-settlement-report", component: DFSPSettlementReport, canActivate: [CanLoadIsLoggedIn]},
+	{path: "report/dfsp-settlement-detail-report", component: DFSPSettlementDetailReport, canActivate: [CanLoadIsLoggedIn]},
 ];
 
 
