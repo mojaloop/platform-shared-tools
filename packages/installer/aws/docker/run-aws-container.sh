@@ -96,7 +96,7 @@ done
 
 ## User settings change these to reflect your locations ########################################
 AWS_CREDENTIALS_DIR="$HOME/.aws"   # directory with the aws "credentials file" normally should not need changing
-TERRAFORM_CLUSTER_DIR="cluster1"  # this is the name of the directory containing the terraform to create the cluster 
+TERRAFORM_CLUSTER_DIR="eks"  # this is the name of the directory containing the terraform to create the cluster 
 ################################################################################################
 
 # SCRIPT_DIR=$( cd $(dirname "$0") ; pwd )

@@ -758,8 +758,8 @@ K8S_CURRENT_RELEASE_LIST=( "1.27" "1.28" )
 CURRENT_IMAGES_FROM_DOCKER_FILES=[]
 
 NEED_TO_REPACKAGE="true"
-EXTERNAL_ENDPOINTS_LIST=( "mongohost.local" "mongo-express.local" "vnextadmin" "elasticsearch.local" \
-                           "redpanda-console.local" "fspiop.local"  "bluebank.local" "greenbank.local" ) 
+EXTERNAL_ENDPOINTS_LIST=( "mongoexpress.local" "vnextadmin.local" "elasticsearch.local" "kibana.local" \
+                           "kafkaconsole.local" "fspiop.local"  "bluebank.local" "greenbank.local" ) 
 declare -A timer_array
 declare -A memstats_array
 WARNING_IS_CURRENT=false

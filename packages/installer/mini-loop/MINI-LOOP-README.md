@@ -36,7 +36,7 @@ The mini-loop scripts add the required host names to the 127.0.0.1 entry in the 
 
  For example if Mojaloop vNext is installed on a cloud VM with a public IP of 192.168.56.100  Then add an entry to your laptop's /etc/hosts similar to ...
 ```
-192.168.56.100  vnextadmin elasticsearch.local kibana.local mongohost.local mongo-express.local redpanda-console.local fspiop.local bluebank.local greenbank.local
+192.168.56.100  vnextadmin.local elasticsearch.local kibana.local mongoexpress.local kafkaconsole.local fspiop.local bluebank.local greenbank.local
 ```
 You should now be able to browse or curl to Mojaloop vNext admin url using  http://vnextadmin you can also access the deloyed instances of the Mojaloop testing toolkit at http://bluebank.local and http://greenbank.local or access the mongo and kafka consoles.
 
@@ -86,11 +86,11 @@ Note: see [below](#modify-hosts-file-on-windows-10) for intructions on updating 
 
 Note you can only have one host per line so on windows 10 your hosts file should look something like: 
 ```
-192.168.56.100 vnextadmin 
+192.168.56.100 vnextadmin.local 
 192.168.56.100 elasticsearch.local 
-192.168.56.100 mongohost.local 
-192.168.56.100 mongo-express.local 
-192.168.56.100 redpanda-console.local 
+192.168.56.100 kibana.local 
+192.168.56.100 mongoexpress.local 
+192.168.56.100 kafkaconsole.local 
 192.168.56.100 fspiop.local 
 192.168.56.100 bluebank.local 
 192.168.56.100 greenbank.local 

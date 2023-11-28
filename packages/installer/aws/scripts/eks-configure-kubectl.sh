@@ -1,7 +1,21 @@
 #!/usr/bin/env bash
 
-#TERRAFORM_RUN_DIR="/terraform/$TERRAFORM_CLUSTER_DIR"  # TERRFORM_CLUSTER_DIR should already be set in the environment of the container
-cd $TERRAFORM_CLUSTER_DIR
+function set_cluster_name {
+    # the eks-setup/eks.tf uses the name and environment from the env.hcl and 
+    # creates a cluster name of name-evironment-cluster 
+    name=`grep ^name $TF_VAR_FILE | cut -d "=" -f2 | tr -d " " | tr -d "\""`
+    environment=`grep ^environment $TF_VAR_FILE | cut -d "=" -f2 | tr -d " " | tr -d "\""`
 
-aws eks --region $(terraform output -raw region) update-kubeconfig \
-    --name $(terraform output -raw cluster_name)
+    # Construct the CLUSTER_NAME variable
+    CLUSTER_NAME="${name}-${environment}-cluster"
+}
+
+## main ## 
+TF_VAR_FILE="$TERRAFORM_CLUSTER_DIR/env.hcl" 
+region=`grep region $TF_VAR_FILE | cut -d "=" -f2 | tr -d "\"" | tr -d " "`
+set_cluster_name
+echo "region is $region"
+echo "cluster_name=$CLUSTER_NAME"
+echo "terraform sets cluster_name to ${name}-${environment}-cluster using env.hcl" 
+
+aws eks --region $region update-kubeconfig --name $CLUSTER_NAME

@@ -117,7 +117,7 @@ function install_prerequisites {
 function add_hosts {
     printf "==> Mojaloop k8s install : update hosts file \n"
     ENDPOINTSLIST=(127.0.0.1 
-    mongohost.local mongo-express.local vnextadmin elasticsearch.local redpanda-console.local fspiop.local 
+    mongohost.local mongoexpress.local vnextadmin.local elasticsearch.local kafkaconsole.local fspiop.local 
     bluebank.local greenbank.local  ) 
     
     export ENDPOINTS=`echo ${ENDPOINTSLIST[*]}`

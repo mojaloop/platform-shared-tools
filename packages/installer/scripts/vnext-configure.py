@@ -98,17 +98,21 @@ def modify_yaml_for_dns_domain_name(p,domain_name,verbose=False):
         print(f"file is {vf}")
         with FileInput(files=[str(vf)], inplace=True) as f:
             for line in f:
+                # changes for the *ingress.yaml files and the helm values.yaml  
                 line = line.rstrip()
+
+                # dns changes 
                 line = re.sub(r"#external-dns.alpha.kubernetes.io/hostname:(\s+)(\w+).*$", f"external-dns.alpha.kubernetes.io/hostname:\\1\\2.{domain_name}", line)
+                line = re.sub(r"(\s+)- host: (\w+).local", f"\\1- host: \\2.{domain_name}", line)
+
                 line = re.sub(r"#cert-manager.io/issuer:", "cert-manager.io/issuer:", line)
                 line = re.sub(r"#tls:", "tls:", line)
                 line = re.sub(r"#(\s+)- hosts:", "  - hosts:", line)
                 line = re.sub(r"#(\s+)- (\S+).local", f"      - \\2.{domain_name}", line)
                 line = re.sub(r"#(\s+)secretName: quickstart-example-tls", "    secretName: quickstart-example-tls", line)
-                line = re.sub(r"(\s+)- host: (\w+).local", f"\\1- host: \\2.{domain_name}", line)
-                line = re.sub(r"(\s+)hostname: (\S+).local", f"\\1hostname: \\2.{domain_name}", line)
 
                 # tls and dns changes specific to helm values.yaml 
+                line = re.sub(r"(\s+)hostname: (\S+).local", f"\\1hostname: \\2.{domain_name}", line)   
                 line = re.sub(r"#annotations.*$", "annotations", line)
                 line = re.sub(r"#(\s+)- secretName: quickstart-example-tls.*$", "\\1- secretName: quickstart-example-tls", line)
                 line = re.sub(r"#(\s+)hosts:.*$", "\\1hosts:", line)

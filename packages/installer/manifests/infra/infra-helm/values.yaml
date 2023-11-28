@@ -114,13 +114,13 @@ redpanda-console:
 
   ingress:
     enabled: true
-    className: nginx
+    className: nginx-ext
     hosts:
       -   host: kafkaconsole.local
           paths:
             -   path: /
                 pathType: ImplementationSpecific
-                
+
     #annotations 
       #external-dns.alpha.kubernetes.io/hostname: greenbank.vnext.mojaloop.live
       #cert-manager.io/issuer: letsencrypt-staging
