@@ -35,13 +35,13 @@ export class PendingApprovalsComponent implements OnInit, OnDestroy {
   constructor(
     private _participantsSvc: ParticipantsService,
     private _messageService: MessageService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     console.log("PendingApprovalsComponent ngOnInit");
 
-    await this.getPendingApprovalsSummary();
-    await this.getPendingApprovals();
+    this.getPendingApprovalsSummary();
+    this.getPendingApprovals();
   }
 
   tabChange(e: any) {
@@ -110,7 +110,7 @@ export class PendingApprovalsComponent implements OnInit, OnDestroy {
     return this.selectedFundAdjustment.some((item) => item.id === id);
   }
 
-  getApprovalData(approved: boolean) {
+  getApprovalData(approved: boolean): IParticipantPendingApproval {
     let ndcRequests: IParticipantPendingApproval["ndcChangeRequests"] =
       this.selectedNDCRequest;
     let fundAdjustments: IParticipantPendingApproval["fundsMovementRequest"] =
@@ -141,10 +141,10 @@ export class PendingApprovalsComponent implements OnInit, OnDestroy {
   approvePendingApprovals() {
     const data = this.getApprovalData(true);
     this._participantsSvc.submitPendingApprovals(data).subscribe(
-      () => {
+      async () => {
         this._messageService.addSuccess("Approved!");
-        this.getPendingApprovalsSummary();
-        this.getPendingApprovals();
+        await this.getPendingApprovalsSummary();
+        await this.getPendingApprovals();
       },
       (error) => {
         if (error && error instanceof UnauthorizedError) {
@@ -164,10 +164,10 @@ export class PendingApprovalsComponent implements OnInit, OnDestroy {
   rejectPendingApprovals() {
     const data = this.getApprovalData(false);
     this._participantsSvc.submitPendingApprovals(data).subscribe(
-      () => {
+      async () => {
         this._messageService.addSuccess("Rejected!");
-        this.getPendingApprovalsSummary();
-        this.getPendingApprovals();
+        await this.getPendingApprovalsSummary();
+        await this.getPendingApprovals();
       },
       (error) => {
         if (error && error instanceof UnauthorizedError) {
@@ -184,39 +184,47 @@ export class PendingApprovalsComponent implements OnInit, OnDestroy {
     );
   }
 
-  async getPendingApprovals() {
-    this._participantsSvc.getPendingApprovals().subscribe(
-      (result) => {
-        this.fundAdjustments.next(result.fundsMovementRequest);
-        this.ndcRequests.next(result.ndcChangeRequests);
-      },
-      (error) => {
-        if (error && error instanceof UnauthorizedError) {
-          this._messageService.addError(error.message);
+  async getPendingApprovals(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._participantsSvc.getPendingApprovals().subscribe(
+        (result) => {
+          this.fundAdjustments.next(result.fundsMovementRequest);
+          this.ndcRequests.next(result.ndcChangeRequests);
+          resolve();
+        },
+        (error) => {
+          if (error && error instanceof UnauthorizedError) {
+            this._messageService.addError(error.message);
+          }
+          reject();
         }
-      }
-    );
+      );
+    });
   }
 
-  async getPendingApprovalsSummary() {
-    this._participantsSvc.getPendingApprovalsSummary().subscribe(
-      (result) => {
-        this.fundAdjustmentCount =
-          result.countByType.find(
-            (counts) => counts.type === "fundsMovementRequest"
-          )?.count || 0;
-        this.ndcRequestCount =
-          result.countByType.find(
-            (counts) => counts.type === "ndcChangeRequests"
-          )?.count || 0;
-      },
-      (error) => {
-        if (error && error instanceof UnauthorizedError) {
-          this._messageService.addError(error.message);
+  async getPendingApprovalsSummary(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._participantsSvc.getPendingApprovalsSummary().subscribe(
+        (result) => {
+          this.fundAdjustmentCount =
+            result.countByType.find(
+              (counts) => counts.type === "fundsMovementRequest"
+            )?.count || 0;
+          this.ndcRequestCount =
+            result.countByType.find(
+              (counts) => counts.type === "ndcChangeRequests"
+            )?.count || 0;
+          resolve();
+        },
+        (error) => {
+          if (error && error instanceof UnauthorizedError) {
+            this._messageService.addError(error.message);
+          }
+          reject()
         }
-      }
-    );
+      );
+    });
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() { }
 }
