@@ -225,6 +225,4 @@ export class PendingApprovalsComponent implements OnInit, OnDestroy {
       );
     });
   }
-
-  ngOnDestroy() { }
 }
