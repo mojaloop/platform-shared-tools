@@ -136,7 +136,7 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 		formData.append("settlementInitiation", this.selectedFile);
 
 		this.fundMovementsSubs = this._participantsSvc
-			.validateSettlementInitiationFile(formData)
+			.validateSettlementInitiationFile(this.selectedFile)
 			.subscribe(
 				(result) => {
 					this.fundAdjustments = result

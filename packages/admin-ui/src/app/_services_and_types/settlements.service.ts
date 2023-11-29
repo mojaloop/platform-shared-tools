@@ -589,9 +589,8 @@ export class SettlementsService {
 	}
 
 	exportSettlementMatrix(matrixId: string): Observable<Blob> {
-		const url = `/_reporting/settlementInitiationByMatrixIdExport/${matrixId}`;
+		const url = REPORT_BASEURL + `/settlementInitiationByMatrixId/${matrixId}?format=excel`;
 		const headers = new HttpHeaders();
-		headers.append('Accept', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
 		return this._http.get(url, {
 			responseType: 'blob',
