@@ -331,7 +331,8 @@ export class SettlementsService {
 		state?: string,
 		model?: string,
 		currencyCodes?: string[],
-		createdAt?: number,
+		startDate?: number,
+		endDate?: number,
 		pageIndex?: number,
 		pageSize: number = DEFAULT_PAGE_SIZE
 	): Observable<MatrixSearchResults> {
@@ -342,7 +343,8 @@ export class SettlementsService {
 			if (state) searchParams.append("state", state);
 			if (model) searchParams.append("model", model);
 			if (currencyCodes) searchParams.append("currencyCodes", JSON.stringify(currencyCodes));
-			if (createdAt) searchParams.append("createdAt", createdAt.toString());
+			if (startDate) searchParams.append("startDate", startDate.toString());
+			if (endDate) searchParams.append("endDate", endDate.toString());
 			if (pageIndex) searchParams.append("pageIndex", pageIndex.toString());
 			if (pageSize) searchParams.append("pageSize", pageSize.toString());
 

@@ -37,7 +37,8 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 		filterMatrixState: this.ALL_STR_ID,
 		filterMatrixModel: this.ALL_STR_ID,
 		filterCurrency: this.ALL_STR_ID,
-		filterCreatedDate: null,
+		filterStartDate: null,
+		filterEndDate: null,
 		//add initial values for other form controls (filters)
 	}
 
@@ -62,7 +63,8 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 			filterMatrixState,
 			filterMatrixModel,
 			filterCurrency,
-			filterCreatedDate,
+			filterStartDate,
+			filterEndDate
 		} = this.filterForm.value;
 
 		const matrixId = filterMatrixId || undefined;
@@ -70,7 +72,8 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 		const state = filterMatrixState === this.ALL_STR_ID ? undefined : filterMatrixState;
 		const model = filterMatrixModel === this.ALL_STR_ID ? undefined : filterMatrixModel;
 		const currencyCodes = filterCurrency === this.ALL_STR_ID ? undefined : [filterCurrency];
-		const createdAt = filterCreatedDate ? new Date(filterCreatedDate).getTime() : undefined;
+		const startDate = filterStartDate ? new Date(filterStartDate).valueOf() : undefined;
+		const endDate = filterEndDate ? new Date(filterEndDate).valueOf() : undefined;
 
 		this.matrixSubs = this._settlementsService.searchMatrices(
 			matrixId,
@@ -78,7 +81,8 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 			state,
 			model,
 			currencyCodes,
-			createdAt,
+			startDate,
+			endDate,
 			pageIndex,
 		).subscribe((matricesResult) => {
 			console.log("SettlementsMatricesComponent search - got MatricesSearchResult");
