@@ -13,7 +13,7 @@ import { UnauthorizedError } from "@mojaloop/security-bc-public-types-lib";
   selector: "app-participants",
   templateUrl: "./pending-approvals.component.html",
 })
-export class PendingApprovalsComponent implements OnInit, OnDestroy {
+export class PendingApprovalsComponent implements OnInit {
   fundAdjustments: BehaviorSubject<
     IParticipantPendingApproval["fundsMovementRequest"]
   > = new BehaviorSubject<IParticipantPendingApproval["fundsMovementRequest"]>(
