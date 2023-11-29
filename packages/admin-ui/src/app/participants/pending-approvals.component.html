@@ -16,10 +16,22 @@
     <ng-template ngbNavContent>
       <h4 class="mt-3">Pending Fund Adjustment for all Participants</h4>
       <div>
-        <button class="btn btn-success" (click)="approvePendingApprovals()">
+        <button
+          class="btn btn-success"
+          (click)="approvePendingApprovals()"
+          [disabled]="
+            !isFundAdjustmentSelectAll && selectedFundAdjustment.length === 0
+          "
+        >
           Approve
         </button>
-        <button class="btn btn-danger ml-2" (click)="rejectPendingApprovals()">
+        <button
+          class="btn btn-danger ml-2"
+          (click)="rejectPendingApprovals()"
+          [disabled]="
+            !isFundAdjustmentSelectAll && selectedFundAdjustment.length === 0
+          "
+        >
           Reject
         </button>
       </div>
@@ -78,10 +90,18 @@
     <ng-template ngbNavContent>
       <h4 class="mt-3">Pending NDC for all Participants</h4>
       <div>
-        <button class="btn btn-success" (click)="approvePendingApprovals()">
+        <button
+          class="btn btn-success"
+          (click)="approvePendingApprovals()"
+          [disabled]="!isNDCSelectAll && selectedNDCRequest.length === 0"
+        >
           Approve
         </button>
-        <button class="btn btn-danger ml-2" (click)="approvePendingApprovals()">
+        <button
+          class="btn btn-danger ml-2"
+          (click)="rejectPendingApprovals()"
+          [disabled]="!isNDCSelectAll && selectedNDCRequest.length === 0"
+        >
           Reject
         </button>
       </div>
