@@ -1,11 +1,11 @@
 <div class=" row"> <!--	Top header-->
 	<div class="col-md-8 align-self-center">
-		<h2 *ngIf="(matrix | async)?.state!=='OUT_OF_SYNC'">Matrix Details - {{(matrix | async)?.state}}</h2>
+		<h2 *ngIf="(matrix | async)?.state!=='OUT_OF_SYNC'">Matrix Details - <span  [ngClass]="{'text-success' : (matrix | async)?.state === 'FINALIZED'}">{{(matrix | async)?.state}}</span></h2>
 		<h2 *ngIf="(matrix | async)?.state==='OUT_OF_SYNC'">Matrix Details <span class="text-danger"> - {{(matrix | async)?.state}} (please recalculate<i class="bi bi-exclamation-triangle-fill"></i>)</span></h2>
 	</div>
 
 	<div class="col-md-4 align-self-center">
-		<small><strong>ID: </strong>  {{(matrix | async)?.id}}<a ngbTooltip="Copy ID to clipboard"><i class="bi bi-clipboard-plus"></i></a></small>
+		<small><strong>ID: </strong>  {{(matrix | async)?.id}}<a (click)="copyIdToClipboard()" ngbTooltip="Copy ID to clipboard" class="ml-1 text-dark"><i class="bi bi-clipboard-plus"></i></a></small>
 	</div>
 </div> <!--	Top header-->
 
@@ -112,6 +112,10 @@
 		<ng-container *ngIf="(matrix | async)?.state === 'LOCKED'">
 			<button class="btn btn-warning btn-block" (click)="settle()" [disabled]="!(canSettle | async)">Settle</button>
 			<button class="btn btn-warning btn-block" (click)="unlock()" >Unlock</button>
+		</ng-container>
+
+		<ng-container *ngIf="(matrix | async)?.state === 'FINALIZED'">
+			<button class="btn btn-success btn-block" (click)="export()">Export</button>
 		</ng-container>
 
 

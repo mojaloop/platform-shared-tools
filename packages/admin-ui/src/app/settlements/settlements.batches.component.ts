@@ -75,7 +75,7 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 			criteriaFrom.valueOf(), criteriaTo.valueOf(),
 			criteriaModel, criteriaCurrencyCodes, criteriaBatchStates
 		).subscribe(list => {
-			const filtered = list.items.filter(value => {
+			const filtered = list?.items.filter(value => {
 				if (criteriaBatchId && value.id.toUpperCase() !== criteriaBatchId.toUpperCase())
 					return false;
 

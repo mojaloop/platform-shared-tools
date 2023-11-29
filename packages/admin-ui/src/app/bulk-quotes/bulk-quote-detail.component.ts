@@ -27,7 +27,7 @@ export class BulkQuoteDetailComponent implements OnInit {
 
 	paginateResult: BehaviorSubject<PaginateResult | null> = new BehaviorSubject<PaginateResult | null>(null);
 
-	
+
 	@ViewChild("nav") // Get a reference to the ngbNav
 	navBar!: NgbNav;
 

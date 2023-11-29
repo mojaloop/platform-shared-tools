@@ -57,9 +57,17 @@
 
 					<!--participants-->
 					<li class="nav-item" *ngIf="(isLoggedIn | async)">
-						<a class="nav-link" routerLinkActive="active" routerLink="/participants">
+						<a class="nav-link dropdown-toggle" routerLinkActive="active" href="#participants-menu"
+							data-toggle="collapse" role="button">
 							<i class="bi bi-bank"></i>Participants
 						</a>
+						<ul class="submenu collapse" id="participants-menu" routerLinkActive="show">
+							<li>
+								<a class="nav-link" routerLinkActive="active" routerLink="/participants">
+									<i class="bi bi-bank"></i>Participant List
+								</a>
+							</li>
+						</ul>
 					</li>
 
 					<!--lookup-->
@@ -157,6 +165,37 @@
 							</li>
 						</ul>
 					</li>
+
+					<!--report-->
+					<li class="nav-item has-submenu" *ngIf="isLoggedIn | async">
+						<a class="nav-link dropdown-toggle"
+							routerLinkActive="active" href="#report-menu"
+							data-toggle="collapse" role="button">
+							<i class="bi bi-clipboard-data"></i>Reports
+						</a>
+						<ul class="submenu collapse" id="report-menu">
+							<li>
+								<a class="nav-link"routerLinkActive="active"
+									routerLink="/report/settlement-initiation-report">
+									Settlement Initiation Report
+								</a>
+							</li>
+							<li>
+								<a class="nav-link" routerLinkActive="active"
+									routerLink="/report/dfsp-settlement-report">
+									DFSP Settlement Report
+								</a>
+							</li>
+							<li>
+								<a class="nav-link" routerLinkActive="active"
+									routerLink="/report/dfsp-settlement-detail-report">
+									DFSP Settlement Detail Report
+								</a>
+							</li>
+						</ul>
+					</li> <!-- report END -->
+
+
 				</ul><!-- main sidebar-->
 
 				<h6 *ngIf="(isLoggedIn | async)" class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">

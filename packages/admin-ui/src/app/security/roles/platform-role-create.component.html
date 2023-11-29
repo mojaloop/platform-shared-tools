@@ -36,10 +36,10 @@
 
 		</div>
 
-		<!-- isPerParticipantRole -->
-		<div class="form-group col-md-2">
+		<!-- isPerParticipantRole  ||| disabled, for future usage when we have per participant users (for participant portal views -->
+		<div class="form-group col-md-2 " >
 			<label for="isPerParticipantRole">Per Participant Role: </label>
-			<select id="isPerParticipantRole" class="form-control" formControlName="isPerParticipantRole">
+			<select id="isPerParticipantRole" class="form-control" formControlName="isPerParticipantRole"  [attr.disabled]="true">
 				<option value="true">Yes</option>
 				<option value="false">No</option>
 			</select>

@@ -28,12 +28,15 @@ export const deserializeIlpPacket = (base64IlpPacket: any): any => {
 	return decodedIlpPacketDataJsonString ? decodedIlpPacketDataJsonString : base64IlpPacket;
 };
 
+
 // ref https://www.zacfukuda.com/blog/pagination-algorithm
 export type PaginateResult = {
 	next: number | null;
 	current: number;
 	prev: number | null;
 	items: (number | null)[]
+	totalPages: number;
+	pageSize?: number;
 }
 
 export function paginate(current: number, max: number): PaginateResult | null {
@@ -46,7 +49,7 @@ export function paginate(current: number, max: number): PaginateResult | null {
 		next: null | number = current === max ? null : current + 1,
 		items: (number | null)[] = [1];
 
-	if (current === 1 && max === 1) return {current, prev, next, items};
+	if (current === 1 && max === 1) return {current, prev, next, items, totalPages:max};
 	if (current > 4) items.push(null);
 
 	const r = 2, r1 = current - r, r2 = current + r;
@@ -56,7 +59,7 @@ export function paginate(current: number, max: number): PaginateResult | null {
 	if (r2 + 1 < max) items.push(null);
 	if (r2 < max) items.push(max);
 
-	return {current, prev, next, items};
+	return {current, prev, next, items, totalPages:max};
 }
 
 export function validateCIDR(input: string): boolean {
@@ -82,7 +85,7 @@ export function validatePortRange(rangeFirst?: number | null, rangeLast?: number
 }
 
 export function validatePorts(portString: string | undefined): boolean {
-	
+
 	if (typeof portString !== 'string') {
 		// Port input should be a string
 		return false;
@@ -109,4 +112,9 @@ export function validatePorts(portString: string | undefined): boolean {
 	return true;
 }
 
-
+export function formatNumber(number: string | number) {
+	// const numberFormatter = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2 });
+	// TODO: take this format from use profile OR use default from browser, we can't assume everyone wants "en-US"
+	const numberFormatter = new Intl.NumberFormat(undefined, { minimumFractionDigits: 2 });
+	return numberFormatter.format(Number(number));
+}

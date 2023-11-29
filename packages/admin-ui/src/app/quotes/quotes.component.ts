@@ -73,7 +73,7 @@ export class QuotesComponent implements OnInit, OnDestroy {
 	}
 
 
-	
+
 	async getSearchKeywords() {
 		this.keywordsSubs = this._quotesSvc.getSearchKeywords().subscribe((keywords) => {
 			console.log("QuotesComponent search - got getSearchKeywords");

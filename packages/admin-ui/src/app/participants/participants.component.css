@@ -1,0 +1,20 @@
+.circular-transition {
+	transition: stroke-dashoffset 0.3s ease-out;
+}
+
+.absolute-center {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.dragging-over {
+	border: 1px dashed #8C8B8B;
+	background-color: #F0F9FF;
+}
+
+/* to prevent firing dragleave event when dragging over child elements */
+.dragging-over > * {
+	pointer-events: none;
+}
