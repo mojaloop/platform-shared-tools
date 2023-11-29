@@ -49,13 +49,18 @@ export class ParticipantsService {
 	}
 
 	validateSettlementInitiationFile(
-		formData: FormData
+		settlementInitiation: File
 	): Observable<FundMovement[]> {
 		return new Observable<FundMovement[]>((subscriber) => {
 			this._http
 				.post<FundMovement[]>(
 					`${SVC_BASEURL}/participants/liquidityCheckValidate`,
-					formData
+					{ settlementInitiation },
+					{
+						headers: {
+							"Content-Type": "multipart/form-data",
+						}
+					}
 				)
 				.subscribe(
 					(result) => {
@@ -67,7 +72,9 @@ export class ParticipantsService {
 							console.warn(
 								"UnauthorizedError received on validateSettlementInitiationFile"
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						}
 						if (error && error.status === 403) {
 							console.warn(
@@ -1125,4 +1132,5 @@ export class ParticipantsService {
 				);
 		});
 	}
+
 }
