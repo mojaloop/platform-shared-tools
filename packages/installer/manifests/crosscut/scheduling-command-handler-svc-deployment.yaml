@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  creationTimestamp: null
+  labels:
+    mojaloop.service: scheduling-command-handler-svc
+    mojaloop.layer: crosscut
+  name: scheduling-command-handler-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      mojaloop.service: scheduling-command-handler-svc
+  strategy: 
+      type: Recreate
+  template:
+    metadata:
+      annotations:
+      creationTimestamp: null
+      labels:
+          mojaloop.service: scheduling-command-handler-svc
+          mojaloop.layer: crosscut
+    spec:
+      containers:
+        - env:
+            - name: KAFKA_AUDITS_TOPIC
+              value: audits
+            - name: KAFKA_LOGS_TOPIC
+              value: logs
+            - name: KAFKA_URL
+              value: kafka:9092
+            - name: MONGO_URL
+              value: mongodb://root:mongoDbPas42@mongodb:27017/
+            - name: PLATFORM_CONFIG_BASE_SVC_URL
+              value: http://participants-svc:3010
+            - name: SCHEDULING_HOST_LOCKS
+              value: redis-master
+          image: mojaloop/scheduling-bc-command-handler-svc:0.0.3
+          name: scheduling-command-handler-svc
+          resources: {}
+      restartPolicy: Always

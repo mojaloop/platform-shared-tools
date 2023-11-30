@@ -101,11 +101,11 @@ Note: see [below](#modify-hosts-file-on-windows-10) for intructions on updating 
 
 Note you can only have one host per line so on windows 10 your hosts file should look something like: 
 ```
-192.168.56.100 vnextadmin 
+192.168.56.100 vnextadmin.local 
 192.168.56.100 elasticsearch.local 
-192.168.56.100 mongohost.local 
-192.168.56.100 mongo-express.local 
-192.168.56.100 redpanda-console.local 
+192.168.56.100 kibana.local 
+192.168.56.100 mongoexpress.local 
+192.168.56.100 kafkaconsole.local 
 192.168.56.100 fspiop.local 
 192.168.56.100 bluebank.local 
 192.168.56.100 greenbank.local 

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  creationTimestamp: null
+  labels:
+    mojaloop.service: quotes-reporting-svc
+    mojaloop.layer: reporting 
+  name: quotes-reporting-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      mojaloop.service: quotes-reporting-svc
+  strategy: 
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+      creationTimestamp: null
+      labels:
+        mojaloop.service: quotes-reporting-svc
+        mojaloop.layer: reporting
+    spec:
+      containers:
+        - env:
+            - name: AUTH_N_SVC_BASEURL
+            - name: KAFKA_LOGS_TOPIC
+            - name: KAFKA_URL
+            - name: MONGO_URL
+            - name: 'PARTICIPANTS_SVC_URL '
+          image: mojaloop/reporting-bc-quotes-reporting-svc:0.3.4
+          livenessProbe:
+            exec:
+              command:
+                - nc -z localhost 5003 || exit -1
+            failureThreshold: 10
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 10
+          name: quotes-reporting-svc
+          ports:
+            - containerPort: 5003
+          resources: {}
+      restartPolicy: Always
+status: {}

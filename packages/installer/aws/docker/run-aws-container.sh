@@ -94,30 +94,10 @@ while getopts "p:hH" OPTION ; do
     esac
 done
 
-## User settings change these to reflect your locations ########################################
-AWS_CREDENTIALS_DIR="$HOME/.aws"   # directory with the aws "credentials file" normally should not need changing
-TERRAFORM_CLUSTER_DIR="eks"  # this is the name of the directory containing the terraform to create the cluster 
-################################################################################################
 
-# SCRIPT_DIR=$( cd $(dirname "$0") ; pwd )
-# INSTALLER_DIR=$( cd $(dirname "$0")/../.. ; pwd )
-# EKS_DIR=$( cd $(dirname "$0")/.. ; pwd )  # this is the installer/eks directory 
-# REPO_DIR=$( cd $(dirname "$0")/../../../.. ; pwd )
-# echo "script dir is $SCRIPT_DIR"
-# echo "REPO_DIR is $REPO_DIR"
-# echo "installer dir is $INSTALLER_DIR"
-
-# # point to the docker image that results from running build.sh 
-# DOCKER_IMAGE_NAME=`grep DOCKER_IMAGE_NAME= $SCRIPT_DIR/build.sh | cut -d "\"" -f2 | awk '{print $1}'`
-# # get the username and id of the user running this script
-# USER_NAME=$(whoami)
-# USER_ID=$(id -u $USER_NAME)
-# # terraform directory for AWS 
-# HOST_TERRAFORM_DIR=$EKS_DIR/terraform
-# # MOJALOOP_BIN_DIR=$EKS_DIR/bin
-# # MOJALOOP_ETC_DIR=$EKS_DIR/etc
 
 #### Set global env vars ####
+TERRAFORM_CLUSTER_DIR="eks" 
 AWS_CREDENTIALS_DIR="$HOME/.aws"   # directory with the aws "credentials file" normally should not need changing
 SCRIPT_DIR=$( cd $(dirname "$0") ; pwd )
 REPO_BASE_DIR=$( cd $(dirname "$0")/../../../.. ; pwd ) # the vNext repo directory 

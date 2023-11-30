@@ -4,14 +4,14 @@ metadata:
   annotations:
   creationTimestamp:
   labels:
-    mojaloop.service: scheduling-svc
+    mojaloop.service: scheduling-api-svc
     mojaloop.layer: crosscut
-  name: scheduling-svc
+  name: scheduling-api-svc
 spec:
   replicas: 1
   selector:
     matchLabels:
-      mojaloop.service: scheduling-svc
+      mojaloop.service: scheduling-api-svc
   strategy:
     type: Recreate
   template:
@@ -19,7 +19,7 @@ spec:
       annotations:
       creationTimestamp:
       labels:
-        mojaloop.service: scheduling-svc
+        mojaloop.service: scheduling-api-svc
         mojaloop.layer: crosscut
     spec:
       containers:
@@ -46,7 +46,7 @@ spec:
           value: http://platform-configuration-svc:3100
         - name: SCHEDULING_HOST_LOCKS
           value: redis-master
-        image: mojaloop/scheduling-bc-scheduling-svc:0.3.1
+        image: mojaloop/scheduling-bc-scheduling-api-svc:0.3.6
         livenessProbe:
           exec:
             command:
@@ -55,7 +55,7 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 20
           timeoutSeconds: 20
-        name: scheduling-svc
+        name: scheduling-api-svc
         ports:
         - containerPort: 3150
         resources: {}

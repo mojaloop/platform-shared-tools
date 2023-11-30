@@ -50,7 +50,7 @@ spec:
           value: http://settlements-api-svc:3600
         - name: SCHEDULING_SVC_URL
           value: http://scheduling-svc:1234
-        image: mojaloop/transfers-bc-command-handler-svc:0.3.6
+        image: mojaloop/transfers-bc-command-handler-svc:0.3.11
         name: transfers-command-handler-svc
         resources: {}
         volumeMounts:

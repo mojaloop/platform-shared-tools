@@ -39,7 +39,7 @@ spec:
               value: logs
             - name: KAFKA_URL
               value: kafka:9092
-          image: mojaloop/auditing-bc-auditing-svc:0.3.2
+          image: mojaloop/auditing-bc-auditing-svc:0.3.3
           name: auditing-svc
           ports:
             - containerPort: 3050

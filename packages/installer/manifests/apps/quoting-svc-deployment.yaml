@@ -44,7 +44,7 @@ spec:
           value: http://participants-svc:3010
         - name: PLATFORM_CONFIG_BASE_SVC_URL
           value: http://platform-configuration-svc:3100
-        image: mojaloop/quoting-bc-quoting-svc:0.3.5
+        image: mojaloop/quoting-bc-quoting-svc:0.3.8
         livenessProbe:
           exec:
             command:
