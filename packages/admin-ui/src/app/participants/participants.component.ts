@@ -132,9 +132,6 @@ export class ParticipantsComponent implements OnInit, OnDestroy {
 	validateFile() {
 		if (!this.selectedFile) return;
 
-		const formData = new FormData();
-		formData.append("settlementInitiation", this.selectedFile);
-
 		this.fundMovementsSubs = this._participantsSvc
 			.validateSettlementInitiationFile(this.selectedFile)
 			.subscribe(
