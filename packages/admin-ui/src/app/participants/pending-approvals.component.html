@@ -18,7 +18,7 @@
       <div>
         <button
           class="btn btn-success"
-          (click)="approvePendingApprovals()"
+          (click)="approveFundAdjustmentPendingApprovals()"
           [disabled]="
             !isFundAdjustmentSelectAll && selectedFundAdjustment.length === 0
           "
@@ -27,7 +27,7 @@
         </button>
         <button
           class="btn btn-danger ml-2"
-          (click)="rejectPendingApprovals()"
+          (click)="rejectFundAdjustmentPendingApprovals()"
           [disabled]="
             !isFundAdjustmentSelectAll && selectedFundAdjustment.length === 0
           "
@@ -92,14 +92,14 @@
       <div>
         <button
           class="btn btn-success"
-          (click)="approvePendingApprovals()"
+          (click)="approveNDCRequestPendingApprovals()"
           [disabled]="!isNDCSelectAll && selectedNDCRequest.length === 0"
         >
           Approve
         </button>
         <button
           class="btn btn-danger ml-2"
-          (click)="rejectPendingApprovals()"
+          (click)="rejectNDCRequestPendingApprovals()"
           [disabled]="!isNDCSelectAll && selectedNDCRequest.length === 0"
         >
           Reject

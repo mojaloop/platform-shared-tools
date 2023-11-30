@@ -1,11 +1,7 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ParticipantsService } from "../_services_and_types/participants.service";
 import { MessageService } from "../_services_and_types/message.service";
 import { BehaviorSubject } from "rxjs";
-import {
-  IParticipantFundsMovement,
-  IParticipantNetDebitCapChangeRequest,
-} from "@mojaloop/participant-bc-public-types-lib";
 import { IParticipantPendingApproval } from "../_services_and_types/participant_types";
 import { UnauthorizedError } from "@mojaloop/security-bc-public-types-lib";
 
@@ -138,9 +134,23 @@ export class PendingApprovalsComponent implements OnInit {
     };
   }
 
-  approvePendingApprovals() {
-    const data = this.getApprovalData(true);
-    this._participantsSvc.submitPendingApprovals(data).subscribe(
+  approveFundAdjustmentPendingApprovals() {
+    let fundAdjustments: IParticipantPendingApproval["fundsMovementRequest"] =
+      this.selectedFundAdjustment;
+    if (this.isFundAdjustmentSelectAll) {
+      fundAdjustments = this.fundAdjustments.value;
+    }
+    fundAdjustments.forEach((item) => {
+      item.approved = true;
+    });
+    this._participantsSvc.submitPendingApprovals({
+      fundsMovementRequest: fundAdjustments,
+      ndcChangeRequests: [],
+      accountsChangeRequest: [],
+      ipChangeRequests: [],
+      contactInfoChangeRequests: [],
+      statusChangeRequests: [],
+    }).subscribe(
       async () => {
         this._messageService.addSuccess("Approved!");
         await this.getPendingApprovalsSummary();
@@ -153,17 +163,29 @@ export class PendingApprovalsComponent implements OnInit {
       },
       () => {
         // reset all selected options
-        this.selectedNDCRequest = [];
         this.selectedFundAdjustment = [];
-        this.isNDCSelectAll = false;
         this.isFundAdjustmentSelectAll = false;
       }
     );
   }
 
-  rejectPendingApprovals() {
-    const data = this.getApprovalData(false);
-    this._participantsSvc.submitPendingApprovals(data).subscribe(
+  rejectFundAdjustmentPendingApprovals() {
+    let fundAdjustments: IParticipantPendingApproval["fundsMovementRequest"] =
+      this.selectedFundAdjustment;
+    if (this.isFundAdjustmentSelectAll) {
+      fundAdjustments = this.fundAdjustments.value;
+    }
+    fundAdjustments.forEach((item) => {
+      item.approved = false;
+    });
+    this._participantsSvc.submitPendingApprovals({
+      fundsMovementRequest: fundAdjustments,
+      ndcChangeRequests: [],
+      accountsChangeRequest: [],
+      ipChangeRequests: [],
+      contactInfoChangeRequests: [],
+      statusChangeRequests: [],
+    }).subscribe(
       async () => {
         this._messageService.addSuccess("Rejected!");
         await this.getPendingApprovalsSummary();
@@ -176,13 +198,86 @@ export class PendingApprovalsComponent implements OnInit {
       },
       () => {
         // reset all selected options
-        this.selectedNDCRequest = [];
         this.selectedFundAdjustment = [];
-        this.isNDCSelectAll = false;
         this.isFundAdjustmentSelectAll = false;
       }
     );
   }
+
+  approveNDCRequestPendingApprovals() {
+    let ndcRequests: IParticipantPendingApproval["ndcChangeRequests"] =
+      this.selectedNDCRequest;
+    if (this.isFundAdjustmentSelectAll) {
+      ndcRequests = this.ndcRequests.value;
+    }
+    ndcRequests.forEach((item) => {
+      item.approved = true;
+    });
+    this._participantsSvc
+      .submitPendingApprovals({
+        fundsMovementRequest: [],
+        ndcChangeRequests: ndcRequests,
+        accountsChangeRequest: [],
+        ipChangeRequests: [],
+        contactInfoChangeRequests: [],
+        statusChangeRequests: [],
+      })
+      .subscribe(
+        async () => {
+          this._messageService.addSuccess("Approved!");
+          await this.getPendingApprovalsSummary();
+          await this.getPendingApprovals();
+        },
+        (error) => {
+          if (error && error instanceof UnauthorizedError) {
+            this._messageService.addError(error.message);
+          }
+        },
+        () => {
+          // reset all selected options
+          this.selectedNDCRequest = [];
+          this.isNDCSelectAll = false;
+        }
+      );
+  }
+
+  rejectNDCRequestPendingApprovals() {
+    let ndcRequests: IParticipantPendingApproval["ndcChangeRequests"] =
+      this.selectedNDCRequest;
+    if (this.isFundAdjustmentSelectAll) {
+      ndcRequests = this.ndcRequests.value;
+    }
+    ndcRequests.forEach((item) => {
+      item.approved = false;
+    });
+    this._participantsSvc
+      .submitPendingApprovals({
+        fundsMovementRequest: [],
+        ndcChangeRequests: ndcRequests,
+        accountsChangeRequest: [],
+        ipChangeRequests: [],
+        contactInfoChangeRequests: [],
+        statusChangeRequests: [],
+      })
+      .subscribe(
+        async () => {
+          this._messageService.addSuccess("Rejected!");
+          await this.getPendingApprovalsSummary();
+          await this.getPendingApprovals();
+        },
+        (error) => {
+          if (error && error instanceof UnauthorizedError) {
+            this._messageService.addError(error.message);
+          }
+        },
+        () => {
+          // reset all selected options
+          this.selectedNDCRequest = [];
+          this.isNDCSelectAll = false;
+        }
+      );
+  }
+
 
   async getPendingApprovals(): Promise<void> {
     return new Promise((resolve, reject) => {
