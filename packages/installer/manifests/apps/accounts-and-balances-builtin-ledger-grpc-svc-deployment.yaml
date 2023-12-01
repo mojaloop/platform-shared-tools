@@ -63,12 +63,5 @@ spec:
         ports:
         - containerPort: 3350
         resources: {}
-        volumeMounts:
-        - mountPath: /app/data
-          name: aandb-builtin-ledger-grpc-svc-data
       restartPolicy: Always
-      volumes:
-      - name: aandb-builtin-ledger-grpc-svc-data
-        persistentVolumeClaim:
-          claimName: aandb-builtin-ledger-grpc-svc-data
 status: {}

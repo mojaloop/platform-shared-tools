@@ -59,12 +59,5 @@ spec:
         ports:
         - containerPort: 3600
         resources: {}
-        volumeMounts:
-        - mountPath: /app/data
-          name: settlements-api-svc-data
       restartPolicy: Always
-      volumes:
-      - name: settlements-api-svc-data
-        persistentVolumeClaim:
-          claimName: settlements-api-svc-data
 status: {}

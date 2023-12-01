@@ -45,12 +45,5 @@ spec:
         image: mojaloop/transfers-bc-event-handler-svc:0.3.10
         name: transfers-event-handler-svc
         resources: {}
-        volumeMounts:
-        - mountPath: /app/data
-          name: transfers-event-handler-svc-data
       restartPolicy: Always
-      volumes:
-      - name: transfers-event-handler-svc-data
-        persistentVolumeClaim:
-          claimName: transfers-event-handler-svc-data
 status: {}

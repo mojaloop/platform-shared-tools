@@ -57,12 +57,5 @@ spec:
         ports:
         - containerPort: 3033
         resources: {}
-        volumeMounts:
-        - mountPath: /app/data
-          name: quoting-svc-data
       restartPolicy: Always
-      volumes:
-      - name: quoting-svc-data
-        persistentVolumeClaim:
-          claimName: quoting-svc-data
 status: {}

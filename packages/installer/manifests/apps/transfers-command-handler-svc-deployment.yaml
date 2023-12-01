@@ -53,12 +53,5 @@ spec:
         image: mojaloop/transfers-bc-command-handler-svc:0.3.11
         name: transfers-command-handler-svc
         resources: {}
-        volumeMounts:
-        - mountPath: /app/data
-          name: transfers-command-handler-svc-data
       restartPolicy: Always
-      volumes:
-      - name: transfers-command-handler-svc-data
-        persistentVolumeClaim:
-          claimName: transfers-command-handler-svc-data
 status: {}

@@ -45,12 +45,5 @@ spec:
         image: mojaloop/settlements-bc-event-handler-svc:0.3.4
         name: settlements-event-handler-svc
         resources: {}
-        volumeMounts:
-        - mountPath: /app/data
-          name: settlements-event-handler-svc-data
       restartPolicy: Always
-      volumes:
-      - name: settlements-event-handler-svc-data
-        persistentVolumeClaim:
-          claimName: settlements-event-handler-svc-data
 status: {}

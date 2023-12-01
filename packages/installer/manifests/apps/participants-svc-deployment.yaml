@@ -61,12 +61,5 @@ spec:
         ports:
         - containerPort: 3010
         resources: {}
-        volumeMounts:
-        - mountPath: /app/data
-          name: participants-svc-data
       restartPolicy: Always
-      volumes:
-      - name: participants-svc-data
-        persistentVolumeClaim:
-          claimName: participants-svc-data
 status: {}

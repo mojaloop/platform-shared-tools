@@ -49,12 +49,5 @@ spec:
         image: mojaloop/settlements-bc-command-handler-svc:0.3.7
         name: settlements-command-handler-svc
         resources: {}
-        volumeMounts:
-        - mountPath: /app/data
-          name: settlements-command-handler-svc-data
       restartPolicy: Always
-      volumes:
-      - name: settlements-command-handler-svc-data
-        persistentVolumeClaim:
-          claimName: settlements-command-handler-svc-data
 status: {}

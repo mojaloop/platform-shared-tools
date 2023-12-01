@@ -43,12 +43,5 @@ spec:
         ports:
         - containerPort: 3031
         resources: {}
-        volumeMounts:
-        - mountPath: /app/data
-          name: account-lookup-http-oracle-svc-data
       restartPolicy: Always
-      volumes:
-      - name: account-lookup-http-oracle-svc-data
-        persistentVolumeClaim:
-          claimName: account-lookup-http-oracle-svc-data
 status: {}

@@ -65,12 +65,5 @@ spec:
         ports:
         - containerPort: 3300
         resources: {}
-        volumeMounts:
-        - mountPath: /app/data
-          name: aandb-coa-grpc-svc-data
       restartPolicy: Always
-      volumes:
-      - name: aandb-coa-grpc-svc-data
-        persistentVolumeClaim:
-          claimName: aandb-coa-grpc-svc-data
 status: {}

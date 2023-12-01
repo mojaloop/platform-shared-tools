@@ -57,12 +57,5 @@ spec:
         ports:
         - containerPort: 3500
         resources: {}
-        volumeMounts:
-        - mountPath: /app/data
-          name: transfers-api-svc-data
       restartPolicy: Always
-      volumes:
-      - name: transfers-api-svc-data
-        persistentVolumeClaim:
-          claimName: transfers-api-svc-data
 status: {}
