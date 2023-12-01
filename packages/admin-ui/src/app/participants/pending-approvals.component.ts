@@ -106,34 +106,6 @@ export class PendingApprovalsComponent implements OnInit {
     return this.selectedFundAdjustment.some((item) => item.id === id);
   }
 
-  getApprovalData(approved: boolean): IParticipantPendingApproval {
-    let ndcRequests: IParticipantPendingApproval["ndcChangeRequests"] =
-      this.selectedNDCRequest;
-    let fundAdjustments: IParticipantPendingApproval["fundsMovementRequest"] =
-      this.selectedFundAdjustment;
-    if (this.isNDCSelectAll) {
-      ndcRequests = this.ndcRequests.value;
-    }
-    if (this.isFundAdjustmentSelectAll) {
-      fundAdjustments = this.fundAdjustments.value;
-    }
-
-    ndcRequests.forEach((item) => {
-      item.approved = approved;
-    });
-    fundAdjustments.forEach((item) => {
-      item.approved = approved;
-    });
-    return {
-      ndcChangeRequests: ndcRequests,
-      fundsMovementRequest: fundAdjustments,
-      accountsChangeRequest: [],
-      ipChangeRequests: [],
-      contactInfoChangeRequests: [],
-      statusChangeRequests: [],
-    };
-  }
-
   approveFundAdjustmentPendingApprovals() {
     let fundAdjustments: IParticipantPendingApproval["fundsMovementRequest"] =
       this.selectedFundAdjustment;
