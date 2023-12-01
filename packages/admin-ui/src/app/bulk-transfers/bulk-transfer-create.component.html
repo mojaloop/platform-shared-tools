@@ -18,7 +18,7 @@
 			<label class="my-1 mr-2" for="selectedQuoteId">Quote Id</label>
 			<select class="custom-select my-1 mr-sm-4" id="selectedQuoteId" formControlName="selectedQuoteId">
 				<option *ngFor="let item of (quotes | async)" value="{{item.quoteId}}">{{item.quoteId}}
-					- {{item.expiration | date: 'medium'}}</option>
+					- {{item.createdAt | date: 'medium'}}</option>
 			</select>
 			<div class="ml-auto p-2">
 				<button class="btn btn-primary" type="button" (click)="applyQuote()">Apply</button>
