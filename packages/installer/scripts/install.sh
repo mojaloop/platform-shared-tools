@@ -27,12 +27,17 @@ function install_vnext {
   set_mojaloop_timeout
   printf "\n"
 
+  restore_demo_data
+  configure_elastic_search $REPO_BASE_DIR
+  exit 1 
+
   if  [[ "$mode" == "update_images" ]]; then
     print "<<<< for development only >>>>>\n"
     update_k8s_images_from_docker_files 
     printf "<<<< for development only >>>>>\n"
   elif [[ "$mode" == "delete_ml" ]]; then
     delete_mojaloop_layer "ttk" $MANIFESTS_DIR/ttk
+    delete_mojaloop_layer "reporting" $MANIFESTS_DIR/reporting
     delete_mojaloop_layer "apps" $MANIFESTS_DIR/apps
     delete_mojaloop_layer "crosscut" $MANIFESTS_DIR/crosscut
     delete_mojaloop_infra_release  
@@ -48,7 +53,8 @@ function install_vnext {
     install_infra_from_local_chart $MANIFESTS_DIR/infra
     install_mojaloop_layer "crosscut" $MANIFESTS_DIR/crosscut
     install_mojaloop_layer "apps" $MANIFESTS_DIR/apps
-    
+    install_mojaloop_layer "reporting" $MANIFESTS_DIR/reporting
+
     if [[ "$ARCH" == "x86_64" ]] || [[ "$NODE_ARCH" == "amd64" ]]; then 
       install_mojaloop_layer "ttk" $MANIFESTS_DIR/ttk
     else
@@ -58,7 +64,7 @@ function install_vnext {
       #      see: https://github.com/mojaloop/project/issues/3637
       install_mojaloop_layer "ttk" /tmp/ttk
     fi
-    restore_demo_data $MONGO_IMPORT_DIR $REPO_BASE_DIR/packages/deployment/docker-compose-apps/ttk_files
+    #restore_demo_data $MONGO_IMPORT_DIR $REPO_BASE_DIR/packages/deployment/docker-compose-apps/ttk_files
     configure_elastic_search $REPO_BASE_DIR
     check_urls
 
