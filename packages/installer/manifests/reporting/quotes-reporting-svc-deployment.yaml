@@ -23,24 +23,29 @@ spec:
         mojaloop.layer: reporting
     spec:
       containers:
-        - env:
-            - name: AUTH_N_SVC_BASEURL
-            - name: KAFKA_LOGS_TOPIC
-            - name: KAFKA_URL
-            - name: MONGO_URL
-            - name: 'PARTICIPANTS_SVC_URL '
-          image: mojaloop/reporting-bc-quotes-reporting-svc:0.3.4
-          livenessProbe:
-            exec:
-              command:
-                - nc -z localhost 5003 || exit -1
-            failureThreshold: 10
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 10
-          name: quotes-reporting-svc
-          ports:
-            - containerPort: 5003
-          resources: {}
+      - env:
+        - name: AUTH_N_SVC_BASEURL
+          value: http://authentication-svc:3201
+        - name: KAFKA_LOGS_TOPIC
+          value: logs
+        - name: KAFKA_URL
+          value: kafka:9092
+        - name: MONGO_URL
+          value: mongodb://root:mongoDbPas42@mongodb:27017/  
+        - name: PARTICIPANTS_SVC_URL
+          value: http://participants-svc:3010
+        image: mojaloop/reporting-bc-quotes-reporting-svc:0.3.4
+        livenessProbe:
+          exec:
+            command:
+              - nc -z localhost 5003 || exit -1
+          failureThreshold: 10
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 10
+        name: quotes-reporting-svc
+        ports:
+          - containerPort: 5003
+        resources: {}
       restartPolicy: Always
 status: {}
