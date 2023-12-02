@@ -27,9 +27,9 @@ function install_vnext {
   set_mojaloop_timeout
   printf "\n"
 
-  restore_demo_data
-  configure_elastic_search $REPO_BASE_DIR
-  exit 1 
+#   restore_demo_data $MONGO_IMPORT_DIR $REPO_BASE_DIR/packages/deployment/docker-compose-apps/ttk_files
+# #  configure_elastic_search $REPO_BASE_DIR
+#   exit 1 
 
   if  [[ "$mode" == "update_images" ]]; then
     print "<<<< for development only >>>>>\n"
@@ -51,6 +51,7 @@ function install_vnext {
     source $HOME/mlenv/bin/activate 
     modify_local_mojaloop_yaml_and_charts  "$COMMON_SCRIPTS_DIR/vnext-configure.py" "$MANIFESTS_DIR"
     install_infra_from_local_chart $MANIFESTS_DIR/infra
+    restore_demo_data $MONGO_IMPORT_DIR $REPO_BASE_DIR/packages/deployment/docker-compose-apps/ttk_files
     install_mojaloop_layer "crosscut" $MANIFESTS_DIR/crosscut
     install_mojaloop_layer "apps" $MANIFESTS_DIR/apps
     install_mojaloop_layer "reporting" $MANIFESTS_DIR/reporting
@@ -64,7 +65,7 @@ function install_vnext {
       #      see: https://github.com/mojaloop/project/issues/3637
       install_mojaloop_layer "ttk" /tmp/ttk
     fi
-    #restore_demo_data $MONGO_IMPORT_DIR $REPO_BASE_DIR/packages/deployment/docker-compose-apps/ttk_files
+
     configure_elastic_search $REPO_BASE_DIR
     check_urls
 

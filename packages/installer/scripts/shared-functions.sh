@@ -558,41 +558,49 @@ function restore_demo_data {
   mongopod=`kubectl get pods --namespace $NAMESPACE | grep -i mongodb |awk '{print $1}'` 
   mongo_root_pw=`kubectl get secret mongodb -o jsonpath='{.data.MONGO_INITDB_ROOT_PASSWORD}'| base64 -d` 
   #kubectl cp $mongo_data_dir/mongodata.gz $mongopod:/tmp >/dev/null 2>&1 # copy the demo / test data into the mongodb pod
-  kubectl cp $mongo_data_dir/mongodata_with_ttk_data_13Nov2023.gz $mongopod:/tmp/mongodata.gz >/dev/null 2>&1 # copy the demo / test data into the mongodb pod
+  echo "$mongo_data_dir/mongodump-beta.gz"
+  kubectl cp $mongo_data_dir/mongodump-beta.gz $mongopod:/tmp/mongodump.gz >/dev/null 2>&1 # copy the demo / test data into the mongodb pod
+  # drop existing collections 
+    # kubectl exec --stdin --tty $mongopod -- mongosh  -u root -p $mongo_root_pw  --eval "use accounts_and_balances_bc_builtin_ledger" --eval  "db.dropDatabase()" 
+    # kubectl exec --stdin --tty $mongopod -- mongosh -u root -p $mongo_root_pw --eval "use  accounts_and_balances_bc_coa"  --eval  "db.dropDatabase()" 
+    # kubectl exec --stdin --tty $mongopod -- mongosh -u root -p $mongo_root_pw --eval "use  participants"  --eval  "db.dropDatabase()" 
+    # kubectl exec --stdin --tty $mongopod -- mongosh -u root -p $mongo_root_pw --eval "use  security"  --eval  "db.dropDatabase()" 
+                 
   # run the mongorestore 
   kubectl exec --stdin --tty $mongopod -- mongorestore  -u root -p $mongo_root_pw \
-               --gzip --archive=/tmp/mongodata.gz --authenticationDatabase admin > /dev/null 2>&1
+               --gzip --archive=/tmp/mongodump.gz --authenticationDatabase admin > /dev/null 2>&1
   printf " [ ok ] \n"
 
+  
   # copy in the TTK environment data if bluebank pod exists and is running 
   # TODO remove the if then test and do all the time once TTK works on arm64 
-  bb_pod_status=`kubectl get pods bluebank-backend-0 --namespace $NAMESPACE  --no-headers 2>/dev/null | awk '{print $3}' `
-  if [[ "$bb_pod_status" == "Running" ]]; then
-    error_message=" restoring some testing toolkit configuration data failed  "
-    printf "    - testing toolkit data and environment config " 
-    ####   bluebank  ###
-    ttk_pod_env_dest="/opt/app/examples/environments"
-    ttk_pod_spec_dest="/opt/app/spec_files"
-    kubectl cp $ttk_files_dir/environment/hub_local_environment.json bluebank-backend-0:$ttk_pod_env_dest/hub_local_environment.json 
-    kubectl cp $ttk_files_dir/environment/dfsp_local_environment.json bluebank-backend-0:$ttk_pod_env_dest/dfsp_local_environment.json
-    kubectl cp $ttk_files_dir/spec_files/user_config_bluebank.json bluebank-backend-0:$ttk_pod_spec_dest/user_config.json
-    kubectl cp $ttk_files_dir/spec_files/default.json bluebank-backend-0:$ttk_pod_spec_dest/rules_callback/default.json
+  # bb_pod_status=`kubectl get pods bluebank-backend-0 --namespace $NAMESPACE  --no-headers 2>/dev/null | awk '{print $3}' `
+  # if [[ "$bb_pod_status" == "Running" ]]; then
+  #   error_message=" restoring some testing toolkit configuration data failed  "
+  #   printf "    - testing toolkit data and environment config " 
+  #   ####   bluebank  ###
+  #   ttk_pod_env_dest="/opt/app/examples/environments"
+  #   ttk_pod_spec_dest="/opt/app/spec_files"
+  #   kubectl cp $ttk_files_dir/environment/hub_local_environment.json bluebank-backend-0:$ttk_pod_env_dest/hub_local_environment.json 
+  #   kubectl cp $ttk_files_dir/environment/dfsp_local_environment.json bluebank-backend-0:$ttk_pod_env_dest/dfsp_local_environment.json
+  #   kubectl cp $ttk_files_dir/spec_files/user_config_bluebank.json bluebank-backend-0:$ttk_pod_spec_dest/user_config.json
+  #   kubectl cp $ttk_files_dir/spec_files/default.json bluebank-backend-0:$ttk_pod_spec_dest/rules_callback/default.json
 
-    ####  greenbank  ###
-    kubectl cp $ttk_files_dir/environment/hub_local_environment.json greenbank-backend-0:$ttk_pod_env_dest/hub_local_environment.json
-    kubectl cp $ttk_files_dir/environment/dfsp_local_environment.json greenbank-backend-0:$ttk_pod_env_dest/dfsp_local_environment.json
-    kubectl cp $ttk_files_dir/spec_files/user_config_greenbank.json greenbank-backend-0:$ttk_pod_spec_dest/user_config.json
-    kubectl cp $ttk_files_dir/spec_files/default.json greenbank-backend-0:$ttk_pod_spec_dest/rules_callback/default.json
+  #   ####  greenbank  ###
+  #   kubectl cp $ttk_files_dir/environment/hub_local_environment.json greenbank-backend-0:$ttk_pod_env_dest/hub_local_environment.json
+  #   kubectl cp $ttk_files_dir/environment/dfsp_local_environment.json greenbank-backend-0:$ttk_pod_env_dest/dfsp_local_environment.json
+  #   kubectl cp $ttk_files_dir/spec_files/user_config_greenbank.json greenbank-backend-0:$ttk_pod_spec_dest/user_config.json
+  #   kubectl cp $ttk_files_dir/spec_files/default.json greenbank-backend-0:$ttk_pod_spec_dest/rules_callback/default.json
 
-    if [[ ! $WARNING_IS_CURRENT == true ]]; then
-      printf " [ ok ] \n"
-    fi
-  else 
-    printf "    - ttk does not seem to be running so skipping TTK data and environment config (ttk does not yet run on arm64 from repo )\n" 
-  fi 
+  #   if [[ ! $WARNING_IS_CURRENT == true ]]; then
+  #     printf " [ ok ] \n"
+  #   fi
+  # else 
+  #   printf "    - ttk does not seem to be running so skipping TTK data and environment config (ttk does not yet run on arm64 from repo )\n" 
+  # fi 
 
 
-  WARNING_IS_CURRENT=false  #clear current warning 
+  # WARNING_IS_CURRENT=false  #clear current warning 
 }
 
 function configure_elastic_search {
@@ -756,6 +764,7 @@ TIMEOUT_SECS=0                    # user override for TIMEOUT
 DEFAULT_NAMESPACE="default"
 K8S_CURRENT_RELEASE_LIST=( "1.27" "1.28" )
 CURRENT_IMAGES_FROM_DOCKER_FILES=[]
+
 
 NEED_TO_REPACKAGE="true"
 EXTERNAL_ENDPOINTS_LIST=( "mongoexpress.local" "vnextadmin.local" "elasticsearch.local" "kibana.local" \
