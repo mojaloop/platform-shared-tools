@@ -133,3 +133,18 @@ devspace*
 
 # Gedit backups.
 *~
+
+# Helm
+**/charts
+**/tmpcharts
+requirements.lock
+Chart.lock
+
+# Helm Publish Repo
+**/manifests/infra/repo/**
+
+
+# Terraform
+.terraform*
+terraform*zip
+*tfstate*

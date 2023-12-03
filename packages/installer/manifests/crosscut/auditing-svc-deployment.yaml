@@ -39,15 +39,10 @@ spec:
               value: logs
             - name: KAFKA_URL
               value: kafka:9092
-          image: mojaloop/auditing-bc-auditing-svc:0.1.6
+          image: mojaloop/auditing-bc-auditing-svc:0.3.3
           name: auditing-svc
+          ports:
+            - containerPort: 3050
           resources: {}
-          volumeMounts:
-            - mountPath: /app/data
-              name: auditing-svc-data
       restartPolicy: Always
-      volumes:
-        - name: auditing-svc-data
-          persistentVolumeClaim:
-            claimName: auditing-svc-data
 status: {}

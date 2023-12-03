@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  creationTimestamp: null
+  labels:
+    mojaloop.service: ttk-cli
+    mojaloop.layer: ttk
+  name: ttk-cli
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      mojaloop.service: ttk-cli
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+      creationTimestamp: null
+      labels:
+        mojaloop.service: ttk-cli
+        mojaloop.layer: ttk 
+    spec:
+      containers:
+      -   image: ml-testing-toolkit-client-lib:vnext    
+          name: ttk-cli
+          command: ['sh', '-c', 'echo "Hello, ttk " && sleep 3600']
+          ports:
+            - containerPort: 4042
+          resources: {}
+      restartPolicy: Always
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  creationTimestamp: null
+  labels:
+    mojaloop.service: ttk-cli
+    mojaloop.layer: ttk
+  name: ttk-cli
+spec:
+  ports:
+    - name: "4042"
+      port: 4042
+      targetPort: 4042
+  selector:
+    mojaloop.service: ttk-cli
+    mojaloop.layer: ttk
+status:
+  loadBalancer: {}
