@@ -5,14 +5,14 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: quotes-reporting-svc
-    mojaloop.layer: reporting 
+    mojaloop.layer: reporting
   name: quotes-reporting-svc
 spec:
   replicas: 1
   selector:
     matchLabels:
       mojaloop.service: quotes-reporting-svc
-  strategy: 
+  strategy:
     type: Recreate
   template:
     metadata:
@@ -31,10 +31,10 @@ spec:
         - name: KAFKA_URL
           value: kafka:9092
         - name: MONGO_URL
-          value: mongodb://root:mongoDbPas42@mongodb:27017/  
+          value: mongodb://root:mongoDbPas42@mongodb:27017/
         - name: PARTICIPANTS_SVC_URL
           value: http://participants-svc:3010
-        image: mojaloop/reporting-bc-quotes-reporting-svc:0.3.4
+        image: mojaloop/reporting-bc-quotes-reporting-svc:0.3.6
         livenessProbe:
           exec:
             command:
