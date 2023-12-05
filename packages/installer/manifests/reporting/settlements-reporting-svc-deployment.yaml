@@ -5,14 +5,14 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: settlements-reporting-svc
-    mojaloop.layer: reporting 
+    mojaloop.layer: reporting
   name: settlements-reporting-svc
 spec:
   replicas: 1
   selector:
     matchLabels:
       mojaloop.service: settlements-reporting-svc
-  strategy: 
+  strategy:
     type: Recreate
   template:
     metadata:
@@ -20,7 +20,7 @@ spec:
       creationTimestamp: null
       labels:
         mojaloop.service: settlements-reporting-svc
-        mojaloop.layer: reporting 
+        mojaloop.layer: reporting
     spec:
       containers:
         - env:
@@ -34,7 +34,7 @@ spec:
             value: mongodb://root:mongoDbPas42@mongodb:27017/
           - name: SETTLEMENTS_SVC_URL
             value: http://settlements-api-svc:3600
-          image: mojaloop/reporting-bc-settlements-reporting-svc:0.3.4
+          image: mojaloop/reporting-bc-settlements-reporting-svc:0.3.6
           livenessProbe:
             exec:
               command:

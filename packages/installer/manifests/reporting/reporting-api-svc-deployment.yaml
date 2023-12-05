@@ -5,7 +5,7 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: reporting-api-svc
-    mojaloop.layer: reporting 
+    mojaloop.layer: reporting
   name: reporting-api-svc
 spec:
   replicas: 1
@@ -19,7 +19,7 @@ spec:
       creationTimestamp: null
       labels:
         mojaloop.service: reporting-api-svc
-        mojaloop.layer: reporting 
+        mojaloop.layer: reporting
     spec:
       containers:
         - env:
@@ -38,12 +38,12 @@ spec:
           - name: KAFKA_AUDITS_TOPIC
             value: audits
           - name: MONGO_URL
-            value: mongodb://root:mongoDbPas42@mongodb:27017/  
+            value: mongodb://root:mongoDbPas42@mongodb:27017/
           - name: PARTICIPANTS_SVC_URL
             value: http://participants-svc:3010
           - name: PLATFORM_CONFIG_BASE_SVC_URL
             value: http://platform-configuration-svc:3100
-          image: mojaloop/reporting-bc-reporting-api-svc:0.3.6
+          image: mojaloop/reporting-bc-reporting-api-svc:0.3.10
           livenessProbe:
             exec:
               command:
