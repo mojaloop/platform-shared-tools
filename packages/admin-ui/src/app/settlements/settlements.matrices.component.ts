@@ -87,7 +87,13 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 		).subscribe((matricesResult) => {
 			console.log("SettlementsMatricesComponent search - got MatricesSearchResult");
 
-			this.matrices.next(matricesResult.items || []);
+			if (!matricesResult || !matricesResult.items) {
+				this.matrices.next([]);
+				this.paginateResult.next(null);
+				return;
+			}
+
+			this.matrices.next(matricesResult.items);
 
 			const pageRes = paginate(matricesResult.pageIndex, matricesResult.totalPages);
 			this.paginateResult.next(pageRes);
@@ -96,7 +102,6 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 				this._messageService.addError(error.message);
 			}
 		});
-
 	}
 
 	private async _fetchMatrices(state?: string): Promise<void> {
