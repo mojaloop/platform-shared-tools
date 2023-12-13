@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   reporting-api-svc:
-    image: mojaloop/reporting-bc-reporting-api-svc:0.3.6
+    image: mojaloop/reporting-bc-reporting-api-svc:0.3.10
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -42,7 +42,7 @@ services:
     restart: unless-stopped
 
   quotes-reporting-svc:
-    image: mojaloop/reporting-bc-quotes-reporting-svc:0.3.4
+    image: mojaloop/reporting-bc-quotes-reporting-svc:0.3.6
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -77,7 +77,7 @@ services:
     restart: unless-stopped
 
   settlements-reporting-svc:
-    image: mojaloop/reporting-bc-settlements-reporting-svc:0.3.4
+    image: mojaloop/reporting-bc-settlements-reporting-svc:0.3.6
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}

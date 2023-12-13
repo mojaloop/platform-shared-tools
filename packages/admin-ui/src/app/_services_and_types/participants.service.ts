@@ -1,7 +1,7 @@
-import {Injectable} from "@angular/core";
-import {SettingsService} from "src/app/_services_and_types/settings.service";
-import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
+import { Injectable } from "@angular/core";
+import { SettingsService } from "src/app/_services_and_types/settings.service";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
 import {
 	IParticipantNetDebitCapChangeRequest,
 	IParticipant,
@@ -20,10 +20,15 @@ import {
 	IParticipantContactInfo,
 	IParticipantStatusChangeRequest,
 } from "@mojaloop/participant-bc-public-types-lib";
-import {AuthenticationService} from "src/app/_services_and_types/authentication.service";
+import { AuthenticationService } from "src/app/_services_and_types/authentication.service";
 import * as uuid from "uuid";
-import {UnauthorizedError} from "src/app/_services_and_types/errors";
-import type {ParticipantsSearchResults, FundMovement} from "./participant_types";
+import { UnauthorizedError } from "src/app/_services_and_types/errors";
+import {
+	IParticipantPendingApproval,
+	IParticipantPendingApprovalSummary,
+	FundMovement,
+	ParticipantsSearchResults,
+} from "./participant_types";
 
 const SVC_BASEURL = "/_participants";
 
@@ -66,9 +71,9 @@ export class ParticipantsService {
 			changeLog: [],
 			netDebitCapChangeRequests: [],
 			netDebitCaps: [],
-			participantContacts:[],
+			participantContacts: [],
 			participantContactInfoChangeRequests: [],
-			participantStatusChangeRequests:[]
+			participantStatusChangeRequests: [],
 		};
 	}
 
@@ -90,7 +95,7 @@ export class ParticipantsService {
 			currencyCode: "EUR",
 			balance: null,
 			creditBalance: null,
-			debitBalance: null
+			debitBalance: null,
 		};
 	}
 
@@ -102,8 +107,8 @@ export class ParticipantsService {
 			ports: [],
 			portRange: {
 				rangeFirst: 0,
-				rangeLast: 0
-			}
+				rangeLast: 0,
+			},
 		};
 	}
 
@@ -113,7 +118,7 @@ export class ParticipantsService {
 			name: "",
 			email: "",
 			phoneNumber: "",
-			role: ""
+			role: "",
 		};
 	}
 
@@ -136,40 +141,53 @@ export class ParticipantsService {
 
 	getAllParticipants(): Observable<ParticipantsSearchResults> {
 		return new Observable<ParticipantsSearchResults>((subscriber) => {
-			this._http.get<ParticipantsSearchResults>(SVC_BASEURL + "/participants/").subscribe(
-				(result: ParticipantsSearchResults) => {
-					console.log(`got response: ${result}`);
+			this._http
+				.get<ParticipantsSearchResults>(SVC_BASEURL + "/participants/")
+				.subscribe(
+					(result: ParticipantsSearchResults) => {
+						console.log(`got response: ${result}`);
 
-					subscriber.next(result);
-					return subscriber.complete();
-				},(error) => {
-					if (error && error.status === 403) {
-						console.warn("UnauthorizedError received on getAllParticipants");
-						subscriber.error(new UnauthorizedError(error.error?.msg));
-					} else {
-						console.error(error);
-						subscriber.error(error.error?.msg);
+						subscriber.next(result);
+						return subscriber.complete();
+					},
+					(error) => {
+						if (error && error.status === 403) {
+							console.warn(
+								"UnauthorizedError received on getAllParticipants"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
+						} else {
+							console.error(error);
+							subscriber.error(error.error?.msg);
+						}
+
+						return subscriber.complete();
 					}
-
-					return subscriber.complete();
-				}
-			);
+				);
 		});
 	}
 
 	getParticipant(id: string): Observable<IParticipant | null> {
 		return new Observable<IParticipant | null>((subscriber) => {
-			this._http.get<IParticipant>(SVC_BASEURL + `/participants/${id}`)
+			this._http
+				.get<IParticipant>(SVC_BASEURL + `/participants/${id}`)
 				.subscribe(
 					(result: IParticipant) => {
 						console.log(`got response: ${result}`);
 
 						subscriber.next(result);
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 403) {
-							console.warn("UnauthorizedError received on getParticipant");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on getParticipant"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -182,17 +200,23 @@ export class ParticipantsService {
 
 	createParticipant(item: IParticipant): Observable<string | null> {
 		return new Observable<string>((subscriber) => {
-			this._http.post<{ id: string }>(SVC_BASEURL + "/participants/", item)
+			this._http
+				.post<{ id: string }>(SVC_BASEURL + "/participants/", item)
 				.subscribe(
 					(resp: { id: string }) => {
 						console.log(`got response - participantId: ${resp.id}`);
 
 						subscriber.next(resp.id);
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 403) {
-							console.warn("UnauthorizedError received on createParticipant");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on createParticipant"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -205,17 +229,26 @@ export class ParticipantsService {
 
 	approveParticipant(participantId: string): Observable<boolean> {
 		return new Observable<boolean>((subscriber) => {
-			this._http.put<void>(SVC_BASEURL + `/participants/${participantId}/approve`, {})
+			this._http
+				.put<void>(
+					SVC_BASEURL + `/participants/${participantId}/approve`,
+					{}
+				)
 				.subscribe(
 					(result) => {
 						console.log(`got response: ${result}`);
 
 						subscriber.next(true);
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 403) {
-							console.warn("UnauthorizedError received on approveParticipant");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on approveParticipant"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -231,23 +264,31 @@ export class ParticipantsService {
 		participantId: string
 	): Observable<boolean> {
 		return new Observable<boolean>((subscriber) => {
-			this._http.put<void>(
+			this._http
+				.put<void>(
 					SVC_BASEURL +
-					`/participants/${participantId}/${enable ? "enable" : "disable"}`,
+						`/participants/${participantId}/${
+							enable ? "enable" : "disable"
+						}`,
 					{}
-				).subscribe(
+				)
+				.subscribe(
 					(result) => {
 						console.log(`got response: ${result}`);
 
 						subscriber.next(true);
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 403) {
 							console.warn(
-								`UnauthorizedError received on ${enable ? "enable" : "disable"
+								`UnauthorizedError received on ${
+									enable ? "enable" : "disable"
 								} participant`
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -266,22 +307,31 @@ export class ParticipantsService {
 		return this._enableDisableParticipant(false, participantId);
 	}
 
-	createParticipantStatusChangeRequest(participantId: string,
-		statusChangeRequest: IParticipantStatusChangeRequest) :Observable<string> {
+	createParticipantStatusChangeRequest(
+		participantId: string,
+		statusChangeRequest: IParticipantStatusChangeRequest
+	): Observable<string> {
 		return new Observable<string>((subscriber) => {
-			this._http.post<{ id: string }>(
+			this._http
+				.post<{ id: string }>(
 					`${SVC_BASEURL}/participants/${participantId}/statusChangeRequests`,
 					statusChangeRequest
-				).subscribe(
+				)
+				.subscribe(
 					(resp: { id: string }) => {
 						console.log(`got response - participant: ${resp.id}`);
 
 						subscriber.next(resp.id);
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on updating participant status");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on updating participant status"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -292,26 +342,38 @@ export class ParticipantsService {
 		});
 	}
 
-	approveParticipantStatusChangeRequest(participantId: string, requestId: string): Observable<void> {
+	approveParticipantStatusChangeRequest(
+		participantId: string,
+		requestId: string
+	): Observable<void> {
 		return new Observable<void>((subscriber) => {
-			this._http.post(
+			this._http
+				.post(
 					`${SVC_BASEURL}/participants/${participantId}/statusChangeRequests/${requestId}/approve`,
 					{}
-				).subscribe(
+				)
+				.subscribe(
 					() => {
-						console.log(`got success response from participantAccountChangeRequest`);
+						console.log(
+							`got success response from participantAccountChangeRequest`
+						);
 
 						subscriber.next();
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 401) {
 							console.warn(
 								"UnauthorizedError received on participantAccountChangeRequest"
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						}
 						if (error && error.status === 403) {
-							console.warn("Forbidden received on participantAccountChangeRequest");
+							console.warn(
+								"Forbidden received on participantAccountChangeRequest"
+							);
 							subscriber.error(new Error(error.error?.msg));
 						} else {
 							console.error(error);
@@ -325,19 +387,25 @@ export class ParticipantsService {
 
 	getParticipantAccounts(id: string): Observable<IParticipantAccount[]> {
 		return new Observable<IParticipantAccount[]>((subscriber) => {
-			this._http.get<IParticipantAccount[]>(SVC_BASEURL + `/participants/${id}/accounts`)
+			this._http
+				.get<IParticipantAccount[]>(
+					SVC_BASEURL + `/participants/${id}/accounts`
+				)
 				.subscribe(
 					(result: IParticipantAccount[]) => {
 						console.log(`got response: ${result}`);
 
 						subscriber.next(result);
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 403) {
 							console.warn(
 								"UnauthorizedError received on getParticipantAccounts"
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -353,19 +421,26 @@ export class ParticipantsService {
 		account: IParticipantAccountChangeRequest
 	): Observable<string> {
 		return new Observable<string>((subscriber) => {
-			this._http.post<{ id: string }>(
+			this._http
+				.post<{ id: string }>(
 					`${SVC_BASEURL}/participants/${participantId}/accountChangeRequest`,
 					account
-				).subscribe(
+				)
+				.subscribe(
 					(resp: { id: string }) => {
 						console.log(`got response - accountId: ${resp.id}`);
 
 						subscriber.next(resp.id);
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on createAccount");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on createAccount"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -376,26 +451,38 @@ export class ParticipantsService {
 		});
 	}
 
-	approveAccountChangeRequest(participantId: string, requestId: string): Observable<void> {
+	approveAccountChangeRequest(
+		participantId: string,
+		requestId: string
+	): Observable<void> {
 		return new Observable<void>((subscriber) => {
-			this._http.post(
+			this._http
+				.post(
 					`${SVC_BASEURL}/participants/${participantId}/accountchangerequests/${requestId}/approve`,
 					{}
-				).subscribe(
+				)
+				.subscribe(
 					() => {
-						console.log(`got success response from participantAccountChangeRequest`);
+						console.log(
+							`got success response from participantAccountChangeRequest`
+						);
 
 						subscriber.next();
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 401) {
 							console.warn(
 								"UnauthorizedError received on participantAccountChangeRequest"
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						}
 						if (error && error.status === 403) {
-							console.warn("Forbidden received on participantAccountChangeRequest");
+							console.warn(
+								"Forbidden received on participantAccountChangeRequest"
+							);
 							subscriber.error(new Error(error.error?.msg));
 						} else {
 							console.error(error);
@@ -412,19 +499,26 @@ export class ParticipantsService {
 		sourceIp: IParticipantSourceIpChangeRequest
 	): Observable<string> {
 		return new Observable<string>((subscriber) => {
-			this._http.post<{ id: string }>(
+			this._http
+				.post<{ id: string }>(
 					`${SVC_BASEURL}/participants/${participantId}/sourceIpChangeRequests`,
 					sourceIp
-				).subscribe(
+				)
+				.subscribe(
 					(resp: { id: string }) => {
 						console.log(`got response - sourceIpId: ${resp.id}`);
 
 						subscriber.next(resp.id);
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on createSourceIp");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on createSourceIp"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -435,26 +529,38 @@ export class ParticipantsService {
 		});
 	}
 
-	approveSourceIpChangeRequest(participantId: string, requestId: string): Observable<void> {
+	approveSourceIpChangeRequest(
+		participantId: string,
+		requestId: string
+	): Observable<void> {
 		return new Observable<void>((subscriber) => {
-			this._http.post(
+			this._http
+				.post(
 					`${SVC_BASEURL}/participants/${participantId}/SourceIpChangeRequests/${requestId}/approve`,
 					{}
-				).subscribe(
+				)
+				.subscribe(
 					() => {
-						console.log(`got success response from participantSourceIpChangeRequest`);
+						console.log(
+							`got success response from participantSourceIpChangeRequest`
+						);
 
 						subscriber.next();
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 401) {
 							console.warn(
 								"UnauthorizedError received on participantSourceIpChangeRequest"
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						}
 						if (error && error.status === 403) {
-							console.warn("Forbidden received on participantSourceIpChangeRequest");
+							console.warn(
+								"Forbidden received on participantSourceIpChangeRequest"
+							);
 							subscriber.error(new Error(error.error?.msg));
 						} else {
 							console.error(error);
@@ -471,10 +577,12 @@ export class ParticipantsService {
 		fundsMovRec: IParticipantFundsMovement
 	): Observable<string> {
 		return new Observable<string>((subscriber) => {
-			this._http.post<{ id: string }>(
+			this._http
+				.post<{ id: string }>(
 					`${SVC_BASEURL}/participants/${participantId}/funds/`,
 					fundsMovRec
-				).subscribe(
+				)
+				.subscribe(
 					(resp: { id: string }) => {
 						console.log(
 							`got response from createFundsMovement - created id: ${resp.id}`
@@ -482,10 +590,15 @@ export class ParticipantsService {
 
 						subscriber.next(resp.id);
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on createFundsMovement");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on createFundsMovement"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -501,24 +614,33 @@ export class ParticipantsService {
 		fundsMovId: string
 	): Observable<void> {
 		return new Observable<void>((subscriber) => {
-			this._http.post<{ id: string }>(
+			this._http
+				.post<{ id: string }>(
 					`${SVC_BASEURL}/participants/${participantId}/funds/${fundsMovId}/approve`,
 					{}
-				).subscribe(
+				)
+				.subscribe(
 					() => {
-						console.log(`got success response from approveFundsMovement`);
+						console.log(
+							`got success response from approveFundsMovement`
+						);
 
 						subscriber.next();
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 401) {
 							console.warn(
 								"UnauthorizedError received on approveFundsMovement"
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						}
 						if (error && error.status === 403) {
-							console.warn("Forbidden received on approveFundsMovement");
+							console.warn(
+								"Forbidden received on approveFundsMovement"
+							);
 							subscriber.error(new Error(error.error?.msg));
 						} else {
 							console.error(error);
@@ -535,19 +657,26 @@ export class ParticipantsService {
 		ndc: IParticipantNetDebitCapChangeRequest
 	): Observable<string> {
 		return new Observable<string>((subscriber) => {
-			this._http.post<void>(
+			this._http
+				.post<void>(
 					`${SVC_BASEURL}/participants/${participantId}/ndcchangerequests`,
 					ndc
-				).subscribe(
+				)
+				.subscribe(
 					() => {
 						console.log(`got success response from createNDC`);
 
 						subscriber.next();
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on createAccount");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on createAccount"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -560,24 +689,31 @@ export class ParticipantsService {
 
 	approveNDC(participantId: string, ndcId: string): Observable<void> {
 		return new Observable<void>((subscriber) => {
-			this._http.post(
+			this._http
+				.post(
 					`${SVC_BASEURL}/participants/${participantId}/ndcchangerequests/${ndcId}/approve`,
 					{}
-				).subscribe(
+				)
+				.subscribe(
 					() => {
 						console.log(`got success response from approveNDC`);
 
 						subscriber.next();
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 401) {
 							console.warn(
 								"UnauthorizedError received on approveFundsMovement"
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						}
 						if (error && error.status === 403) {
-							console.warn("Forbidden received on approveFundsMovement");
+							console.warn(
+								"Forbidden received on approveFundsMovement"
+							);
 							subscriber.error(new Error(error.error?.msg));
 						} else {
 							console.error(error);
@@ -594,19 +730,26 @@ export class ParticipantsService {
 		endpoint: IParticipantEndpoint
 	): Observable<string> {
 		return new Observable<string>((subscriber) => {
-			this._http.post<{ id: string }>(
+			this._http
+				.post<{ id: string }>(
 					`${SVC_BASEURL}/participants/${participantId}/endpoints`,
 					endpoint
-				).subscribe(
+				)
+				.subscribe(
 					(resp: { id: string }) => {
 						console.log(`got response - endpointId: ${resp.id}`);
 
 						subscriber.next(resp.id);
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on createEndpoint");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on createEndpoint"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -622,19 +765,26 @@ export class ParticipantsService {
 		endpoint: IParticipantEndpoint
 	): Observable<void> {
 		return new Observable<void>((subscriber) => {
-			this._http.put<void>(
+			this._http
+				.put<void>(
 					`${SVC_BASEURL}/participants/${participantId}/endpoints/${endpoint.id}`,
 					endpoint
-				).subscribe(
+				)
+				.subscribe(
 					() => {
 						console.log(`got response`);
 
 						subscriber.next();
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on changeEndpoint");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on changeEndpoint"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -645,20 +795,30 @@ export class ParticipantsService {
 		});
 	}
 
-	removeEndpoint(participantId: string, endpointId: string): Observable<void> {
+	removeEndpoint(
+		participantId: string,
+		endpointId: string
+	): Observable<void> {
 		return new Observable<void>((subscriber) => {
-			this._http.delete<void>(
+			this._http
+				.delete<void>(
 					`${SVC_BASEURL}/participants/${participantId}/endpoints/${endpointId}`
-				).subscribe(
+				)
+				.subscribe(
 					() => {
 						console.log(`got response`);
 
 						subscriber.next();
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on removeEndpoint");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on removeEndpoint"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -700,8 +860,12 @@ export class ParticipantsService {
 				},
 				(error) => {
 					if (error && error.status === 403) {
-						console.warn("Access forbidden received on getAllTransfers");
-						subscriber.error(new UnauthorizedError(error.error?.msg));
+						console.warn(
+							"Access forbidden received on getAllTransfers"
+						);
+						subscriber.error(
+							new UnauthorizedError(error.error?.msg)
+						);
 					} else {
 						console.error(error);
 						subscriber.error(error.error?.msg);
@@ -718,19 +882,26 @@ export class ParticipantsService {
 		contactInfo: IParticipantContactInfo
 	): Observable<string> {
 		return new Observable<string>((subscriber) => {
-			this._http.post<{ id: string }>(
+			this._http
+				.post<{ id: string }>(
 					`${SVC_BASEURL}/participants/${participantId}/contactInfoChangeRequests`,
 					contactInfo
-				).subscribe(
+				)
+				.subscribe(
 					(resp: { id: string }) => {
 						console.log(`got response - contactId: ${resp.id}`);
 
 						subscriber.next(resp.id);
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on createContactInfo");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on createContactInfo"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -741,26 +912,38 @@ export class ParticipantsService {
 		});
 	}
 
-	approveContactInfoChangeRequest(participantId: string, requestId: string): Observable<void> {
+	approveContactInfoChangeRequest(
+		participantId: string,
+		requestId: string
+	): Observable<void> {
 		return new Observable<void>((subscriber) => {
-			this._http.post(
+			this._http
+				.post(
 					`${SVC_BASEURL}/participants/${participantId}/contactInfoChangeRequests/${requestId}/approve`,
 					{}
-				).subscribe(
+				)
+				.subscribe(
 					() => {
-						console.log(`got success response from contactInfoChangeRequests`);
+						console.log(
+							`got success response from contactInfoChangeRequests`
+						);
 
 						subscriber.next();
 						return subscriber.complete();
-					},(error) => {
+					},
+					(error) => {
 						if (error && error.status === 401) {
 							console.warn(
 								"UnauthorizedError received on contactInfoChangeRequests"
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						}
 						if (error && error.status === 403) {
-							console.warn("Forbidden received on contactInfoChangeRequests");
+							console.warn(
+								"Forbidden received on contactInfoChangeRequests"
+							);
 							subscriber.error(new Error(error.error?.msg));
 						} else {
 							console.error(error);
@@ -789,8 +972,7 @@ export class ParticipantsService {
 
 		const url = `${SVC_BASEURL}/participants?${searchParams.toString()}`;
 
-
-		return new Observable<ParticipantsSearchResults>(subscriber => {
+		return new Observable<ParticipantsSearchResults>((subscriber) => {
 			this._http.get<ParticipantsSearchResults>(url).subscribe(
 				(result: ParticipantsSearchResults) => {
 					console.log(`got getAllEntries response: ${result}`);
@@ -798,10 +980,12 @@ export class ParticipantsService {
 					subscriber.next(result);
 					return subscriber.complete();
 				},
-				error => {
+				(error) => {
 					if (error && error.status === 403) {
 						console.warn("Access forbidden received on search");
-						subscriber.error(new UnauthorizedError(error.error?.msg));
+						subscriber.error(
+							new UnauthorizedError(error.error?.msg)
+						);
 					} else {
 						console.error(error);
 						subscriber.error(error.error?.msg);
@@ -812,26 +996,147 @@ export class ParticipantsService {
 		});
 	}
 
-	getSearchKeywords(): Observable<{ fieldName: string, distinctTerms: string[] }[]> {
-		return new Observable<{ fieldName: string, distinctTerms: string[] }[]>(subscriber => {
-			this._http.get<{ fieldName: string, distinctTerms: string[] }[]>(`${SVC_BASEURL}/searchKeywords`).subscribe(
-				(result: { fieldName: string, distinctTerms: string[] }[]) => {
-					console.log(`got getSearchKeywords response: ${result}`);
+	getSearchKeywords(): Observable<
+		{ fieldName: string; distinctTerms: string[] }[]
+	> {
+		return new Observable<{ fieldName: string; distinctTerms: string[] }[]>(
+			(subscriber) => {
+				this._http
+					.get<{ fieldName: string; distinctTerms: string[] }[]>(
+						`${SVC_BASEURL}/searchKeywords`
+					)
+					.subscribe(
+						(
+							result: {
+								fieldName: string;
+								distinctTerms: string[];
+							}[]
+						) => {
+							console.log(
+								`got getSearchKeywords response: ${result}`
+							);
 
-					subscriber.next(result);
-					return subscriber.complete();
-				},
-				error => {
-					if (error && error.status === 403) {
-						console.warn("Access forbidden received on getSearchKeywords");
-						subscriber.error(new UnauthorizedError(error.error?.msg));
-					} else {
-						console.error(error);
-						subscriber.error(error.error?.msg);
+							subscriber.next(result);
+							return subscriber.complete();
+						},
+						(error) => {
+							if (error && error.status === 403) {
+								console.warn(
+									"Access forbidden received on getSearchKeywords"
+								);
+								subscriber.error(
+									new UnauthorizedError(error.error?.msg)
+								);
+							} else {
+								console.error(error);
+								subscriber.error(error.error?.msg);
+							}
+							return subscriber.complete();
+						}
+					);
+			}
+		);
+	}
+
+	getPendingApprovalsSummary() {
+		return new Observable<IParticipantPendingApprovalSummary>(
+			(subscriber) => {
+				this._http
+					.get<IParticipantPendingApprovalSummary>(
+						`${SVC_BASEURL}/participants/pendingApprovalsSummary`
+					)
+					.subscribe(
+						(result: IParticipantPendingApprovalSummary) => {
+							console.log(
+								`got getPendingApprovalSummary response: ${result}`
+							);
+
+							subscriber.next(result);
+							return subscriber.complete();
+						},
+						(error) => {
+							if (error && error.status === 403) {
+								console.warn(
+									"Access forbidden received on getPendingApprovalSummary"
+								);
+								subscriber.error(
+									new UnauthorizedError(error.error?.msg)
+								);
+							} else {
+								console.error(error);
+								subscriber.error(error.error?.msg);
+							}
+							return subscriber.complete();
+						}
+					);
+			}
+		);
+	}
+
+	getPendingApprovals() {
+		return new Observable<IParticipantPendingApproval>((subscriber) => {
+			this._http
+				.get<IParticipantPendingApproval>(
+					`${SVC_BASEURL}/participants/pendingApprovals`
+				)
+				.subscribe(
+					(result: IParticipantPendingApproval) => {
+						console.log(
+							`got getPendingApprovals response: ${result}`
+						);
+
+						subscriber.next(result);
+						return subscriber.complete();
+					},
+					(error) => {
+						if (error && error.status === 403) {
+							console.warn(
+								"Access forbidden received on getPendingApprovals"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
+						} else {
+							console.error(error);
+							subscriber.error(error.error?.msg);
+						}
+						return subscriber.complete();
 					}
-					return subscriber.complete();
-				}
-			);
+				);
+		});
+	}
+
+	submitPendingApprovals(data: IParticipantPendingApproval) {
+		return new Observable<IParticipantPendingApproval>((subscriber) => {
+			this._http
+				.post<IParticipantPendingApproval>(
+					`${SVC_BASEURL}/participants/pendingApprovals`,
+					data
+				)
+				.subscribe(
+					(result: IParticipantPendingApproval) => {
+						console.log(
+							`got submitPendingApprovals response: ${result}`
+						);
+
+						subscriber.next(result);
+						return subscriber.complete();
+					},
+					(error) => {
+						if (error && error.status === 403) {
+							console.warn(
+								"Access forbidden received on submitPendingApprovals"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
+						} else {
+							console.error(error);
+							subscriber.error(error.error?.msg);
+						}
+						return subscriber.complete();
+					}
+				);
 		});
 	}
 
@@ -853,15 +1158,21 @@ export class ParticipantsService {
 				.post<{ id: string }>(`${SVC_BASEURL}/simulatetransfer`, body)
 				.subscribe(
 					() => {
-						console.log(`got success response from simulateTransfer`);
+						console.log(
+							`got success response from simulateTransfer`
+						);
 
 						subscriber.next();
 						return subscriber.complete();
 					},
 					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on simulateTransfer");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on simulateTransfer"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -882,7 +1193,7 @@ export class ParticipantsService {
 			this._http
 				.post<FundMovement[]>(
 					`${SVC_BASEURL}/participants/liquidityCheckValidate`,
-					formData,
+					formData
 				)
 				.subscribe(
 					(result) => {
@@ -947,5 +1258,4 @@ export class ParticipantsService {
 			);
 		});
 	}
-
 }

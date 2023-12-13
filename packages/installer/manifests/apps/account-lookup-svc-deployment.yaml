@@ -44,7 +44,7 @@ spec:
           value: http://participants-svc:3010
         - name: PLATFORM_CONFIG_BASE_SVC_URL
           value: http://platform-configuration-svc:3100
-        image: mojaloop/account-lookup-bc-account-lookup-svc:0.1.13
+        image: mojaloop/account-lookup-bc-account-lookup-svc:0.3.9
         livenessProbe:
           exec:
             command:
@@ -57,12 +57,5 @@ spec:
         ports:
         - containerPort: 3030
         resources: {}
-        volumeMounts:
-        - mountPath: /app/data
-          name: account-lookup-svc-data
       restartPolicy: Always
-      volumes:
-      - name: account-lookup-svc-data
-        persistentVolumeClaim:
-          claimName: account-lookup-svc-data
 status: {}

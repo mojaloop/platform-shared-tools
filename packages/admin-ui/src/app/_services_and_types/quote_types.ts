@@ -134,6 +134,8 @@ export declare type Quote = {
 	initiator: string;
 	initiatorType: string;
 	ilpPacket: string;
+	createdAt?: number;
+	updatedAt?: number;
 }
 
 export declare type QuotingSearchResults = {

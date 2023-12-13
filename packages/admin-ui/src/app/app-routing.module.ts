@@ -50,9 +50,11 @@ import { BuiltinIamAppsListComponent } from "./security/builtin_iam/builtin-iam-
 import {BuiltinIamAppCreateComponent} from "./security/builtin_iam/builtin-iam-app-create.component";
 import {BuiltinIamAppDetailComponent} from "./security/builtin_iam/builtin-iam-app-detail.component";
 import {PlatformRoleCreateComponent} from "./security/roles/platform-role-create.component";
+import { PendingApprovalsComponent } from "./participants/pending-approvals.component";
 import {SettlementInitiationReport} from "./reports/settlement-initiation-report.component";
 import {DFSPSettlementReport} from "./reports/dfsp-settlement-report.component";
 import {DFSPSettlementDetailReport} from "./reports/dfsp-settlement-detail-report.component";
+
 
 const routes: Routes = [
 	{path: "", redirectTo: "/home", pathMatch: "full"},
@@ -96,6 +98,7 @@ const routes: Routes = [
 	{path: "participants/new", component: ParticipantCreateComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "participants/:id", component: ParticipantDetailComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "participants", component: ParticipantsComponent, canActivate: [CanLoadIsLoggedIn]},
+	{path: "pending-approvals", component: PendingApprovalsComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "account-lookup", component: AccountLookupComponent, canActivate: [CanLoadIsLoggedIn]},
 	{path: "account-lookup-oracles", component: AccountLookupOracleListComponent, canActivate: [CanLoadIsLoggedIn]},
 	{

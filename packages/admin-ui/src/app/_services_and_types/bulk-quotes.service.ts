@@ -94,7 +94,7 @@ export class BulkQuotesService {
 			payer: null,
 			individualQuotes: [],
 			extensionList: null,
-			quotesNotProcessedIds: [],
+			quotesNotProcessedIds: []
 		};
 	}
 }

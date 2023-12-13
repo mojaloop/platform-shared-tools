@@ -74,4 +74,6 @@ export declare type BulkTransfer = {
     transfersNotProcessedIds: string[];
     transfersFulfiledProcessedIds: string[];
     status: BulkTransferState | null;
+    createdAt?: number;
+	updatedAt?: number;
 }

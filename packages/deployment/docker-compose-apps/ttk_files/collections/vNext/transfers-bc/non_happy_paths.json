@@ -414,51 +414,44 @@
             "assertions": [
               {
                 "id": 1,
-                "description": "Status code is 202",
+                "description": "Response should be 400",
                 "exec": [
-                  "expect(response.status).to.equal(202)"
+                  "expect(response.status).to.equal(400)"
                 ]
               },
               {
                 "id": 2,
-                "description": "Payer FSP: 'fspiop-source' is 'greenbank'",
+                "description": "Response statusText be Bad Request",
                 "exec": [
-                  "expect(callback.headers['fspiop-source']).to.equal('{$inputs.fromFspId}');"
+                  "expect(response.statusText).to.equal('Bad Request')"
                 ]
               },
               {
                 "id": 3,
-                "description": "Payer FSP: 'fspiop-destination' is 'bluebank'",
+                "description": "Response should contain error information",
                 "exec": [
-                  "expect(callback.headers['fspiop-destination']).to.equal('{$inputs.toFspId}');"
+                  "expect(response.body).to.have.property('errorInformation')"
+                ]
+              },
+              {
+                "id": 3,
+                "description": "Response should contain error code",
+                "exec": [
+                  "expect(response.body.errorInformation).to.have.property('errorCode')"
                 ]
               },
               {
                 "id": 4,
-                "description": "Payer FSP: 'content-type' should be 'application/vnd.interoperability.transfers+json;version=1.0'",
+                "description": "Response should contain fspiop",
                 "exec": [
-                  "expect(callback.headers['content-type']).to.equal('application/vnd.interoperability.transfers+json;version={$inputs.expectedTransfersVersion}');"
+                  "expect(response.body.errorInformation.errorDescription).to.include('must be equal to one of the allowed values - path: /body/amount/currency')"
                 ]
               },
               {
                 "id": 5,
-                "description": "Payer FSP: 'fspiop-uri' should include '/transfers'",
+                "description": "Response should contain '3100'",
                 "exec": [
-                  "expect(callback.headers['fspiop-uri']).to.equal('/transfers');"
-                ]
-              },
-              {
-                "id": 6,
-                "description": "Payer FSP: 'fspiop-http-method' should be 'PUT'",
-                "exec": [
-                  "expect(callback.headers['fspiop-http-method']).to.equal('PUT');"
-                ]
-              },
-              {
-                "id": 7,
-                "description": "Payer FSP: Response data does not have transferId",
-                "exec": [
-                  "expect(callback.body.transferId).to.equal(undefined)"
+                  "expect(response.body.errorInformation.errorCode).to.include('3100')"
                 ]
               }
             ]
