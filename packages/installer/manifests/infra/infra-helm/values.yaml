@@ -31,13 +31,13 @@ kafka:
   broker:
     replicaCount: 3
     persistence:
-      enabled: true 
-    # nodeSelector: 
+      enabled: true
+    # nodeSelector:
     #   role: infra
 
   controller:
     replicaCount: 0
-    # nodeSelector: 
+    # nodeSelector:
     #   role: infra
 
   ## https://github.com/bitnami/charts/tree/main/bitnami/kafka/#installing-the-chart
@@ -88,7 +88,7 @@ kafka:
           value: SettlementsBcCommands
       -   name: PlatformConfigurationBcEvents
           value: PlatformConfigurationBcEvents
-      -   name: ParticipantsBcEvents  
+      -   name: ParticipantsBcEvents
           value: ParticipantsBcEvents
       -   name: SchedulingBcCommands
           value: SchedulingBcCommands
@@ -96,7 +96,9 @@ kafka:
           value: SchedulingBcEvents
       -   name: SecurityBcAuthorizationEvents
           value: SecurityBcAuthorizationEvents
-          
+      -   name: SecurityBcEvents
+          value: SecurityBcEvents
+
     # nodeSelector: {}
 
 ############### RedPanda Console for Kafka  ####################
@@ -121,10 +123,10 @@ redpanda-console:
             -   path: /
                 pathType: ImplementationSpecific
 
-    #annotations 
+    #annotations
       #external-dns.alpha.kubernetes.io/hostname: greenbank.vnext.mojaloop.live
       #cert-manager.io/issuer: letsencrypt-staging
-    #tls: [] 
+    #tls: []
       #  - secretName: quickstart-example-tls
       #    hosts:
       #      - kafkaconsole.local
@@ -143,8 +145,8 @@ mongodb:
   settings:
     rootUsername: root
     rootPassword: mongoDbPas42
-  
-  # nodeSelector: 
+
+  # nodeSelector:
   #   role: infra
 
 ############### Mongo Express ####################
@@ -167,7 +169,7 @@ mongo-express:
     #annotations
       #external-dns.alpha.kubernetes.io/hostname: mongoexpress.local
       #cert-manager.io/issuer: letsencrypt-staging
-    #tls: [] 
+    #tls: []
       #  - secretName: quickstart-example-tls
       #    hosts:
       #      - mongoexpress.local
@@ -180,7 +182,7 @@ mongo-express:
     enabled: false
   readinessProbe:
     enabled: false
-    
+
 ############### Redis  ####################
 ## Reference: https://github.com/bitnami/charts/blob/main/bitnami/redis/values.yaml
 redis:
@@ -198,7 +200,7 @@ redis:
 # https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch/#installing-the-chart
 elasticsearch:
   enabled: true
-  #fullnameOverride: elastic 
+  #fullnameOverride: elastic
 
   security:
     elasticPassword: elasticSearchPas42
@@ -209,7 +211,7 @@ elasticsearch:
     replicaCount: 1
 
   master:
-    masterOnly: false 
+    masterOnly: false
     replicaCount: 1
     persistence:
       enabled: true
@@ -224,10 +226,10 @@ elasticsearch:
     ingressClassName: nginx-ext
     enabled: true
     hostname: elasticsearch.local
-    #annotations 
+    #annotations
       #external-dns.alpha.kubernetes.io/hostname: elasticsearch.local
       #cert-manager.io/issuer: letsencrypt-staging
-    tls: 
+    tls:
       - enabled: false
 
   kibana:
@@ -235,8 +237,8 @@ elasticsearch:
       ingressClassName: nginx-ext
       enabled: true
       hostname: kibana.local
-      #annotations 
+      #annotations
         #external-dns.alpha.kubernetes.io/hostname: kibana.local
         #cert-manager.io/issuer: letsencrypt-staging
-      tls: 
-        enabled: false 
+      tls:
+        enabled: false

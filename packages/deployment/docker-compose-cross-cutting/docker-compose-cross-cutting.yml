@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   auditing-svc:
-    image: mojaloop/auditing-bc-auditing-svc:0.3.3
+    image: mojaloop/auditing-bc-auditing-svc:0.5.1
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -16,7 +16,7 @@ services:
     restart: unless-stopped
 
   logging-svc:
-    image: mojaloop/logging-bc-logging-svc:0.3.4
+    image: mojaloop/logging-bc-logging-svc:0.5.2
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -27,7 +27,7 @@ services:
     restart: unless-stopped
 
   authentication-svc:
-    image: mojaloop/security-bc-authentication-svc:0.3.7
+    image: mojaloop/security-bc-authentication-svc:0.5.2
 #    volumes:
 #      - authentication-svc_data:/app/data
     environment:
@@ -39,6 +39,8 @@ services:
       - AUTH_N_ISSUER_NAME=${AUTH_N_ISSUER_NAME} # change ENV VAR names to match others in apps
       - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
       - BUILTIN_IAM_BASE_URL=${BUILTIN_IAM_BASE_URL}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
     ports:
       - 3201:3201
     healthcheck:
@@ -50,7 +52,7 @@ services:
     restart: unless-stopped
 
   authorization-svc:
-    image: mojaloop/security-bc-authorization-svc:0.3.10
+    image: mojaloop/security-bc-authorization-svc:0.5.2
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -75,7 +77,7 @@ services:
     restart: unless-stopped
 
   identity-svc:
-    image: mojaloop/security-bc-builtin-identity-svc:0.3.10
+    image: mojaloop/security-bc-builtin-identity-svc:0.5.4
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -103,7 +105,7 @@ services:
     restart: unless-stopped
 
   platform-configuration-svc:
-    image: mojaloop/platform-configuration-bc-configuration-svc:0.3.11
+    image: mojaloop/platform-configuration-bc-configuration-svc:0.5.1
     depends_on:
       authentication-svc:
         condition: service_healthy
@@ -158,24 +160,23 @@ services:
       - 3150:3150
     restart: unless-stopped
 
-  scheduling-command-handler-svc:
-    image: mojaloop/scheduling-bc-command-handler-svc:0.0.5
-    depends_on:
-      authentication-svc:
-        condition: service_healthy
-      authorization-svc:
-        condition: service_healthy
-      platform-configuration-svc:
-        condition: service_healthy
-    environment:
-      - KAFKA_URL=${KAFKA_URL}
-      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
-      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
-      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
-      - MONGO_URL=${MONGO_URL}
-      - SCHEDULING_HOST_LOCKS=${REDIS_HOST}
-      -
-    restart: unless-stopped
+#  scheduling-command-handler-svc:
+#    image: mojaloop/scheduling-bc-command-handler-svc:0.0.5
+#    depends_on:
+#      authentication-svc:
+#        condition: service_healthy
+#      authorization-svc:
+#        condition: service_healthy
+#      platform-configuration-svc:
+#        condition: service_healthy
+#    environment:
+#      - KAFKA_URL=${KAFKA_URL}
+#      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+#      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+#      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
+#      - MONGO_URL=${MONGO_URL}
+#      - SCHEDULING_HOST_LOCKS=${REDIS_HOST}
+#    restart: unless-stopped
 
 volumes:
   platform-configuration-svc_data:
