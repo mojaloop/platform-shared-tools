@@ -44,6 +44,8 @@ spec:
           value: http://participants-svc:3010
         - name: PLATFORM_CONFIG_BASE_SVC_URL
           value: http://platform-configuration-svc:3100
+        - name: JWS_DISABLED
+          value: 'true'
         image: mojaloop/interop-apis-bc-fspiop-api-svc:0.5.1
         name: fspiop-api-svc
         ports:
