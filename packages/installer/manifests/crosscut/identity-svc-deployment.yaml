@@ -44,7 +44,7 @@ spec:
               value: mojaloop.vnext.dev.default_audience
             - name: BUILTIN_IAM_BASE_URL
               value: http://identity-svc:3203
-          image: mojaloop/security-bc-builtin-identity-svc:0.5.4
+          image: mojaloop/security-bc-builtin-identity-svc:0.5.5
           livenessProbe:
             exec:
               command:

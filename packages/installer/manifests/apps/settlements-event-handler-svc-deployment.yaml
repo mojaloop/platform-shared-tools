@@ -42,7 +42,7 @@ spec:
           value: http://participants-svc:3010
         - name: PLATFORM_CONFIG_BASE_SVC_URL
           value: http://platform-configuration-svc:3100
-        image: mojaloop/settlements-bc-event-handler-svc:0.3.4
+        image: mojaloop/settlements-bc-event-handler-svc:0.5.1
         name: settlements-event-handler-svc
         resources: {}
       restartPolicy: Always

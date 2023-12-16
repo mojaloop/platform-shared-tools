@@ -48,7 +48,7 @@ spec:
           value: '0'
         - name: TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES
           value: tigerbeetle:3000
-        image: mojaloop/participants-bc-participants-svc:0.5.3
+        image: mojaloop/participants-bc-participants-svc:0.5.4
         livenessProbe:
           exec:
             command:

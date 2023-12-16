@@ -77,7 +77,7 @@ services:
     restart: unless-stopped
 
   identity-svc:
-    image: mojaloop/security-bc-builtin-identity-svc:0.5.4
+    image: mojaloop/security-bc-builtin-identity-svc:0.5.5
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
@@ -105,7 +105,7 @@ services:
     restart: unless-stopped
 
   platform-configuration-svc:
-    image: mojaloop/platform-configuration-bc-configuration-svc:0.5.1
+    image: mojaloop/platform-configuration-bc-configuration-svc:0.5.2
     depends_on:
       authentication-svc:
         condition: service_healthy
@@ -131,7 +131,7 @@ services:
 
   # scheduling
   scheduling-api-svc:
-    image: mojaloop/scheduling-bc-scheduling-api-svc:0.3.6
+    image: mojaloop/scheduling-bc-scheduling-api-svc:0.5.1
     depends_on:
       authentication-svc:
         condition: service_healthy
@@ -160,23 +160,27 @@ services:
       - 3150:3150
     restart: unless-stopped
 
-#  scheduling-command-handler-svc:
-#    image: mojaloop/scheduling-bc-command-handler-svc:0.0.5
-#    depends_on:
-#      authentication-svc:
-#        condition: service_healthy
-#      authorization-svc:
-#        condition: service_healthy
-#      platform-configuration-svc:
-#        condition: service_healthy
-#    environment:
-#      - KAFKA_URL=${KAFKA_URL}
-#      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
-#      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
-#      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
-#      - MONGO_URL=${MONGO_URL}
-#      - SCHEDULING_HOST_LOCKS=${REDIS_HOST}
-#    restart: unless-stopped
+  scheduling-command-handler-svc:
+    image: mojaloop/scheduling-bc-command-handler-svc:0.5.1
+    depends_on:
+      authentication-svc:
+        condition: service_healthy
+      authorization-svc:
+        condition: service_healthy
+      platform-configuration-svc:
+        condition: service_healthy
+    environment:
+      - KAFKA_URL=${KAFKA_URL}
+      - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
+      - KAFKA_AUDITS_TOPIC=${KAFKA_AUDITS_TOPIC}
+      - MONGO_URL=${MONGO_URL}
+      - PLATFORM_CONFIG_BASE_SVC_URL=${PLATFORM_CONFIG_BASE_SVC_URL}
+      - AUTH_Z_SVC_BASEURL=${AUTH_Z_SVC_BASEURL}
+      - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
+      - AUTH_N_TOKEN_ISSUER_NAME=${AUTH_N_TOKEN_ISSUER_NAME}
+      - AUTH_N_TOKEN_AUDIENCE=${AUTH_N_TOKEN_AUDIENCE}
+      - SCHEDULING_HOST_LOCKS=${REDIS_HOST}
+    restart: unless-stopped
 
 volumes:
   platform-configuration-svc_data:

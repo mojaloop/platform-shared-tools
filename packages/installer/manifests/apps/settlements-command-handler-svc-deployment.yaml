@@ -46,7 +46,7 @@ spec:
           value: http://participants-svc:3010
         - name: PLATFORM_CONFIG_BASE_SVC_URL
           value: http://platform-configuration-svc:3100
-        image: mojaloop/settlements-bc-command-handler-svc:0.3.7
+        image: mojaloop/settlements-bc-command-handler-svc:0.5.2
         name: settlements-command-handler-svc
         resources: {}
       restartPolicy: Always

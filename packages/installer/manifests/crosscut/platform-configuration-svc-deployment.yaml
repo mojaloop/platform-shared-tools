@@ -34,7 +34,7 @@ spec:
               value: http://authorization-svc:3202
             - name: AUTH_N_SVC_BASEURL
               value: http://authentication-svc:3201
-          image: mojaloop/platform-configuration-bc-configuration-svc:0.3.11
+          image: mojaloop/platform-configuration-bc-configuration-svc:0.5.2
           livenessProbe:
             exec:
               command:

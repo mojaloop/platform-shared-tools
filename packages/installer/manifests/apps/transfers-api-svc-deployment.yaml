@@ -44,7 +44,7 @@ spec:
           value: http://participants-svc:3010
         - name: PLATFORM_CONFIG_BASE_SVC_URL
           value: http://platform-configuration-svc:3100
-        image: mojaloop/transfers-bc-transfers-api-svc:0.3.13
+        image: mojaloop/transfers-bc-transfers-api-svc:0.5.1
         livenessProbe:
           exec:
             command:

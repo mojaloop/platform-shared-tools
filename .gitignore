@@ -148,3 +148,8 @@ Chart.lock
 .terraform*
 terraform*zip
 *tfstate*
+
+# docker compose exec directories
+packages/deployment/docker-compose-apps/exec
+packages/deployment/docker-compose-cross-cutting/exec
+packages/deployment/docker-compose-infra/exec

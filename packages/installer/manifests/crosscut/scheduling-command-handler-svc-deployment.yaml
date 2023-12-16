@@ -12,7 +12,7 @@ spec:
   selector:
     matchLabels:
       mojaloop.service: scheduling-command-handler-svc
-  strategy: 
+  strategy:
       type: Recreate
   template:
     metadata:
@@ -32,11 +32,21 @@ spec:
               value: kafka:9092
             - name: MONGO_URL
               value: mongodb://root:mongoDbPas42@mongodb:27017/
-            - name: PLATFORM_CONFIG_BASE_SVC_URL
+            - name: AUTH_N_SVC_BASEURL
+              value: http://authentication-svc:3201
+            - name: AUTH_N_TOKEN_AUDIENCE
+              value: mojaloop.vnext.dev.default_audience
+            - name: AUTH_N_TOKEN_ISSUER_NAME
+              value: mojaloop.vnext.dev.default_issuer
+            - name: AUTH_Z_SVC_BASEURL
+              value: http://authorization-svc:3202
+            - name: PARTICIPANTS_SVC_URL
               value: http://participants-svc:3010
+            - name: PLATFORM_CONFIG_BASE_SVC_URL
+              value: http://platform-configuration-svc:3100
             - name: SCHEDULING_HOST_LOCKS
               value: redis-master
-          image: mojaloop/scheduling-bc-command-handler-svc:0.0.3
+          image: mojaloop/scheduling-bc-command-handler-svc:0.5.1
           name: scheduling-command-handler-svc
           resources: {}
       restartPolicy: Always
