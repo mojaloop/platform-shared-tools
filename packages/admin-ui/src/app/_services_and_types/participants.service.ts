@@ -48,80 +48,6 @@ export class ParticipantsService {
 		// this._http.
 	}
 
-	validateSettlementInitiationFile(
-		settlementInitiation: File
-	): Observable<FundMovement[]> {
-		return new Observable<FundMovement[]>((subscriber) => {
-			this._http
-				.post<FundMovement[]>(
-					`${SVC_BASEURL}/participants/liquidityCheckValidate`,
-					{ settlementInitiation },
-					{
-						headers: {
-							"Content-Type": "multipart/form-data",
-						}
-					}
-				)
-				.subscribe(
-					(result) => {
-						subscriber.next(result);
-						return subscriber.complete();
-					},
-					(error) => {
-						if (error && error.status === 401) {
-							console.warn(
-								"UnauthorizedError received on validateSettlementInitiationFile"
-							);
-							subscriber.error(
-								new UnauthorizedError(error.error?.msg)
-							);
-						}
-						if (error && error.status === 403) {
-							console.warn(
-								"Forbidden received on validateSettlementInitiationFile"
-							);
-							subscriber.error(new Error(error.error?.msg));
-						} else {
-							console.error(error);
-							subscriber.error(error.error?.msg);
-						}
-						return subscriber.complete();
-					}
-				);
-		});
-	}
-
-	requestFundAdjustment(
-		fundAdjustments: FundMovement[],
-		ignoreDuplicate: boolean
-	): Observable<void> {
-		return new Observable((subscriber) => {
-			let url = `${SVC_BASEURL}/participants/liquidityCheckRequestAdjustment`;
-			if (ignoreDuplicate) url += "?ignoreDuplicate=true";
-
-			this._http.post(url, fundAdjustments).subscribe(
-				() => {
-					subscriber.next();
-					return subscriber.complete();
-				},
-				(error) => {
-					if (error && error.status === 401) {
-						console.warn("UnauthorizedError received on requestAdjustment");
-						subscriber.error(new UnauthorizedError(error.error?.msg));
-					}
-					if (error && error.status === 403) {
-						console.warn("Forbidden received on requestAdjustment");
-						subscriber.error(new Error(error.error?.msg));
-					} else {
-						console.error(error);
-						subscriber.error(error.error?.msg);
-					}
-					return subscriber.complete();
-				}
-			);
-		});
-	}
-
 	createEmptyParticipant(): IParticipant {
 		const now = Date.now();
 		return {
@@ -226,8 +152,12 @@ export class ParticipantsService {
 					},
 					(error) => {
 						if (error && error.status === 403) {
-							console.warn("UnauthorizedError received on getAllParticipants");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on getAllParticipants"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -252,8 +182,12 @@ export class ParticipantsService {
 					},
 					(error) => {
 						if (error && error.status === 403) {
-							console.warn("UnauthorizedError received on getParticipant");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on getParticipant"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -277,8 +211,12 @@ export class ParticipantsService {
 					},
 					(error) => {
 						if (error && error.status === 403) {
-							console.warn("UnauthorizedError received on createParticipant");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on createParticipant"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -292,7 +230,10 @@ export class ParticipantsService {
 	approveParticipant(participantId: string): Observable<boolean> {
 		return new Observable<boolean>((subscriber) => {
 			this._http
-				.put<void>(SVC_BASEURL + `/participants/${participantId}/approve`, {})
+				.put<void>(
+					SVC_BASEURL + `/participants/${participantId}/approve`,
+					{}
+				)
 				.subscribe(
 					(result) => {
 						console.log(`got response: ${result}`);
@@ -302,8 +243,12 @@ export class ParticipantsService {
 					},
 					(error) => {
 						if (error && error.status === 403) {
-							console.warn("UnauthorizedError received on approveParticipant");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on approveParticipant"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -322,7 +267,9 @@ export class ParticipantsService {
 			this._http
 				.put<void>(
 					SVC_BASEURL +
-					`/participants/${participantId}/${enable ? "enable" : "disable"}`,
+						`/participants/${participantId}/${
+							enable ? "enable" : "disable"
+						}`,
 					{}
 				)
 				.subscribe(
@@ -335,10 +282,13 @@ export class ParticipantsService {
 					(error) => {
 						if (error && error.status === 403) {
 							console.warn(
-								`UnauthorizedError received on ${enable ? "enable" : "disable"
+								`UnauthorizedError received on ${
+									enable ? "enable" : "disable"
 								} participant`
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -379,7 +329,9 @@ export class ParticipantsService {
 							console.warn(
 								"UnauthorizedError received on updating participant status"
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -414,7 +366,9 @@ export class ParticipantsService {
 							console.warn(
 								"UnauthorizedError received on participantAccountChangeRequest"
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						}
 						if (error && error.status === 403) {
 							console.warn(
@@ -449,7 +403,9 @@ export class ParticipantsService {
 							console.warn(
 								"UnauthorizedError received on getParticipantAccounts"
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -479,8 +435,12 @@ export class ParticipantsService {
 					},
 					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on createAccount");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on createAccount"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -515,7 +475,9 @@ export class ParticipantsService {
 							console.warn(
 								"UnauthorizedError received on participantAccountChangeRequest"
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						}
 						if (error && error.status === 403) {
 							console.warn(
@@ -551,8 +513,12 @@ export class ParticipantsService {
 					},
 					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on createSourceIp");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on createSourceIp"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -587,7 +553,9 @@ export class ParticipantsService {
 							console.warn(
 								"UnauthorizedError received on participantSourceIpChangeRequest"
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						}
 						if (error && error.status === 403) {
 							console.warn(
@@ -625,8 +593,12 @@ export class ParticipantsService {
 					},
 					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on createFundsMovement");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on createFundsMovement"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -649,7 +621,9 @@ export class ParticipantsService {
 				)
 				.subscribe(
 					() => {
-						console.log(`got success response from approveFundsMovement`);
+						console.log(
+							`got success response from approveFundsMovement`
+						);
 
 						subscriber.next();
 						return subscriber.complete();
@@ -659,10 +633,14 @@ export class ParticipantsService {
 							console.warn(
 								"UnauthorizedError received on approveFundsMovement"
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						}
 						if (error && error.status === 403) {
-							console.warn("Forbidden received on approveFundsMovement");
+							console.warn(
+								"Forbidden received on approveFundsMovement"
+							);
 							subscriber.error(new Error(error.error?.msg));
 						} else {
 							console.error(error);
@@ -693,8 +671,12 @@ export class ParticipantsService {
 					},
 					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on createAccount");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on createAccount"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -724,10 +706,14 @@ export class ParticipantsService {
 							console.warn(
 								"UnauthorizedError received on approveFundsMovement"
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						}
 						if (error && error.status === 403) {
-							console.warn("Forbidden received on approveFundsMovement");
+							console.warn(
+								"Forbidden received on approveFundsMovement"
+							);
 							subscriber.error(new Error(error.error?.msg));
 						} else {
 							console.error(error);
@@ -758,8 +744,12 @@ export class ParticipantsService {
 					},
 					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on createEndpoint");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on createEndpoint"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -789,8 +779,12 @@ export class ParticipantsService {
 					},
 					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on changeEndpoint");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on changeEndpoint"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -801,7 +795,10 @@ export class ParticipantsService {
 		});
 	}
 
-	removeEndpoint(participantId: string, endpointId: string): Observable<void> {
+	removeEndpoint(
+		participantId: string,
+		endpointId: string
+	): Observable<void> {
 		return new Observable<void>((subscriber) => {
 			this._http
 				.delete<void>(
@@ -816,8 +813,12 @@ export class ParticipantsService {
 					},
 					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on removeEndpoint");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on removeEndpoint"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -859,8 +860,12 @@ export class ParticipantsService {
 				},
 				(error) => {
 					if (error && error.status === 403) {
-						console.warn("Access forbidden received on getAllTransfers");
-						subscriber.error(new UnauthorizedError(error.error?.msg));
+						console.warn(
+							"Access forbidden received on getAllTransfers"
+						);
+						subscriber.error(
+							new UnauthorizedError(error.error?.msg)
+						);
 					} else {
 						console.error(error);
 						subscriber.error(error.error?.msg);
@@ -891,8 +896,12 @@ export class ParticipantsService {
 					},
 					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on createContactInfo");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on createContactInfo"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -915,7 +924,9 @@ export class ParticipantsService {
 				)
 				.subscribe(
 					() => {
-						console.log(`got success response from contactInfoChangeRequests`);
+						console.log(
+							`got success response from contactInfoChangeRequests`
+						);
 
 						subscriber.next();
 						return subscriber.complete();
@@ -925,10 +936,14 @@ export class ParticipantsService {
 							console.warn(
 								"UnauthorizedError received on contactInfoChangeRequests"
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						}
 						if (error && error.status === 403) {
-							console.warn("Forbidden received on contactInfoChangeRequests");
+							console.warn(
+								"Forbidden received on contactInfoChangeRequests"
+							);
 							subscriber.error(new Error(error.error?.msg));
 						} else {
 							console.error(error);
@@ -968,7 +983,9 @@ export class ParticipantsService {
 				(error) => {
 					if (error && error.status === 403) {
 						console.warn("Access forbidden received on search");
-						subscriber.error(new UnauthorizedError(error.error?.msg));
+						subscriber.error(
+							new UnauthorizedError(error.error?.msg)
+						);
 					} else {
 						console.error(error);
 						subscriber.error(error.error?.msg);
@@ -989,16 +1006,27 @@ export class ParticipantsService {
 						`${SVC_BASEURL}/searchKeywords`
 					)
 					.subscribe(
-						(result: { fieldName: string; distinctTerms: string[] }[]) => {
-							console.log(`got getSearchKeywords response: ${result}`);
+						(
+							result: {
+								fieldName: string;
+								distinctTerms: string[];
+							}[]
+						) => {
+							console.log(
+								`got getSearchKeywords response: ${result}`
+							);
 
 							subscriber.next(result);
 							return subscriber.complete();
 						},
 						(error) => {
 							if (error && error.status === 403) {
-								console.warn("Access forbidden received on getSearchKeywords");
-								subscriber.error(new UnauthorizedError(error.error?.msg));
+								console.warn(
+									"Access forbidden received on getSearchKeywords"
+								);
+								subscriber.error(
+									new UnauthorizedError(error.error?.msg)
+								);
 							} else {
 								console.error(error);
 								subscriber.error(error.error?.msg);
@@ -1011,32 +1039,38 @@ export class ParticipantsService {
 	}
 
 	getPendingApprovalsSummary() {
-		return new Observable<IParticipantPendingApprovalSummary>((subscriber) => {
-			this._http
-				.get<IParticipantPendingApprovalSummary>(
-					`${SVC_BASEURL}/participants/pendingApprovalsSummary`
-				)
-				.subscribe(
-					(result: IParticipantPendingApprovalSummary) => {
-						console.log(`got getPendingApprovalSummary response: ${result}`);
-
-						subscriber.next(result);
-						return subscriber.complete();
-					},
-					(error) => {
-						if (error && error.status === 403) {
-							console.warn(
-								"Access forbidden received on getPendingApprovalSummary"
+		return new Observable<IParticipantPendingApprovalSummary>(
+			(subscriber) => {
+				this._http
+					.get<IParticipantPendingApprovalSummary>(
+						`${SVC_BASEURL}/participants/pendingApprovalsSummary`
+					)
+					.subscribe(
+						(result: IParticipantPendingApprovalSummary) => {
+							console.log(
+								`got getPendingApprovalSummary response: ${result}`
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
-						} else {
-							console.error(error);
-							subscriber.error(error.error?.msg);
+
+							subscriber.next(result);
+							return subscriber.complete();
+						},
+						(error) => {
+							if (error && error.status === 403) {
+								console.warn(
+									"Access forbidden received on getPendingApprovalSummary"
+								);
+								subscriber.error(
+									new UnauthorizedError(error.error?.msg)
+								);
+							} else {
+								console.error(error);
+								subscriber.error(error.error?.msg);
+							}
+							return subscriber.complete();
 						}
-						return subscriber.complete();
-					}
-				);
-		});
+					);
+			}
+		);
 	}
 
 	getPendingApprovals() {
@@ -1047,15 +1081,21 @@ export class ParticipantsService {
 				)
 				.subscribe(
 					(result: IParticipantPendingApproval) => {
-						console.log(`got getPendingApprovals response: ${result}`);
+						console.log(
+							`got getPendingApprovals response: ${result}`
+						);
 
 						subscriber.next(result);
 						return subscriber.complete();
 					},
 					(error) => {
 						if (error && error.status === 403) {
-							console.warn("Access forbidden received on getPendingApprovals");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"Access forbidden received on getPendingApprovals"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -1075,7 +1115,9 @@ export class ParticipantsService {
 				)
 				.subscribe(
 					(result: IParticipantPendingApproval) => {
-						console.log(`got submitPendingApprovals response: ${result}`);
+						console.log(
+							`got submitPendingApprovals response: ${result}`
+						);
 
 						subscriber.next(result);
 						return subscriber.complete();
@@ -1085,7 +1127,9 @@ export class ParticipantsService {
 							console.warn(
 								"Access forbidden received on submitPendingApprovals"
 							);
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -1114,15 +1158,21 @@ export class ParticipantsService {
 				.post<{ id: string }>(`${SVC_BASEURL}/simulatetransfer`, body)
 				.subscribe(
 					() => {
-						console.log(`got success response from simulateTransfer`);
+						console.log(
+							`got success response from simulateTransfer`
+						);
 
 						subscriber.next();
 						return subscriber.complete();
 					},
 					(error) => {
 						if (error && error.status === 401) {
-							console.warn("UnauthorizedError received on simulateTransfer");
-							subscriber.error(new UnauthorizedError(error.error?.msg));
+							console.warn(
+								"UnauthorizedError received on simulateTransfer"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
 						} else {
 							console.error(error);
 							subscriber.error(error.error?.msg);
@@ -1133,4 +1183,79 @@ export class ParticipantsService {
 		});
 	}
 
+	validateSettlementInitiationFile(
+		settlementInitiation: File
+	): Observable<FundMovement[]> {
+		const formData = new FormData();
+		formData.append("settlementInitiation", settlementInitiation);
+
+		return new Observable<FundMovement[]>((subscriber) => {
+			this._http
+				.post<FundMovement[]>(
+					`${SVC_BASEURL}/participants/liquidityCheckValidate`,
+					formData
+				)
+				.subscribe(
+					(result) => {
+						subscriber.next(result);
+						return subscriber.complete();
+					},
+					(error) => {
+						if (error && error.status === 401) {
+							console.warn(
+								"UnauthorizedError received on validateSettlementInitiationFile"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
+						}
+						if (error && error.status === 403) {
+							console.warn(
+								"Forbidden received on validateSettlementInitiationFile"
+							);
+							subscriber.error(new Error(error.error?.msg));
+						} else {
+							console.error(error);
+							subscriber.error(error.error?.msg);
+						}
+						return subscriber.complete();
+					}
+				);
+		});
+	}
+
+	requestFundAdjustment(
+		fundAdjustments: FundMovement[],
+		ignoreDuplicate: boolean
+	): Observable<void> {
+		return new Observable((subscriber) => {
+			let url = `${SVC_BASEURL}/participants/liquidityCheckRequestAdjustment`;
+			if (ignoreDuplicate) url += "?ignoreDuplicate=true";
+
+			this._http.post(url, fundAdjustments).subscribe(
+				() => {
+					subscriber.next();
+					return subscriber.complete();
+				},
+				(error) => {
+					if (error && error.status === 401) {
+						console.warn(
+							"UnauthorizedError received on requestAdjustment"
+						);
+						subscriber.error(
+							new UnauthorizedError(error.error?.msg)
+						);
+					}
+					if (error && error.status === 403) {
+						console.warn("Forbidden received on requestAdjustment");
+						subscriber.error(new Error(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+					return subscriber.complete();
+				}
+			);
+		});
+	}
 }
