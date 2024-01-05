@@ -5,10 +5,16 @@ metadata:
   annotations:
     ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/rewrite-target: /
+    #external-dns.alpha.kubernetes.io/hostname: vnextadmin.local
+    #cert-manager.io/issuer: letsencrypt-staging
 spec:
-  ingressClassName: nginx
+  ingressClassName: nginx-ext
+  #tls:
+  #   - hosts:
+  #       - vnextadmin.local
+  #     secretName: quickstart-example-tls
   rules:
-  - host: vnextadmin
+  - host: vnextadmin.local
     http:
       paths:
       - path: "/"

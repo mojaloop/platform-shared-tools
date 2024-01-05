@@ -44,7 +44,7 @@ spec:
           value: http://participants-svc:3010
         - name: PLATFORM_CONFIG_BASE_SVC_URL
           value: http://platform-configuration-svc:3100
-        image: mojaloop/transfers-bc-transfers-api-svc:0.2.6
+        image: mojaloop/transfers-bc-transfers-api-svc:0.5.1
         livenessProbe:
           exec:
             command:
@@ -57,12 +57,5 @@ spec:
         ports:
         - containerPort: 3500
         resources: {}
-        volumeMounts:
-        - mountPath: /app/data
-          name: transfers-api-svc-data
       restartPolicy: Always
-      volumes:
-      - name: transfers-api-svc-data
-        persistentVolumeClaim:
-          claimName: transfers-api-svc-data
 status: {}

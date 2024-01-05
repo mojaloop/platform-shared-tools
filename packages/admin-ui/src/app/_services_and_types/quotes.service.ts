@@ -46,7 +46,7 @@ export class QuotesService {
 			payer: null,
 			transactionType: null,
 			ilpPacket: "",
-			extensionList: null,
+			extensionList: null
 		};
 	}
 

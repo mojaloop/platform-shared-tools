@@ -37,15 +37,8 @@ spec:
           value: logs
         - name: KAFKA_URL
           value: kafka:9092
-        image: mojaloop/logging-bc-logging-svc:0.1.9
+        image: mojaloop/logging-bc-logging-svc:0.5.2
         name: logging-svc
         resources: {}
-        volumeMounts:
-        - mountPath: /app/data
-          name: logging-svc-data
       restartPolicy: Always
-      volumes:
-      - name: logging-svc-data
-        persistentVolumeClaim:
-          claimName: logging-svc-data
 status: {}

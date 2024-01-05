@@ -38,17 +38,16 @@ spec:
           value: kafka:9092
         - name: PLATFORM_CONFIG_BASE_SVC_URL
           value: http://platform-configuration-svc:3100
-        image: mojaloop/security-bc-authentication-svc:snapshot
+        - name: BUILTIN_IAM_BASE_URL
+          value: http://identity-svc:3203
+        - name: REDIS_HOST
+          value: redis-master
+        - name: REDIS_PORT
+          value: '6379'
+        image: mojaloop/security-bc-authentication-svc:0.5.2
         name: authentication-svc
         ports:
         - containerPort: 3201
         resources: {}
-        volumeMounts:
-        - mountPath: /app/data
-          name: authentication-svc-data
       restartPolicy: Always
-      volumes:
-      - name: authentication-svc-data
-        persistentVolumeClaim:
-          claimName: authentication-svc-data
 status: {}

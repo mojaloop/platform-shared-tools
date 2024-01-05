@@ -48,7 +48,7 @@ spec:
           value: '0'
         - name: TIGERBEETLE_CLUSTER_REPLICA_ADDRESSES
           value: tigerbeetle:3000
-        image: mojaloop/participants-bc-participants-svc:0.1.19
+        image: mojaloop/participants-bc-participants-svc:0.5.4
         livenessProbe:
           exec:
             command:
@@ -61,12 +61,5 @@ spec:
         ports:
         - containerPort: 3010
         resources: {}
-        volumeMounts:
-        - mountPath: /app/data
-          name: participants-svc-data
       restartPolicy: Always
-      volumes:
-      - name: participants-svc-data
-        persistentVolumeClaim:
-          claimName: participants-svc-data
 status: {}

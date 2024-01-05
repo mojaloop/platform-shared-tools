@@ -46,15 +46,8 @@ spec:
           value: http://participants-svc:3010
         - name: PLATFORM_CONFIG_BASE_SVC_URL
           value: http://platform-configuration-svc:3100
-        image: mojaloop/settlements-bc-command-handler-svc:0.1.10
+        image: mojaloop/settlements-bc-command-handler-svc:0.5.2
         name: settlements-command-handler-svc
         resources: {}
-        volumeMounts:
-        - mountPath: /app/data
-          name: settlements-command-handler-svc-data
       restartPolicy: Always
-      volumes:
-      - name: settlements-command-handler-svc-data
-        persistentVolumeClaim:
-          claimName: settlements-command-handler-svc-data
 status: {}

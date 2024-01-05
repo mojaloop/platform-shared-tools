@@ -1,18 +1,15 @@
 # Declare global configurations
 global:
-  kibanaEnabled: false
+  kibanaEnabled: true
 
 ############### Kafka and Zookeeper ####################
-## Reference: https://github.com/bitnami/charts/blob/main/bitnami/kafka/values.yaml
+## Reference: https://github.com/bitnami/charts/tree/main/bitnami/kafka/#installing-the-chart
 kafka:
   enabled: true
   fullnameOverride: kafka
 
-  # image:
-  #   tag: 3.5.1-debian-11-r21
-
   persistence:
-    enabled: false
+    enabled: true
 
   auth:
     clientProtocol: PLAINTEXT
@@ -34,34 +31,26 @@ kafka:
   broker:
     replicaCount: 3
     persistence:
-      enabled: false
+      enabled: true
+    # nodeSelector:
+    #   role: infra
 
   controller:
     replicaCount: 0
+    # nodeSelector:
+    #   role: infra
 
-  extraConfig:
-    offsetsTopicReplicationFactor: 1
-    defaultReplicationFactor: 1
-
-  ## https://github.com/bitnami/charts/blob/main/bitnami/zookeeper/values.yaml
+  ## https://github.com/bitnami/charts/tree/main/bitnami/kafka/#installing-the-chart
   zookeeper:
     enabled: true
+    fullnameOverride: zookeeper
 
     persistence:
-      enabled: false
-
-    auth:
-      client:
-        enabled: false
-
-    fullnameOverride: zookeeper
+      enabled: true
 
   ## Kafka provisioning
   provisioning:
     enabled: true
-    numPartitions: 1
-    replicationFactor: 1
-
     topics:
       -   name: KAFKA_AUDITS_TOPIC
           value: audits
@@ -99,16 +88,22 @@ kafka:
           value: SettlementsBcCommands
       -   name: PlatformConfigurationBcEvents
           value: PlatformConfigurationBcEvents
-      
+      -   name: ParticipantsBcEvents
+          value: ParticipantsBcEvents
+      -   name: SchedulingBcCommands
+          value: SchedulingBcCommands
+      -   name: SchedulingBcEvents
+          value: SchedulingBcEvents
+      -   name: SecurityBcAuthorizationEvents
+          value: SecurityBcAuthorizationEvents
+      -   name: SecurityBcEvents
+          value: SecurityBcEvents
 
-    nodeSelector: {}
-    tolerations: []
-    waitForKafka: true
+    # nodeSelector: {}
 
 ############### RedPanda Console for Kafka  ####################
 # https://artifacthub.io/packages/helm/redpanda-data/console?modal=values
 # redpanda kakfa console config
-
 redpanda-console:
   enabled: true
   fullnameOverride: rpconsole
@@ -121,47 +116,72 @@ redpanda-console:
 
   ingress:
     enabled: true
-    className: nginx
+    className: nginx-ext
     hosts:
-      -   host: redpanda-console.local
+      -   host: kafkaconsole.local
           paths:
             -   path: /
                 pathType: ImplementationSpecific
+
+    #annotations
+      #external-dns.alpha.kubernetes.io/hostname: greenbank.vnext.mojaloop.live
+      #cert-manager.io/issuer: letsencrypt-staging
+    #tls: []
+      #  - secretName: quickstart-example-tls
+      #    hosts:
+      #      - kafkaconsole.local
 
 ############### MongoDB  ####################
 # X64 only => https://github.com/bitnami/charts/tree/main/bitnami/mongodb
 # testing for ARM64 : https://artifacthub.io/packages/helm/groundhog2k/mongodb/0.1.0
 mongodb:
   enabled: true
-# https://github.com/bitnami/charts/tree/main/bitnami/mongodb
-# testing : https://artifacthub.io/packages/helm/groundhog2k/mongodb/0.1.0
-mongodb:
-  enabled: true
   persistence:
     enabled: true
-  # image:
-  #   tag: latest
+  image:
+    tag: 7.0
 
-  fullnameOverride: "mongodb"
+  fullnameOverride: mongodb
   settings:
     rootUsername: root
     rootPassword: mongoDbPas42
 
-  initUserDatabase:
-    dbname: mlos
+  # nodeSelector:
+  #   role: infra
 
 ############### Mongo Express ####################
 # mongo express config
+# https://artifacthub.io/packages/helm/cowboysysop/mongo-express
 mongo-express:
   fullnameOverride: mongo-express
   enabled: true
 
+  image:
+    tag: 1.0.0
+
   ingress:
     enabled: true
-    ingressClassName: nginx
+    ingressClassName: nginx-ext
+    hosts:
+      - host: mongoexpress.local
+        paths:
+          - /
+    #annotations
+      #external-dns.alpha.kubernetes.io/hostname: mongoexpress.local
+      #cert-manager.io/issuer: letsencrypt-staging
+    #tls: []
+      #  - secretName: quickstart-example-tls
+      #    hosts:
+      #      - mongoexpress.local
 
   mongodbEnableAdmin: true
   mongodbAdminPassword: mongoDbPas42
+  mongodbAdminUsername: root
+
+  livenessProbe:
+    enabled: false
+  readinessProbe:
+    enabled: false
 
 ############### Redis  ####################
 ## Reference: https://github.com/bitnami/charts/blob/main/bitnami/redis/values.yaml
@@ -177,8 +197,10 @@ redis:
       enabled: true
 
 ############### Elasticsearch and Kibana  ####################
+# https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch/#installing-the-chart
 elasticsearch:
   enabled: true
+  #fullnameOverride: elastic
 
   security:
     elasticPassword: elasticSearchPas42
@@ -189,17 +211,34 @@ elasticsearch:
     replicaCount: 1
 
   master:
+    masterOnly: false
     replicaCount: 1
     persistence:
       enabled: true
-
   data:
-    replicaCount: 1
-    persistence:
-      enabled: true
-
+    replicaCount: 0
+  coordinating:
+    replicaCount: 0
   ingest:
-    replicaCount: 1
+    replicaCount: 0
 
   ingress:
+    ingressClassName: nginx-ext
     enabled: true
+    hostname: elasticsearch.local
+    #annotations
+      #external-dns.alpha.kubernetes.io/hostname: elasticsearch.local
+      #cert-manager.io/issuer: letsencrypt-staging
+    tls:
+      - enabled: false
+
+  kibana:
+    ingress:
+      ingressClassName: nginx-ext
+      enabled: true
+      hostname: kibana.local
+      #annotations
+        #external-dns.alpha.kubernetes.io/hostname: kibana.local
+        #cert-manager.io/issuer: letsencrypt-staging
+      tls:
+        enabled: false

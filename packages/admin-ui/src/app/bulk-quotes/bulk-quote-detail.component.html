@@ -55,7 +55,7 @@
 
       <div class="mb-2">
         <label class="col-form-label text-secondary">Location</label>
-        <div>{{(bulkQuote | async)?.geoCode?.latitude !== 'walking' ? 'No Location Specified' : (bulkQuote | async)?.geoCode?.latitude}} {{(bulkQuote | async)?.geoCode?.longitude}}</div>
+        <div>{{(bulkQuote | async)?.geoCode?.latitude}} {{(bulkQuote | async)?.geoCode?.longitude}}</div>
       </div>
   
     </div> <!-- right col with action buttons -->

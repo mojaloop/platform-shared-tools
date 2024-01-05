@@ -133,3 +133,23 @@ devspace*
 
 # Gedit backups.
 *~
+
+# Helm
+**/charts
+**/tmpcharts
+requirements.lock
+Chart.lock
+
+# Helm Publish Repo
+**/manifests/infra/repo/**
+
+
+# Terraform
+.terraform*
+terraform*zip
+*tfstate*
+
+# docker compose exec directories
+packages/deployment/docker-compose-apps/exec
+packages/deployment/docker-compose-cross-cutting/exec
+packages/deployment/docker-compose-infra/exec
