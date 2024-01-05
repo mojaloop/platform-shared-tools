@@ -89,3 +89,9 @@ export interface FundMovement {
 	settlementAccountId: string
 	isDuplicate: boolean
 }
+
+export declare type BulkApprovalRequestResults = {
+	reqId: string;
+	status: "success" | "error";
+	message: string;
+}

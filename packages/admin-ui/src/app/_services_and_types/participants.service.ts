@@ -28,6 +28,7 @@ import {
 	IParticipantPendingApprovalSummary,
 	FundMovement,
 	ParticipantsSearchResults,
+	BulkApprovalRequestResults,
 } from "./participant_types";
 
 const SVC_BASEURL = "/_participants";
@@ -1067,14 +1068,14 @@ export class ParticipantsService {
 	}
 
 	submitPendingApprovals(data: IParticipantPendingApproval) {
-		return new Observable<IParticipantPendingApproval>((subscriber) => {
+		return new Observable<BulkApprovalRequestResults[]>((subscriber) => {
 			this._http
-				.post<IParticipantPendingApproval>(
+				.post<BulkApprovalRequestResults[]>(
 					`${SVC_BASEURL}/participants/pendingApprovals`,
 					data
 				)
 				.subscribe(
-					(result: IParticipantPendingApproval) => {
+					(result: BulkApprovalRequestResults[]) => {
 						console.log(`got submitPendingApprovals response: ${result}`);
 
 						subscriber.next(result);

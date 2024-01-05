@@ -40,6 +40,7 @@
           <tr>
             <th scope="col">
               <input
+                [disabled]="fundAdjustments.value.length === 0"
                 [checked]="isFundAdjustmentSelectAll"
                 type="checkbox"
                 (change)="selectAllFundAdjustments($event)"
@@ -110,6 +111,7 @@
           <tr>
             <th scope="col">
               <input
+                [disabled]="ndcRequests.value.length === 0"
                 [checked]="isNDCSelectAll"
                 type="checkbox"
                 (change)="selectAllNDCRequests($event)"
@@ -150,3 +152,34 @@
 </ul>
 
 <div class="mt-6" [ngbNavOutlet]="nav"></div>
+
+<!-- Pending Approvals Modal -->
+<ng-template #pendingApprovalsModal let-modal>
+  <div class="modal-body">
+    <div *ngFor="let result of approvalResult" class="row mb-2">
+      <div class="col-1">
+        <i
+          class="bi"
+          [ngClass]="{
+            'bi-check-circle': result.status === 'success',
+            'bi-exclamation-circle': result.status === 'error'
+          }"
+          [style.color]="result.status === 'success' ? 'green' : 'red'"
+        >
+        </i>
+      </div>
+      <div class="col-10">
+        {{ result.message }}
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-success"
+      (click)="closePendingApprovalsModal()"
+    >
+      Ok
+    </button>
+  </div>
+</ng-template>

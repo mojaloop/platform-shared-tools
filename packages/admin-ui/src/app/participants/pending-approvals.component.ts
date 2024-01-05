@@ -1,9 +1,13 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ParticipantsService } from "../_services_and_types/participants.service";
 import { MessageService } from "../_services_and_types/message.service";
 import { BehaviorSubject } from "rxjs";
-import { IParticipantPendingApproval } from "../_services_and_types/participant_types";
+import {
+  BulkApprovalRequestResults,
+  IParticipantPendingApproval,
+} from "../_services_and_types/participant_types";
 import { UnauthorizedError } from "@mojaloop/security-bc-public-types-lib";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "app-participants",
@@ -28,10 +32,17 @@ export class PendingApprovalsComponent implements OnInit {
   fundAdjustmentCount: number = 0;
   ndcRequestCount: number = 0;
 
+  approvalResult: BulkApprovalRequestResults[] = [];
+
+  @ViewChild("pendingApprovalsModal") // Get a reference to the depositModal
+  pendingApprovalsModal!: NgbModal;
+  pendingApprovalsModalRef?: NgbModalRef;
+
   constructor(
     private _participantsSvc: ParticipantsService,
-    private _messageService: MessageService
-  ) { }
+    private _messageService: MessageService,
+    private _modalService: NgbModal
+  ) {}
 
   async ngOnInit(): Promise<void> {
     console.log("PendingApprovalsComponent ngOnInit");
@@ -69,6 +80,13 @@ export class PendingApprovalsComponent implements OnInit {
     const isChecked = e.target.checked;
     if (isChecked) {
       this.selectedFundAdjustment.push(fundAdjustment);
+
+      // Check if all Fund Adjustment requests are selected
+      if (
+        this.fundAdjustments.value.length === this.selectedFundAdjustment.length
+      ) {
+        this.isFundAdjustmentSelectAll = true;
+      }
     } else {
       // find by id from fund adjustment and remove item from selectedFundAdjustment
       const index = this.selectedFundAdjustment.findIndex(
@@ -77,6 +95,8 @@ export class PendingApprovalsComponent implements OnInit {
       if (index !== -1) {
         this.selectedFundAdjustment.splice(index, 1);
       }
+
+      this.isFundAdjustmentSelectAll = false;
     }
   }
 
@@ -85,8 +105,14 @@ export class PendingApprovalsComponent implements OnInit {
     ndcRequest: IParticipantPendingApproval["ndcChangeRequests"][number]
   ) {
     const isChecked = e.target.checked;
+
     if (isChecked) {
       this.selectedNDCRequest.push(ndcRequest);
+
+      // Check if all NDC requests are selected
+      if (this.ndcRequests.value.length === this.selectedNDCRequest.length) {
+        this.isNDCSelectAll = true;
+      }
     } else {
       // find by id from fund adjustment and remove item from selectedFundAdjustment
       const index = this.selectedNDCRequest.findIndex(
@@ -95,6 +121,8 @@ export class PendingApprovalsComponent implements OnInit {
       if (index !== -1) {
         this.selectedNDCRequest.splice(index, 1);
       }
+
+      this.isNDCSelectAll = false;
     }
   }
 
@@ -115,30 +143,39 @@ export class PendingApprovalsComponent implements OnInit {
     fundAdjustments.forEach((item) => {
       item.approved = true;
     });
-    this._participantsSvc.submitPendingApprovals({
-      fundsMovementRequest: fundAdjustments,
-      ndcChangeRequests: [],
-      accountsChangeRequest: [],
-      ipChangeRequests: [],
-      contactInfoChangeRequests: [],
-      statusChangeRequests: [],
-    }).subscribe(
-      async () => {
-        this._messageService.addSuccess("Approved!");
-        await this.getPendingApprovalsSummary();
-        await this.getPendingApprovals();
-      },
-      (error) => {
-        if (error && error instanceof UnauthorizedError) {
-          this._messageService.addError(error.message);
+    this._participantsSvc
+      .submitPendingApprovals({
+        fundsMovementRequest: fundAdjustments,
+        ndcChangeRequests: [],
+        accountsChangeRequest: [],
+        ipChangeRequests: [],
+        contactInfoChangeRequests: [],
+        statusChangeRequests: [],
+      })
+      .subscribe(
+        async (result) => {
+          if (result.length > 0) {
+            this.approvalResult = result;
+            this.pendingApprovalsModalRef = this._modalService.open(
+              this.pendingApprovalsModal,
+              { centered: true }
+            );
+          }
+
+          await this.getPendingApprovalsSummary();
+          await this.getPendingApprovals();
+        },
+        (error) => {
+          if (error && error instanceof UnauthorizedError) {
+            this._messageService.addError(error.message);
+          }
+        },
+        () => {
+          // reset all selected options
+          this.selectedFundAdjustment = [];
+          this.isFundAdjustmentSelectAll = false;
         }
-      },
-      () => {
-        // reset all selected options
-        this.selectedFundAdjustment = [];
-        this.isFundAdjustmentSelectAll = false;
-      }
-    );
+      );
   }
 
   rejectFundAdjustmentPendingApprovals() {
@@ -150,30 +187,39 @@ export class PendingApprovalsComponent implements OnInit {
     fundAdjustments.forEach((item) => {
       item.approved = false;
     });
-    this._participantsSvc.submitPendingApprovals({
-      fundsMovementRequest: fundAdjustments,
-      ndcChangeRequests: [],
-      accountsChangeRequest: [],
-      ipChangeRequests: [],
-      contactInfoChangeRequests: [],
-      statusChangeRequests: [],
-    }).subscribe(
-      async () => {
-        this._messageService.addSuccess("Rejected!");
-        await this.getPendingApprovalsSummary();
-        await this.getPendingApprovals();
-      },
-      (error) => {
-        if (error && error instanceof UnauthorizedError) {
-          this._messageService.addError(error.message);
+    this._participantsSvc
+      .submitPendingApprovals({
+        fundsMovementRequest: fundAdjustments,
+        ndcChangeRequests: [],
+        accountsChangeRequest: [],
+        ipChangeRequests: [],
+        contactInfoChangeRequests: [],
+        statusChangeRequests: [],
+      })
+      .subscribe(
+        async (result) => {
+          if (result.length > 0) {
+            this.approvalResult = result;
+            this.pendingApprovalsModalRef = this._modalService.open(
+              this.pendingApprovalsModal,
+              { centered: true }
+            );
+          }
+
+          await this.getPendingApprovalsSummary();
+          await this.getPendingApprovals();
+        },
+        (error) => {
+          if (error && error instanceof UnauthorizedError) {
+            this._messageService.addError(error.message);
+          }
+        },
+        () => {
+          // reset all selected options
+          this.selectedFundAdjustment = [];
+          this.isFundAdjustmentSelectAll = false;
         }
-      },
-      () => {
-        // reset all selected options
-        this.selectedFundAdjustment = [];
-        this.isFundAdjustmentSelectAll = false;
-      }
-    );
+      );
   }
 
   approveNDCRequestPendingApprovals() {
@@ -195,8 +241,15 @@ export class PendingApprovalsComponent implements OnInit {
         statusChangeRequests: [],
       })
       .subscribe(
-        async () => {
-          this._messageService.addSuccess("Approved!");
+        async (result) => {
+          if (result.length > 0) {
+            this.approvalResult = result;
+            this.pendingApprovalsModalRef = this._modalService.open(
+              this.pendingApprovalsModal,
+              { centered: true }
+            );
+          }
+
           await this.getPendingApprovalsSummary();
           await this.getPendingApprovals();
         },
@@ -232,8 +285,15 @@ export class PendingApprovalsComponent implements OnInit {
         statusChangeRequests: [],
       })
       .subscribe(
-        async () => {
-          this._messageService.addSuccess("Rejected!");
+        async (result) => {
+          if (result.length > 0) {
+            this.approvalResult = result;
+            this.pendingApprovalsModalRef = this._modalService.open(
+              this.pendingApprovalsModal,
+              { centered: true }
+            );
+          }
+
           await this.getPendingApprovalsSummary();
           await this.getPendingApprovals();
         },
@@ -249,7 +309,6 @@ export class PendingApprovalsComponent implements OnInit {
         }
       );
   }
-
 
   async getPendingApprovals(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -287,9 +346,14 @@ export class PendingApprovalsComponent implements OnInit {
           if (error && error instanceof UnauthorizedError) {
             this._messageService.addError(error.message);
           }
-          reject()
+          reject();
         }
       );
     });
+  }
+
+  closePendingApprovalsModal() {
+    this.pendingApprovalsModalRef?.close();
+    this.approvalResult = [];
   }
 }
