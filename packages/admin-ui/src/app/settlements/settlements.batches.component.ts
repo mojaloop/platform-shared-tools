@@ -6,6 +6,7 @@ import {SettlementsService} from "src/app/_services_and_types/settlements.servic
 import {ISettlementBatch, ISettlementBatchTransfer} from "@mojaloop/settlements-bc-public-types-lib";
 import * as uuid from "uuid";
 import {ActivatedRoute, Router} from "@angular/router";
+import {paginate, PaginateResult} from "../_utils";
 
 const DEFAULT_TIME_FILTER_HOURS = 8;
 
@@ -14,13 +15,17 @@ const DEFAULT_TIME_FILTER_HOURS = 8;
 	templateUrl: './settlements.batches.component.html'
 })
 export class SettlementsBatchesComponent implements OnInit, OnDestroy {
+	isDisabled: boolean = false;
+
 	readonly ALL_STR_ID = "(All)";
 	batches: BehaviorSubject<ISettlementBatch[]> = new BehaviorSubject<ISettlementBatch[]>([]);
+	batchByIdSubs?: Subscription;
 	batchesSubs?: Subscription;
 
 	batchTransfers: BehaviorSubject<ISettlementBatchTransfer[]> = new BehaviorSubject<ISettlementBatchTransfer[]>([]);
 	batchTransfersSubs?: Subscription;
 
+	paginateResult: BehaviorSubject<PaginateResult | null> = new BehaviorSubject<PaginateResult | null>(null);
 
 	batchSelPrefix = "batchSel_";
 	selectedBatchIds: string[] = [];
@@ -44,17 +49,48 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 		console.log("SettlementsBatchesComponent ngOnInit");
 
 		const batchId = this._route.snapshot.queryParamMap.get("batchId");
-		if (batchId) this.criteriaBatchId = batchId;
+		if (batchId) {
+			this.criteriaBatchId = batchId;
+			// Disable other filters if there's batchId
+			this.isDisabled = true;
+		}
 		const currencyCode = this._route.snapshot.queryParamMap.get("currencyCode");
 		if (currencyCode) this.criteriaCurrencyCode = currencyCode;
 
 		setTimeout(() => {
 			this.applyCriteria();
 		}, 10);
-
 	}
 
-	applyCriteria() {
+	getBatcheById(batchId: string) {
+		this.batchByIdSubs = this._settlementsService.getBatcheById(batchId).subscribe(
+			(batch) => {
+				this.batches.next([batch]);
+				this.paginateResult.next(null);
+			},
+			(error) => {
+				if (error && error instanceof UnauthorizedError) {
+					this._messageService.addError(error.message);
+				}
+			}
+		);
+	}
+
+	applyCriteria(pageIndex?: number, pageSize?: number) {
+		// If there is batchId, we won't need other filters since it's uniquely identified
+		const criteriaBatchId = (document.getElementById("criteriaBatchId") as HTMLInputElement).value.trim();
+		if (criteriaBatchId) return this.getBatcheById(criteriaBatchId);
+
+		// For pagination
+		if (pageIndex == null) {
+			const pageIndexElem = document.getElementById("pageIndex") as HTMLSelectElement;
+			pageIndex = parseInt(pageIndexElem?.value ?? 0);
+		}
+		if (pageSize == null) {
+			const pageSizeElem = document.getElementById("pageSize") as HTMLSelectElement;
+			pageSize = parseInt(pageSizeElem?.value ?? 10);
+		}
+
 		const criteriaModel = (document.getElementById("criteriaSettlementModel") as HTMLSelectElement).value;
 
 		const criteriaCurrencyCodeElemVal = (document.getElementById("criteriaCurrencyCode") as HTMLSelectElement).value;
@@ -68,27 +104,31 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 		const criteriaToStr = (document.getElementById("criteriaToDate") as HTMLInputElement).value;
 		const criteriaTo = new Date(criteriaToStr);
 
-
-		const criteriaBatchId = (document.getElementById("criteriaBatchId") as HTMLInputElement).value;
-
 		this.batchesSubs = this._settlementsService.getBatchesByCriteria(
 			criteriaFrom.valueOf(), criteriaTo.valueOf(),
-			criteriaModel, criteriaCurrencyCodes, criteriaBatchStates
+			criteriaModel, criteriaCurrencyCodes, criteriaBatchStates,
+			pageIndex, pageSize
 		).subscribe(list => {
-			const filtered = list?.items.filter(value => {
-				if (criteriaBatchId && value.id.toUpperCase() !== criteriaBatchId.toUpperCase())
-					return false;
-
-				return true;
-			});
-
-
-			this.batches.next(filtered);
+			this.batches.next(list.items);
+			this.batchTransfers.next([]);
+			
+			// Do pagination
+			const paginateResult = paginate(list.pageIndex, list.totalPages);
+			if(paginateResult) paginateResult.pageSize = pageSize;
+			this.paginateResult.next(paginateResult);
 		}, error => {
 			if (error && error instanceof UnauthorizedError) {
 				this._messageService.addError(error.message);
 			}
 		});
+	}
+
+	onTextChange() {
+		if (this.criteriaBatchId && this.criteriaBatchId.trim() !== "") {
+			this.isDisabled = true;
+		} else {
+			this.isDisabled = false;
+		}
 	}
 
 	createDynamicMatrix() {
@@ -171,6 +211,9 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy() {
+		if (this.batchByIdSubs) {
+			this.batchByIdSubs.unsubscribe();
+		}
 		if (this.batchesSubs) {
 			this.batchesSubs.unsubscribe();
 		}
