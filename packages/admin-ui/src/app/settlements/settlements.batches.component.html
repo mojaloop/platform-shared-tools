@@ -68,7 +68,8 @@
 			</div>
 			<div class="form-group col-md-2 ">
 				<label for="filterBtn">&nbsp;</label>
-					<button type="submit" class="form-control btn btn-primary" id="filterBtn" (click)="applyCriteria()">Search&nbsp;&nbsp;<i class="bi bi-search"></i></button>
+					<button type="submit" class="form-control btn btn-primary" id="filterBtn" 
+						(click)="applyCriteria(0)">Search&nbsp;&nbsp;<i class="bi bi-search"></i></button>
 			</div>
 
 		</tr>
@@ -124,7 +125,7 @@
 				<input type="checkbox" class="form-control" *ngIf="item.state!=='SETTLED'"
 					   (change)="batchSelectionChanged($event)" [id]="batchSelPrefix+item.id">
 			</td>
-			<td><a (click)="selectBatch(item.id);" class="link">{{item.id}}</a></td>
+			<td><a (click)="selectBatch(0, undefined, item.id);" class="link">{{item.id}}</a></td>
 			<td>{{item.settlementModel}}</td>
 			<td>{{item.currencyCode}}</td>
 			<td>{{item.timestamp | date: 'medium'}}</td>
@@ -144,7 +145,7 @@
 	<ul class="pagination justify-content-end">
 		<li class="pagesize d-flex align-items-center">
 			<span>Items per page:</span>
-			<select (change)="applyCriteria()" class="rows-selector form-control ml-2"
+			<select (change)="applyCriteria(0)" class="rows-selector form-control ml-2"
 					id="pageSize">
 				<option value="5" [selected]="paginateObj.pageSize == 5">5</option>
 				<option value="10" [selected]="paginateObj.pageSize == 10">10</option>
@@ -234,4 +235,69 @@
 		</tr>
 		</tbody>
 	</table>
+</div>
+
+
+<hr>
+<div class="list-page-navigation">
+<nav aria-label="Page navigation" *ngIf="paginateTrfResult | async; let paginateObj">
+	<ul class="pagination justify-content-end">
+		<li class="pagesize d-flex align-items-center">
+			<span>Items per page:</span>
+			<select (change)="selectBatch(0)" class="rows-selector form-control ml-2"
+					id="pageSizeTrf">
+				<option value="5" [selected]="paginateObj.pageSize == 5">5</option>
+				<option value="10" [selected]="paginateObj.pageSize == 10">10</option>
+				<option value="25" [selected]="paginateObj.pageSize == 25">25</option>
+				<option value="50" [selected]="paginateObj.pageSize == 50">50</option>
+				<option value="100" [selected]="paginateObj.pageSize == 100">100</option>
+			</select>
+		</li>
+
+		<li class="gotopage d-flex align-items-center">
+			<span >Go to page</span>
+			<select (change)="selectBatch()" class="rows-selector form-control ml-2" id="pageIndexTrf">
+				<option *ngFor="let item of [].constructor(paginateObj.totalPages); let i = index" [value]="i"
+						[selected]="paginateObj.current == i+1">{{i+1}}</option>
+			</select>
+
+		</li>
+
+		<li class="d-flex align-items-center">
+			<span>Page {{paginateObj.current}} of {{paginateObj.totalPages}}</span>
+		</li>
+
+		<!-- first-->
+		<li [ngClass]="{'disabled' : paginateObj.prev == null}">
+			<a class="page-link" aria-label="Previous" (click)="selectBatch(0)">
+				<span aria-hidden="true">&lt;&lt;</span>
+				<span class="sr-only">First</span>
+			</a>
+		</li>
+
+		<!-- previous-->
+		<li [ngClass]="{'disabled' : paginateObj.prev == null}">
+			<a class="page-link" aria-label="Previous" (click)="selectBatch(paginateObj.prev ? paginateObj.prev-1 : 0)">
+				<span aria-hidden="true">&lt;</span>
+				<span class="sr-only">Previous</span>
+			</a>
+		</li>
+
+		<!-- next-->
+		<li [ngClass]="{'disabled' : paginateObj.next == null}">
+			<a class="page-link" aria-label="Next" (click)="selectBatch(paginateObj.next ? paginateObj.next-1 : 0)">
+				<span aria-hidden="true">&gt;</span>
+				<span class="sr-only">Next</span>
+			</a>
+		</li>
+
+		<!-- last-->
+		<li [ngClass]="{'disabled' : paginateObj.next == null}">
+			<a class="page-link" aria-label="Next" (click)="selectBatch(paginateObj.totalPages-1)">
+				<span aria-hidden="true">&gt;&gt;</span>
+				<span class="sr-only">Last</span>
+			</a>
+		</li>
+	</ul>
+</nav>
 </div>

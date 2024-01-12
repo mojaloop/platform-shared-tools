@@ -175,7 +175,7 @@ TODO: put in component
 	<ul class="pagination justify-content-end">
 		<li class="pagesize d-flex align-items-center">
 			<span>Items per page:</span>
-			<select (change)="search()" class="rows-selector form-control ml-2"
+			<select (change)="search(0)" class="rows-selector form-control ml-2"
 					id="pageSize">
 				<option value="5" [selected]="paginateObj.pageSize == 5">5</option>
 				<option value="10" [selected]="paginateObj.pageSize == 10">10</option>

@@ -16,6 +16,7 @@ const DEFAULT_TIME_FILTER_HOURS = 8;
 })
 export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 	isDisabled: boolean = false;
+	transferBatchId: string = "";
 
 	readonly ALL_STR_ID = "(All)";
 	batches: BehaviorSubject<ISettlementBatch[]> = new BehaviorSubject<ISettlementBatch[]>([]);
@@ -26,6 +27,7 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 	batchTransfersSubs?: Subscription;
 
 	paginateResult: BehaviorSubject<PaginateResult | null> = new BehaviorSubject<PaginateResult | null>(null);
+	paginateTrfResult: BehaviorSubject<PaginateResult | null> = new BehaviorSubject<PaginateResult | null>(null);
 
 	batchSelPrefix = "batchSel_";
 	selectedBatchIds: string[] = [];
@@ -65,7 +67,7 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 	getBatcheById(batchId: string) {
 		this.batchByIdSubs = this._settlementsService.getBatcheById(batchId).subscribe(
 			(batch) => {
-				this.batches.next([batch]);
+				this.batches.next(batch);
 				this.paginateResult.next(null);
 			},
 			(error) => {
@@ -110,7 +112,6 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 			pageIndex, pageSize
 		).subscribe(list => {
 			this.batches.next(list.items);
-			this.batchTransfers.next([]);
 			
 			// Do pagination
 			const paginateResult = paginate(list.pageIndex, list.totalPages);
@@ -184,11 +185,34 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 	}
 
 
-	selectBatch(batchId: string) {
-		this.batchTransfersSubs = this._settlementsService.getTransfersByBatch(batchId).subscribe(list => {
+	selectBatch(pageIndex?: number, pageSize?: number, batchId?: string) {
+		// For pagination
+		if (pageIndex == null) {
+			const pageIndexElem = document.getElementById("pageIndexTrf") as HTMLSelectElement;
+			pageIndex = parseInt(pageIndexElem?.value ?? 0);
+		}
+		if (pageSize == null) {
+			const pageSizeElem = document.getElementById("pageSizeTrf") as HTMLSelectElement;
+			pageSize = parseInt(pageSizeElem?.value ?? 10);
+		}
+
+		if (batchId) {
+			this.transferBatchId = batchId;
+		}
+
+		this.batchTransfersSubs = this._settlementsService.getTransfersByBatch(
+			this.transferBatchId, 
+			pageIndex, 
+			pageSize
+		).subscribe(list => {
 			console.log("SettlementsBatchesComponent ngOnInit - got transfers By getTransfersByBatch");
 
 			this.batchTransfers.next(list.items);
+			
+			// Do pagination
+			const paginateResult = paginate(list.pageIndex, list.totalPages);
+			if(paginateResult) paginateResult.pageSize = pageSize;
+			this.paginateTrfResult.next(paginateResult);
 		}, error => {
 			if (error && error instanceof UnauthorizedError) {
 				this._messageService.addError(error.message);

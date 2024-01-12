@@ -85,12 +85,12 @@ export class SettlementsService {
 		});
 	}
 
-	getBatcheById(batchId: string): Observable<ISettlementBatch> {
-		return new Observable<ISettlementBatch>(subscriber => {
+	getBatcheById(batchId: string): Observable<ISettlementBatch[]> {
+		return new Observable<ISettlementBatch[]>(subscriber => {
 			const url = `${SVC_BASEURL}/batches/${batchId}`;
 			this._http.get<ISettlementBatch>(url).subscribe(
 				(result: ISettlementBatch) => {
-					subscriber.next(result);
+					subscriber.next([result]);
 					return subscriber.complete();
 				},
 				(error) => {
@@ -98,7 +98,7 @@ export class SettlementsService {
 						console.warn("Access forbidden received on getBatcheById");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else if (error && error.status === 404) {
-						subscriber.next();
+						subscriber.next([]);
 						return subscriber.complete();
 					} else {
 						console.error(error);
@@ -146,7 +146,13 @@ export class SettlementsService {
 						console.warn("Access forbidden received on getBatchesByCriteria");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else if (error && error.status === 404) {
-						subscriber.next();
+						const result: BatchSearchResults = {
+							items: [],
+							pageIndex: 0,
+							pageSize: 0,
+							totalPages: 0,
+						};
+						subscriber.next(result);
 						return subscriber.complete();
 					} else {
 						console.error(error);
@@ -159,9 +165,16 @@ export class SettlementsService {
 		});
 	}
 
-	getTransfersByBatch(batchId: string): Observable<BatchTransferSearchResults> {
+	getTransfersByBatch(batchId: string, pageIndex?: number, pageSize?: number): Observable<BatchTransferSearchResults> {
 		return new Observable<BatchTransferSearchResults>(subscriber => {
-			const url = `${SVC_BASEURL}/transfers?batchId=${batchId}`;
+			const searchParams = new URLSearchParams();
+			// mandatory
+			searchParams.append("batchId", batchId);
+			// optional
+			if (pageIndex) searchParams.append("pageIndex", `${pageIndex}`);
+			if (pageSize) searchParams.append("pageSize", `${pageSize}`);
+
+			const url = `${SVC_BASEURL}/transfers?${searchParams.toString()}`;
 			this._http.get<BatchTransferSearchResults>(url).subscribe(
 				(result: BatchTransferSearchResults) => {
 					console.log(`got response: ${result}`);
@@ -174,7 +187,13 @@ export class SettlementsService {
 						console.warn("Access forbidden received on getTransfersByBatchName");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else if (error && error.status === 404) {
-						subscriber.next();
+						const result: BatchTransferSearchResults = {
+							items: [],
+							pageIndex: 0,
+							pageSize: 0,
+							totalPages: 0,
+						};
+						subscriber.next(result);
 						return subscriber.complete();
 					} else {
 						console.error(error);
