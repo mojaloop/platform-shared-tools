@@ -4,6 +4,7 @@ import { MessageService } from "../_services_and_types/message.service";
 import { BehaviorSubject } from "rxjs";
 import { IParticipantPendingApproval } from "../_services_and_types/participant_types";
 import { UnauthorizedError } from "@mojaloop/security-bc-public-types-lib";
+import { ApprovalRequestState } from "@mojaloop/participant-bc-public-types-lib";
 
 @Component({
   selector: "app-participants",
@@ -106,7 +107,7 @@ export class PendingApprovalsComponent implements OnInit {
     return this.selectedFundAdjustment.some((item) => item.id === id);
   }
 
-  getApprovalData(approved: boolean): IParticipantPendingApproval {
+  getApprovalData(reqState: ApprovalRequestState): IParticipantPendingApproval {
     let ndcRequests: IParticipantPendingApproval["ndcChangeRequests"] =
       this.selectedNDCRequest;
     let fundAdjustments: IParticipantPendingApproval["fundsMovementRequest"] =
@@ -119,11 +120,13 @@ export class PendingApprovalsComponent implements OnInit {
     }
 
     ndcRequests.forEach((item) => {
-      item.approved = approved;
+      item.requestState = reqState;
     });
+
     fundAdjustments.forEach((item) => {
-      item.approved = approved;
+      item.requestState = reqState;
     });
+
     return {
       ndcChangeRequests: ndcRequests,
       fundsMovementRequest: fundAdjustments,
@@ -141,7 +144,7 @@ export class PendingApprovalsComponent implements OnInit {
       fundAdjustments = this.fundAdjustments.value;
     }
     fundAdjustments.forEach((item) => {
-      item.approved = true;
+      item.requestState = ApprovalRequestState.APPROVED;
     });
     this._participantsSvc.submitPendingApprovals({
       fundsMovementRequest: fundAdjustments,
@@ -176,7 +179,7 @@ export class PendingApprovalsComponent implements OnInit {
       fundAdjustments = this.fundAdjustments.value;
     }
     fundAdjustments.forEach((item) => {
-      item.approved = false;
+      item.requestState = ApprovalRequestState.REJECTED;
     });
     this._participantsSvc.submitPendingApprovals({
       fundsMovementRequest: fundAdjustments,
@@ -211,7 +214,7 @@ export class PendingApprovalsComponent implements OnInit {
       ndcRequests = this.ndcRequests.value;
     }
     ndcRequests.forEach((item) => {
-      item.approved = true;
+      item.requestState = ApprovalRequestState.APPROVED;
     });
     this._participantsSvc
       .submitPendingApprovals({
@@ -248,7 +251,7 @@ export class PendingApprovalsComponent implements OnInit {
       ndcRequests = this.ndcRequests.value;
     }
     ndcRequests.forEach((item) => {
-      item.approved = false;
+      item.requestState = ApprovalRequestState.APPROVED;
     });
     this._participantsSvc
       .submitPendingApprovals({
