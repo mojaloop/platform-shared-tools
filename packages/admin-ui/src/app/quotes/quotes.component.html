@@ -48,7 +48,7 @@
             type="submit"
             class="form-control btn btn-primary"
             id="filterBtn"
-            (click)="search()">
+            (click)="search(0)">
         Search&nbsp;&nbsp;<i class="bi bi-search"></i>
           </button>
         </div>
@@ -94,32 +94,66 @@
   TODO: put in component
   -->
   <hr>
-  <nav aria-label="Page navigation"  *ngIf="paginateResult | async; let paginateObj">
-    <ul class="pagination justify-content-end">
-      <li class="page-item" [ngClass]="{'disabled' : paginateObj.prev == null}">
-        <a class="page-link" aria-label="Previous" (click)="search(paginateObj.prev ? paginateObj.prev-1 : 0)">
-          <span aria-hidden="true">&laquo;</span>
-          <span class="sr-only">Previous</span>
-        </a>
-      </li>
-
-      <ng-container *ngFor="let item of paginateObj.items">
-        <li class="page-item" *ngIf="item != null" [ngClass]="{'active' : item === paginateObj.current}">
-          <a class="page-link" (click)="search(item-1)" >{{item}}
-            <span class="sr-only" *ngIf="item === paginateObj.current">(current)</span>
+  <div class="list-page-navigation">
+    <nav aria-label="Page navigation" *ngIf="paginateResult | async; let paginateObj">
+      <ul class="pagination justify-content-end">
+        <li class="pagesize d-flex align-items-center">
+          <span>Items per page:</span>
+          <select (change)="search(0)" class="rows-selector form-control ml-2"
+              id="pageSize">
+            <option value="5" [selected]="paginateObj.pageSize == 5">5</option>
+            <option value="10" [selected]="paginateObj.pageSize == 10">10</option>
+            <option value="25" [selected]="paginateObj.pageSize == 25">25</option>
+            <option value="50" [selected]="paginateObj.pageSize == 50">50</option>
+            <option value="100" [selected]="paginateObj.pageSize == 100">100</option>
+          </select>
+        </li>
+    
+        <li class="gotopage d-flex align-items-center">
+          <span >Go to page</span>
+          <select (change)="search()" class="rows-selector form-control ml-2" id="pageIndex">
+            <option *ngFor="let item of [].constructor(paginateObj.totalPages); let i = index" [value]="i"
+                [selected]="paginateObj.current == i+1">{{i+1}}</option>
+          </select>
+    
+        </li>
+    
+        <li class="d-flex align-items-center">
+          <span>Page {{paginateObj.current}} of {{paginateObj.totalPages}}</span>
+        </li>
+    
+        <!-- first-->
+        <li [ngClass]="{'disabled' : paginateObj.prev == null}">
+          <a class="page-link" aria-label="Previous" (click)="search(0)">
+            <span aria-hidden="true">&lt;&lt;</span>
+            <span class="sr-only">First</span>
           </a>
         </li>
-        <li class="page-item disabled" *ngIf="item == null">
-          <a class="page-link disabled" *ngIf="!item" >...</a>
+    
+        <!-- previous-->
+        <li [ngClass]="{'disabled' : paginateObj.prev == null}">
+          <a class="page-link" aria-label="Previous" (click)="search(paginateObj.prev ? paginateObj.prev-1 : 0)">
+            <span aria-hidden="true">&lt;</span>
+            <span class="sr-only">Previous</span>
+          </a>
         </li>
-      </ng-container>
-
-      <li class="page-item"  [ngClass]="{'disabled' : paginateObj.next == null}">
-        <a class="page-link" aria-label="Next" (click)="search(paginateObj.next ? paginateObj.next-1 : 0)">
-          <span aria-hidden="true">&raquo;</span>
-          <span class="sr-only">Next</span>
-        </a>
-      </li>
-    </ul>
-  </nav>
+    
+        <!-- next-->
+        <li [ngClass]="{'disabled' : paginateObj.next == null}">
+          <a class="page-link" aria-label="Next" (click)="search(paginateObj.next ? paginateObj.next-1 : 0)">
+            <span aria-hidden="true">&gt;</span>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+    
+        <!-- last-->
+        <li [ngClass]="{'disabled' : paginateObj.next == null}">
+          <a class="page-link" aria-label="Next" (click)="search(paginateObj.totalPages-1)">
+            <span aria-hidden="true">&gt;&gt;</span>
+            <span class="sr-only">Last</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
 </ng-template>
