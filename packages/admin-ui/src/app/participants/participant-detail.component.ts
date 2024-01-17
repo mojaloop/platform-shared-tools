@@ -1097,6 +1097,7 @@ export class ParticipantDetailComponent implements OnInit {
 					this._messageService.addSuccess(
 						"Participant status changes approval success!"
 					);
+					
 					await this._fetchParticipant();
 					this.updateAccounts();
 				},
