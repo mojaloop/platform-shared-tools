@@ -270,7 +270,6 @@ export class ParticipantDetailComponent implements OnInit {
 
 	saveEditAccount(account: IParticipantAccount): void {
 		// Implement logic to save changes to the account
-		debugger
 		const value:ApprovalRequestState = ApprovalRequestState.CREATED;
 		const participantAccountChangeRequest: IParticipantAccountChangeRequest = {
 			id: uuid.v4(),
@@ -1097,7 +1096,7 @@ export class ParticipantDetailComponent implements OnInit {
 					this._messageService.addSuccess(
 						"Participant status changes approval success!"
 					);
-					
+
 					await this._fetchParticipant();
 					this.updateAccounts();
 				},
