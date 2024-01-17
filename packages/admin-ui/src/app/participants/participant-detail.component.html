@@ -350,7 +350,7 @@
 					<th scope="col">External Bank Account Name</th>
 					<th scope="col">Currency</th>
 					<th scope="col">Created</th>
-					<th scope="col">Approved</th>
+					<th scope="col">Status</th>
 					<th scope="col" style="width: 90px">Actions</th>
 				</tr>
 				</thead>
@@ -365,21 +365,27 @@
 						{{ accChangeReq.createdBy }} on
 						{{ accChangeReq.createdDate | date : "medium" }}
 					</td>
-					<td *ngIf="!accChangeReq.approved" class="text-danger">
-						(Not yet approved)
-					</td>
-					<td *ngIf="accChangeReq.approved">
-						{{ accChangeReq.approvedBy }} on
-						{{ accChangeReq.approvedDate | date : "medium" }}
+					<td>
+						<span *ngIf="accChangeReq.requestState == 'CREATED'" class="text-danger">
+							(Pending)
+						</span>
+						<span *ngIf="accChangeReq.requestState == 'APPROVED'">
+							Approved by {{ accChangeReq.approvedBy }} on
+							{{ accChangeReq.approvedDate | date : "medium" }}
+						</span>
+						<span *ngIf="accChangeReq.requestState == 'REJECTED'">
+							Rejected by {{ accChangeReq.rejectedBy }} on
+							{{ accChangeReq.rejectedDate | date : "medium" }}
+						</span>
 					</td>
 
 					<td>
 						<div class="btn-group btn-group-sm" role="group" aria-label="">
-							<button type="button" class="btn btn-success" *ngIf="!accChangeReq.approved"
+							<button type="button" class="btn btn-success" *ngIf="accChangeReq.requestState == 'CREATED'"
 									(click)="approveAccountChangeRequest(accChangeReq.id)" ngbTooltip="Approve">
 								<span class="bi bi-check-lg"></span>
 							</button>
-							<button type="button" class="btn btn-danger" *ngIf="!accChangeReq.approved"
+							<button type="button" class="btn btn-danger" *ngIf="accChangeReq.requestState == 'CREATED'"
 									(click)="rejectAccountChangeRequest(accChangeReq.id)" ngbTooltip="Reject">
 								<span class="bi bi-x-lg"></span>
 							</button>
@@ -403,11 +409,11 @@
 					<th scope="col">Direction</th>
 					<th scope="col">Amount</th>
 					<th scope="col">Currency</th>
-					<th scope="col">Created</th>
-					<th scope="col">Approved</th>
 					<th scope="col">Transfer Id</th>
 					<th scope="col">Ext Reference</th>
 					<th scope="col">Note</th>
+					<th scope="col">Created</th>
+					<th scope="col">Status</th>
 					<th scope="col" style="width: 90px">Actions</th>
 				</tr>
 				</thead>
@@ -417,27 +423,33 @@
 						<td>{{ fundsMov.direction }}</td>
 						<td>{{ fundsMov.amount }}</td>
 						<td>{{ fundsMov.currencyCode }}</td>
-						<td>
-							{{ fundsMov.createdBy }} on
-							{{ fundsMov.createdDate | date : "medium" }}
-						</td>
-						<td *ngIf="!fundsMov.approved" class="text-danger">
-							(Not yet approved)
-						</td>
-						<td *ngIf="fundsMov.approved">
-							{{ fundsMov.approvedBy }} on
-							{{ fundsMov.approvedDate | date : "medium" }}
-						</td>
 						<td>{{ fundsMov.transferId }}</td>
 						<td>{{ fundsMov.extReference }}</td>
 						<td>{{ fundsMov.note }}</td>
 						<td>
+							{{ fundsMov.createdBy }} on
+							{{ fundsMov.createdDate | date : "medium" }}
+						</td>
+						<td>
+							<span *ngIf="fundsMov.requestState == 'CREATED'" class="text-danger">
+								(Pending)
+							</span>
+							<span *ngIf="fundsMov.requestState == 'APPROVED'">
+								Approved by {{ fundsMov.approvedBy }} on
+								{{ fundsMov.approvedDate | date : "medium" }}
+							</span>
+							<span *ngIf="fundsMov.requestState == 'REJECTED'">
+								Rejected by {{ fundsMov.rejectedBy }} on
+								{{ fundsMov.rejectedDate | date : "medium" }}
+							</span>
+						</td>
+						<td>
 							<div class="btn-group btn-group-sm" role="group" aria-label="">
-								<button type="button" class="btn btn-success" *ngIf="!fundsMov.approved"
+								<button type="button" class="btn btn-success" *ngIf="fundsMov.requestState == 'CREATED'"
 										(click)="approveFundsMov(fundsMov.id)" ngbTooltip="Approve">
 									<span class="bi bi-check-lg"></span>
 								</button>
-								<button type="button" class="btn btn-danger" *ngIf="!fundsMov.approved"
+								<button type="button" class="btn btn-danger" *ngIf="fundsMov.requestState == 'CREATED'"
 										(click)="rejectFundsMov(fundsMov.id)" ngbTooltip="Reject">
 									<span class="bi bi-x-lg"></span>
 								</button>
@@ -546,8 +558,7 @@
 					<th scope="col">Percentage</th>
 					<th scope="col">Currency</th>
 					<th scope="col">Created</th>
-					<th scope="col">Approved</th>
-
+					<th scope="col">Status</th>
 					<th scope="col" style="width: 90px">Actions</th>
 				</tr>
 				</thead>
@@ -563,21 +574,25 @@
 						{{ ndcReq.createdBy }} on
 						{{ ndcReq.createdDate | date : "medium" }}
 					</td>
-					<td *ngIf="!ndcReq.approved" class="text-danger">
-						(Not yet approved)
-					</td>
-					<td *ngIf="ndcReq.approved">
-						{{ ndcReq.approvedBy }} on
-						{{ ndcReq.approvedDate | date : "medium" }}
-					</td>
-
+					<td>
+						<span *ngIf="ndcReq.requestState == 'CREATED'" class="text-danger">
+							(Pending)
+						</span>
+						<span *ngIf="ndcReq.requestState == 'APPROVED'">
+							Approved by {{ ndcReq.approvedBy }} on
+							{{ ndcReq.approvedDate | date : "medium" }}
+						</span>
+						<span *ngIf="ndcReq.requestState == 'REJECTED'">
+							Rejected by {{ ndcReq.rejectedBy }} on
+							{{ ndcReq.rejectedDate | date : "medium" }}
+						</span>
 					<td>
 						<div class="btn-group btn-group-sm" role="group" aria-label="">
-							<button type="button" class="btn btn-success" *ngIf="!ndcReq.approved"
+							<button type="button" class="btn btn-success" *ngIf="ndcReq.requestState == 'CREATED'"
 									(click)="approveNDCRequest(ndcReq.id)" ngbTooltip="Approve">
 								<span class="bi bi-check-lg"></span>
 							</button>
-							<button type="button" class="btn btn-danger" *ngIf="!ndcReq.approved"
+							<button type="button" class="btn btn-danger" *ngIf="ndcReq.requestState == 'CREATED'"
 									(click)="rejectNDCRequest(ndcReq.id)" ngbTooltip="Reject">
 								<span class="bi bi-x-lg"></span>
 							</button>
@@ -766,50 +781,54 @@
 					<th scope="col">Ports</th>
 					<th scope="col">Port Range</th>
 					<th scope="col">Created</th>
-					<th scope="col">Approved</th>
+					<th scope="col">Status</th>
 					<th scope="col" style="width: 90px">Actions</th>
 				</tr>
 				</thead>
 				<tbody>
-				<tr *ngFor="let sourceIpChangeRequest of (participant | async)?.participantSourceIpChangeRequests">
-					<td>{{ sourceIpChangeRequest.requestType }}</td>
-					<td>{{ sourceIpChangeRequest.cidr }}</td>
-					<td>{{ sourceIpChangeRequest.portMode }}</td>
-					<td>
-						<span
-							*ngIf="sourceIpChangeRequest.portMode === 'SPECIFIC'">{{ sourceIpChangeRequest.ports }}</span>
-					</td>
-					<td>
-              <span *ngIf="sourceIpChangeRequest.portMode === 'RANGE'">
-                [{{sourceIpChangeRequest.portRange!.rangeFirst}} - {{ sourceIpChangeRequest.portRange!.rangeLast}}]
-              </span>
-					</td>
-					<td>
-						{{ sourceIpChangeRequest.createdBy }} on
-						{{ sourceIpChangeRequest.createdDate | date : "medium" }}
-					</td>
-					<td *ngIf="!sourceIpChangeRequest.approved" class="text-danger">
-						(Not yet approved)
-					</td>
-					<td *ngIf="sourceIpChangeRequest.approved">
-						{{ sourceIpChangeRequest.approvedBy }} on
-						{{ sourceIpChangeRequest.approvedDate | date : "medium" }}
-					</td>
-
-					<td>
-						<div class="btn-group btn-group-sm" role="group" aria-label="">
-							<button type="button" class="btn btn-success" *ngIf="!sourceIpChangeRequest.approved"
-									(click)="approveSourceIpChangeRequest(sourceIpChangeRequest.id)"
-									ngbTooltip="Approve">
-								<span class="bi bi-check-lg"></span>
-							</button>
-							<button type="button" class="btn btn-danger" *ngIf="!sourceIpChangeRequest.approved"
+					<tr *ngFor="let sourceIpChangeRequest of (participant | async)?.participantSourceIpChangeRequests">
+						<td>{{ sourceIpChangeRequest.requestType }}</td>
+						<td>{{ sourceIpChangeRequest.cidr }}</td>
+						<td>{{ sourceIpChangeRequest.portMode }}</td>
+						<td>
+							<span *ngIf="sourceIpChangeRequest.portMode === 'SPECIFIC'">{{ sourceIpChangeRequest.ports }}</span>
+						</td>
+						<td>
+							<span *ngIf="sourceIpChangeRequest.portMode === 'RANGE'">
+								[{{sourceIpChangeRequest.portRange!.rangeFirst}} - {{ sourceIpChangeRequest.portRange!.rangeLast}}]
+							</span>
+						</td>
+						<td>
+							{{ sourceIpChangeRequest.createdBy }} on
+							{{ sourceIpChangeRequest.createdDate | date : "medium" }}
+						</td>
+						<td>
+							<span *ngIf="sourceIpChangeRequest.requestState == 'CREATED'" class="text-danger">
+								(Pending)
+							</span>
+							<span *ngIf="sourceIpChangeRequest.requestState == 'APPROVED'">
+								Approved by {{ sourceIpChangeRequest.approvedBy }} on
+								{{ sourceIpChangeRequest.approvedDate | date : "medium" }}
+							</span>
+							<span *ngIf="sourceIpChangeRequest.requestState == 'REJECTED'">
+								Rejected by {{ sourceIpChangeRequest.rejectedBy }} on
+								{{ sourceIpChangeRequest.rejectedDate | date : "medium" }}
+							</span>
+						</td>
+					
+						<td>
+							<div class="btn-group btn-group-sm" role="group" aria-label="">
+								<button type="button" class="btn btn-success" *ngIf="sourceIpChangeRequest.requestState == 'CREATED'"
+									(click)="approveSourceIpChangeRequest(sourceIpChangeRequest.id)" ngbTooltip="Approve">
+									<span class="bi bi-check-lg"></span>
+								</button>
+								<button type="button" class="btn btn-danger" *ngIf="sourceIpChangeRequest.requestState == 'CREATED'"
 									(click)="rejectSourceIpChangeRequest(sourceIpChangeRequest.id)" ngbTooltip="Reject">
-								<span class="bi bi-x-lg"></span>
-							</button>
-						</div>
-					</td>
-				</tr>
+									<span class="bi bi-x-lg"></span>
+								</button>
+							</div>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</ng-template>
@@ -956,7 +975,7 @@
 					<th scope="col">Phone No.</th>
 					<th scope="col">Role</th>
 					<th scope="col">Created</th>
-					<th scope="col">Approved</th>
+					<th scope="col">Status</th>
 					<th scope="col" style="width: 90px">Actions</th>
 				</tr>
 				</thead>
@@ -971,22 +990,28 @@
 						{{ contactInfoChangeRequest.createdBy }} on
 						{{ contactInfoChangeRequest.createdDate | date : "medium" }}
 					</td>
-					<td *ngIf="!contactInfoChangeRequest.approved" class="text-danger">
-						(Not yet approved)
-					</td>
-					<td *ngIf="contactInfoChangeRequest.approved">
-						{{ contactInfoChangeRequest.approvedBy }} on
-						{{ contactInfoChangeRequest.approvedDate | date : "medium" }}
+					<td>
+						<span *ngIf="contactInfoChangeRequest.requestState == 'CREATED'" class="text-danger">
+							(Pending)
+						</span>
+						<span *ngIf="contactInfoChangeRequest.requestState == 'APPROVED'">
+							Approved by {{ contactInfoChangeRequest.approvedBy }} on
+							{{ contactInfoChangeRequest.approvedDate | date : "medium" }}
+						</span>
+						<span *ngIf="contactInfoChangeRequest.requestState == 'REJECTED'">
+							Rejected by {{ contactInfoChangeRequest.rejectedBy }} on
+							{{ contactInfoChangeRequest.rejectedDate | date : "medium" }}
+						</span>
 					</td>
 
 					<td>
 						<div class="btn-group btn-group-sm" role="group" aria-label="">
-							<button type="button" class="btn btn-success" *ngIf="!contactInfoChangeRequest.approved"
+							<button type="button" class="btn btn-success" *ngIf="contactInfoChangeRequest.requestState == 'CREATED'"
 									(click)="approveContactInfoChangeRequest(contactInfoChangeRequest.id)"
 									ngbTooltip="Approve">
 								<span class="bi bi-check-lg"></span>
 							</button>
-							<button type="button" class="btn btn-danger" *ngIf="!contactInfoChangeRequest.approved"
+							<button type="button" class="btn btn-danger" *ngIf="contactInfoChangeRequest.requestState == 'CREATED'"
 									(click)="rejectContactInfoChangeRequest(contactInfoChangeRequest.id)"
 									ngbTooltip="Reject">
 								<span class="bi bi-x-lg"></span>
@@ -1010,7 +1035,7 @@
 					<th scope="col">Request Type</th>
 					<th scope="col">Requested to</th>
 					<th scope="col">Created</th>
-					<th scope="col">Approved</th>
+					<th scope="col">status</th>
 					<th scope="col" style="width: 90px">Actions</th>
 				</tr>
 				</thead>
@@ -1022,22 +1047,28 @@
 						{{ statusChangeRequest.createdBy }} on
 						{{ statusChangeRequest.createdDate | date : "medium" }}
 					</td>
-					<td *ngIf="!statusChangeRequest.approved" class="text-danger">
-						(Not yet approved)
-					</td>
-					<td *ngIf="statusChangeRequest.approved">
-						{{ statusChangeRequest.approvedBy }} on
-						{{ statusChangeRequest.approvedDate | date : "medium" }}
+					<td>
+						<span *ngIf="statusChangeRequest.requestState == 'CREATED'" class="text-danger">
+							(Pending)
+						</span>
+						<span *ngIf="statusChangeRequest.requestState == 'APPROVED'">
+							Approved by {{ statusChangeRequest.approvedBy }} on
+							{{ statusChangeRequest.approvedDate | date : "medium" }}
+						</span>
+						<span *ngIf="statusChangeRequest.requestState == 'REJECTED'">
+							Rejected by {{ statusChangeRequest.rejectedBy }} on
+							{{ statusChangeRequest.rejectedDate | date : "medium" }}
+						</span>
 					</td>
 
 					<td>
 						<div class="btn-group btn-group-sm" role="group" aria-label="">
-							<button type="button" class="btn btn-success" *ngIf="!statusChangeRequest.approved"
+							<button type="button" class="btn btn-success" *ngIf="statusChangeRequest.requestState == 'CREATED'"
 									(click)="approveParticipantStatusChangeRequest(statusChangeRequest.id)"
 									ngbTooltip="Approve">
 								<span class="bi bi-check-lg"></span>
 							</button>
-							<button type="button" class="btn btn-danger" *ngIf="!statusChangeRequest.approved"
+							<button type="button" class="btn btn-danger" *ngIf="statusChangeRequest.requestState == 'CREATED'"
 									(click)="rejectParticipantStatusChangeRequest(statusChangeRequest.id)"
 									ngbTooltip="Reject">
 								<span class="bi bi-x-lg"></span>
