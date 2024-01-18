@@ -157,8 +157,7 @@ export class PendingApprovalsComponent implements OnInit {
         results.forEach((result)=> {
           if(result.status == "error"){
             this._messageService.addError(result.message, 10000);
-          }
-          else {
+          }else {
             this._messageService.addSuccess(result.message, 10000);
           }
         });
@@ -200,8 +199,7 @@ export class PendingApprovalsComponent implements OnInit {
         results.forEach((result)=> {
           if(result.status == "error"){
             this._messageService.addError(result.message, 10000);
-          }
-          else {
+          }else {
             this._messageService.addSuccess(result.message, 10000);
           }
         });
@@ -243,8 +241,7 @@ export class PendingApprovalsComponent implements OnInit {
           results.forEach((result)=> {
             if(result.status == "error"){
               this._messageService.addError(result.message, 10000);
-            }
-            else {
+            }else {
               this._messageService.addSuccess(result.message, 10000);
             }
           });
@@ -286,8 +283,7 @@ export class PendingApprovalsComponent implements OnInit {
           results.forEach((result)=> {
             if(result.status == "error"){
               this._messageService.addError(result.message, 10000);
-            }
-            else {
+            }else {
               this._messageService.addSuccess(result.message, 10000);
             }
           });
