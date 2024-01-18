@@ -19,6 +19,7 @@ import {
 	ParticipantNetDebitCapTypes,
 	IParticipantContactInfo,
 	IParticipantStatusChangeRequest,
+	ApprovalRequestState,
 } from "@mojaloop/participant-bc-public-types-lib";
 import { AuthenticationService } from "src/app/_services_and_types/authentication.service";
 import * as uuid from "uuid";
@@ -207,9 +208,11 @@ export class ParticipantsService {
 			currencyCode: "EUR",
 			note: null,
 			extReference: null,
-			approved: false,
+			rejectedBy: null,
+			rejectedDate: null,
 			approvedBy: null,
 			approvedDate: null,
+			requestState: ApprovalRequestState.CREATED,
 		};
 	}
 
@@ -418,7 +421,48 @@ export class ParticipantsService {
 						}
 						if (error && error.status === 403) {
 							console.warn(
-								"Forbidden received on participantAccountChangeRequest"
+								"Forbidden received on approveParticipantAccountChangeRequest"
+							);
+							subscriber.error(new Error(error.error?.msg));
+						} else {
+							console.error(error);
+							subscriber.error(error.error?.msg);
+						}
+						return subscriber.complete();
+					}
+				);
+		});
+	}
+
+	rejectParticipantStatusChangeRequest(
+		participantId: string,
+		requestId: string
+	): Observable<void> {
+		return new Observable<void>((subscriber) => {
+			this._http
+				.post(
+					`${SVC_BASEURL}/participants/${participantId}/statusChangeRequests/${requestId}/reject`,
+					{}
+				)
+				.subscribe(
+					() => {
+						console.log(
+							`got success response from rejectParticipantAccountChangeRequest`
+						);
+
+						subscriber.next();
+						return subscriber.complete();
+					},
+					(error) => {
+						if (error && error.status === 401) {
+							console.warn(
+								"UnauthorizedError received on rejectParticipantAccountChangeRequest"
+							);
+							subscriber.error(new UnauthorizedError(error.error?.msg));
+						}
+						if (error && error.status === 403) {
+							console.warn(
+								"Forbidden received on rejectParticipantAccountChangeRequest"
 							);
 							subscriber.error(new Error(error.error?.msg));
 						} else {
@@ -532,6 +576,47 @@ export class ParticipantsService {
 		});
 	}
 
+	rejectAccountChangeRequest(
+		participantId: string,
+		requestId: string
+	): Observable<void> {
+		return new Observable<void>((subscriber) => {
+			this._http
+				.post(
+					`${SVC_BASEURL}/participants/${participantId}/accountchangerequests/${requestId}/reject`,
+					{}
+				)
+				.subscribe(
+					() => {
+						console.log(
+							`got success response from participantAccountChangeRequest`
+						);
+
+						subscriber.next();
+						return subscriber.complete();
+					},
+					(error) => {
+						if (error && error.status === 401) {
+							console.warn(
+								"UnauthorizedError received on participantAccountChangeRequest"
+							);
+							subscriber.error(new UnauthorizedError(error.error?.msg));
+						}
+						if (error && error.status === 403) {
+							console.warn(
+								"Forbidden received on participantAccountChangeRequest"
+							);
+							subscriber.error(new Error(error.error?.msg));
+						} else {
+							console.error(error);
+							subscriber.error(error.error?.msg);
+						}
+						return subscriber.complete();
+					}
+				);
+		});
+	}
+
 	createSourceIp(
 		participantId: string,
 		sourceIp: IParticipantSourceIpChangeRequest
@@ -571,6 +656,47 @@ export class ParticipantsService {
 			this._http
 				.post(
 					`${SVC_BASEURL}/participants/${participantId}/SourceIpChangeRequests/${requestId}/approve`,
+					{}
+				)
+				.subscribe(
+					() => {
+						console.log(
+							`got success response from participantSourceIpChangeRequest`
+						);
+
+						subscriber.next();
+						return subscriber.complete();
+					},
+					(error) => {
+						if (error && error.status === 401) {
+							console.warn(
+								"UnauthorizedError received on participantSourceIpChangeRequest"
+							);
+							subscriber.error(new UnauthorizedError(error.error?.msg));
+						}
+						if (error && error.status === 403) {
+							console.warn(
+								"Forbidden received on participantSourceIpChangeRequest"
+							);
+							subscriber.error(new Error(error.error?.msg));
+						} else {
+							console.error(error);
+							subscriber.error(error.error?.msg);
+						}
+						return subscriber.complete();
+					}
+				);
+		});
+	}
+
+	rejectSourceIpChangeRequest(
+		participantId: string,
+		requestId: string
+	): Observable<void> {
+		return new Observable<void>((subscriber) => {
+			this._http
+				.post(
+					`${SVC_BASEURL}/participants/${participantId}/SourceIpChangeRequests/${requestId}/reject`,
 					{}
 				)
 				.subscribe(
@@ -674,6 +800,43 @@ export class ParticipantsService {
 		});
 	}
 
+	rejectFundsMovement(
+		participantId: string,
+		fundsMovId: string
+	): Observable<void> {
+		return new Observable<void>((subscriber) => {
+			this._http
+				.post<{ id: string }>(
+					`${SVC_BASEURL}/participants/${participantId}/funds/${fundsMovId}/reject`,
+					{}
+				)
+				.subscribe(
+					() => {
+						console.log(`got success response from rejectFundsMovement`);
+
+						subscriber.next();
+						return subscriber.complete();
+					},
+					(error) => {
+						if (error && error.status === 401) {
+							console.warn(
+								"UnauthorizedError received on rejectFundsMovement"
+							);
+							subscriber.error(new UnauthorizedError(error.error?.msg));
+						}
+						if (error && error.status === 403) {
+							console.warn("Forbidden received on rejectFundsMovement");
+							subscriber.error(new Error(error.error?.msg));
+						} else {
+							console.error(error);
+							subscriber.error(error.error?.msg);
+						}
+						return subscriber.complete();
+					}
+				);
+		});
+	}
+
 	createNDC(
 		participantId: string,
 		ndc: IParticipantNetDebitCapChangeRequest
@@ -722,12 +885,46 @@ export class ParticipantsService {
 					(error) => {
 						if (error && error.status === 401) {
 							console.warn(
-								"UnauthorizedError received on approveFundsMovement"
+								"UnauthorizedError received on approveNDC"
 							);
 							subscriber.error(new UnauthorizedError(error.error?.msg));
 						}
 						if (error && error.status === 403) {
-							console.warn("Forbidden received on approveFundsMovement");
+							console.warn("Forbidden received on approveNDC");
+							subscriber.error(new Error(error.error?.msg));
+						} else {
+							console.error(error);
+							subscriber.error(error.error?.msg);
+						}
+						return subscriber.complete();
+					}
+				);
+		});
+	}
+
+	rejectNDC(participantId: string, ndcId: string): Observable<void> {
+		return new Observable<void>((subscriber) => {
+			this._http
+				.post(
+					`${SVC_BASEURL}/participants/${participantId}/ndcchangerequests/${ndcId}/reject`,
+					{}
+				)
+				.subscribe(
+					() => {
+						console.log(`got success response from rejectNDC`);
+
+						subscriber.next();
+						return subscriber.complete();
+					},
+					(error) => {
+						if (error && error.status === 401) {
+							console.warn(
+								"UnauthorizedError received on rejectNDC"
+							);
+							subscriber.error(new UnauthorizedError(error.error?.msg));
+						}
+						if (error && error.status === 403) {
+							console.warn("Forbidden received on rejectNDC");
 							subscriber.error(new Error(error.error?.msg));
 						} else {
 							console.error(error);
@@ -929,6 +1126,43 @@ export class ParticipantsService {
 						}
 						if (error && error.status === 403) {
 							console.warn("Forbidden received on contactInfoChangeRequests");
+							subscriber.error(new Error(error.error?.msg));
+						} else {
+							console.error(error);
+							subscriber.error(error.error?.msg);
+						}
+						return subscriber.complete();
+					}
+				);
+		});
+	}
+
+	rejectContactInfoChangeRequest(
+		participantId: string,
+		requestId: string
+	): Observable<void> {
+		return new Observable<void>((subscriber) => {
+			this._http
+				.post(
+					`${SVC_BASEURL}/participants/${participantId}/contactInfoChangeRequests/${requestId}/reject`,
+					{}
+				)
+				.subscribe(
+					() => {
+						console.log(`got success response from rejectContactInfoChangeRequest`);
+
+						subscriber.next();
+						return subscriber.complete();
+					},
+					(error) => {
+						if (error && error.status === 401) {
+							console.warn(
+								"UnauthorizedError received on rejectContactInfoChangeRequest"
+							);
+							subscriber.error(new UnauthorizedError(error.error?.msg));
+						}
+						if (error && error.status === 403) {
+							console.warn("Forbidden received on rejectContactInfoChangeRequest");
 							subscriber.error(new Error(error.error?.msg));
 						} else {
 							console.error(error);
