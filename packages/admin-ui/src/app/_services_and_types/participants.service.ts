@@ -29,6 +29,7 @@ import {
 	IParticipantPendingApprovalSummary,
 	FundMovement,
 	ParticipantsSearchResults,
+	IBulkApprovalResult,
 } from "./participant_types";
 
 const SVC_BASEURL = "/_participants";
@@ -1300,15 +1301,19 @@ export class ParticipantsService {
 		});
 	}
 
-	submitPendingApprovals(data: IParticipantPendingApproval) {
-		return new Observable<IParticipantPendingApproval>((subscriber) => {
+	submitPendingApprovals(data: IParticipantPendingApproval, requestState:ApprovalRequestState) {
+		const url = requestState == ApprovalRequestState.APPROVED? 
+					`${SVC_BASEURL}/participants/pendingApprovals/approve`:
+					`${SVC_BASEURL}/participants/pendingApprovals/reject`;
+
+		return new Observable<IBulkApprovalResult[]>((subscriber) => {
 			this._http
 				.post<IParticipantPendingApproval>(
-					`${SVC_BASEURL}/participants/pendingApprovals`,
+					url,
 					data
 				)
 				.subscribe(
-					(result: IParticipantPendingApproval) => {
+					(result: any) => {
 						console.log(`got submitPendingApprovals response: ${result}`);
 
 						subscriber.next(result);
