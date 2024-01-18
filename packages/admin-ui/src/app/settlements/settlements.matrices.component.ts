@@ -49,14 +49,24 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 	ngOnInit(): void {
 		console.log("SettlementsMatricesComponent ngOnInit");
 
-		this._fetchMatrices();
+		this.search(0, 10);
 	}
 
 	clearFilters() {
 		this.filterForm.reset(this.initialFilterValues);
 	}
 
-	search(pageIndex: number = 0) {
+	search(pageIndex?: number, pageSize?: number) {
+		// For pagination
+		if (pageIndex == null) {
+			const pageIndexElem = document.getElementById("pageIndex") as HTMLSelectElement;
+			pageIndex = parseInt(pageIndexElem?.value ?? 0);
+		}
+		if (pageSize == null) {
+			const pageSizeElem = document.getElementById("pageSize") as HTMLSelectElement;
+			pageSize = parseInt(pageSizeElem?.value ?? 10);
+		}
+
 		const {
 			filterMatrixId,
 			filterMatrixType,
@@ -84,12 +94,14 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 			startDate,
 			endDate,
 			pageIndex,
+			pageSize,
 		).subscribe((matricesResult) => {
 			console.log("SettlementsMatricesComponent search - got MatricesSearchResult");
 
-			this.matrices.next(matricesResult.items || []);
+			this.matrices.next(matricesResult.items);
 
 			const pageRes = paginate(matricesResult.pageIndex, matricesResult.totalPages);
+			if (pageRes) pageRes.pageSize = pageSize;
 			this.paginateResult.next(pageRes);
 		}, error => {
 			if (error && error instanceof UnauthorizedError) {
@@ -98,19 +110,6 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 		});
 
 	}
-
-	private async _fetchMatrices(state?: string): Promise<void> {
-		return new Promise(resolve => {
-			this._settlementsService.getMatrices(state).subscribe(matricesResult => {
-				this.matrices.next(matricesResult.items || []);
-				const pageRes = paginate(matricesResult.pageIndex, matricesResult.totalPages);
-				this.paginateResult.next(pageRes);
-				resolve();
-			});
-		});
-
-	}
-
 
 	ngOnDestroy() {
 		if (this.matrixSubs) {
