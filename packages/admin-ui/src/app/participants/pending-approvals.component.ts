@@ -2,12 +2,9 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { ParticipantsService } from "../_services_and_types/participants.service";
 import { MessageService } from "../_services_and_types/message.service";
 import { BehaviorSubject } from "rxjs";
-import {
-  BulkApprovalRequestResults,
-  IParticipantPendingApproval,
-} from "../_services_and_types/participant_types";
+import { IBulkApprovalResult, IParticipantPendingApproval } from "../_services_and_types/participant_types";
 import { UnauthorizedError } from "@mojaloop/security-bc-public-types-lib";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { ApprovalRequestState } from "@mojaloop/participant-bc-public-types-lib";
 
 @Component({
   selector: "app-participants",
@@ -134,46 +131,67 @@ export class PendingApprovalsComponent implements OnInit {
     return this.selectedFundAdjustment.some((item) => item.id === id);
   }
 
-  approveFundAdjustmentPendingApprovals() {
+  getApprovalData(reqState: ApprovalRequestState): IParticipantPendingApproval {
+    let ndcRequests: IParticipantPendingApproval["ndcChangeRequests"] =
+      this.selectedNDCRequest;
     let fundAdjustments: IParticipantPendingApproval["fundsMovementRequest"] =
       this.selectedFundAdjustment;
+    if (this.isNDCSelectAll) {
+      ndcRequests = this.ndcRequests.value;
+    }
     if (this.isFundAdjustmentSelectAll) {
       fundAdjustments = this.fundAdjustments.value;
     }
-    fundAdjustments.forEach((item) => {
-      item.approved = true;
-    });
-    this._participantsSvc
-      .submitPendingApprovals({
-        fundsMovementRequest: fundAdjustments,
-        ndcChangeRequests: [],
-        accountsChangeRequest: [],
-        ipChangeRequests: [],
-        contactInfoChangeRequests: [],
-        statusChangeRequests: [],
-      })
-      .subscribe(
-        async (result) => {
-          if (result.length > 0) {
-            this.approvalResult = result;
-            this.pendingApprovalsModalRef = this._modalService.open(
-              this.pendingApprovalsModal,
-              { centered: true }
-            );
-          }
 
-          await this.getPendingApprovalsSummary();
-          await this.getPendingApprovals();
-        },
-        (error) => {
-          if (error && error instanceof UnauthorizedError) {
-            this._messageService.addError(error.message);
+    ndcRequests.forEach((item) => {
+      item.requestState = reqState;
+    });
+
+    fundAdjustments.forEach((item) => {
+      item.requestState = reqState;
+    });
+
+    return {
+      ndcChangeRequests: ndcRequests,
+      fundsMovementRequest: fundAdjustments,
+      accountsChangeRequest: [],
+      ipChangeRequests: [],
+      contactInfoChangeRequests: [],
+      statusChangeRequests: [],
+    };
+  }
+
+  approveFundAdjustmentPendingApprovals() {
+    let fundAdjustments: IParticipantPendingApproval["fundsMovementRequest"] =
+    this.selectedFundAdjustment;
+
+    if (this.isFundAdjustmentSelectAll) {
+      fundAdjustments = this.fundAdjustments.value;
+    }
+
+    this._participantsSvc.submitPendingApprovals({
+      fundsMovementRequest: fundAdjustments,
+      ndcChangeRequests: [],
+      accountsChangeRequest: [],
+      ipChangeRequests: [],
+      contactInfoChangeRequests: [],
+      statusChangeRequests: [],
+    },ApprovalRequestState.APPROVED).subscribe(
+      async (results:IBulkApprovalResult[]) => {
+        results.forEach((result)=> {
+          if(result.status == "error"){
+            this._messageService.addError(result.message, 10000);
+          }else {
+            this._messageService.addSuccess(result.message, 10000);
           }
-        },
-        () => {
-          // reset all selected options
-          this.selectedFundAdjustment = [];
-          this.isFundAdjustmentSelectAll = false;
+        });
+
+        await this.getPendingApprovalsSummary();
+        await this.getPendingApprovals();
+      },
+      (error) => {
+        if (error && error instanceof UnauthorizedError) {
+          this._messageService.addError(error.message);
         }
       );
   }
@@ -184,40 +202,32 @@ export class PendingApprovalsComponent implements OnInit {
     if (this.isFundAdjustmentSelectAll) {
       fundAdjustments = this.fundAdjustments.value;
     }
-    fundAdjustments.forEach((item) => {
-      item.approved = false;
-    });
-    this._participantsSvc
-      .submitPendingApprovals({
-        fundsMovementRequest: fundAdjustments,
-        ndcChangeRequests: [],
-        accountsChangeRequest: [],
-        ipChangeRequests: [],
-        contactInfoChangeRequests: [],
-        statusChangeRequests: [],
-      })
-      .subscribe(
-        async (result) => {
-          if (result.length > 0) {
-            this.approvalResult = result;
-            this.pendingApprovalsModalRef = this._modalService.open(
-              this.pendingApprovalsModal,
-              { centered: true }
-            );
+    /* fundAdjustments.forEach((item) => {
+      item.requestState = ApprovalRequestState.REJECTED;
+    }); */
+    this._participantsSvc.submitPendingApprovals({
+      fundsMovementRequest: fundAdjustments,
+      ndcChangeRequests: [],
+      accountsChangeRequest: [],
+      ipChangeRequests: [],
+      contactInfoChangeRequests: [],
+      statusChangeRequests: [],
+    }, ApprovalRequestState.REJECTED).subscribe(
+      async (results:IBulkApprovalResult[]) => {
+        results.forEach((result)=> {
+          if(result.status == "error"){
+            this._messageService.addError(result.message, 10000);
+          }else {
+            this._messageService.addSuccess(result.message, 10000);
           }
+        });
 
-          await this.getPendingApprovalsSummary();
-          await this.getPendingApprovals();
-        },
-        (error) => {
-          if (error && error instanceof UnauthorizedError) {
-            this._messageService.addError(error.message);
-          }
-        },
-        () => {
-          // reset all selected options
-          this.selectedFundAdjustment = [];
-          this.isFundAdjustmentSelectAll = false;
+        await this.getPendingApprovalsSummary();
+        await this.getPendingApprovals();
+      },
+      (error) => {
+        if (error && error instanceof UnauthorizedError) {
+          this._messageService.addError(error.message);
         }
       );
   }
@@ -228,9 +238,7 @@ export class PendingApprovalsComponent implements OnInit {
     if (this.isFundAdjustmentSelectAll) {
       ndcRequests = this.ndcRequests.value;
     }
-    ndcRequests.forEach((item) => {
-      item.approved = true;
-    });
+
     this._participantsSvc
       .submitPendingApprovals({
         fundsMovementRequest: [],
@@ -239,16 +247,16 @@ export class PendingApprovalsComponent implements OnInit {
         ipChangeRequests: [],
         contactInfoChangeRequests: [],
         statusChangeRequests: [],
-      })
+      }, ApprovalRequestState.APPROVED)
       .subscribe(
-        async (result) => {
-          if (result.length > 0) {
-            this.approvalResult = result;
-            this.pendingApprovalsModalRef = this._modalService.open(
-              this.pendingApprovalsModal,
-              { centered: true }
-            );
-          }
+        async (results:IBulkApprovalResult[]) => {
+          results.forEach((result)=> {
+            if(result.status == "error"){
+              this._messageService.addError(result.message, 10000);
+            }else {
+              this._messageService.addSuccess(result.message, 10000);
+            }
+          });
 
           await this.getPendingApprovalsSummary();
           await this.getPendingApprovals();
@@ -272,9 +280,7 @@ export class PendingApprovalsComponent implements OnInit {
     if (this.isFundAdjustmentSelectAll) {
       ndcRequests = this.ndcRequests.value;
     }
-    ndcRequests.forEach((item) => {
-      item.approved = false;
-    });
+
     this._participantsSvc
       .submitPendingApprovals({
         fundsMovementRequest: [],
@@ -283,16 +289,16 @@ export class PendingApprovalsComponent implements OnInit {
         ipChangeRequests: [],
         contactInfoChangeRequests: [],
         statusChangeRequests: [],
-      })
+      }, ApprovalRequestState.REJECTED)
       .subscribe(
-        async (result) => {
-          if (result.length > 0) {
-            this.approvalResult = result;
-            this.pendingApprovalsModalRef = this._modalService.open(
-              this.pendingApprovalsModal,
-              { centered: true }
-            );
-          }
+        async (results:IBulkApprovalResult[]) => {
+          results.forEach((result)=> {
+            if(result.status == "error"){
+              this._messageService.addError(result.message, 10000);
+            }else {
+              this._messageService.addSuccess(result.message, 10000);
+            }
+          });
 
           await this.getPendingApprovalsSummary();
           await this.getPendingApprovals();

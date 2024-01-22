@@ -41,7 +41,16 @@ export class QuotesComponent implements OnInit, OnDestroy {
 		}, 50);
 	}
 
-	search(pageIndex: number = 0) {
+	search(pageIndex?: number, pageSize?: number) {
+		// For pagination
+		if (pageIndex == null) {
+			const pageIndexElem = document.getElementById("pageIndex") as HTMLSelectElement;
+			pageIndex = parseInt(pageIndexElem?.value ?? 0);
+		}
+		if (pageSize == null) {
+			const pageSizeElem = document.getElementById("pageSize") as HTMLSelectElement;
+			pageSize = parseInt(pageSizeElem?.value ?? 10);
+		}
 
 		const filterQuoteAmountType = (document.getElementById("filterQuoteAmountType") as HTMLSelectElement).value || undefined;
 		const filterQuoteTransactionType = (document.getElementById("filterQuoteTransactionType") as HTMLSelectElement).value || undefined;
@@ -55,14 +64,15 @@ export class QuotesComponent implements OnInit, OnDestroy {
 			(filterQuoteId === this.ALL_STR_ID ? undefined : filterQuoteId),
 			(filterTransactionId === this.ALL_STR_ID ? undefined : filterTransactionId),
 			(filterBulkQuoteId === this.ALL_STR_ID ? undefined : filterBulkQuoteId),
-			pageIndex
+			pageIndex,
+			pageSize,
 		).subscribe((result) => {
 			console.log("QuotesComponent search - got QuotesSearchResults");
 
 			this.quotes.next(result.items);
 
 			const pageRes = paginate(result.pageIndex, result.totalPages);
-			console.log(pageRes);
+			if (pageRes) pageRes.pageSize = pageSize;
 			this.paginateResult.next(pageRes);
 		}, error => {
 			if (error && error instanceof UnauthorizedError) {

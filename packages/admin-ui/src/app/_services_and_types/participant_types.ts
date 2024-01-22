@@ -30,7 +30,15 @@
 
 "use strict";
 
-import { IParticipant, IParticipantAccountChangeRequest, IParticipantContactInfoChangeRequest, IParticipantFundsMovement, IParticipantNetDebitCapChangeRequest, IParticipantSourceIpChangeRequest, IParticipantStatusChangeRequest } from "@mojaloop/participant-bc-public-types-lib";
+import {
+  IParticipant,
+  IParticipantAccountChangeRequest,
+  IParticipantContactInfoChangeRequest,
+  IParticipantFundsMovement,
+  IParticipantNetDebitCapChangeRequest,
+  IParticipantSourceIpChangeRequest,
+  IParticipantStatusChangeRequest,
+} from "@mojaloop/participant-bc-public-types-lib";
 
 export declare type ParticipantsSearchResults = {
   pageSize: number;
@@ -77,21 +85,21 @@ export declare interface IParticipantPendingApproval {
 }
 
 export interface FundMovement {
-	matrixId: string
-	participantId: string
-	participantName: string
-	participantBankAccountInfo: string
-	bankBalance: number
-	settledTransferAmount: string
-	currencyCode: string
-	direction: string
-	updateAmount: string
-	settlementAccountId: string
-	isDuplicate: boolean
+  matrixId: string;
+  participantId: string;
+  participantName: string;
+  participantBankAccountInfo: string;
+  bankBalance: number;
+  settledTransferAmount: string;
+  currencyCode: string;
+  direction: string;
+  updateAmount: string;
+  settlementAccountId: string;
+  isDuplicate: boolean;
 }
 
-export declare type BulkApprovalRequestResults = {
-	reqId: string;
-	status: "success" | "error";
-	message: string;
+export declare interface IBulkApprovalResult {
+  reqId: string;
+  status: "success" | "error";
+  message: string;
 }

@@ -46,7 +46,8 @@ import * as uuid from "uuid";
 const SVC_BASEURL = "/_settlements";
 const REPORT_BASEURL = "/_reporting";
 
-const DEFAULT_PAGE_SIZE = 20;
+const DEFAULT_PAGE_INDEX = 0;
+const DEFAULT_PAGE_SIZE = 10;
 
 @Injectable({
 	providedIn: "root",
@@ -85,7 +86,41 @@ export class SettlementsService {
 		});
 	}
 
-	getBatchesByCriteria(fromDate: number, toDate: number, settlementModel: string, currencyCodes: string[], batchStatuses: string[]): Observable<BatchSearchResults> {
+	getBatcheById(batchId: string): Observable<ISettlementBatch[]> {
+		return new Observable<ISettlementBatch[]>(subscriber => {
+			const url = `${SVC_BASEURL}/batches/${batchId}`;
+			this._http.get<ISettlementBatch>(url).subscribe(
+				(result: ISettlementBatch) => {
+					subscriber.next([result]);
+					return subscriber.complete();
+				},
+				(error) => {
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on getBatcheById");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else if (error && error.status === 404) {
+						subscriber.next([]);
+						return subscriber.complete();
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+
+					return subscriber.complete();
+				}
+			)
+		});
+	}
+
+	getBatchesByCriteria(
+		fromDate: number, 
+		toDate: number, 
+		settlementModel: string, 
+		currencyCodes: string[], 
+		batchStatuses: string[],
+		pageIndex?: number,
+		pageSize?: number,
+	): Observable<BatchSearchResults> {
 		return new Observable<BatchSearchResults>(subscriber => {
 
 			const searchParams = new URLSearchParams();
@@ -97,6 +132,8 @@ export class SettlementsService {
 			// optional
 			if (currencyCodes && currencyCodes.length > 0) searchParams.append("currencyCodes", encodeURIComponent(JSON.stringify(currencyCodes)));
 			if (batchStatuses && batchStatuses.length > 0) searchParams.append("batchStatuses", encodeURIComponent(JSON.stringify(batchStatuses)));
+			if (pageIndex) searchParams.append("pageIndex", `${pageIndex}`);
+			if (pageSize) searchParams.append("pageSize", `${pageSize}`);
 
 			const url = `${SVC_BASEURL}/batches?${searchParams.toString()}`;
 			this._http.get<BatchSearchResults>(url).subscribe(
@@ -110,7 +147,13 @@ export class SettlementsService {
 						console.warn("Access forbidden received on getBatchesByCriteria");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else if (error && error.status === 404) {
-						subscriber.next();
+						const result: BatchSearchResults = {
+							items: [],
+							pageIndex: 0,
+							pageSize: 0,
+							totalPages: 0,
+						};
+						subscriber.next(result);
 						return subscriber.complete();
 					} else {
 						console.error(error);
@@ -123,9 +166,16 @@ export class SettlementsService {
 		});
 	}
 
-	getTransfersByBatch(batchId: string): Observable<BatchTransferSearchResults> {
+	getTransfersByBatch(batchId: string, pageIndex?: number, pageSize?: number): Observable<BatchTransferSearchResults> {
 		return new Observable<BatchTransferSearchResults>(subscriber => {
-			const url = `${SVC_BASEURL}/transfers?batchId=${batchId}`;
+			const searchParams = new URLSearchParams();
+			// mandatory
+			searchParams.append("batchId", batchId);
+			// optional
+			if (pageIndex) searchParams.append("pageIndex", `${pageIndex}`);
+			if (pageSize) searchParams.append("pageSize", `${pageSize}`);
+
+			const url = `${SVC_BASEURL}/transfers?${searchParams.toString()}`;
 			this._http.get<BatchTransferSearchResults>(url).subscribe(
 				(result: BatchTransferSearchResults) => {
 					console.log(`got response: ${result}`);
@@ -138,7 +188,13 @@ export class SettlementsService {
 						console.warn("Access forbidden received on getTransfersByBatchName");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else if (error && error.status === 404) {
-						subscriber.next();
+						const result: BatchTransferSearchResults = {
+							items: [],
+							pageIndex: 0,
+							pageSize: 0,
+							totalPages: 0,
+						};
+						subscriber.next(result);
 						return subscriber.complete();
 					} else {
 						console.error(error);
@@ -333,8 +389,8 @@ export class SettlementsService {
 		currencyCodes?: string[],
 		startDate?: number,
 		endDate?: number,
-		pageIndex?: number,
-		pageSize: number = DEFAULT_PAGE_SIZE
+		pageIndex: number = DEFAULT_PAGE_INDEX,
+		pageSize: number = DEFAULT_PAGE_SIZE,
 	): Observable<MatrixSearchResults> {
 		return new Observable<MatrixSearchResults>(subscriber => {
 			const searchParams = new URLSearchParams();
@@ -362,7 +418,13 @@ export class SettlementsService {
 						console.warn("Access forbidden received on getMatrices");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else if (error && error.status === 404) {
-						subscriber.next();
+						const result: MatrixSearchResults = {
+							items: [],
+							pageIndex: 0,
+							pageSize: 0,
+							totalPages: 0,
+						};
+						subscriber.next(result);
 						return subscriber.complete();
 					} else {
 						console.error(error);

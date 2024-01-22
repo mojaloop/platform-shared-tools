@@ -19,7 +19,8 @@ import {
 	ParticipantAllowedSourceIpsPortModes,
 	IParticipantContactInfo,
 	IParticipantContactInfoChangeRequest,
-	IParticipantStatusChangeRequest
+	IParticipantStatusChangeRequest,
+	ApprovalRequestState
 } from "@mojaloop/participant-bc-public-types-lib";
 import { ParticipantsService } from "src/app/_services_and_types/participants.service";
 import { BehaviorSubject, Observable } from "rxjs";
@@ -269,7 +270,7 @@ export class ParticipantDetailComponent implements OnInit {
 
 	saveEditAccount(account: IParticipantAccount): void {
 		// Implement logic to save changes to the account
-
+		const value:ApprovalRequestState = ApprovalRequestState.CREATED;
 		const participantAccountChangeRequest: IParticipantAccountChangeRequest = {
 			id: uuid.v4(),
 			accountId: account.id,
@@ -278,9 +279,11 @@ export class ParticipantDetailComponent implements OnInit {
 			externalBankAccountId: account.externalBankAccountId,
 			externalBankAccountName: account.externalBankAccountName,
 			requestType: "ADD_ACCOUNT",
+			rejectedBy: null,
+			rejectedDate: null,
 			approvedBy: null,
-			approved: false,
 			approvedDate: null,
+			requestState: value,
 			createdBy: "",
 			createdDate: Date.now()
 		};
@@ -343,7 +346,23 @@ export class ParticipantDetailComponent implements OnInit {
 	}
 
 	rejectAccountChangeRequest(reqId: string) {
-		this._messageService.addError("Not implemented (rejectAccountChangeRequest)");
+		//this._messageService.addError("Not implemented (rejectAccountChangeRequest)");
+
+		this._participantsSvc.rejectAccountChangeRequest(this._participantId, reqId)
+			.subscribe(
+				async () => {
+					this._messageService.addSuccess("Successfully rejected account change request.");
+
+					await this._fetchParticipant();
+				},
+				(error) => {
+					if (this.fundsMovementModalRef)
+						this.fundsMovementModalRef!.close();
+					this._messageService.addError(
+						`Rejecting account changes request failed with: ${error}`
+					);
+				}
+			);
 	}
 
 	updateAccounts(showMessage = false) {
@@ -466,9 +485,11 @@ export class ParticipantDetailComponent implements OnInit {
 			cidr: sourceIp.cidr,
 			portMode: sourceIp.portMode,
 			requestType: (this.sourceIpEditModeEnabled ? "CHANGE_SOURCE_IP" : "ADD_SOURCE_IP"),
+			rejectedBy: null,
+			rejectedDate: null,
 			approvedBy: null,
-			approved: false,
 			approvedDate: null,
+			requestState: ApprovalRequestState.CREATED,
 			createdBy: "",
 			createdDate: Date.now()
 		};
@@ -546,7 +567,23 @@ export class ParticipantDetailComponent implements OnInit {
 	}
 
 	rejectSourceIpChangeRequest(reqId: string) {
-		this._messageService.addError("Not implemented (rejectSourceIpChangeRequest)");
+		//this._messageService.addError("Not implemented (rejectSourceIpChangeRequest)");
+		this._participantsSvc
+			.rejectSourceIpChangeRequest(this._participantId, reqId)
+			.subscribe(
+				async () => {
+					this._messageService.addSuccess("Successfully rejected SourceIP change request.");
+
+					await this._fetchParticipant();
+				},
+				(error) => {
+					if (this.fundsMovementModalRef)
+						this.fundsMovementModalRef!.close();
+					this._messageService.addError(
+						`Rejecting sourceIP changes request failed with: ${error}`
+					);
+				}
+			);
 	}
 
 	/*
@@ -596,9 +633,11 @@ export class ParticipantDetailComponent implements OnInit {
 			phoneNumber: contact.phoneNumber,
 			role: contact.role,
 			requestType: (this.contactEditModeEnabled ? "CHANGE_PARTICIPANT_CONTACT_INFO" : "ADD_PARTICIPANT_CONTACT_INFO"),
+			rejectedBy: null,
+			rejectedDate: null,
 			approvedBy: null,
-			approved: false,
 			approvedDate: null,
+			requestState: ApprovalRequestState.CREATED,
 			createdBy: "",
 			createdDate: Date.now()
 		};
@@ -737,7 +776,24 @@ export class ParticipantDetailComponent implements OnInit {
 	}
 
 	rejectContactInfoChangeRequest(reqId: string) {
-		this._messageService.addError("Not implemented (rejectContactInfoChangeRequest)");
+		//this._messageService.addError("Not implemented (rejectContactInfoChangeRequest)");
+
+		this._participantsSvc
+			.rejectContactInfoChangeRequest(this._participantId, reqId)
+			.subscribe(
+				async () => {
+					this._messageService.addSuccess("Successfully rejected contact information change request.");
+
+					await this._fetchParticipant();
+				},
+				(error) => {
+					if (this.fundsMovementModalRef)
+						this.fundsMovementModalRef!.close();
+					this._messageService.addError(
+						`Rejecting contact information changes request failed with: ${error}`
+					);
+				}
+			);
 	}
 
 
@@ -792,9 +848,11 @@ export class ParticipantDetailComponent implements OnInit {
 			direction: this.fundsMovementModalMode,
 			note: depositNoteElem.value,
 			extReference: depositExtRefElem.value,
-			approved: false,
+			rejectedBy: null,
+			rejectedDate: null,
 			approvedBy: null,
 			approvedDate: null,
+			requestState: ApprovalRequestState.CREATED,
 			transferId: null,
 		};
 
@@ -840,7 +898,25 @@ export class ParticipantDetailComponent implements OnInit {
 	}
 
 	rejectFundsMov(fundsMovId: string) {
-		this._messageService.addError("Not implemented (rejectFundsMov)");
+		//this._messageService.addError("Not implemented (rejectFundsMov)");
+		this._participantsSvc
+			.rejectFundsMovement(this._participantId, fundsMovId)
+			.subscribe(
+				async () => {
+					this._messageService.addSuccess(
+						"Funds movement rejected!"
+					);
+					await this._fetchParticipant();
+					this.updateAccounts();
+				},
+				(error) => {
+					if (this.fundsMovementModalRef)
+						this.fundsMovementModalRef!.close();
+					this._messageService.addError(
+						`Rejecting funds movement failed with error: ${error}`
+					);
+				}
+			);
 	}
 
 	ndcAddNew() {
@@ -904,7 +980,7 @@ export class ParticipantDetailComponent implements OnInit {
 			await this._fetchParticipant();
 		},
 			(error) => {
-				this._messageService.addError(error.message);
+				this._messageService.addError(error);
 			}
 		);
 	}
@@ -928,14 +1004,28 @@ export class ParticipantDetailComponent implements OnInit {
 				},
 				(error) => {
 					this._messageService.addError(
-						`NDC Request approval failed with error: ${error.message}`
+						`NDC Request approval failed with error: ${error}`
 					);
 				}
 			);
 	}
 
 	rejectNDCRequest(reqId: string) {
-		this._messageService.addError("Not implemented (rejectNDCRequest)");
+		//this._messageService.addError("Not implemented (rejectNDCRequest)");
+		this._participantsSvc
+			.rejectNDC(this._participantId, reqId)
+			.subscribe(
+				async () => {
+					this._messageService.addSuccess("NDC Request rejected with success!");
+
+					await this._fetchParticipant();
+				},
+				(error) => {
+					this._messageService.addError(
+						`Rejecting failed with error: ${error}`
+					);
+				}
+			);
 	}
 
 	showDeposit() {
@@ -973,8 +1063,10 @@ export class ParticipantDetailComponent implements OnInit {
 			isActive: status,
 			requestType: "CHANGE_PARTICIPANT_STATUS",
 			approvedBy: null,
-			approved: false,
 			approvedDate: null,
+			requestState: ApprovalRequestState.CREATED,
+			rejectedBy: null,
+			rejectedDate:null,
 			createdBy: "",
 			createdDate: Date.now()
 		};
@@ -1004,6 +1096,7 @@ export class ParticipantDetailComponent implements OnInit {
 					this._messageService.addSuccess(
 						"Participant status changes approval success!"
 					);
+
 					await this._fetchParticipant();
 					this.updateAccounts();
 				},
@@ -1016,7 +1109,23 @@ export class ParticipantDetailComponent implements OnInit {
 
 	}
 
-	rejectParticipantStatusChangeRequest(reqId: string) {
-		this._messageService.addError("Not implemented (rejectParticipantStatusChangeRequest)");
+	rejectParticipantStatusChangeRequest(changeReqId: string) {
+		//this._messageService.addError("Not implemented (rejectParticipantStatusChangeRequest)");
+		this._participantsSvc
+			.rejectParticipantStatusChangeRequest(this._participantId, changeReqId)
+			.subscribe(
+				async () => {
+					this._messageService.addSuccess(
+						"Participant status change request rejected with success!"
+					);
+					await this._fetchParticipant();
+					this.updateAccounts();
+				},
+				(error) => {
+					this._messageService.addError(
+						`Rejecting participant status changes request failed with error: ${ error?.message}`
+					);
+				}
+			);
 	}
 }
