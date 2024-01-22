@@ -46,7 +46,8 @@ import * as uuid from "uuid";
 const SVC_BASEURL = "/_settlements";
 const REPORT_BASEURL = "/_reporting";
 
-const DEFAULT_PAGE_SIZE = 20;
+const DEFAULT_PAGE_INDEX = 0;
+const DEFAULT_PAGE_SIZE = 10;
 
 @Injectable({
 	providedIn: "root",
@@ -388,8 +389,8 @@ export class SettlementsService {
 		currencyCodes?: string[],
 		startDate?: number,
 		endDate?: number,
-		pageIndex?: number,
-		pageSize: number = DEFAULT_PAGE_SIZE
+		pageIndex: number = DEFAULT_PAGE_INDEX,
+		pageSize: number = DEFAULT_PAGE_SIZE,
 	): Observable<MatrixSearchResults> {
 		return new Observable<MatrixSearchResults>(subscriber => {
 			const searchParams = new URLSearchParams();
@@ -417,7 +418,13 @@ export class SettlementsService {
 						console.warn("Access forbidden received on getMatrices");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else if (error && error.status === 404) {
-						subscriber.next();
+						const result: MatrixSearchResults = {
+							items: [],
+							pageIndex: 0,
+							pageSize: 0,
+							totalPages: 0,
+						};
+						subscriber.next(result);
 						return subscriber.complete();
 					} else {
 						console.error(error);
