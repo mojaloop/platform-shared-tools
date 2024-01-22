@@ -9,7 +9,8 @@ import {BulkQuote} from "./bulk_quote_types";
 
 const SVC_BASEURL = "/_quotes";
 
-const DEFAULT_PAGE_SIZE = 20;
+const DEFAULT_PAGE_INDEX = 0;
+const DEFAULT_PAGE_SIZE = 10;
 
 @Injectable({
 	providedIn: "root",
@@ -179,8 +180,8 @@ export class QuotesService {
 		quoteId?: string,
 		transactionId?: string,
 		bulkQuoteId?: string,
-		pageIndex?: number,
-		pageSize: number = DEFAULT_PAGE_SIZE
+		pageIndex: number = DEFAULT_PAGE_INDEX,
+		pageSize: number = DEFAULT_PAGE_SIZE,
 	): Observable<QuotingSearchResults> {
 		const searchParams = new URLSearchParams();
 		if (amountType) searchParams.append("amountType", amountType);
