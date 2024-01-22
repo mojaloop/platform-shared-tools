@@ -980,7 +980,7 @@ export class ParticipantDetailComponent implements OnInit {
 			await this._fetchParticipant();
 		},
 			(error) => {
-				this._messageService.addError(error.message);
+				this._messageService.addError(error);
 			}
 		);
 	}
@@ -1004,7 +1004,7 @@ export class ParticipantDetailComponent implements OnInit {
 				},
 				(error) => {
 					this._messageService.addError(
-						`NDC Request approval failed with error: ${error.message}`
+						`NDC Request approval failed with error: ${error}`
 					);
 				}
 			);
@@ -1022,7 +1022,7 @@ export class ParticipantDetailComponent implements OnInit {
 				},
 				(error) => {
 					this._messageService.addError(
-						`Rejecting failed with error: ${error.message}`
+						`Rejecting failed with error: ${error}`
 					);
 				}
 			);
