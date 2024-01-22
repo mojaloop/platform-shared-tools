@@ -45,6 +45,7 @@
                 (change)="selectAllFundAdjustments($event)"
               />
             </th>
+            <th scope="col">Request Id</th>
             <th scope="col">Participant Name</th>
             <th scope="col">Activity</th>
             <th scope="col">Amount</th>
@@ -64,6 +65,7 @@
                 (change)="selectFundAdjustment($event, item)"
               />
             </td>
+            <td>{{ item.id }}</td>
             <td>
               <a routerLink="/participants/{{ item.id }}">{{
                 item.participantName
@@ -115,6 +117,7 @@
                 (change)="selectAllNDCRequests($event)"
               />
             </th>
+            <th scope="col">Request Id</th>
             <th scope="col">Participant Name</th>
             <th scope="col">Type</th>
             <th scope="col">Amount</th>
@@ -132,6 +135,7 @@
                 (change)="selectNDCRequests($event, item)"
               />
             </td>
+            <td>{{ item.id }}</td>
             <td>
               <a routerLink="/participants/{{ item.id }}">{{
                 item.participantName

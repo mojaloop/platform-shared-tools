@@ -28,64 +28,70 @@
  --------------
  ******/
 
-"use strict";
+ "use strict";
 
-import { IParticipant, IParticipantAccountChangeRequest, IParticipantContactInfoChangeRequest, IParticipantFundsMovement, IParticipantNetDebitCapChangeRequest, IParticipantSourceIpChangeRequest, IParticipantStatusChangeRequest } from "@mojaloop/participant-bc-public-types-lib";
-
-export declare type ParticipantsSearchResults = {
-  pageSize: number;
-  totalPages: number;
-  pageIndex: number;
-  items: IParticipant[];
-};
-
-export declare interface IParticipantPendingApprovalCountByType {
-  type: string;
-  count: number;
-}
-
-export declare interface IParticipantPendingApprovalSummary {
-  totalCount: number;
-  countByType: IParticipantPendingApprovalCountByType[];
-}
-
-export declare interface IParticipantPendingApproval {
-  accountsChangeRequest: (IParticipantAccountChangeRequest & {
-    participantId: string;
-    participantName: string;
-  })[];
-  fundsMovementRequest: (IParticipantFundsMovement & {
-    participantId: string;
-    participantName: string;
-  })[];
-  ndcChangeRequests: (IParticipantNetDebitCapChangeRequest & {
-    participantId: string;
-    participantName: string;
-  })[];
-  ipChangeRequests: (IParticipantSourceIpChangeRequest & {
-    participantId: string;
-    participantName: string;
-  })[];
-  contactInfoChangeRequests: (IParticipantContactInfoChangeRequest & {
-    participantId: string;
-    participantName: string;
-  })[];
-  statusChangeRequests: (IParticipantStatusChangeRequest & {
-    participantId: string;
-    participantName: string;
-  })[];
-}
-
-export interface FundMovement {
-	matrixId: string
-	participantId: string
-	participantName: string
-	participantBankAccountInfo: string
-	bankBalance: number
-	settledTransferAmount: string
-	currencyCode: string
-	direction: string
-	updateAmount: string
-	settlementAccountId: string
-	isDuplicate: boolean
-}
+ import { IParticipant, IParticipantAccountChangeRequest, IParticipantContactInfoChangeRequest, IParticipantFundsMovement, IParticipantNetDebitCapChangeRequest, IParticipantSourceIpChangeRequest, IParticipantStatusChangeRequest } from "@mojaloop/participant-bc-public-types-lib";
+ 
+ export declare type ParticipantsSearchResults = {
+   pageSize: number;
+   totalPages: number;
+   pageIndex: number;
+   items: IParticipant[];
+ };
+ 
+ export declare interface IParticipantPendingApprovalCountByType {
+   type: string;
+   count: number;
+ }
+ 
+ export declare interface IParticipantPendingApprovalSummary {
+   totalCount: number;
+   countByType: IParticipantPendingApprovalCountByType[];
+ }
+ 
+ export declare interface IParticipantPendingApproval {
+   accountsChangeRequest: (IParticipantAccountChangeRequest & {
+     participantId: string;
+     participantName: string;
+   })[];
+   fundsMovementRequest: (IParticipantFundsMovement & {
+     participantId: string;
+     participantName: string;
+   })[];
+   ndcChangeRequests: (IParticipantNetDebitCapChangeRequest & {
+     participantId: string;
+     participantName: string;
+   })[];
+   ipChangeRequests: (IParticipantSourceIpChangeRequest & {
+     participantId: string;
+     participantName: string;
+   })[];
+   contactInfoChangeRequests: (IParticipantContactInfoChangeRequest & {
+     participantId: string;
+     participantName: string;
+   })[];
+   statusChangeRequests: (IParticipantStatusChangeRequest & {
+     participantId: string;
+     participantName: string;
+   })[];
+ }
+ 
+ export interface FundMovement {
+   matrixId: string
+   participantId: string
+   participantName: string
+   participantBankAccountInfo: string
+   bankBalance: number
+   settledTransferAmount: string
+   currencyCode: string
+   direction: string
+   updateAmount: string
+   settlementAccountId: string
+   isDuplicate: boolean
+ }
+ 
+ export declare interface IBulkApprovalResult {
+   reqId: string;
+   status: "success" | "error";
+   message: string;
+ } 
