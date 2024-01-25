@@ -294,14 +294,24 @@ export class SettlementsService {
 	}
 
 
-	getAllTransfers(): Observable<ISettlementBatchTransfer[]> {
-		return new Observable<ISettlementBatchTransfer[]>(subscriber => {
-			const url = `${SVC_BASEURL}/transfers`;
+	getAllTransfers(
+		transferId: string | null,
+		pageIndex: number = DEFAULT_PAGE_INDEX,
+		pageSize: number = DEFAULT_PAGE_SIZE,
+	): Observable<BatchTransferSearchResults> {
+		return new Observable<BatchTransferSearchResults>(subscriber => {
+			const searchParams = new URLSearchParams();
+			searchParams.append("pageIndex", pageIndex.toString());
+			searchParams.append("pageSize", pageSize.toString());
+
+			if (transferId) searchParams.append("transferId", transferId);
+
+			const url = `${SVC_BASEURL}/transfers?${searchParams.toString()}`;
 			this._http.get<BatchTransferSearchResults>(url).subscribe(
 				(result: BatchTransferSearchResults) => {
 					console.log(`got response: ${result.items}`);
 
-					subscriber.next(result.items);
+					subscriber.next(result);
 					return subscriber.complete();
 				},
 				error => {
@@ -309,7 +319,13 @@ export class SettlementsService {
 						console.warn("Access forbidden received on getAllTransfers");
 						subscriber.error(new UnauthorizedError(error.error?.msg));
 					} else if (error && error.status === 404) {
-						subscriber.next();
+						const result: BatchTransferSearchResults = {
+							items: [],
+							pageIndex: 0,
+							pageSize: 0,
+							totalPages: 0,
+						};
+						subscriber.next(result);
 						return subscriber.complete();
 					} else {
 						console.error(error);
