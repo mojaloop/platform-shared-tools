@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {MessageService} from "src/app/_services_and_types/message.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {IParticipant} from "@mojaloop/participant-bc-public-types-lib";
+import {IParticipant, ParticipantTypes} from "@mojaloop/participant-bc-public-types-lib";
 import {ParticipantsService} from "src/app/_services_and_types/participants.service";
 
 @Component({
@@ -15,6 +15,15 @@ export class ParticipantCreateComponent implements OnInit {
 	public submitted: boolean = false;
 
 	public activeParticipant: IParticipant | null = null;
+
+	public participantTypes: Record<Exclude<keyof typeof ParticipantTypes, 'DFSP' | 'HUB'>, string> = {
+		MFI: "Microfinance Institution",
+		FXP:  "Foreign Exchange Provider",
+		BANK:  "Commercial Bank",
+		NBANK:  "Non-Bank Financial Institution",
+		CBANK:  "Central Bank",
+		FINT: "Financial Technology (FinTech) Company"
+	};
 
 	constructor(private _route: ActivatedRoute, private _participantsSvc: ParticipantsService, private _messageService: MessageService) {
 	}
@@ -72,6 +81,7 @@ export class ParticipantCreateComponent implements OnInit {
 		this.activeParticipant.id = this.form.controls["id"].value;
 		this.activeParticipant.name = this.form.controls["name"].value;
 		this.activeParticipant.description = this.form.controls["description"].value;
+		this.activeParticipant.type = this.form.controls['type'].value;
 
 
 		// TODO actually save the participant
