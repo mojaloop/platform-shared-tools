@@ -16,13 +16,9 @@ export class ParticipantCreateComponent implements OnInit {
 
 	public activeParticipant: IParticipant | null = null;
 
-	public participantTypes: Record<Exclude<keyof typeof ParticipantTypes, 'DFSP' | 'HUB'>, string> = {
-		MFI: "Microfinance Institution",
+	public participantTypes: Record<Extract<keyof typeof ParticipantTypes, 'DFSP' | 'FXP'>, string> = {
+		DFSP: "DFSP",
 		FXP:  "Foreign Exchange Provider",
-		BANK:  "Commercial Bank",
-		NBANK:  "Non-Bank Financial Institution",
-		CBANK:  "Central Bank",
-		FINT: "Financial Technology (FinTech) Company"
 	};
 
 	constructor(private _route: ActivatedRoute, private _participantsSvc: ParticipantsService, private _messageService: MessageService) {
