@@ -90,7 +90,7 @@ services:
 # participants
 
   participants-svc:
-    image: mojaloop/participants-bc-participants-svc:0.5.4
+    image: mojaloop/participants-bc-participants-svc:0.5.8
     depends_on:
       accounts_and_balances_coa-grpc-svc:
         condition: service_healthy
@@ -353,7 +353,7 @@ services:
 
 
   admin-ui:
-    image: mojaloop/vnext-admin-ui-svc:0.1.50
+    image: mojaloop/vnext-admin-ui-svc:0.5.8
     depends_on:
       transfers-api-svc:
         condition: service_healthy
