@@ -53,16 +53,14 @@ export class ParticipantsService {
 	validateSettlementInitiationFile(
 		settlementInitiation: File
 	): Observable<FundMovement[]> {
+		const formData = new FormData();
+		formData.append('settlementInitiation', settlementInitiation);
+
 		return new Observable<FundMovement[]>((subscriber) => {
 			this._http
 				.post<FundMovement[]>(
 					`${SVC_BASEURL}/participants/liquidityCheckValidate`,
-					{ settlementInitiation },
-					{
-						headers: {
-							"Content-Type": "multipart/form-data",
-						}
-					}
+					formData
 				)
 				.subscribe(
 					(result) => {
