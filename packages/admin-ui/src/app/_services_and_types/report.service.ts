@@ -164,4 +164,17 @@ export class ReportService {
 				);
 		});
 	}
+
+	exportSettlementDetailReport(participantId: string,
+		matrixId: string): Observable<Blob> {
+		const url =
+			SVC_BASEURL +
+			`/dfspSettlementDetail?participantId=${participantId}&matrixId=${matrixId}&format=excel`;
+		const headers = new HttpHeaders();
+
+		return this._http.get(url, {
+			responseType: "blob",
+			headers,
+		});
+	}
 }

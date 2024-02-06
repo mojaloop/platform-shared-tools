@@ -260,4 +260,31 @@ export class DFSPSettlementDetailReport implements OnInit {
 		// Save the workbook as an Excel file
 		XLSX.writeFile(wb, `detail-report-${this.chosenSettlementId}.xlsx`);
 	}
+
+	downloadDFSPSettlementDetailReport() {
+		const settlementId = this.settlementIdForm.controls.settlementId.value;
+		const dfspId = this.chosenDfspId;
+		this._reportSvc
+			.exportSettlementDetailReport(dfspId,settlementId)
+			.subscribe(
+				(data) => {
+					const formattedDate = moment(new Date()).format("DDMMMYYYY");
+					const url = URL.createObjectURL(data);
+					const link = document.createElement("a");
+					link.href = url;
+					link.setAttribute(
+						"download",
+						`DFSPSettlementDetailReport-${formattedDate}.xlsx`
+					);
+					document.body.appendChild(link);
+					link.click();
+					document.body.removeChild(link);
+					// Revoke the Object URL when it's no longer needed
+					URL.revokeObjectURL(url);
+				},
+				(error) => {
+					this._messageService.addError(error.message);
+				}
+			);
+	}
 }
