@@ -252,6 +252,8 @@ services:
     ports:
       - 8081:8081
     environment:
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       ME_CONFIG_MONGODB_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/
@@ -278,34 +280,32 @@ services:
     volumes:
       - grafana_data_vol:/etc/grafana/provisioning/datasources
 
-#  tigerbeetle-setup:
-#    image: ghcr.io/tigerbeetle/tigerbeetle
-#    command: "format --cluster=0 --replica=0 --replica-count=1 /data/0_0.tigerbeetle"
-#    mem_limit: ${TB_MEM_LIMIT}
-#    cap_add:
-#      - IPC_LOCK
-#    volumes:
-#      - tigerbeetle_data_vol:/data
-#
-#  tigerbeetle:
-#    image: ghcr.io/tigerbeetle/tigerbeetle
-#    command: "start --addresses=0.0.0.0:9001 /data/0_0.tigerbeetle"
-#    restart: unless-stopped
-#    mem_limit: ${TB_MEM_LIMIT}
-##    depends_on:
-##      - tigerbeetle-setup
-#    cap_add:
-#      - IPC_LOCK
-#    volumes:
-#      - tigerbeetle_data_vol:/data
-#    ports:
-#      - 9001:9001
-#    healthcheck:
-#      test: ["CMD", "/tigerbeetle", "version"]
-#      timeout: 20s
-#      retries: 10
-#      start_period: 40s
-#      interval: 30s
+  tigerbeetle-setup:
+    image: ghcr.io/tigerbeetle/tigerbeetle
+    command: "format --cluster=0 --replica=0 --replica-count=1 /data/0_0.tigerbeetle"
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - tigerbeetle_data_vol:/data
+
+  tigerbeetle:
+    image: ghcr.io/tigerbeetle/tigerbeetle
+    command: "start --addresses=0.0.0.0:9001 /data/0_0.tigerbeetle"
+    restart: unless-stopped
+    depends_on:
+      - tigerbeetle-setup
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - tigerbeetle_data_vol:/data
+    ports:
+      - 9001:9001
+    healthcheck:
+      test: ["CMD", "/tigerbeetle", "version"]
+      timeout: 20s
+      retries: 10
+      start_period: 40s
+      interval: 30s
 
 volumes:
   certs_vol:
