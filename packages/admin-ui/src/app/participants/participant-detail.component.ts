@@ -21,24 +21,23 @@ import {
 	IParticipantContactInfo,
 	IParticipantContactInfoChangeRequest,
 	IParticipantStatusChangeRequest,
-	ApprovalRequestState
+	ApprovalRequestState,
 } from "@mojaloop/participant-bc-public-types-lib";
 import { ParticipantsService } from "src/app/_services_and_types/participants.service";
 import { BehaviorSubject, Observable } from "rxjs";
-import {
-	NgbModal,
-	NgbModalRef,
-	NgbNav,
-} from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef, NgbNav } from "@ng-bootstrap/ng-bootstrap";
 import { validateCIDR, validatePortRange, validatePorts } from "../_utils";
 import { ValueConverter } from "@angular/compiler/src/render3/view/template";
-import {Certificate, CertificateRequest} from "../_services_and_types/certificate_types";
-import {HttpErrorResponse} from "@angular/common/http";
+import {
+	Certificate,
+	CertificateRequest,
+} from "../_services_and_types/certificate_types";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
 	selector: "app-participant-detail",
 	templateUrl: "./participant-detail.component.html",
-  styleUrls: ["./participant-detail.component.css"],
+	styleUrls: ["./participant-detail.component.css"],
 })
 export class ParticipantDetailComponent implements OnInit {
 	private _participantId!: string;
@@ -46,9 +45,10 @@ export class ParticipantDetailComponent implements OnInit {
 		new BehaviorSubject<IParticipant | null>(null);
 
 	readonly HUB_ID = this._participantsSvc.hubId;
-	readonly DROP_ZONE_CLASS = "my-4 border p-4 rounded-lg d-flex flex-column gap-3 justify-content-center align-items-center";
+	readonly DROP_ZONE_CLASS =
+		"my-4 border p-4 rounded-lg d-flex flex-column gap-3 justify-content-center align-items-center";
 
-  transitionClass = 'circular-transition';
+	transitionClass = "circular-transition";
 	dropZoneClass = this.DROP_ZONE_CLASS;
 	endpointCreateModeEnabled = false;
 	endpointEditModeEnabled = false;
@@ -79,8 +79,10 @@ export class ParticipantDetailComponent implements OnInit {
 	pendingCertificates: Certificate[] = [];
 	approvedCertificate: Certificate | null = null;
 	selectedCertificateFile: File | null = null;
-	certificateFileUploadProgress: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-	strokeDashoffset = (190 - (190 * this.certificateFileUploadProgress.value) / 100);
+	certificateFileUploadProgress: BehaviorSubject<number> =
+		new BehaviorSubject<number>(0);
+	strokeDashoffset =
+		190 - (190 * this.certificateFileUploadProgress.value) / 100;
 	certFileUploading = false;
 
 	@ViewChild("certificateFileInput")
@@ -97,13 +99,15 @@ export class ParticipantDetailComponent implements OnInit {
 		private _participantsSvc: ParticipantsService,
 		private _messageService: MessageService,
 		private _certificatesService: CertificatesService,
-		private _modalService: NgbModal
-	) {
-	}
+		private _modalService: NgbModal,
+	) {}
 
 	async ngOnInit(): Promise<void> {
 		console.log(this._route.snapshot.routeConfig?.path);
-		if (this._route.snapshot.routeConfig?.path === this._participantsSvc.hubId) {
+		if (
+			this._route.snapshot.routeConfig?.path ===
+			this._participantsSvc.hubId
+		) {
 			this._participantId = this._participantsSvc.hubId;
 		} else {
 			const id = this._route.snapshot.paramMap.get("id");
@@ -116,11 +120,10 @@ export class ParticipantDetailComponent implements OnInit {
 		}
 
 		this.certificateFileUploadProgress.subscribe((progress) => {
-			this.strokeDashoffset = (190 - (190 * progress) / 100);
+			this.strokeDashoffset = 190 - (190 * progress) / 100;
 			// skip transition when progress's changed from 100 to 0
-			this.transitionClass = progress > 0 ? 'circular-transition' : '';
+			this.transitionClass = progress > 0 ? "circular-transition" : "";
 		});
-
 
 		await this._fetchParticipant();
 		await this.getApprovedCertificate();
@@ -130,10 +133,12 @@ export class ParticipantDetailComponent implements OnInit {
 
 	private async _fetchParticipant(): Promise<void> {
 		return new Promise((resolve) => {
-			this._participantsSvc.getParticipant(this._participantId).subscribe((participant) => {
-				this.participant.next(participant);
-				resolve();
-			});
+			this._participantsSvc
+				.getParticipant(this._participantId)
+				.subscribe((participant) => {
+					this.participant.next(participant);
+					resolve();
+				});
 		});
 	}
 
@@ -148,21 +153,28 @@ export class ParticipantDetailComponent implements OnInit {
 
 	// any editing going on this page?
 	get editing(): boolean {
-		return this.endpointCreateModeEnabled || this.endpointEditModeEnabled ||
-			this.sourceIpCreateModeEnabled || this.sourceIpEditModeEnabled ||
-			this.ndcCreateModeEnabled || this.ndcEditModeEnabled ||
-			this.accountCreateModeEnabled || this.accountEditModeEnabled;
+		return (
+			this.endpointCreateModeEnabled ||
+			this.endpointEditModeEnabled ||
+			this.sourceIpCreateModeEnabled ||
+			this.sourceIpEditModeEnabled ||
+			this.ndcCreateModeEnabled ||
+			this.ndcEditModeEnabled ||
+			this.accountCreateModeEnabled ||
+			this.accountEditModeEnabled
+		);
 	}
 
 	approve() {
-		this._participantsSvc.approveParticipant(this._participantId)
-			.subscribe(async () => {
+		this._participantsSvc.approveParticipant(this._participantId).subscribe(
+			async () => {
 				this._messageService.addSuccess("IParticipant Approved");
 				await this._fetchParticipant();
-			}, (error) => {
+			},
+			(error) => {
 				this._messageService.addError(error.message);
-			}
-			);
+			},
+		);
 	}
 
 	/*
@@ -179,15 +191,17 @@ export class ParticipantDetailComponent implements OnInit {
 		console.log("endpointSaveEdit() called");
 
 		const endpointObj = this.participant.value?.participantEndpoints.find(
-			(item) => item.id === id
+			(item) => item.id === id,
 		);
 
 		if (!endpointObj) {
-			throw new Error(`can't find endpoint with id: ${id} on endpointSaveEdit()`);
+			throw new Error(
+				`can't find endpoint with id: ${id} on endpointSaveEdit()`,
+			);
 		}
 
 		const typeElement: HTMLSelectElement | null = document.getElementById(
-			`endpointType_${id}`
+			`endpointType_${id}`,
 		) as HTMLSelectElement;
 
 		if (typeElement) {
@@ -196,18 +210,20 @@ export class ParticipantDetailComponent implements OnInit {
 			endpointObj.type = "FSPIOP" as ParticipantEndpointTypes; // default
 		}
 
-		const protocolElement: HTMLSelectElement | null = document.getElementById(
-			`endpointProtocol_${id}`
-		) as HTMLSelectElement;
+		const protocolElement: HTMLSelectElement | null =
+			document.getElementById(
+				`endpointProtocol_${id}`,
+			) as HTMLSelectElement;
 
 		if (protocolElement) {
-			endpointObj.protocol = protocolElement.value as ParticipantEndpointProtocols;
+			endpointObj.protocol =
+				protocolElement.value as ParticipantEndpointProtocols;
 		} else {
 			endpointObj.protocol = "HTTPs/REST" as ParticipantEndpointProtocols; // default
 		}
 
 		const valueElement: HTMLInputElement | null = document.getElementById(
-			`endpointValue_${id}`
+			`endpointValue_${id}`,
 		) as HTMLInputElement;
 		if (protocolElement) {
 			endpointObj.value = valueElement.value;
@@ -216,20 +232,25 @@ export class ParticipantDetailComponent implements OnInit {
 		}
 
 		// select and bind correct function
-		const createOrUpdateEndpoint: (participantId: string, endpoint: IParticipantEndpoint) => Observable<string | void> =
-			this.endpointCreateModeEnabled ? this._participantsSvc.createEndpoint.bind(this._participantsSvc) : this._participantsSvc.changeEndpoint.bind(this._participantsSvc);
+		const createOrUpdateEndpoint: (
+			participantId: string,
+			endpoint: IParticipantEndpoint,
+		) => Observable<string | void> = this.endpointCreateModeEnabled
+			? this._participantsSvc.createEndpoint.bind(this._participantsSvc)
+			: this._participantsSvc.changeEndpoint.bind(this._participantsSvc);
 
-		createOrUpdateEndpoint(this._participantId, endpointObj).subscribe(async () => {
-			this.endpointCreateModeEnabled = false;
-			this.endpointEditModeEnabled = false;
-			this.endpointEditingId = "";
+		createOrUpdateEndpoint(this._participantId, endpointObj).subscribe(
+			async () => {
+				this.endpointCreateModeEnabled = false;
+				this.endpointEditModeEnabled = false;
+				this.endpointEditingId = "";
 
-			await this._fetchParticipant();
-		}, (error) => {
-			this._messageService.addError(error);
-		}
+				await this._fetchParticipant();
+			},
+			(error) => {
+				this._messageService.addError(error);
+			},
 		);
-
 	}
 
 	endpointStopEdit() {
@@ -253,20 +274,25 @@ export class ParticipantDetailComponent implements OnInit {
 	endpointRemote(id: string) {
 		console.log("endpointSaveEdit() called");
 		const endpointObj = this.participant.value?.participantEndpoints.find(
-			(item) => item.id === id
+			(item) => item.id === id,
 		);
 		if (!endpointObj) {
-			throw new Error(`can't find endpoint with id: ${id} on endpointRemote()`);
+			throw new Error(
+				`can't find endpoint with id: ${id} on endpointRemote()`,
+			);
 		}
 
 		if (!confirm("Are you sure you want to remove this endpoint?")) return;
 
-		this._participantsSvc.removeEndpoint(this._participantId, endpointObj.id)
-			.subscribe(() => {
-				this._fetchParticipant();
-			}, (error) => {
-				this._messageService.addError(error);
-			}
+		this._participantsSvc
+			.removeEndpoint(this._participantId, endpointObj.id)
+			.subscribe(
+				() => {
+					this._fetchParticipant();
+				},
+				(error) => {
+					this._messageService.addError(error);
+				},
 			);
 	}
 
@@ -286,7 +312,6 @@ export class ParticipantDetailComponent implements OnInit {
 		this.accountEditModeEnabled = false;
 
 		Object.assign(account, this.editingParticipantAccountOriginalData);
-
 	}
 
 	onAddAccount(): void {
@@ -296,68 +321,74 @@ export class ParticipantDetailComponent implements OnInit {
 
 	saveEditAccount(account: IParticipantAccount): void {
 		// Implement logic to save changes to the account
-		const value:ApprovalRequestState = ApprovalRequestState.CREATED;
-		const participantAccountChangeRequest: IParticipantAccountChangeRequest = {
-			id: uuid.v4(),
-			accountId: account.id,
-			type: account.type,
-			currencyCode: account.currencyCode,
-			externalBankAccountId: account.externalBankAccountId,
-			externalBankAccountName: account.externalBankAccountName,
-			requestType: "ADD_ACCOUNT",
-			rejectedBy: null,
-			rejectedDate: null,
-			approvedBy: null,
-			approvedDate: null,
-			requestState: value,
-			createdBy: "",
-			createdDate: Date.now()
-		};
+		const value: ApprovalRequestState = ApprovalRequestState.CREATED;
+		const participantAccountChangeRequest: IParticipantAccountChangeRequest =
+			{
+				id: uuid.v4(),
+				accountId: account.id,
+				type: account.type,
+				currencyCode: account.currencyCode,
+				externalBankAccountId: account.externalBankAccountId,
+				externalBankAccountName: account.externalBankAccountName,
+				requestType: "ADD_ACCOUNT",
+				rejectedBy: null,
+				rejectedDate: null,
+				approvedBy: null,
+				approvedDate: null,
+				requestState: value,
+				createdBy: "",
+				createdDate: Date.now(),
+			};
 
 		// check duplicates
 		if (this.accountCreateModeEnabled) {
 			participantAccountChangeRequest.requestType = "ADD_ACCOUNT";
-			const duplicateAccount = this.participant.value?.participantAccounts?.find(
-				(item) =>
-					item.type === account.type &&
-					item.currencyCode === account.currencyCode
-
-			);
+			const duplicateAccount =
+				this.participant.value?.participantAccounts?.find(
+					(item) =>
+						item.type === account.type &&
+						item.currencyCode === account.currencyCode,
+				);
 
 			if (duplicateAccount) {
 				this._messageService.addWarning(
-					"Cannot add a second account of the same type and currency"
+					"Cannot add a second account of the same type and currency",
 				);
 				this.accountCreateModeEnabled = false;
 				return;
 			}
 		} else {
-			participantAccountChangeRequest.requestType = "CHANGE_ACCOUNT_BANK_DETAILS";
+			participantAccountChangeRequest.requestType =
+				"CHANGE_ACCOUNT_BANK_DETAILS";
 		}
 
-		this._participantsSvc.createAccount(this._participantId, participantAccountChangeRequest)
-			.subscribe(async () => {
-				await this._fetchParticipant();
-				this.updateAccounts();
-				this.accountCreateModeEnabled = false;
-				this.accountEditModeEnabled = false;
+		this._participantsSvc
+			.createAccount(this._participantId, participantAccountChangeRequest)
+			.subscribe(
+				async () => {
+					await this._fetchParticipant();
+					this.updateAccounts();
+					this.accountCreateModeEnabled = false;
+					this.accountEditModeEnabled = false;
 
-				this._messageService.addSuccess(
-					"Account change request created!"
-				);
-
-			}, (error) => {
-
-				this._messageService.addError(error);
-			}
+					this._messageService.addSuccess(
+						"Account change request created!",
+					);
+				},
+				(error) => {
+					this._messageService.addError(error);
+				},
 			);
 	}
 
 	approveAccountChangeRequest(reqId: string) {
-		this._participantsSvc.approveAccountChangeRequest(this._participantId, reqId)
+		this._participantsSvc
+			.approveAccountChangeRequest(this._participantId, reqId)
 			.subscribe(
 				async () => {
-					this._messageService.addSuccess("Successfully approved account change request.");
+					this._messageService.addSuccess(
+						"Successfully approved account change request.",
+					);
 
 					await this._fetchParticipant();
 				},
@@ -365,19 +396,22 @@ export class ParticipantDetailComponent implements OnInit {
 					if (this.fundsMovementModalRef)
 						this.fundsMovementModalRef!.close();
 					this._messageService.addError(
-						`Account changes request approval failed with: ${error}`
+						`Account changes request approval failed with: ${error}`,
 					);
-				}
+				},
 			);
 	}
 
 	rejectAccountChangeRequest(reqId: string) {
 		//this._messageService.addError("Not implemented (rejectAccountChangeRequest)");
 
-		this._participantsSvc.rejectAccountChangeRequest(this._participantId, reqId)
+		this._participantsSvc
+			.rejectAccountChangeRequest(this._participantId, reqId)
 			.subscribe(
 				async () => {
-					this._messageService.addSuccess("Successfully rejected account change request.");
+					this._messageService.addSuccess(
+						"Successfully rejected account change request.",
+					);
 
 					await this._fetchParticipant();
 				},
@@ -385,9 +419,9 @@ export class ParticipantDetailComponent implements OnInit {
 					if (this.fundsMovementModalRef)
 						this.fundsMovementModalRef!.close();
 					this._messageService.addError(
-						`Rejecting account changes request failed with: ${error}`
+						`Rejecting account changes request failed with: ${error}`,
 					);
-				}
+				},
 			);
 	}
 
@@ -396,7 +430,8 @@ export class ParticipantDetailComponent implements OnInit {
 			throw new Error("invalid participant id");
 		}
 
-		this._participantsSvc.getParticipantAccounts(this._participantId)
+		this._participantsSvc
+			.getParticipantAccounts(this._participantId)
 			.subscribe((accounts: IParticipantAccount[]) => {
 				if (!accounts) return;
 
@@ -404,7 +439,10 @@ export class ParticipantDetailComponent implements OnInit {
 				this.participant.value!.participantAccounts = accounts;
 				this.participant.next(this.participant.value);
 
-				if (showMessage) this._messageService.addSuccess("Account balances refreshed");
+				if (showMessage)
+					this._messageService.addSuccess(
+						"Account balances refreshed",
+					);
 			});
 
 		this.navBar.select("accounts");
@@ -429,11 +467,17 @@ export class ParticipantDetailComponent implements OnInit {
 	}
 
 	updateLocalPortEditingVarsFromObj(sourceIp: IParticipantAllowedSourceIp) {
-		if (sourceIp.portMode === ParticipantAllowedSourceIpsPortModes.SPECIFIC) {
-			this.sourceIpEditingPortsListStr = sourceIp.ports as any || "";
-		} else if (sourceIp.portMode === ParticipantAllowedSourceIpsPortModes.RANGE) {
-			this.sourceIpEditingPortRangeStart = sourceIp.portRange?.rangeFirst || 0;
-			this.sourceIpEditingPortRangeEnd = sourceIp.portRange?.rangeLast || 0;
+		if (
+			sourceIp.portMode === ParticipantAllowedSourceIpsPortModes.SPECIFIC
+		) {
+			this.sourceIpEditingPortsListStr = (sourceIp.ports as any) || "";
+		} else if (
+			sourceIp.portMode === ParticipantAllowedSourceIpsPortModes.RANGE
+		) {
+			this.sourceIpEditingPortRangeStart =
+				sourceIp.portRange?.rangeFirst || 0;
+			this.sourceIpEditingPortRangeEnd =
+				sourceIp.portRange?.rangeLast || 0;
 		} else {
 			this.sourceIpEditingPortsListStr = "";
 			this.sourceIpEditingPortRangeStart = 0;
@@ -446,8 +490,6 @@ export class ParticipantDetailComponent implements OnInit {
 		this.sourceIpCreateModeEnabled = false;
 		Object.assign(sourceIP, this.editingSourceIpOriginalData);
 	}
-
-
 
 	// onPortModeChange() {
 	// 	if (this.newSourceIp.portMode === "ANY") {
@@ -479,15 +521,22 @@ export class ParticipantDetailComponent implements OnInit {
 				? Number(this.sourceIpEditingPortRangeEnd)
 				: Number(sourceIp.portRange.rangeLast);
 
-			if (isNaN(start) || isNaN(end) || start === 0 || end === 0 || !validatePortRange(start, end)) {
+			if (
+				isNaN(start) ||
+				isNaN(end) ||
+				start === 0 ||
+				end === 0 ||
+				!validatePortRange(start, end)
+			) {
 				this._messageService.addError("Invalid Port Range values.");
 				return false;
 			}
 		}
 
-
 		if (sourceIp.portMode === "SPECIFIC" && sourceIp.ports) {
-			const portValues = this.sourceIpEditModeEnabled ? this.sourceIpEditingPortsListStr : sourceIp.ports as any;
+			const portValues = this.sourceIpEditModeEnabled
+				? this.sourceIpEditingPortsListStr
+				: (sourceIp.ports as any);
 
 			if (!validatePorts(portValues)) {
 				this._messageService.addError("Invalid Port value.");
@@ -510,67 +559,84 @@ export class ParticipantDetailComponent implements OnInit {
 			allowedSourceIpId: sourceIp.id,
 			cidr: sourceIp.cidr,
 			portMode: sourceIp.portMode,
-			requestType: (this.sourceIpEditModeEnabled ? "CHANGE_SOURCE_IP" : "ADD_SOURCE_IP"),
+			requestType: this.sourceIpEditModeEnabled
+				? "CHANGE_SOURCE_IP"
+				: "ADD_SOURCE_IP",
 			rejectedBy: null,
 			rejectedDate: null,
 			approvedBy: null,
 			approvedDate: null,
 			requestState: ApprovalRequestState.CREATED,
 			createdBy: "",
-			createdDate: Date.now()
+			createdDate: Date.now(),
 		};
 
 		if (sourceIp.portMode === "SPECIFIC") {
-			const portValues = this.sourceIpEditModeEnabled ?
-				this.sourceIpEditingPortsListStr.split(",").map(value => Number(value)) :
-				sourceIp.ports?.toString().split(",").map(value => Number(value));
+			const portValues = this.sourceIpEditModeEnabled
+				? this.sourceIpEditingPortsListStr
+						.split(",")
+						.map((value) => Number(value))
+				: sourceIp.ports
+						?.toString()
+						.split(",")
+						.map((value) => Number(value));
 
 			sourceIpChangeRequest.ports = portValues;
-
 		} else if (sourceIp.portMode === "RANGE") {
-			if(this.sourceIpEditModeEnabled){
+			if (this.sourceIpEditModeEnabled) {
 				sourceIpChangeRequest.portRange = {
 					rangeFirst: this.sourceIpEditingPortRangeStart,
-					rangeLast: this.sourceIpEditingPortRangeEnd
+					rangeLast: this.sourceIpEditingPortRangeEnd,
 				};
-			}else{
+			} else {
 				sourceIpChangeRequest.portRange = sourceIp.portRange;
 			}
 		}
 
 		// check for duplicates
-		const duplicateCidr = this.participant.value?.participantAllowedSourceIps?.find(item => {
-			if (this.sourceIpEditModeEnabled) {
-				return (
-					item.cidr === sourceIp.cidr &&
-					item.portMode === sourceIp.portMode &&
-					item.portRange?.rangeFirst === this.sourceIpEditingPortRangeStart &&
-					item.portRange?.rangeLast === this.sourceIpEditingPortRangeEnd &&
-					item.ports === sourceIp.ports
-				);
-			} else {
-				return item.cidr === sourceIp.cidr;
-			}
-		});
+		const duplicateCidr =
+			this.participant.value?.participantAllowedSourceIps?.find(
+				(item) => {
+					if (this.sourceIpEditModeEnabled) {
+						return (
+							item.cidr === sourceIp.cidr &&
+							item.portMode === sourceIp.portMode &&
+							item.portRange?.rangeFirst ===
+								this.sourceIpEditingPortRangeStart &&
+							item.portRange?.rangeLast ===
+								this.sourceIpEditingPortRangeEnd &&
+							item.ports === sourceIp.ports
+						);
+					} else {
+						return item.cidr === sourceIp.cidr;
+					}
+				},
+			);
 
 		if (duplicateCidr) {
-			this._messageService.addWarning("Another SourceIP with the same CIDR already exists.");
+			this._messageService.addWarning(
+				"Another SourceIP with the same CIDR already exists.",
+			);
 			return;
 		}
 
+		this._participantsSvc
+			.createSourceIp(this._participantId, sourceIpChangeRequest)
+			.subscribe(
+				async () => {
+					await this._fetchParticipant();
 
-
-		this._participantsSvc.createSourceIp(this._participantId, sourceIpChangeRequest).subscribe(async () => {
-			await this._fetchParticipant();
-
-			this.sourceIpCreateModeEnabled = this.sourceIpEditModeEnabled = false;
-			this._messageService.addSuccess("SourceIP change request created!");
-
-		}, (error: any) => {
-			console.error(error);
-			this._messageService.addError(error.message || error);
-		}
-		);
+					this.sourceIpCreateModeEnabled =
+						this.sourceIpEditModeEnabled = false;
+					this._messageService.addSuccess(
+						"SourceIP change request created!",
+					);
+				},
+				(error: any) => {
+					console.error(error);
+					this._messageService.addError(error.message || error);
+				},
+			);
 	}
 
 	approveSourceIpChangeRequest(reqId: string) {
@@ -578,7 +644,9 @@ export class ParticipantDetailComponent implements OnInit {
 			.approveSourceIpChangeRequest(this._participantId, reqId)
 			.subscribe(
 				async () => {
-					this._messageService.addSuccess("Successfully approved SourceIP change request.");
+					this._messageService.addSuccess(
+						"Successfully approved SourceIP change request.",
+					);
 
 					await this._fetchParticipant();
 				},
@@ -586,9 +654,9 @@ export class ParticipantDetailComponent implements OnInit {
 					if (this.fundsMovementModalRef)
 						this.fundsMovementModalRef!.close();
 					this._messageService.addError(
-						`SourceIP changes request approval failed with: ${error}`
+						`SourceIP changes request approval failed with: ${error}`,
 					);
-				}
+				},
 			);
 	}
 
@@ -598,7 +666,9 @@ export class ParticipantDetailComponent implements OnInit {
 			.rejectSourceIpChangeRequest(this._participantId, reqId)
 			.subscribe(
 				async () => {
-					this._messageService.addSuccess("Successfully rejected SourceIP change request.");
+					this._messageService.addSuccess(
+						"Successfully rejected SourceIP change request.",
+					);
 
 					await this._fetchParticipant();
 				},
@@ -606,15 +676,15 @@ export class ParticipantDetailComponent implements OnInit {
 					if (this.fundsMovementModalRef)
 						this.fundsMovementModalRef!.close();
 					this._messageService.addError(
-						`Rejecting sourceIP changes request failed with: ${error}`
+						`Rejecting sourceIP changes request failed with: ${error}`,
 					);
-				}
+				},
 			);
 	}
 
 	/*
-	* Contact Information
-	* */
+	 * Contact Information
+	 * */
 
 	isContactInfoValid(contact: IParticipantContactInfo): boolean {
 		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -658,35 +728,46 @@ export class ParticipantDetailComponent implements OnInit {
 			email: contact.email,
 			phoneNumber: contact.phoneNumber,
 			role: contact.role,
-			requestType: (this.contactEditModeEnabled ? "CHANGE_PARTICIPANT_CONTACT_INFO" : "ADD_PARTICIPANT_CONTACT_INFO"),
+			requestType: this.contactEditModeEnabled
+				? "CHANGE_PARTICIPANT_CONTACT_INFO"
+				: "ADD_PARTICIPANT_CONTACT_INFO",
 			rejectedBy: null,
 			rejectedDate: null,
 			approvedBy: null,
 			approvedDate: null,
 			requestState: ApprovalRequestState.CREATED,
 			createdBy: "",
-			createdDate: Date.now()
+			createdDate: Date.now(),
 		};
 
 		//Duplicate check
-		if (this.contactCreateModeEnabled && this.participant.value?.participantContactInfoChangeRequests) {
+		if (
+			this.contactCreateModeEnabled &&
+			this.participant.value?.participantContactInfoChangeRequests
+		) {
 			let conditionMet = false; // Flag to track if any condition is met
 
 			for (const item of this.participant.value.participantContacts) {
 				if (item.name === contact.name) {
-					this._messageService.addWarning("Same contact name already exists.");
+					this._messageService.addWarning(
+						"Same contact name already exists.",
+					);
 					conditionMet = true;
 					break;
 				}
 
 				if (item.email === contact.email) {
-					this._messageService.addWarning("Same contact email already exists.");
+					this._messageService.addWarning(
+						"Same contact email already exists.",
+					);
 					conditionMet = true;
 					break;
 				}
 
 				if (item.phoneNumber === contact.phoneNumber) {
-					this._messageService.addWarning("Same contact phone no. already exists.");
+					this._messageService.addWarning(
+						"Same contact phone no. already exists.",
+					);
 					conditionMet = true;
 					break;
 				}
@@ -696,30 +777,40 @@ export class ParticipantDetailComponent implements OnInit {
 				return; // Return early if any condition is met
 			}
 		} else {
-			const duplicate = this.participant.value?.participantContactInfoChangeRequests?.find((value) =>
-				value.name === contact.name &&
-				value.email === contact.email &&
-				value.phoneNumber === contact.phoneNumber &&
-				value.role === contact.role
-			);
+			const duplicate =
+				this.participant.value?.participantContactInfoChangeRequests?.find(
+					(value) =>
+						value.name === contact.name &&
+						value.email === contact.email &&
+						value.phoneNumber === contact.phoneNumber &&
+						value.role === contact.role,
+				);
 
 			if (duplicate) {
-				this._messageService.addError("Same contact information already exists.");
+				this._messageService.addError(
+					"Same contact information already exists.",
+				);
 				return;
 			}
 		}
 
+		this._participantsSvc
+			.createContactInfo(this._participantId, contactInfoChangeRequest)
+			.subscribe(
+				async () => {
+					await this._fetchParticipant();
 
-		this._participantsSvc.createContactInfo(this._participantId, contactInfoChangeRequest).subscribe(async () => {
-			await this._fetchParticipant();
-
-			this.contactCreateModeEnabled = this.contactEditModeEnabled = false;
-			this._messageService.addSuccess("Contact information change request created!");
-
-		}, (error: any) => {
-			console.error(error);
-			this._messageService.addError(error.message || error);
-		});
+					this.contactCreateModeEnabled =
+						this.contactEditModeEnabled = false;
+					this._messageService.addSuccess(
+						"Contact information change request created!",
+					);
+				},
+				(error: any) => {
+					console.error(error);
+					this._messageService.addError(error.message || error);
+				},
+			);
 	}
 
 	/* saveEditParticipantContact(contact: IParticipantContactInfo) {
@@ -769,8 +860,6 @@ export class ParticipantDetailComponent implements OnInit {
 		}
 	} */
 
-
-
 	onCancelEditingParticipantContact(contact: IParticipantContactInfo) {
 		this.contactCreateModeEnabled = false;
 		this.contactEditModeEnabled = false;
@@ -787,7 +876,9 @@ export class ParticipantDetailComponent implements OnInit {
 			.approveContactInfoChangeRequest(this._participantId, reqId)
 			.subscribe(
 				async () => {
-					this._messageService.addSuccess("Successfully approved contact information change request.");
+					this._messageService.addSuccess(
+						"Successfully approved contact information change request.",
+					);
 
 					await this._fetchParticipant();
 				},
@@ -795,9 +886,9 @@ export class ParticipantDetailComponent implements OnInit {
 					if (this.fundsMovementModalRef)
 						this.fundsMovementModalRef!.close();
 					this._messageService.addError(
-						`Contact information changes request approval failed with: ${error}`
+						`Contact information changes request approval failed with: ${error}`,
 					);
-				}
+				},
 			);
 	}
 
@@ -808,7 +899,9 @@ export class ParticipantDetailComponent implements OnInit {
 			.rejectContactInfoChangeRequest(this._participantId, reqId)
 			.subscribe(
 				async () => {
-					this._messageService.addSuccess("Successfully rejected contact information change request.");
+					this._messageService.addSuccess(
+						"Successfully rejected contact information change request.",
+					);
 
 					await this._fetchParticipant();
 				},
@@ -816,16 +909,15 @@ export class ParticipantDetailComponent implements OnInit {
 					if (this.fundsMovementModalRef)
 						this.fundsMovementModalRef!.close();
 					this._messageService.addError(
-						`Rejecting contact information changes request failed with: ${error}`
+						`Rejecting contact information changes request failed with: ${error}`,
 					);
-				}
+				},
 			);
 	}
 
-
 	/*
-	* Funds Movement
-	* */
+	 * Funds Movement
+	 * */
 
 	createFundsMov(e: Event) {
 		if (!this.fundsMovementModalRef) return;
@@ -833,7 +925,7 @@ export class ParticipantDetailComponent implements OnInit {
 		let valid = true;
 
 		const depositAmountElem: HTMLInputElement = document.getElementById(
-			"depositAmount"
+			"depositAmount",
 		) as HTMLInputElement;
 		depositAmountElem.classList.remove("is-invalid");
 
@@ -842,25 +934,28 @@ export class ParticipantDetailComponent implements OnInit {
 			depositAmountElem.classList.add("is-invalid");
 			valid = false;
 		}
-		const depositCurrencyCodeElem: HTMLSelectElement = document.getElementById(
-			"depositCurrencyCode"
-		) as HTMLSelectElement;
+		const depositCurrencyCodeElem: HTMLSelectElement =
+			document.getElementById("depositCurrencyCode") as HTMLSelectElement;
 		depositCurrencyCodeElem.classList.remove("is-invalid");
 		const currency = depositCurrencyCodeElem.value; // depositCurrencyCodeElem.options[depositCurrencyCodeElem.selectedIndex].value;
 
-		const found = this.participant.value?.participantAccounts.find((item) => {
-			return item.currencyCode === currency && item.type === "POSITION";
-		});
+		const found = this.participant.value?.participantAccounts.find(
+			(item) => {
+				return (
+					item.currencyCode === currency && item.type === "POSITION"
+				);
+			},
+		);
 		if (!found) {
 			depositCurrencyCodeElem.classList.add("is-invalid");
 			valid = false;
 		}
 
 		const depositExtRefElem: HTMLInputElement = document.getElementById(
-			"depositExtRef"
+			"depositExtRef",
 		) as HTMLInputElement;
 		const depositNoteElem: HTMLInputElement = document.getElementById(
-			"depositNote"
+			"depositNote",
 		) as HTMLInputElement;
 
 		if (!valid) return;
@@ -888,7 +983,7 @@ export class ParticipantDetailComponent implements OnInit {
 				async () => {
 					this.fundsMovementModalRef!.close();
 					this._messageService.addSuccess(
-						"Funds movement created with success!"
+						"Funds movement created with success!",
 					);
 					await this._fetchParticipant();
 					this.navBar.select("fundsMovs");
@@ -896,9 +991,9 @@ export class ParticipantDetailComponent implements OnInit {
 				(error) => {
 					this.fundsMovementModalRef!.close();
 					this._messageService.addError(
-						`Funds movement creation failed with error: ${error}`
+						`Funds movement creation failed with error: ${error}`,
 					);
-				}
+				},
 			);
 	}
 
@@ -908,7 +1003,7 @@ export class ParticipantDetailComponent implements OnInit {
 			.subscribe(
 				async () => {
 					this._messageService.addSuccess(
-						"Funds movement approved with success!"
+						"Funds movement approved with success!",
 					);
 					await this._fetchParticipant();
 					this.updateAccounts();
@@ -917,9 +1012,9 @@ export class ParticipantDetailComponent implements OnInit {
 					if (this.fundsMovementModalRef)
 						this.fundsMovementModalRef!.close();
 					this._messageService.addError(
-						`Funds movement approval failed with error: ${error}`
+						`Funds movement approval failed with error: ${error}`,
 					);
-				}
+				},
 			);
 	}
 
@@ -929,9 +1024,7 @@ export class ParticipantDetailComponent implements OnInit {
 			.rejectFundsMovement(this._participantId, fundsMovId)
 			.subscribe(
 				async () => {
-					this._messageService.addSuccess(
-						"Funds movement rejected!"
-					);
+					this._messageService.addSuccess("Funds movement rejected!");
 					await this._fetchParticipant();
 					this.updateAccounts();
 				},
@@ -939,9 +1032,9 @@ export class ParticipantDetailComponent implements OnInit {
 					if (this.fundsMovementModalRef)
 						this.fundsMovementModalRef!.close();
 					this._messageService.addError(
-						`Rejecting funds movement failed with error: ${error}`
+						`Rejecting funds movement failed with error: ${error}`,
 					);
-				}
+				},
 			);
 	}
 
@@ -967,17 +1060,23 @@ export class ParticipantDetailComponent implements OnInit {
 		}
 
 		if (this.newNDC.type === "ABSOLUTE") {
-			const fixedValue = document.getElementById("ndcAmount") as HTMLInputElement;
+			const fixedValue = document.getElementById(
+				"ndcAmount",
+			) as HTMLInputElement;
 			this.newNDC.fixedValue = Number(fixedValue.value);
 		} else if (this.newNDC.type === "PERCENTAGE") {
-			const percentage = document.getElementById("ndcPercentage") as HTMLInputElement;
+			const percentage = document.getElementById(
+				"ndcPercentage",
+			) as HTMLInputElement;
 			this.newNDC.percentage = Number(percentage.value);
 		} else {
 			this._messageService.addWarning("Invalid Net Debit Cap Type");
 			return;
 		}
 
-		const currencyElement = document.getElementById("ndcCurrency") as HTMLSelectElement;
+		const currencyElement = document.getElementById(
+			"ndcCurrency",
+		) as HTMLSelectElement;
 
 		if (!currencyElement) {
 			this._messageService.addWarning("Invalid Net Debit Cap Currency");
@@ -998,17 +1097,20 @@ export class ParticipantDetailComponent implements OnInit {
 		// }
 		// TODO check duplicates also in requests (pending approval)
 
-		this._participantsSvc.createNDC(this._participantId, this.newNDC).subscribe(async (value) => {
-			this.ndcCreateModeEnabled = false;
-			this.ndcEditModeEnabled = false;
-			this.newNDC = null;
+		this._participantsSvc
+			.createNDC(this._participantId, this.newNDC)
+			.subscribe(
+				async (value) => {
+					this.ndcCreateModeEnabled = false;
+					this.ndcEditModeEnabled = false;
+					this.newNDC = null;
 
-			await this._fetchParticipant();
-		},
-			(error) => {
-				this._messageService.addError(error);
-			}
-		);
+					await this._fetchParticipant();
+				},
+				(error) => {
+					this._messageService.addError(error);
+				},
+			);
 	}
 
 	ndcStopEdit() {
@@ -1020,53 +1122,55 @@ export class ParticipantDetailComponent implements OnInit {
 	}
 
 	approveNDCRequest(reqId: string) {
-		this._participantsSvc
-			.approveNDC(this._participantId, reqId)
-			.subscribe(
-				async () => {
-					this._messageService.addSuccess("NDC Request approved with success!");
+		this._participantsSvc.approveNDC(this._participantId, reqId).subscribe(
+			async () => {
+				this._messageService.addSuccess(
+					"NDC Request approved with success!",
+				);
 
-					await this._fetchParticipant();
-				},
-				(error) => {
-					this._messageService.addError(
-						`NDC Request approval failed with error: ${error}`
-					);
-				}
-			);
+				await this._fetchParticipant();
+			},
+			(error) => {
+				this._messageService.addError(
+					`NDC Request approval failed with error: ${error}`,
+				);
+			},
+		);
 	}
 
 	rejectNDCRequest(reqId: string) {
 		//this._messageService.addError("Not implemented (rejectNDCRequest)");
-		this._participantsSvc
-			.rejectNDC(this._participantId, reqId)
-			.subscribe(
-				async () => {
-					this._messageService.addSuccess("NDC Request rejected with success!");
+		this._participantsSvc.rejectNDC(this._participantId, reqId).subscribe(
+			async () => {
+				this._messageService.addSuccess(
+					"NDC Request rejected with success!",
+				);
 
-					await this._fetchParticipant();
-				},
-				(error) => {
-					this._messageService.addError(
-						`Rejecting failed with error: ${error}`
-					);
-				}
-			);
+				await this._fetchParticipant();
+			},
+			(error) => {
+				this._messageService.addError(
+					`Rejecting failed with error: ${error}`,
+				);
+			},
+		);
 	}
 
 	showDeposit() {
-		this.fundsMovementModalMode = ParticipantFundsMovementDirections.FUNDS_DEPOSIT;
+		this.fundsMovementModalMode =
+			ParticipantFundsMovementDirections.FUNDS_DEPOSIT;
 		this.fundsMovementModalRef = this._modalService.open(
 			this.fundsMovementModal,
-			{ centered: true }
+			{ centered: true },
 		);
 	}
 
 	showWithdrawal() {
-		this.fundsMovementModalMode = ParticipantFundsMovementDirections.FUNDS_WITHDRAWAL;
+		this.fundsMovementModalMode =
+			ParticipantFundsMovementDirections.FUNDS_WITHDRAWAL;
 		this.fundsMovementModalRef = this._modalService.open(
 			this.fundsMovementModal,
-			{ centered: true }
+			{ centered: true },
 		);
 	}
 
@@ -1079,48 +1183,58 @@ export class ParticipantDetailComponent implements OnInit {
 	 */
 
 	createParticipantStatusChangeRequest(status: boolean): void {
-		const confirmed = confirm(`Are you sure you want to ${status ? "enable" : "disable"} this participant?`);
+		const confirmed = confirm(
+			`Are you sure you want to ${status ? "enable" : "disable"} this participant?`,
+		);
 		if (!confirmed) {
 			return;
 		}
 
-		const participantStatusChangeRequest: IParticipantStatusChangeRequest = {
-			id: uuid.v4(),
-			isActive: status,
-			requestType: "CHANGE_PARTICIPANT_STATUS",
-			approvedBy: null,
-			approvedDate: null,
-			requestState: ApprovalRequestState.CREATED,
-			rejectedBy: null,
-			rejectedDate:null,
-			createdBy: "",
-			createdDate: Date.now()
-		};
+		const participantStatusChangeRequest: IParticipantStatusChangeRequest =
+			{
+				id: uuid.v4(),
+				isActive: status,
+				requestType: "CHANGE_PARTICIPANT_STATUS",
+				approvedBy: null,
+				approvedDate: null,
+				requestState: ApprovalRequestState.CREATED,
+				rejectedBy: null,
+				rejectedDate: null,
+				createdBy: "",
+				createdDate: Date.now(),
+			};
 
 		this._participantsSvc
-			.createParticipantStatusChangeRequest(this._participantId, participantStatusChangeRequest)
+			.createParticipantStatusChangeRequest(
+				this._participantId,
+				participantStatusChangeRequest,
+			)
 			.subscribe(
 				async () => {
-					this._messageService.addSuccess("Successfully created a change request to update participant's status.");
+					this._messageService.addSuccess(
+						"Successfully created a change request to update participant's status.",
+					);
 					await this._fetchParticipant();
 					this.navBar.select("status");
 				},
 				(error) => {
 					this._messageService.addError(
-						`Updating participant's status failed with: ${error}`
+						`Updating participant's status failed with: ${error}`,
 					);
-				}
+				},
 			);
 	}
 
 	approveParticipantStatusChangeRequest(changeReqId: string): void {
-
 		this._participantsSvc
-			.approveParticipantStatusChangeRequest(this._participantId, changeReqId)
+			.approveParticipantStatusChangeRequest(
+				this._participantId,
+				changeReqId,
+			)
 			.subscribe(
 				async () => {
 					this._messageService.addSuccess(
-						"Participant status changes approval success!"
+						"Participant status changes approval success!",
 					);
 
 					await this._fetchParticipant();
@@ -1128,55 +1242,66 @@ export class ParticipantDetailComponent implements OnInit {
 				},
 				(error) => {
 					this._messageService.addError(
-						`Participant status changes approval failed with error: ${ error?.message}`
+						`Participant status changes approval failed with error: ${error?.message}`,
 					);
-				}
+				},
 			);
-
 	}
 
 	rejectParticipantStatusChangeRequest(changeReqId: string) {
 		//this._messageService.addError("Not implemented (rejectParticipantStatusChangeRequest)");
 		this._participantsSvc
-			.rejectParticipantStatusChangeRequest(this._participantId, changeReqId)
+			.rejectParticipantStatusChangeRequest(
+				this._participantId,
+				changeReqId,
+			)
 			.subscribe(
 				async () => {
 					this._messageService.addSuccess(
-						"Participant status change request rejected with success!"
+						"Participant status change request rejected with success!",
 					);
 					await this._fetchParticipant();
 					this.updateAccounts();
 				},
 				(error) => {
 					this._messageService.addError(
-						`Rejecting participant status changes request failed with error: ${ error?.message}`
+						`Rejecting participant status changes request failed with error: ${error?.message}`,
 					);
-				}
+				},
 			);
 	}
 
 	getApprovedCertificate(): void {
-		this._certificatesService.getApprovedCertificate(this._participantId).subscribe({
-		  next: (approvedCertificate) => {
-			this.approvedCertificate = approvedCertificate;
-		},
-		  error: (error) => {
-			this._messageService.addError(error);
-		}
-		});
+		this._certificatesService
+			.getApprovedCertificate(this._participantId)
+			.subscribe({
+				next: (approvedCertificate) => {
+					this.approvedCertificate = approvedCertificate;
+				},
+				error: (error) => {
+					this._messageService.addError(error);
+				},
+			});
 	}
 
 	getPendingCertificates(): void {
-		this._certificatesService.getPendingCertificates(this._participantId).subscribe({
-		  next: (CertificateRequests) => {
-			this.pendingCertificates = CertificateRequests.reduce((acc: Certificate[], item: CertificateRequest) => {
-			  return acc.concat(item.participantCertificateUploadRequests);
-			}, []);
-		  },
-		  error: (error) => {
-			this._messageService.addError(error);
-		  }
-		});
+		this._certificatesService
+			.getPendingCertificates(this._participantId)
+			.subscribe({
+				next: (CertificateRequests) => {
+					this.pendingCertificates = CertificateRequests.reduce(
+						(acc: Certificate[], item: CertificateRequest) => {
+							return acc.concat(
+								item.participantCertificateUploadRequests,
+							);
+						},
+						[],
+					);
+				},
+				error: (error) => {
+					this._messageService.addError(error);
+				},
+			});
 	}
 
 	onCertificateFileDropped(files: FileList) {
@@ -1210,7 +1335,9 @@ export class ParticipantDetailComponent implements OnInit {
 		this.certFileUploading = true;
 
 		const interval = setInterval(() => {
-			this.certificateFileUploadProgress.next(this.certificateFileUploadProgress.value + 10);
+			this.certificateFileUploadProgress.next(
+				this.certificateFileUploadProgress.value + 10,
+			);
 
 			if (this.certificateFileUploadProgress.value === 100) {
 				this.certFileUploading = false;
@@ -1220,65 +1347,78 @@ export class ParticipantDetailComponent implements OnInit {
 	}
 
 	openCertificateFileUpload() {
-		const fileInput = document.getElementById("certificateFileUpload") as HTMLInputElement;
+		const fileInput = document.getElementById(
+			"certificateFileUpload",
+		) as HTMLInputElement;
 		fileInput.click();
 	}
 
 	removeChosenCertificateFile() {
 		this.selectedCertificateFile = null;
-		const fileInput = document.getElementById("certificateFileUpload") as HTMLInputElement | null;
+		const fileInput = document.getElementById(
+			"certificateFileUpload",
+		) as HTMLInputElement | null;
 		if (fileInput) fileInput.value = "";
 	}
 
-  uploadCertificate(): void {
-    const file = this.selectedCertificateFile
-    if(!file){
-      return;
-    }
-    this._certificatesService.uploadCertificate(this._participantId, file).subscribe({
-      next: (response) => {
-        // Handle success, close modal and show success message
-
-        this.selectedCertificateFile = null;
-		this.certificateFileUploadProgress.next(0);
-		this.certFileUploading = false;
-
-        const cancelButton = document.getElementById(
-          "modal-btn-cancel"
-        ) as HTMLButtonElement;
-
-		this.getPendingCertificates();
-        cancelButton.click();
-		this._messageService.addSuccess("Certificate uploaded successfully.")
-      },
-      error: (error) => {
-			this._messageService.addError(error);
+	uploadCertificate(): void {
+		const file = this.selectedCertificateFile;
+		if (!file) {
+			return;
 		}
-    });
-  }
+		this._certificatesService
+			.uploadCertificate(this._participantId, file)
+			.subscribe({
+				next: (response) => {
+					// Handle success, close modal and show success message
 
-  approveCertificate(certificateId: string): void {
-    this._certificatesService.approveCertificate(certificateId).subscribe({
-      next: () => {
-		// Refresh
-		this.getPendingCertificates()
-		this.getApprovedCertificate()
-		this._messageService.addSuccess("Certificate approved successfully.")
-	  },
-      error: (error) => {
-		this._messageService.addError(error);
-	  }
-    });
-  }
+					this.selectedCertificateFile = null;
+					this.certificateFileUploadProgress.next(0);
+					this.certFileUploading = false;
 
-  rejectCertificate(certificateId: string): void {
-    this._certificatesService.rejectCertificate(certificateId, this._participantId).subscribe({
-      next: () => {
-		this.getPendingCertificates();
-		this._messageService.addSuccess("Certificate rejected successfully.")
-	  },
-      error: (error) => console.error(error)
-    });
-  }
+					const cancelButton = document.getElementById(
+						"modal-btn-cancel",
+					) as HTMLButtonElement;
 
+					this.getPendingCertificates();
+					cancelButton.click();
+					this._messageService.addSuccess(
+						"Certificate uploaded successfully.",
+					);
+				},
+				error: (error) => {
+					this._messageService.addError(error);
+				},
+			});
+	}
+
+	approveCertificate(certificateId: string): void {
+		this._certificatesService.approveCertificate(certificateId).subscribe({
+			next: () => {
+				// Refresh
+				this.getPendingCertificates();
+				this.getApprovedCertificate();
+				this._messageService.addSuccess(
+					"Certificate approved successfully.",
+				);
+			},
+			error: (error) => {
+				this._messageService.addError(error);
+			},
+		});
+	}
+
+	rejectCertificate(certificateId: string): void {
+		this._certificatesService
+			.rejectCertificate(certificateId, this._participantId)
+			.subscribe({
+				next: () => {
+					this.getPendingCertificates();
+					this._messageService.addSuccess(
+						"Certificate rejected successfully.",
+					);
+				},
+				error: (error) => console.error(error),
+			});
+	}
 }
