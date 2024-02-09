@@ -1,15 +1,18 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ElementRef, OnInit } from "@angular/core";
 import { ParticipantsService } from "../_services_and_types/participants.service";
 import { MessageService } from "../_services_and_types/message.service";
 import { BehaviorSubject } from "rxjs";
 import { IBulkApprovalResult, IParticipantPendingApproval } from "../_services_and_types/participant_types";
 import { UnauthorizedError } from "@mojaloop/security-bc-public-types-lib";
 import { ApprovalRequestState } from "@mojaloop/participant-bc-public-types-lib";
+import {Certificate, CertificateRequest} from "../_services_and_types/certificate_types";
+import {CertificatesService} from "../_services_and_types/certificate.service";
 
 @Component({
   selector: "app-participants",
   templateUrl: "./pending-approvals.component.html",
 })
+
 export class PendingApprovalsComponent implements OnInit {
   fundAdjustments: BehaviorSubject<
     IParticipantPendingApproval["fundsMovementRequest"]
@@ -29,9 +32,14 @@ export class PendingApprovalsComponent implements OnInit {
   fundAdjustmentCount: number = 0;
   ndcRequestCount: number = 0;
 
+  pendingCertificates: Certificate[] = [];
+  selectedCertificates: Certificate[] = [];
+  isCertificateSelectAll: boolean = false;
+
   constructor(
     private _participantsSvc: ParticipantsService,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+	private _certificatesService: CertificatesService,
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -39,6 +47,7 @@ export class PendingApprovalsComponent implements OnInit {
 
     this.getPendingApprovalsSummary();
     this.getPendingApprovals();
+    this.getPendingCertificates();
   }
 
   tabChange(e: any) {
@@ -138,13 +147,13 @@ export class PendingApprovalsComponent implements OnInit {
   }
 
   approveFundAdjustmentPendingApprovals() {
-    let fundAdjustments: IParticipantPendingApproval["fundsMovementRequest"] = 
+    let fundAdjustments: IParticipantPendingApproval["fundsMovementRequest"] =
     this.selectedFundAdjustment;
-    
+
     if (this.isFundAdjustmentSelectAll) {
       fundAdjustments = this.fundAdjustments.value;
     }
-    
+
     this._participantsSvc.submitPendingApprovals({
       fundsMovementRequest: fundAdjustments,
       ndcChangeRequests: [],
@@ -226,7 +235,7 @@ export class PendingApprovalsComponent implements OnInit {
     if (this.isFundAdjustmentSelectAll) {
       ndcRequests = this.ndcRequests.value;
     }
-    
+
     this._participantsSvc
       .submitPendingApprovals({
         fundsMovementRequest: [],
@@ -245,7 +254,7 @@ export class PendingApprovalsComponent implements OnInit {
               this._messageService.addSuccess(result.message, 10000);
             }
           });
-          
+
           await this.getPendingApprovalsSummary();
           await this.getPendingApprovals();
         },
@@ -268,7 +277,7 @@ export class PendingApprovalsComponent implements OnInit {
     if (this.isFundAdjustmentSelectAll) {
       ndcRequests = this.ndcRequests.value;
     }
-   
+
     this._participantsSvc
       .submitPendingApprovals({
         fundsMovementRequest: [],
@@ -345,4 +354,84 @@ export class PendingApprovalsComponent implements OnInit {
       );
     });
   }
+
+  getPendingCertificates(): void {
+    this._certificatesService.getPendingCertificates().subscribe({
+      next: (CertificateRequests) => {
+        this.pendingCertificates = CertificateRequests.reduce((acc: Certificate[], item: CertificateRequest) => {
+          return acc.concat(item.participantCertificateUploadRequests);
+        }, []);
+      },
+      error: (error) => console.error(error)
+    });
+  }
+
+  isCertificateSelected(certificate: Certificate): boolean {
+    return this.selectedCertificates.some((item) => item._id === certificate._id);
+  }
+
+  selectCertificate(e: any, certificate: Certificate) {
+    if(e.target.checked){
+      if(!this.selectedCertificates.some((item) => item._id === certificate._id)) {
+      this.selectedCertificates.push(certificate);
+      }
+
+    }else{
+      const index = this.selectedCertificates.findIndex((item) => item._id === certificate._id);
+      if (index !== -1) {
+        this.selectedCertificates.splice(index, 1);
+      }
+    }
+	console.log(this.pendingCertificates.length)
+  }
+
+  selectAllCertificates(e: any) {
+	if(e.target.checked){
+	  this.selectedCertificates = [...this.pendingCertificates];
+	  this.isCertificateSelectAll = true;
+	}else{
+	  this.selectedCertificates = [];
+	  this.isCertificateSelectAll = false;
+	}
+  }
+
+  approveCertificates(): void {
+    const certificateIds = this.selectedCertificates.map((certificate) => certificate._id);
+	const participantIds = this.selectedCertificates.map((certificate) => certificate.participantId);
+    // find duplicates of participantIds
+    const uniqueParticipantIds = [...new Set(participantIds)];
+    if(uniqueParticipantIds.length !== participantIds.length){
+      // Show error that only one certificate per participant can be approved at a time
+	  this._messageService.addError("Multiple certificates for single participant cannot be approved.", 10000);
+      return
+    }
+
+    this._certificatesService.bulkApproveCertificates(certificateIds).subscribe({
+      next: () => {
+		this.getPendingCertificates(); // Refresh the list of pending certificates
+		this.selectedCertificates = [];
+		this.isCertificateSelectAll = false;
+		this._messageService.addSuccess("Certificates approved successfully.", 10000);
+	  },
+      error: (error) => {
+		this._messageService.addError(error);
+	  }
+    });
+  }
+
+  rejectCertificates(): void {
+    const certificateIds = this.selectedCertificates.map((certificate) => certificate._id);
+    this._certificatesService.bulkRejectCertificates(certificateIds).subscribe({
+      next: () => {
+		this.getPendingCertificates(); // Refresh the list of pending certificates
+		this.selectedCertificates = [];
+		this.isCertificateSelectAll = false;
+		this._messageService.addSuccess("Certificates rejected and removed successfully.", 10000);
+	  },
+      error: (error) => {
+		this._messageService.addError(error);
+	  }
+    });
+  }
+
 }

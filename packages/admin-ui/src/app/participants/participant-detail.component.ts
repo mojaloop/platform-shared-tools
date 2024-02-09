@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { MessageService } from "src/app/_services_and_types/message.service";
+import { CertificatesService } from "src/app/_services_and_types/certificate.service";
 import * as uuid from "uuid";
 
 import {
@@ -31,10 +32,13 @@ import {
 } from "@ng-bootstrap/ng-bootstrap";
 import { validateCIDR, validatePortRange, validatePorts } from "../_utils";
 import { ValueConverter } from "@angular/compiler/src/render3/view/template";
+import {Certificate, CertificateRequest} from "../_services_and_types/certificate_types";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
 	selector: "app-participant-detail",
 	templateUrl: "./participant-detail.component.html",
+  styleUrls: ["./participant-detail.component.css"],
 })
 export class ParticipantDetailComponent implements OnInit {
 	private _participantId!: string;
@@ -42,7 +46,10 @@ export class ParticipantDetailComponent implements OnInit {
 		new BehaviorSubject<IParticipant | null>(null);
 
 	readonly HUB_ID = this._participantsSvc.hubId;
+	readonly DROP_ZONE_CLASS = "my-4 border p-4 rounded-lg d-flex flex-column gap-3 justify-content-center align-items-center";
 
+  transitionClass = 'circular-transition';
+	dropZoneClass = this.DROP_ZONE_CLASS;
 	endpointCreateModeEnabled = false;
 	endpointEditModeEnabled = false;
 	endpointEditingId: string = "";
@@ -69,6 +76,15 @@ export class ParticipantDetailComponent implements OnInit {
 	ndcEditModeEnabled = false;
 	newNDC: IParticipantNetDebitCapChangeRequest | null = null;
 
+	pendingCertificates: Certificate[] = [];
+	approvedCertificate: Certificate | null = null;
+	selectedCertificateFile: File | null = null;
+	certificateFileUploadProgress: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+	strokeDashoffset = (190 - (190 * this.certificateFileUploadProgress.value) / 100);
+	certFileUploading = false;
+
+	@ViewChild("certificateFileInput")
+	certificateFileInput!: ElementRef;
 	@ViewChild("nav") // Get a reference to the ngbNav
 	navBar!: NgbNav;
 	@ViewChild("fundsMovementModal") // Get a reference to the depositModal
@@ -80,6 +96,7 @@ export class ParticipantDetailComponent implements OnInit {
 		private _route: ActivatedRoute,
 		private _participantsSvc: ParticipantsService,
 		private _messageService: MessageService,
+		private _certificatesService: CertificatesService,
 		private _modalService: NgbModal
 	) {
 	}
@@ -98,7 +115,16 @@ export class ParticipantDetailComponent implements OnInit {
 			throw new Error("invalid participant id");
 		}
 
+		this.certificateFileUploadProgress.subscribe((progress) => {
+			this.strokeDashoffset = (190 - (190 * progress) / 100);
+			// skip transition when progress's changed from 100 to 0
+			this.transitionClass = progress > 0 ? 'circular-transition' : '';
+		});
+
+
 		await this._fetchParticipant();
+		await this.getApprovedCertificate();
+		await this.getPendingCertificates();
 		this.updateAccounts();
 	}
 
@@ -1128,4 +1154,131 @@ export class ParticipantDetailComponent implements OnInit {
 				}
 			);
 	}
+
+	getApprovedCertificate(): void {
+		this._certificatesService.getApprovedCertificate(this._participantId).subscribe({
+		  next: (approvedCertificate) => {
+			this.approvedCertificate = approvedCertificate;
+		},
+		  error: (error) => {
+			this._messageService.addError(error);
+		}
+		});
+	}
+
+	getPendingCertificates(): void {
+		this._certificatesService.getPendingCertificates(this._participantId).subscribe({
+		  next: (CertificateRequests) => {
+			this.pendingCertificates = CertificateRequests.reduce((acc: Certificate[], item: CertificateRequest) => {
+			  return acc.concat(item.participantCertificateUploadRequests);
+			}, []);
+		  },
+		  error: (error) => {
+			this._messageService.addError(error);
+		  }
+		});
+	}
+
+	onCertificateFileDropped(files: FileList) {
+		const selectedFile = files[0];
+		this.dropZoneClass = this.DROP_ZONE_CLASS;
+
+		if (selectedFile) {
+			this.uploadCertificateFile(selectedFile);
+		}
+	}
+
+	onDragOver() {
+		this.dropZoneClass = `${this.DROP_ZONE_CLASS} dragging-over`;
+	}
+
+	onDragLeave() {
+		this.dropZoneClass = this.DROP_ZONE_CLASS;
+	}
+
+	onCertificateFileSelected(event: any) {
+		const selectedFile = event.target.files[0];
+
+		if (selectedFile) {
+			this.uploadCertificateFile(selectedFile);
+		}
+	}
+
+	uploadCertificateFile(file: File) {
+		this.certificateFileUploadProgress.next(0);
+		this.selectedCertificateFile = file;
+		this.certFileUploading = true;
+
+		const interval = setInterval(() => {
+			this.certificateFileUploadProgress.next(this.certificateFileUploadProgress.value + 10);
+
+			if (this.certificateFileUploadProgress.value === 100) {
+				this.certFileUploading = false;
+				clearInterval(interval);
+			}
+		}, 200);
+	}
+
+	openCertificateFileUpload() {
+		const fileInput = document.getElementById("certificateFileUpload") as HTMLInputElement;
+		fileInput.click();
+	}
+
+	removeChosenCertificateFile() {
+		this.selectedCertificateFile = null;
+		const fileInput = document.getElementById("certificateFileUpload") as HTMLInputElement | null;
+		if (fileInput) fileInput.value = "";
+	}
+
+  uploadCertificate(): void {
+    const file = this.selectedCertificateFile
+    if(!file){
+      return;
+    }
+    this._certificatesService.uploadCertificate(this._participantId, file).subscribe({
+      next: (response) => {
+        // Handle success, close modal and show success message
+
+        this.selectedCertificateFile = null;
+		this.certificateFileUploadProgress.next(0);
+		this.certFileUploading = false;
+
+        const cancelButton = document.getElementById(
+          "modal-btn-cancel"
+        ) as HTMLButtonElement;
+
+		this.getPendingCertificates();
+        cancelButton.click();
+		this._messageService.addSuccess("Certificate uploaded successfully.")
+      },
+      error: (error) => {
+			this._messageService.addError(error);
+		}
+    });
+  }
+
+  approveCertificate(certificateId: string): void {
+    this._certificatesService.approveCertificate(certificateId).subscribe({
+      next: () => {
+		// Refresh
+		this.getPendingCertificates()
+		this.getApprovedCertificate()
+		this._messageService.addSuccess("Certificate approved successfully.")
+	  },
+      error: (error) => {
+		this._messageService.addError(error);
+	  }
+    });
+  }
+
+  rejectCertificate(certificateId: string): void {
+    this._certificatesService.rejectCertificate(certificateId, this._participantId).subscribe({
+      next: () => {
+		this.getPendingCertificates();
+		this._messageService.addSuccess("Certificate rejected successfully.")
+	  },
+      error: (error) => console.error(error)
+    });
+  }
+
 }
