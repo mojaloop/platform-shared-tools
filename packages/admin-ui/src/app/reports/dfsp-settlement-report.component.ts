@@ -44,7 +44,7 @@ export class DFSPSettlementReport implements OnInit {
 	chosenDfspId: string = "";
 	chosenSettlementId: string = "";
 	settlementInfo: SettlementInfo | null = null;
-	aggregatedNetPositions: string = "0.00";
+	aggregatedNetPositions: any;
 
 	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<
 		IParticipant[]
@@ -166,17 +166,29 @@ export class DFSPSettlementReport implements OnInit {
 						),
 					}));
 
-					const aggregatedNetPositions = reports.reduce(
-						(acc, report) =>
-							acc +
-							(Number(report.totalAmountReceived) -
-								Number(report.totalAmountSent)),
-						0
-					);
-					this.aggregatedNetPositions = formatNumber(
-						aggregatedNetPositions
-					);
+					const aggregatedNetAmountByCurrency = reports.reduce((accumulator: { currencyCode: string; value: number }[], dataRow:ModifiedReport ) => {
+							const { currency } = dataRow;
+							const index = accumulator.findIndex(item => item.currencyCode === currency);
+							
+							const receivedAmountWithoutCommas = dataRow.totalAmountReceived.replace(/,/g, '');
+							const sentAmountWithoutCommas = dataRow.totalAmountSent.replace(/,/g, '');
+						
+							const netPositionValue = parseFloat(receivedAmountWithoutCommas) - parseFloat(sentAmountWithoutCommas);
 
+							if (index === -1) {
+								accumulator.push({ currencyCode: currency, value: netPositionValue });
+							} else {
+								accumulator[index].value += netPositionValue;
+							}
+							return accumulator;
+					}, [] as { currencyCode: string; value: number }[]);
+
+					this.aggregatedNetPositions =  aggregatedNetAmountByCurrency.map(item => {
+						return {
+							currencyCode: item.currencyCode,
+							value: formatNumber(item.value)
+						};
+					});					
 					this.reports.next(reports);
 				},
 				(error) => {
@@ -253,7 +265,7 @@ export class DFSPSettlementReport implements OnInit {
 				report.netPosition,
 			]);
 		});
-		data.push(["Aggregated Net Positions", this.aggregatedNetPositions]);
+		data.push(["Aggregated Net Positions", 0]);
 
 		// Create a new workbook
 		const wb = XLSX.utils.book_new();
