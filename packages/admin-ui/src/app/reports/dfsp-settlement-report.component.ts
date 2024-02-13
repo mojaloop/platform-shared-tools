@@ -44,7 +44,7 @@ export class DFSPSettlementReport implements OnInit {
 	chosenDfspId: string = "";
 	chosenSettlementId: string = "";
 	settlementInfo: SettlementInfo | null = null;
-	aggregatedNetPositions: string = "0.00";
+	aggregatedNetPositions: any;
 
 	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<
 		IParticipant[]
@@ -166,17 +166,29 @@ export class DFSPSettlementReport implements OnInit {
 						),
 					}));
 
-					const aggregatedNetPositions = reports.reduce(
-						(acc, report) =>
-							acc +
-							(Number(report.totalAmountReceived) -
-								Number(report.totalAmountSent)),
-						0
-					);
-					this.aggregatedNetPositions = formatNumber(
-						aggregatedNetPositions
-					);
+					const aggregatedNetAmountByCurrency = reports.reduce((accumulator: { currencyCode: string; value: number }[], dataRow:ModifiedReport ) => {
+							const { currency } = dataRow;
+							const index = accumulator.findIndex(item => item.currencyCode === currency);
+							
+							const receivedAmountWithoutCommas = dataRow.totalAmountReceived.replace(/,/g, '');
+							const sentAmountWithoutCommas = dataRow.totalAmountSent.replace(/,/g, '');
+						
+							const netPositionValue = parseFloat(receivedAmountWithoutCommas) - parseFloat(sentAmountWithoutCommas);
 
+							if (index === -1) {
+								accumulator.push({ currencyCode: currency, value: netPositionValue });
+							} else {
+								accumulator[index].value += netPositionValue;
+							}
+							return accumulator;
+					}, [] as { currencyCode: string; value: number }[]);
+
+					this.aggregatedNetPositions =  aggregatedNetAmountByCurrency.map(item => {
+						return {
+							currencyCode: item.currencyCode,
+							value: formatNumber(item.value)
+						};
+					});					
 					this.reports.next(reports);
 				},
 				(error) => {
@@ -222,48 +234,6 @@ export class DFSPSettlementReport implements OnInit {
 		this.getReports(this.chosenDfspId, settlementId);
 		this.chosenSettlementId = settlementId;
 		this.showResults = true;
-	}
-
-	downloadReport() {
-		const data: (string | number)[][] = [
-			[
-				"DFSP ID",
-				"DFSP Name",
-				"Sent to FSP Volume",
-				"Sent to FSP Value",
-				"Received from FSP Volume",
-				"Received from FSP Value",
-				"Total Transaction Volume",
-				"Total Value of All Transactions",
-				"Currency",
-				"Net Position vs. Each DFSP",
-			],
-		];
-		this.reports.value.forEach((report) => {
-			data.push([
-				report.relateParticipantId,
-				report.relateParticipantName,
-				report.totalSentCount,
-				report.totalAmountSent,
-				report.totalReceivedCount,
-				report.totalAmountReceived,
-				report.totalTransactionCount,
-				report.totalAmount,
-				report.currency,
-				report.netPosition,
-			]);
-		});
-		data.push(["Aggregated Net Positions", this.aggregatedNetPositions]);
-
-		// Create a new workbook
-		const wb = XLSX.utils.book_new();
-
-		// Add a worksheet to the workbook
-		const ws = XLSX.utils.aoa_to_sheet(data);
-		XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
-
-		// Save the workbook as an Excel file
-		XLSX.writeFile(wb, `report-${this.chosenSettlementId}.xlsx`);
 	}
 
 	downloadDFSPSettlementReport() {

@@ -174,26 +174,41 @@
 				<td style="min-width: 160px">
 					{{ report.relateParticipantName }}
 				</td>
-				<td style="min-width: 160px">{{ report.totalSentCount }}</td>
-				<td style="min-width: 160px">{{ report.totalAmountSent }}</td>
-				<td style="min-width: 160px">
+				<td style="min-width: 160px; text-align: right;">{{ report.totalSentCount }}</td>
+				<td style="min-width: 160px; text-align: right;">{{ report.totalAmountSent }}</td>
+				<td style="min-width: 160px; text-align: right;">
 					{{ report.totalReceivedCount }}
 				</td>
-				<td style="min-width: 160px">
+				<td style="min-width: 160px; text-align: right;">
 					{{ report.totalAmountReceived }}
 				</td>
-				<td style="min-width: 160px">
+				<td style="min-width: 160px; text-align: right;">
 					{{ report.totalTransactionCount }}
 				</td>
-				<td style="min-width: 160px">{{ report.totalAmount }}</td>
+				<td style="min-width: 160px; text-align: right;">{{ report.totalAmount }}</td>
 				<td style="min-width: 160px">{{ report.currency }}</td>
-				<td style="min-width: 160px">{{ report.netPosition }}</td>
+				<td style="min-width: 160px; text-align: right;">{{ report.netPosition }}</td>
 			</tr>
 		</tbody>
 	</table>
 
-	<div class="d-flex justify-content-between border-top border-bottom mb-5">
-		<p class="p-3">Aggregated Net Positions</p>
-		<p class="p-3" style="min-width: 160px">{{ aggregatedNetPositions }}</p>
+	<div class="border-top border-bottom mb-5">
+		<table class="table mb-0" style="display: block; overflow-x: auto; margin-top: 30px">
+			<thead class="thead-light">
+				<tr>
+					<th colspan="2">Aggregated Net Positions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let netPosition of aggregatedNetPositions">
+					<td>
+						{{ netPosition.currencyCode }}
+					</td>
+					<td style="text-align: right;">
+						{{ netPosition.value }}
+					</td>
+				</tr>
+			</tbody>	
+		</table>
 	</div>
 </div>
