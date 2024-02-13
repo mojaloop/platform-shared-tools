@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   reporting-api-svc:
-    image: mojaloop/reporting-bc-reporting-api-svc:0.3.10
+    image: mojaloop/reporting-bc-reporting-api-svc:0.3.16
     environment:
       - KAFKA_URL=${KAFKA_URL}
       - KAFKA_LOGS_TOPIC=${KAFKA_LOGS_TOPIC}
