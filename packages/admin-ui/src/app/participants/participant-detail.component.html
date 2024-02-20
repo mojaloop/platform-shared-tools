@@ -867,7 +867,7 @@
 			 <!-- Add Certificate Section -->
 			<div class="mt-4">
 			  <p *ngIf="(participant | async)?.approved === false" class="text-danger">
-				Participant is not approved yet. You can not upload a certificate.
+				Participant is not approved yet. You cannot upload a certificate.
 			  </p>
 			  <button data-toggle="modal" data-target="#certificateUploadModal" type="button"
 				  [disabled]="!(participant | async)?.approved"
