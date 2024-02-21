@@ -1418,7 +1418,9 @@ export class ParticipantDetailComponent implements OnInit {
 						"Certificate rejected successfully.",
 					);
 				},
-				error: (error) => console.error(error),
+				error: (error) => {
+					this._messageService.addError(error);
+				}
 			});
 	}
 }
