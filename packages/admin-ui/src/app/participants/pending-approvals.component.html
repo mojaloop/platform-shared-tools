@@ -151,6 +151,78 @@
       </table>
     </ng-template>
   </li>
+		<!-- Certificates -->
+  <li ngbNavItem="certificates">
+	  <a ngbNavLink>Certificates
+      <span class="ml-2 badge bg-danger text-white">{{
+		pendingCertificates.length
+      }}</span></a
+    >
+
+	<ng-template ngbNavContent>
+	  <h4 class="mt-3">Pending Certificates for Approval</h4>
+	  <div>
+		  <button
+			class="btn btn-success"
+			(click)="approveCertificates()"
+			[disabled]="selectedCertificates.length === 0"
+			>
+			Approve
+		  </button>
+		  <button
+			class="btn btn-danger ml-2"
+			(click)="rejectCertificates()"
+			[disabled]="selectedCertificates.length === 0"
+			>
+			Reject
+		  </button>
+		</div>
+		  <table class="table table-hover mt-3">
+			  <thead class="thead-light">
+				  <tr>
+					  <th scope="col">
+						<input
+						  [checked]="isCertificateSelectAll"
+						  type="checkbox"
+						  (change)="selectAllCertificates($event)"
+						/>
+					  </th>
+					  <th scope="col">Participant ID</th>
+					  <th scope="col">Subject</th>
+					  <th scope="col">Issued By</th>
+					  <th scope="col">Valid From</th>
+					  <th scope="col">Valid To</th>
+					  <th scope="col">Uploaded By</th>
+					  <!-- <th scope="col">Actions</th> -->
+				  </tr>
+			  </thead>
+			  <tbody>
+				<tr *ngFor="let certificate of pendingCertificates">
+					<td>
+						<input
+							[checked]="isCertificateSelectAll || isCertificateSelected(certificate)"
+							type="checkbox"
+							(change)="selectCertificate($event, certificate)"
+						/>
+					</td>
+					<td>{{ certificate.participantId }}</td>
+					<td>{{ certificate.certInfo?.subject }}</td>
+					<td>{{ certificate.certInfo?.issuer }}</td>
+					<td>
+						{{ certificate.certInfo?.validFrom | date :
+						"medium" }}
+					</td>
+					<td>
+						{{ certificate.certInfo?.validTo | date : "medium"
+						}}
+					</td>
+					<td>{{ certificate.createdBy }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</ng-template>
+</li>
+	<!-- Certificates -->
 </ul>
 
 <div class="mt-6" [ngbNavOutlet]="nav"></div>

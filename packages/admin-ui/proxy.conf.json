@@ -115,6 +115,15 @@
 			"^/_builtin_iam": ""
 		},
 		"logLevel": "debug"
+	},
+	"/_certificates": {
+		"target": "http://localhost:3200/",
+		"secure": true,
+		"changeOrigin": true,
+		"pathRewrite": {
+			"^/_certificates": ""
+		},
+		"logLevel": "debug"
 	},"/_reporting": {
 		"target": "http://localhost:5000/",
 		"secure": true,

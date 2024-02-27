@@ -1,348 +1,516 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ElementRef, OnInit } from "@angular/core";
 import { ParticipantsService } from "../_services_and_types/participants.service";
 import { MessageService } from "../_services_and_types/message.service";
 import { BehaviorSubject } from "rxjs";
-import { IBulkApprovalResult, IParticipantPendingApproval } from "../_services_and_types/participant_types";
+import {
+	IBulkApprovalResult,
+	IParticipantPendingApproval,
+} from "../_services_and_types/participant_types";
 import { UnauthorizedError } from "@mojaloop/security-bc-public-types-lib";
 import { ApprovalRequestState } from "@mojaloop/participant-bc-public-types-lib";
+import {
+	Certificate,
+	CertificateRequest,
+} from "../_services_and_types/certificate_types";
+import { CertificatesService } from "../_services_and_types/certificate.service";
 
 @Component({
-  selector: "app-participants",
-  templateUrl: "./pending-approvals.component.html",
+	selector: "app-participants",
+	templateUrl: "./pending-approvals.component.html",
 })
 export class PendingApprovalsComponent implements OnInit {
-  fundAdjustments: BehaviorSubject<
-    IParticipantPendingApproval["fundsMovementRequest"]
-  > = new BehaviorSubject<IParticipantPendingApproval["fundsMovementRequest"]>(
-    []
-  );
-  isFundAdjustmentSelectAll: boolean = false;
-  selectedFundAdjustment: IParticipantPendingApproval["fundsMovementRequest"] =
-    [];
+	fundAdjustments: BehaviorSubject<
+		IParticipantPendingApproval["fundsMovementRequest"]
+	> = new BehaviorSubject<
+		IParticipantPendingApproval["fundsMovementRequest"]
+	>([]);
+	isFundAdjustmentSelectAll: boolean = false;
+	selectedFundAdjustment: IParticipantPendingApproval["fundsMovementRequest"] =
+		[];
 
-  ndcRequests: BehaviorSubject<
-    IParticipantPendingApproval["ndcChangeRequests"]
-  > = new BehaviorSubject<IParticipantPendingApproval["ndcChangeRequests"]>([]);
-  isNDCSelectAll: boolean = false;
-  selectedNDCRequest: IParticipantPendingApproval["ndcChangeRequests"] = [];
+	ndcRequests: BehaviorSubject<
+		IParticipantPendingApproval["ndcChangeRequests"]
+	> = new BehaviorSubject<IParticipantPendingApproval["ndcChangeRequests"]>(
+		[],
+	);
+	isNDCSelectAll: boolean = false;
+	selectedNDCRequest: IParticipantPendingApproval["ndcChangeRequests"] = [];
 
-  fundAdjustmentCount: number = 0;
-  ndcRequestCount: number = 0;
+	fundAdjustmentCount: number = 0;
+	ndcRequestCount: number = 0;
 
-  constructor(
-    private _participantsSvc: ParticipantsService,
-    private _messageService: MessageService
-  ) { }
+	pendingCertificates: Certificate[] = [];
+	selectedCertificates: Certificate[] = [];
+	isCertificateSelectAll: boolean = false;
 
-  async ngOnInit(): Promise<void> {
-    console.log("PendingApprovalsComponent ngOnInit");
+	constructor(
+		private _participantsSvc: ParticipantsService,
+		private _messageService: MessageService,
+		private _certificatesService: CertificatesService,
+	) {}
 
-    this.getPendingApprovalsSummary();
-    this.getPendingApprovals();
-  }
+	async ngOnInit(): Promise<void> {
+		console.log("PendingApprovalsComponent ngOnInit");
 
-  tabChange(e: any) {
-    console.log(`Tab changed to ${e.nextId}`);
-  }
+		this.getPendingApprovalsSummary();
+		this.getPendingApprovals();
+		this.getPendingCertificates();
+	}
 
-  selectAllFundAdjustments(e: any) {
-    const isChecked = e.target.checked;
-    this.isFundAdjustmentSelectAll = isChecked;
+	tabChange(e: any) {
+		console.log(`Tab changed to ${e.nextId}`);
+	}
 
-    if (!isChecked) {
-      this.selectedFundAdjustment = [];
-    }
-  }
+	selectAllFundAdjustments(e: any) {
+		const isChecked = e.target.checked;
+		this.isFundAdjustmentSelectAll = isChecked;
 
-  selectAllNDCRequests(e: any) {
-    const isChecked = e.target.checked;
-    this.isNDCSelectAll = isChecked;
+		if (!isChecked) {
+			this.selectedFundAdjustment = [];
+		}
+	}
 
-    if (!isChecked) {
-      this.selectedNDCRequest = [];
-    }
-  }
+	selectAllNDCRequests(e: any) {
+		const isChecked = e.target.checked;
+		this.isNDCSelectAll = isChecked;
 
-  selectFundAdjustment(
-    e: any,
-    fundAdjustment: IParticipantPendingApproval["fundsMovementRequest"][number]
-  ) {
-    const isChecked = e.target.checked;
-    if (isChecked) {
-      this.selectedFundAdjustment.push(fundAdjustment);
-    } else {
-      // find by id from fund adjustment and remove item from selectedFundAdjustment
-      const index = this.selectedFundAdjustment.findIndex(
-        (item) => item.id === fundAdjustment.id
-      );
-      if (index !== -1) {
-        this.selectedFundAdjustment.splice(index, 1);
-      }
-    }
-  }
+		if (!isChecked) {
+			this.selectedNDCRequest = [];
+		}
+	}
 
-  selectNDCRequests(
-    e: any,
-    ndcRequest: IParticipantPendingApproval["ndcChangeRequests"][number]
-  ) {
-    const isChecked = e.target.checked;
-    if (isChecked) {
-      this.selectedNDCRequest.push(ndcRequest);
-    } else {
-      // find by id from fund adjustment and remove item from selectedFundAdjustment
-      const index = this.selectedNDCRequest.findIndex(
-        (item) => item.id === ndcRequest.id
-      );
-      if (index !== -1) {
-        this.selectedNDCRequest.splice(index, 1);
-      }
-    }
-  }
+	selectFundAdjustment(
+		e: any,
+		fundAdjustment: IParticipantPendingApproval["fundsMovementRequest"][number],
+	) {
+		const isChecked = e.target.checked;
+		if (isChecked) {
+			this.selectedFundAdjustment.push(fundAdjustment);
+		} else {
+			// find by id from fund adjustment and remove item from selectedFundAdjustment
+			const index = this.selectedFundAdjustment.findIndex(
+				(item) => item.id === fundAdjustment.id,
+			);
+			if (index !== -1) {
+				this.selectedFundAdjustment.splice(index, 1);
+			}
+		}
+	}
 
-  isSelectedNDCRequest(id: string): boolean {
-    return this.selectedNDCRequest.some((item) => item.id === id);
-  }
+	selectNDCRequests(
+		e: any,
+		ndcRequest: IParticipantPendingApproval["ndcChangeRequests"][number],
+	) {
+		const isChecked = e.target.checked;
+		if (isChecked) {
+			this.selectedNDCRequest.push(ndcRequest);
+		} else {
+			// find by id from fund adjustment and remove item from selectedFundAdjustment
+			const index = this.selectedNDCRequest.findIndex(
+				(item) => item.id === ndcRequest.id,
+			);
+			if (index !== -1) {
+				this.selectedNDCRequest.splice(index, 1);
+			}
+		}
+	}
 
-  isSelectedFundAdjustment(id: string): boolean {
-    return this.selectedFundAdjustment.some((item) => item.id === id);
-  }
+	isSelectedNDCRequest(id: string): boolean {
+		return this.selectedNDCRequest.some((item) => item.id === id);
+	}
 
-  getApprovalData(reqState: ApprovalRequestState): IParticipantPendingApproval {
-    let ndcRequests: IParticipantPendingApproval["ndcChangeRequests"] =
-      this.selectedNDCRequest;
-    let fundAdjustments: IParticipantPendingApproval["fundsMovementRequest"] =
-      this.selectedFundAdjustment;
-    if (this.isNDCSelectAll) {
-      ndcRequests = this.ndcRequests.value;
-    }
-    if (this.isFundAdjustmentSelectAll) {
-      fundAdjustments = this.fundAdjustments.value;
-    }
+	isSelectedFundAdjustment(id: string): boolean {
+		return this.selectedFundAdjustment.some((item) => item.id === id);
+	}
 
-    ndcRequests.forEach((item) => {
-      item.requestState = reqState;
-    });
+	getApprovalData(
+		reqState: ApprovalRequestState,
+	): IParticipantPendingApproval {
+		let ndcRequests: IParticipantPendingApproval["ndcChangeRequests"] =
+			this.selectedNDCRequest;
+		let fundAdjustments: IParticipantPendingApproval["fundsMovementRequest"] =
+			this.selectedFundAdjustment;
+		if (this.isNDCSelectAll) {
+			ndcRequests = this.ndcRequests.value;
+		}
+		if (this.isFundAdjustmentSelectAll) {
+			fundAdjustments = this.fundAdjustments.value;
+		}
 
-    fundAdjustments.forEach((item) => {
-      item.requestState = reqState;
-    });
+		ndcRequests.forEach((item) => {
+			item.requestState = reqState;
+		});
 
-    return {
-      ndcChangeRequests: ndcRequests,
-      fundsMovementRequest: fundAdjustments,
-      accountsChangeRequest: [],
-      ipChangeRequests: [],
-      contactInfoChangeRequests: [],
-      statusChangeRequests: [],
-    };
-  }
+		fundAdjustments.forEach((item) => {
+			item.requestState = reqState;
+		});
 
-  approveFundAdjustmentPendingApprovals() {
-    let fundAdjustments: IParticipantPendingApproval["fundsMovementRequest"] = 
-    this.selectedFundAdjustment;
-    
-    if (this.isFundAdjustmentSelectAll) {
-      fundAdjustments = this.fundAdjustments.value;
-    }
-    
-    this._participantsSvc.submitPendingApprovals({
-      fundsMovementRequest: fundAdjustments,
-      ndcChangeRequests: [],
-      accountsChangeRequest: [],
-      ipChangeRequests: [],
-      contactInfoChangeRequests: [],
-      statusChangeRequests: [],
-    },ApprovalRequestState.APPROVED).subscribe(
-      async (results:IBulkApprovalResult[]) => {
-        results.forEach((result)=> {
-          if(result.status == "error"){
-            this._messageService.addError(result.message, 10000);
-          }else {
-            this._messageService.addSuccess(result.message, 10000);
-          }
-        });
+		return {
+			ndcChangeRequests: ndcRequests,
+			fundsMovementRequest: fundAdjustments,
+			accountsChangeRequest: [],
+			ipChangeRequests: [],
+			contactInfoChangeRequests: [],
+			statusChangeRequests: [],
+		};
+	}
 
-        await this.getPendingApprovalsSummary();
-        await this.getPendingApprovals();
-      },
-      (error) => {
-        if (error && error instanceof UnauthorizedError) {
-          this._messageService.addError(error.message);
-        }
-      },
-      () => {
-        // reset all selected options
-        this.selectedFundAdjustment = [];
-        this.isFundAdjustmentSelectAll = false;
-      }
-    );
-  }
+	approveFundAdjustmentPendingApprovals() {
+		let fundAdjustments: IParticipantPendingApproval["fundsMovementRequest"] =
+			this.selectedFundAdjustment;
 
-  rejectFundAdjustmentPendingApprovals() {
-    let fundAdjustments: IParticipantPendingApproval["fundsMovementRequest"] =
-      this.selectedFundAdjustment;
-    if (this.isFundAdjustmentSelectAll) {
-      fundAdjustments = this.fundAdjustments.value;
-    }
-    /* fundAdjustments.forEach((item) => {
+		if (this.isFundAdjustmentSelectAll) {
+			fundAdjustments = this.fundAdjustments.value;
+		}
+
+		this._participantsSvc
+			.submitPendingApprovals(
+				{
+					fundsMovementRequest: fundAdjustments,
+					ndcChangeRequests: [],
+					accountsChangeRequest: [],
+					ipChangeRequests: [],
+					contactInfoChangeRequests: [],
+					statusChangeRequests: [],
+				},
+				ApprovalRequestState.APPROVED,
+			)
+			.subscribe(
+				async (results: IBulkApprovalResult[]) => {
+					results.forEach((result) => {
+						if (result.status == "error") {
+							this._messageService.addError(
+								result.message,
+								10000,
+							);
+						} else {
+							this._messageService.addSuccess(
+								result.message,
+								10000,
+							);
+						}
+					});
+
+					await this.getPendingApprovalsSummary();
+					await this.getPendingApprovals();
+				},
+				(error) => {
+					if (error && error instanceof UnauthorizedError) {
+						this._messageService.addError(error.message);
+					}
+				},
+				() => {
+					// reset all selected options
+					this.selectedFundAdjustment = [];
+					this.isFundAdjustmentSelectAll = false;
+				},
+			);
+	}
+
+	rejectFundAdjustmentPendingApprovals() {
+		let fundAdjustments: IParticipantPendingApproval["fundsMovementRequest"] =
+			this.selectedFundAdjustment;
+		if (this.isFundAdjustmentSelectAll) {
+			fundAdjustments = this.fundAdjustments.value;
+		}
+		/* fundAdjustments.forEach((item) => {
       item.requestState = ApprovalRequestState.REJECTED;
     }); */
-    this._participantsSvc.submitPendingApprovals({
-      fundsMovementRequest: fundAdjustments,
-      ndcChangeRequests: [],
-      accountsChangeRequest: [],
-      ipChangeRequests: [],
-      contactInfoChangeRequests: [],
-      statusChangeRequests: [],
-    }, ApprovalRequestState.REJECTED).subscribe(
-      async (results:IBulkApprovalResult[]) => {
-        results.forEach((result)=> {
-          if(result.status == "error"){
-            this._messageService.addError(result.message, 10000);
-          }else {
-            this._messageService.addSuccess(result.message, 10000);
-          }
-        });
+		this._participantsSvc
+			.submitPendingApprovals(
+				{
+					fundsMovementRequest: fundAdjustments,
+					ndcChangeRequests: [],
+					accountsChangeRequest: [],
+					ipChangeRequests: [],
+					contactInfoChangeRequests: [],
+					statusChangeRequests: [],
+				},
+				ApprovalRequestState.REJECTED,
+			)
+			.subscribe(
+				async (results: IBulkApprovalResult[]) => {
+					results.forEach((result) => {
+						if (result.status == "error") {
+							this._messageService.addError(
+								result.message,
+								10000,
+							);
+						} else {
+							this._messageService.addSuccess(
+								result.message,
+								10000,
+							);
+						}
+					});
 
-        await this.getPendingApprovalsSummary();
-        await this.getPendingApprovals();
-      },
-      (error) => {
-        if (error && error instanceof UnauthorizedError) {
-          this._messageService.addError(error.message);
-        }
-      },
-      () => {
-        // reset all selected options
-        this.selectedFundAdjustment = [];
-        this.isFundAdjustmentSelectAll = false;
-      }
-    );
-  }
+					await this.getPendingApprovalsSummary();
+					await this.getPendingApprovals();
+				},
+				(error) => {
+					if (error && error instanceof UnauthorizedError) {
+						this._messageService.addError(error.message);
+					}
+				},
+				() => {
+					// reset all selected options
+					this.selectedFundAdjustment = [];
+					this.isFundAdjustmentSelectAll = false;
+				},
+			);
+	}
 
-  approveNDCRequestPendingApprovals() {
-    let ndcRequests: IParticipantPendingApproval["ndcChangeRequests"] =
-      this.selectedNDCRequest;
-    if (this.isFundAdjustmentSelectAll) {
-      ndcRequests = this.ndcRequests.value;
-    }
-    
-    this._participantsSvc
-      .submitPendingApprovals({
-        fundsMovementRequest: [],
-        ndcChangeRequests: ndcRequests,
-        accountsChangeRequest: [],
-        ipChangeRequests: [],
-        contactInfoChangeRequests: [],
-        statusChangeRequests: [],
-      }, ApprovalRequestState.APPROVED)
-      .subscribe(
-        async (results:IBulkApprovalResult[]) => {
-          results.forEach((result)=> {
-            if(result.status == "error"){
-              this._messageService.addError(result.message, 10000);
-            }else {
-              this._messageService.addSuccess(result.message, 10000);
-            }
-          });
-          
-          await this.getPendingApprovalsSummary();
-          await this.getPendingApprovals();
-        },
-        (error) => {
-          if (error && error instanceof UnauthorizedError) {
-            this._messageService.addError(error.message);
-          }
-        },
-        () => {
-          // reset all selected options
-          this.selectedNDCRequest = [];
-          this.isNDCSelectAll = false;
-        }
-      );
-  }
+	approveNDCRequestPendingApprovals() {
+		let ndcRequests: IParticipantPendingApproval["ndcChangeRequests"] =
+			this.selectedNDCRequest;
+		if (this.isFundAdjustmentSelectAll) {
+			ndcRequests = this.ndcRequests.value;
+		}
 
-  rejectNDCRequestPendingApprovals() {
-    let ndcRequests: IParticipantPendingApproval["ndcChangeRequests"] =
-      this.selectedNDCRequest;
-    if (this.isFundAdjustmentSelectAll) {
-      ndcRequests = this.ndcRequests.value;
-    }
-   
-    this._participantsSvc
-      .submitPendingApprovals({
-        fundsMovementRequest: [],
-        ndcChangeRequests: ndcRequests,
-        accountsChangeRequest: [],
-        ipChangeRequests: [],
-        contactInfoChangeRequests: [],
-        statusChangeRequests: [],
-      }, ApprovalRequestState.REJECTED)
-      .subscribe(
-        async (results:IBulkApprovalResult[]) => {
-          results.forEach((result)=> {
-            if(result.status == "error"){
-              this._messageService.addError(result.message, 10000);
-            }else {
-              this._messageService.addSuccess(result.message, 10000);
-            }
-          });
+		this._participantsSvc
+			.submitPendingApprovals(
+				{
+					fundsMovementRequest: [],
+					ndcChangeRequests: ndcRequests,
+					accountsChangeRequest: [],
+					ipChangeRequests: [],
+					contactInfoChangeRequests: [],
+					statusChangeRequests: [],
+				},
+				ApprovalRequestState.APPROVED,
+			)
+			.subscribe(
+				async (results: IBulkApprovalResult[]) => {
+					results.forEach((result) => {
+						if (result.status == "error") {
+							this._messageService.addError(
+								result.message,
+								10000,
+							);
+						} else {
+							this._messageService.addSuccess(
+								result.message,
+								10000,
+							);
+						}
+					});
 
-          await this.getPendingApprovalsSummary();
-          await this.getPendingApprovals();
-        },
-        (error) => {
-          if (error && error instanceof UnauthorizedError) {
-            this._messageService.addError(error.message);
-          }
-        },
-        () => {
-          // reset all selected options
-          this.selectedNDCRequest = [];
-          this.isNDCSelectAll = false;
-        }
-      );
-  }
+					await this.getPendingApprovalsSummary();
+					await this.getPendingApprovals();
+				},
+				(error) => {
+					if (error && error instanceof UnauthorizedError) {
+						this._messageService.addError(error.message);
+					}
+				},
+				() => {
+					// reset all selected options
+					this.selectedNDCRequest = [];
+					this.isNDCSelectAll = false;
+				},
+			);
+	}
 
-  async getPendingApprovals(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this._participantsSvc.getPendingApprovals().subscribe(
-        (result) => {
-          this.fundAdjustments.next(result.fundsMovementRequest);
-          this.ndcRequests.next(result.ndcChangeRequests);
-          resolve();
-        },
-        (error) => {
-          if (error && error instanceof UnauthorizedError) {
-            this._messageService.addError(error.message);
-          }
-          reject();
-        }
-      );
-    });
-  }
+	rejectNDCRequestPendingApprovals() {
+		let ndcRequests: IParticipantPendingApproval["ndcChangeRequests"] =
+			this.selectedNDCRequest;
+		if (this.isFundAdjustmentSelectAll) {
+			ndcRequests = this.ndcRequests.value;
+		}
 
-  async getPendingApprovalsSummary(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this._participantsSvc.getPendingApprovalsSummary().subscribe(
-        (result) => {
-          this.fundAdjustmentCount =
-            result.countByType.find(
-              (counts) => counts.type === "fundsMovementRequest"
-            )?.count || 0;
-          this.ndcRequestCount =
-            result.countByType.find(
-              (counts) => counts.type === "ndcChangeRequests"
-            )?.count || 0;
-          resolve();
-        },
-        (error) => {
-          if (error && error instanceof UnauthorizedError) {
-            this._messageService.addError(error.message);
-          }
-          reject()
-        }
-      );
-    });
-  }
+		this._participantsSvc
+			.submitPendingApprovals(
+				{
+					fundsMovementRequest: [],
+					ndcChangeRequests: ndcRequests,
+					accountsChangeRequest: [],
+					ipChangeRequests: [],
+					contactInfoChangeRequests: [],
+					statusChangeRequests: [],
+				},
+				ApprovalRequestState.REJECTED,
+			)
+			.subscribe(
+				async (results: IBulkApprovalResult[]) => {
+					results.forEach((result) => {
+						if (result.status == "error") {
+							this._messageService.addError(
+								result.message,
+								10000,
+							);
+						} else {
+							this._messageService.addSuccess(
+								result.message,
+								10000,
+							);
+						}
+					});
+
+					await this.getPendingApprovalsSummary();
+					await this.getPendingApprovals();
+				},
+				(error) => {
+					if (error && error instanceof UnauthorizedError) {
+						this._messageService.addError(error.message);
+					}
+				},
+				() => {
+					// reset all selected options
+					this.selectedNDCRequest = [];
+					this.isNDCSelectAll = false;
+				},
+			);
+	}
+
+	async getPendingApprovals(): Promise<void> {
+		return new Promise((resolve, reject) => {
+			this._participantsSvc.getPendingApprovals().subscribe(
+				(result) => {
+					this.fundAdjustments.next(result.fundsMovementRequest);
+					this.ndcRequests.next(result.ndcChangeRequests);
+					resolve();
+				},
+				(error) => {
+					if (error && error instanceof UnauthorizedError) {
+						this._messageService.addError(error.message);
+					}
+					reject();
+				},
+			);
+		});
+	}
+
+	async getPendingApprovalsSummary(): Promise<void> {
+		return new Promise((resolve, reject) => {
+			this._participantsSvc.getPendingApprovalsSummary().subscribe(
+				(result) => {
+					this.fundAdjustmentCount =
+						result.countByType.find(
+							(counts) => counts.type === "fundsMovementRequest",
+						)?.count || 0;
+					this.ndcRequestCount =
+						result.countByType.find(
+							(counts) => counts.type === "ndcChangeRequests",
+						)?.count || 0;
+					resolve();
+				},
+				(error) => {
+					if (error && error instanceof UnauthorizedError) {
+						this._messageService.addError(error.message);
+					}
+					reject();
+				},
+			);
+		});
+	}
+
+	getPendingCertificates(): void {
+		this._certificatesService.getPendingCertificates().subscribe({
+			next: (CertificateRequests) => {
+				this.pendingCertificates = CertificateRequests.reduce(
+					(acc: Certificate[], item: CertificateRequest) => {
+						return acc.concat(
+							item.participantCertificateUploadRequests,
+						);
+					},
+					[],
+				);
+			},
+			error: (error) => console.error(error),
+		});
+	}
+
+	isCertificateSelected(certificate: Certificate): boolean {
+		return this.selectedCertificates.some(
+			(item) => item._id === certificate._id,
+		);
+	}
+
+	selectCertificate(e: any, certificate: Certificate) {
+		if (e.target.checked) {
+			if (
+				!this.selectedCertificates.some(
+					(item) => item._id === certificate._id,
+				)
+			) {
+				this.selectedCertificates.push(certificate);
+			}
+		} else {
+			const index = this.selectedCertificates.findIndex(
+				(item) => item._id === certificate._id,
+			);
+			if (index !== -1) {
+				this.selectedCertificates.splice(index, 1);
+			}
+		}
+		console.log(this.pendingCertificates.length);
+	}
+
+	selectAllCertificates(e: any) {
+		if (e.target.checked) {
+			this.selectedCertificates = [...this.pendingCertificates];
+			this.isCertificateSelectAll = true;
+		} else {
+			this.selectedCertificates = [];
+			this.isCertificateSelectAll = false;
+		}
+	}
+
+	approveCertificates(): void {
+		const certificateIds = this.selectedCertificates.map(
+			(certificate) => certificate._id,
+		);
+		const participantIds = this.selectedCertificates.map(
+			(certificate) => certificate.participantId,
+		);
+		// find duplicates of participantIds
+		const uniqueParticipantIds = [...new Set(participantIds)];
+		if (uniqueParticipantIds.length !== participantIds.length) {
+			// Show error that only one certificate per participant can be approved at a time
+			this._messageService.addError(
+				"Multiple certificates for single participant cannot be approved.",
+				10000,
+			);
+			return;
+		}
+
+		this._certificatesService
+			.bulkApproveCertificates(certificateIds)
+			.subscribe({
+				next: () => {
+					this.getPendingCertificates(); // Refresh the list of pending certificates
+					this.selectedCertificates = [];
+					this.isCertificateSelectAll = false;
+					this._messageService.addSuccess(
+						"Certificates approved successfully.",
+						10000,
+					);
+				},
+				error: (error) => {
+					this._messageService.addError(error);
+				},
+			});
+	}
+
+	rejectCertificates(): void {
+		const certificateIds = this.selectedCertificates.map(
+			(certificate) => certificate._id,
+		);
+		this._certificatesService
+			.bulkRejectCertificates(certificateIds)
+			.subscribe({
+				next: () => {
+					this.getPendingCertificates(); // Refresh the list of pending certificates
+					this.selectedCertificates = [];
+					this.isCertificateSelectAll = false;
+					this._messageService.addSuccess(
+						"Certificates rejected and removed successfully.",
+						10000,
+					);
+				},
+				error: (error) => {
+					this._messageService.addError(error);
+				},
+			});
+	}
 }
