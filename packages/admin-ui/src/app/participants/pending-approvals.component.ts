@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ParticipantsService } from "../_services_and_types/participants.service";
 import { MessageService } from "../_services_and_types/message.service";
 import { BehaviorSubject } from "rxjs";
@@ -29,10 +29,17 @@ export class PendingApprovalsComponent implements OnInit {
   fundAdjustmentCount: number = 0;
   ndcRequestCount: number = 0;
 
+  approvalResult: BulkApprovalRequestResults[] = [];
+
+  @ViewChild("pendingApprovalsModal") // Get a reference to the depositModal
+  pendingApprovalsModal!: NgbModal;
+  pendingApprovalsModalRef?: NgbModalRef;
+
   constructor(
     private _participantsSvc: ParticipantsService,
-    private _messageService: MessageService
-  ) { }
+    private _messageService: MessageService,
+    private _modalService: NgbModal
+  ) {}
 
   async ngOnInit(): Promise<void> {
     console.log("PendingApprovalsComponent ngOnInit");
@@ -70,6 +77,13 @@ export class PendingApprovalsComponent implements OnInit {
     const isChecked = e.target.checked;
     if (isChecked) {
       this.selectedFundAdjustment.push(fundAdjustment);
+
+      // Check if all Fund Adjustment requests are selected
+      if (
+        this.fundAdjustments.value.length === this.selectedFundAdjustment.length
+      ) {
+        this.isFundAdjustmentSelectAll = true;
+      }
     } else {
       // find by id from fund adjustment and remove item from selectedFundAdjustment
       const index = this.selectedFundAdjustment.findIndex(
@@ -78,6 +92,8 @@ export class PendingApprovalsComponent implements OnInit {
       if (index !== -1) {
         this.selectedFundAdjustment.splice(index, 1);
       }
+
+      this.isFundAdjustmentSelectAll = false;
     }
   }
 
@@ -86,8 +102,14 @@ export class PendingApprovalsComponent implements OnInit {
     ndcRequest: IParticipantPendingApproval["ndcChangeRequests"][number]
   ) {
     const isChecked = e.target.checked;
+
     if (isChecked) {
       this.selectedNDCRequest.push(ndcRequest);
+
+      // Check if all NDC requests are selected
+      if (this.ndcRequests.value.length === this.selectedNDCRequest.length) {
+        this.isNDCSelectAll = true;
+      }
     } else {
       // find by id from fund adjustment and remove item from selectedFundAdjustment
       const index = this.selectedNDCRequest.findIndex(
@@ -96,6 +118,8 @@ export class PendingApprovalsComponent implements OnInit {
       if (index !== -1) {
         this.selectedNDCRequest.splice(index, 1);
       }
+
+      this.isNDCSelectAll = false;
     }
   }
 
@@ -138,13 +162,13 @@ export class PendingApprovalsComponent implements OnInit {
   }
 
   approveFundAdjustmentPendingApprovals() {
-    let fundAdjustments: IParticipantPendingApproval["fundsMovementRequest"] = 
+    let fundAdjustments: IParticipantPendingApproval["fundsMovementRequest"] =
     this.selectedFundAdjustment;
-    
+
     if (this.isFundAdjustmentSelectAll) {
       fundAdjustments = this.fundAdjustments.value;
     }
-    
+
     this._participantsSvc.submitPendingApprovals({
       fundsMovementRequest: fundAdjustments,
       ndcChangeRequests: [],
@@ -169,13 +193,7 @@ export class PendingApprovalsComponent implements OnInit {
         if (error && error instanceof UnauthorizedError) {
           this._messageService.addError(error.message);
         }
-      },
-      () => {
-        // reset all selected options
-        this.selectedFundAdjustment = [];
-        this.isFundAdjustmentSelectAll = false;
-      }
-    );
+      );
   }
 
   rejectFundAdjustmentPendingApprovals() {
@@ -211,13 +229,7 @@ export class PendingApprovalsComponent implements OnInit {
         if (error && error instanceof UnauthorizedError) {
           this._messageService.addError(error.message);
         }
-      },
-      () => {
-        // reset all selected options
-        this.selectedFundAdjustment = [];
-        this.isFundAdjustmentSelectAll = false;
-      }
-    );
+      );
   }
 
   approveNDCRequestPendingApprovals() {
@@ -226,7 +238,7 @@ export class PendingApprovalsComponent implements OnInit {
     if (this.isFundAdjustmentSelectAll) {
       ndcRequests = this.ndcRequests.value;
     }
-    
+
     this._participantsSvc
       .submitPendingApprovals({
         fundsMovementRequest: [],
@@ -245,7 +257,7 @@ export class PendingApprovalsComponent implements OnInit {
               this._messageService.addSuccess(result.message, 10000);
             }
           });
-          
+
           await this.getPendingApprovalsSummary();
           await this.getPendingApprovals();
         },
@@ -268,7 +280,7 @@ export class PendingApprovalsComponent implements OnInit {
     if (this.isFundAdjustmentSelectAll) {
       ndcRequests = this.ndcRequests.value;
     }
-   
+
     this._participantsSvc
       .submitPendingApprovals({
         fundsMovementRequest: [],
@@ -340,9 +352,14 @@ export class PendingApprovalsComponent implements OnInit {
           if (error && error instanceof UnauthorizedError) {
             this._messageService.addError(error.message);
           }
-          reject()
+          reject();
         }
       );
     });
+  }
+
+  closePendingApprovalsModal() {
+    this.pendingApprovalsModalRef?.close();
+    this.approvalResult = [];
   }
 }

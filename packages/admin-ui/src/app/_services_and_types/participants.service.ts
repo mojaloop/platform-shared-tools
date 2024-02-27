@@ -1300,7 +1300,7 @@ export class ParticipantsService {
 	}
 
 	submitPendingApprovals(data: IParticipantPendingApproval, requestState:ApprovalRequestState) {
-		const url = requestState == ApprovalRequestState.APPROVED? 
+		const url = requestState == ApprovalRequestState.APPROVED?
 					`${SVC_BASEURL}/participants/pendingApprovals/approve`:
 					`${SVC_BASEURL}/participants/pendingApprovals/reject`;
 
