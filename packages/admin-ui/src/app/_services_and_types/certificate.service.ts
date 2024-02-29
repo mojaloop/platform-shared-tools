@@ -63,7 +63,7 @@ export class CertificatesService {
 	}
 
     getAllPendingCertificates(): Observable<CertificateRequest[]> {
-		let url = `${SVC_BASEURL}/certs/requests/pending`;
+		const url = `${SVC_BASEURL}/certs/requests/pending`;
         return new Observable<any[]>((subscriber) => {
             this.http.get<any[]>(url)
                 .subscribe({
