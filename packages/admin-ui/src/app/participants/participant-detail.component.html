@@ -849,6 +849,7 @@
 							<th scope="col">Valid From</th>
 							<th scope="col">Valid To</th>
 							<th scope="col">Uploaded By</th>
+							<th scope="col">Status</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -859,11 +860,23 @@
 							<td>{{ approvedCertificate?.certInfo?.validFrom | date : "medium" }}</td>
 							<td>{{ approvedCertificate?.certInfo?.validTo | date : "medium" }}</td>
 							<td>{{ approvedCertificate?.createdBy }}</td>
+							<td>
+								<span *ngIf="approvedCertificate?.requestState == 'CREATED'" class="text-danger">
+									(Pending)
+								</span>
+								<span *ngIf="approvedCertificate?.requestState == 'APPROVED'">
+									Approved by {{ approvedCertificate?.approvedBy }} on
+									{{ approvedCertificate?.approvedDate | date : "medium" }}
+								</span>
+								<span *ngIf="approvedCertificate?.requestState == 'REJECTED'">
+									Rejected by {{ approvedCertificate?.rejectedBy }} on
+									{{ approvedCertificate?.rejectedDate | date : "medium" }}
+								</span>
+							</td>
 						</tr>
 					</tbody>
 				</table>
 			<hr/>
-			<h4 class="mt-3">Participant Certificates</h4>
 			 <!-- Add Certificate Section -->
 			<div class="mt-4">
 			  <p *ngIf="(participant | async)?.approved === false" class="text-danger">
@@ -878,7 +891,7 @@
 
 			<!-- Certificates Pending Approval -->
 			<div class="mt-5">
-				<h5>Pending Certificates for Approval</h5>
+				<h5>Certificates Approval Requests</h5>
 				<table class="table table-hover mt-3">
 					<thead class="thead-light">
 						<tr>
@@ -888,6 +901,7 @@
 							<th scope="col">Valid From</th>
 							<th scope="col">Valid To</th>
 							<th scope="col">Uploaded By</th>
+							<th scope="col">Status</th>
 							<th scope="col">Actions</th>
 						</tr>
 					</thead>
@@ -900,10 +914,27 @@
 							<td>{{ certificate.certInfo?.validTo | date : "medium" }}</td>
 							<td>{{ certificate.createdBy }}</td>
 							<td>
-								<button class="btn btn-success btn-sm" (click)="approveCertificate(certificate._id)">
+								<span *ngIf="certificate.requestState == 'CREATED'" class="text-danger">
+									(Pending)
+								</span>
+								<span *ngIf="certificate.requestState == 'APPROVED'">
+									Approved by {{ certificate.approvedBy }} on
+									{{ certificate.approvedDate | date : "medium" }}
+								</span>
+								<span *ngIf="certificate.requestState == 'REJECTED'">
+									Rejected by {{ certificate.rejectedBy }} on
+									{{ certificate.rejectedDate | date : "medium" }}
+								</span>
+							</td>
+							<td>
+								<button class="btn btn-success btn-sm mb-2" *ngIf="certificate.requestState == 'CREATED'"
+									(click)="approveCertificate(certificate._id)" ngbTooltip="Approve">
+									<span class="bi bi-check-lg"></span>
 									Approve
 								</button>
-								<button class="btn btn-danger btn-sm" (click)="rejectCertificate(certificate._id)">
+								<button class="btn btn-danger btn-sm" *ngIf="certificate.requestState == 'CREATED'"
+									(click)="rejectCertificate(certificate._id)" ngbTooltip="Reject">
+									<span class="bi bi-x-lg"></span>
 									Reject
 								</button>
 							</td>

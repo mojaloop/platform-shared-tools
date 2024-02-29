@@ -405,7 +405,7 @@ export class PendingApprovalsComponent implements OnInit {
 	}
 
 	getPendingCertificates(): void {
-		this._certificatesService.getPendingCertificates().subscribe({
+		this._certificatesService.getAllPendingCertificates().subscribe({
 			next: (CertificateRequests) => {
 				this.pendingCertificates = CertificateRequests.reduce(
 					(acc: Certificate[], item: CertificateRequest) => {
