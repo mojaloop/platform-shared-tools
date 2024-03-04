@@ -930,12 +930,10 @@
 								<button class="btn btn-success btn-sm mb-2" *ngIf="certificate.requestState == 'CREATED'"
 									(click)="approveCertificate(certificate._id)" ngbTooltip="Approve">
 									<span class="bi bi-check-lg"></span>
-									Approve
 								</button>
 								<button class="btn btn-danger btn-sm" *ngIf="certificate.requestState == 'CREATED'"
 									(click)="rejectCertificate(certificate._id)" ngbTooltip="Reject">
 									<span class="bi bi-x-lg"></span>
-									Reject
 								</button>
 							</td>
 						</tr>
