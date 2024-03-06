@@ -927,14 +927,16 @@
 								</span>
 							</td>
 							<td>
-								<button class="btn btn-success btn-sm mb-2" *ngIf="certificate.requestState == 'CREATED'"
-									(click)="approveCertificate(certificate._id)" ngbTooltip="Approve">
-									<span class="bi bi-check-lg"></span>
-								</button>
-								<button class="btn btn-danger btn-sm" *ngIf="certificate.requestState == 'CREATED'"
-									(click)="rejectCertificate(certificate._id)" ngbTooltip="Reject">
-									<span class="bi bi-x-lg"></span>
-								</button>
+								<div class="btn-group btn-group-sm" role="group" aria-label="">
+									<button class="btn-success btn-sm" *ngIf="certificate.requestState == 'CREATED'"
+										(click)="approveCertificate(certificate._id)" ngbTooltip="Approve">
+										<span class="bi bi-check-lg"></span>
+									</button>
+									<button class="btn-danger btn-sm" *ngIf="certificate.requestState == 'CREATED'"
+										(click)="rejectCertificate(certificate._id)" ngbTooltip="Reject">
+										<span class="bi bi-x-lg"></span>
+									</button>
+								</div>
 							</td>
 						</tr>
 					</tbody>
