@@ -196,6 +196,7 @@ services:
       - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
       - AUTH_N_TOKEN_ISSUER_NAME=${AUTH_N_TOKEN_ISSUER_NAME}
       - AUTH_N_TOKEN_AUDIENCE=${AUTH_N_TOKEN_AUDIENCE}
+    restart: unless-stopped
 
   mcm-external-svc:
     image: mojaloop/cert-management-bc-mcm-external-svc:0.0.6
@@ -211,6 +212,7 @@ services:
       - AUTH_N_SVC_BASEURL=${AUTH_N_SVC_BASEURL}
       - AUTH_N_TOKEN_ISSUER_NAME=${AUTH_N_TOKEN_ISSUER_NAME}
       - AUTH_N_TOKEN_AUDIENCE=${AUTH_N_TOKEN_AUDIENCE}
+    restart: unless-stopped
 
 
 volumes:
