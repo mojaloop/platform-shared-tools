@@ -26,8 +26,8 @@ export class CertificatesService {
             this.http.post<any>(`${SVC_BASEURL}/certs/file`, formData)
                 .subscribe({
                     next: (response) => {
-                      subscriber.next(response)
-                      subscriber.complete()
+                      subscriber.next(response);
+                      subscriber.complete();
                     },
                     error: (error) => this.handleError(error, subscriber)
                 });
@@ -39,8 +39,8 @@ export class CertificatesService {
 			this.http.get<any>(`${SVC_BASEURL}/certs/${participantId}`)
 				.subscribe({
 					next: (response) => {
-						subscriber.next(response)
-						subscriber.complete()
+						subscriber.next(response);
+						subscriber.complete();
 					},
 					error: (error) => this.handleError(error, subscriber)
 				});

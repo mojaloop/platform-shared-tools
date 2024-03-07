@@ -900,12 +900,29 @@
 							<td>{{ certificate.certInfo?.validTo | date : "medium" }}</td>
 							<td>{{ certificate.createdBy }}</td>
 							<td>
-								<button class="btn btn-success btn-sm" (click)="approveCertificate(certificate._id)">
-									Approve
-								</button>
-								<button class="btn btn-danger btn-sm" (click)="rejectCertificate(certificate._id)">
-									Reject
-								</button>
+								<span *ngIf="certificate.requestState == 'CREATED'" class="text-danger">
+									(Pending)
+								</span>
+								<span *ngIf="certificate.requestState == 'APPROVED'">
+									Approved by {{ certificate.approvedBy }} on
+									{{ certificate.approvedDate | date : "medium" }}
+								</span>
+								<span *ngIf="certificate.requestState == 'REJECTED'">
+									Rejected by {{ certificate.rejectedBy }} on
+									{{ certificate.rejectedDate | date : "medium" }}
+								</span>
+							</td>
+							<td>
+								<div class="btn-group btn-group-sm" role="group" aria-label="">
+									<button class="btn-success btn-sm" *ngIf="certificate.requestState == 'CREATED'"
+										(click)="approveCertificate(certificate._id)" ngbTooltip="Approve">
+										<span class="bi bi-check-lg"></span>
+									</button>
+									<button class="btn-danger btn-sm" *ngIf="certificate.requestState == 'CREATED'"
+										(click)="rejectCertificate(certificate._id)" ngbTooltip="Reject">
+										<span class="bi bi-x-lg"></span>
+									</button>
+								</div>
 							</td>
 						</tr>
 					</tbody>
