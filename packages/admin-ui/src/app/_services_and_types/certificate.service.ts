@@ -47,12 +47,23 @@ export class CertificatesService {
 		});
 	}
 
-    getPendingCertificates(participantId: string | null = null): Observable<CertificateRequest[]> {
+	getCertificatesRequests(participantId: string | null = null): Observable<CertificateRequest[]> {
 		let url = `${SVC_BASEURL}/certs/requests`;
 		if (participantId !== null && participantId !== undefined && participantId !== "") {
 			url += `?participantId=${participantId}`;
 		}
 
+		return new Observable<any[]>((subscriber) => {
+			this.http.get<any[]>(url)
+				.subscribe({
+					next: (certificates) => subscriber.next(certificates),
+					error: (error) => this.handleError(error, subscriber)
+				});
+		});
+	}
+
+    getAllPendingCertificates(): Observable<CertificateRequest[]> {
+		const url = `${SVC_BASEURL}/certs/requests/pending`;
         return new Observable<any[]>((subscriber) => {
             this.http.get<any[]>(url)
                 .subscribe({

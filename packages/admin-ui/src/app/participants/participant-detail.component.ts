@@ -127,7 +127,7 @@ export class ParticipantDetailComponent implements OnInit {
 
 		await this._fetchParticipant();
 		await this.getApprovedCertificate();
-		await this.getPendingCertificates();
+		await this.getCertificatesRequests();
 		this.updateAccounts();
 	}
 
@@ -1284,9 +1284,9 @@ export class ParticipantDetailComponent implements OnInit {
 			});
 	}
 
-	getPendingCertificates(): void {
+	getCertificatesRequests(): void {
 		this._certificatesService
-			.getPendingCertificates(this._participantId)
+			.getCertificatesRequests(this._participantId)
 			.subscribe({
 				next: (CertificateRequests) => {
 					this.pendingCertificates = CertificateRequests.reduce(
@@ -1380,7 +1380,7 @@ export class ParticipantDetailComponent implements OnInit {
 						"modal-btn-cancel",
 					) as HTMLButtonElement;
 
-					this.getPendingCertificates();
+					this.getCertificatesRequests();
 					cancelButton.click();
 					this._messageService.addSuccess(
 						"Certificate uploaded successfully.",
@@ -1396,7 +1396,7 @@ export class ParticipantDetailComponent implements OnInit {
 		this._certificatesService.approveCertificate(certificateId).subscribe({
 			next: () => {
 				// Refresh
-				this.getPendingCertificates();
+				this.getCertificatesRequests();
 				this.getApprovedCertificate();
 				this._messageService.addSuccess(
 					"Certificate approved successfully.",
@@ -1413,7 +1413,7 @@ export class ParticipantDetailComponent implements OnInit {
 			.rejectCertificate(certificateId, this._participantId)
 			.subscribe({
 				next: () => {
-					this.getPendingCertificates();
+					this.getCertificatesRequests();
 					this._messageService.addSuccess(
 						"Certificate rejected successfully.",
 					);
