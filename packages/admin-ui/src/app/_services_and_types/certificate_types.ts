@@ -31,6 +31,12 @@
 
 export type ICertType = "PUBLIC" | "PRIVATE";
 
+export enum CertificateRequestState {
+  "CREATED" = "CREATED",
+  "APPROVED" = "APPROVED",
+  "REJECTED" = "REJECTED"
+}
+
 export interface ICertificateInfo {
     subject: string;
     issuer: string;
@@ -51,11 +57,20 @@ export declare type Certificate = {
     description: string | null;
 	certInfo: ICertificateInfo | null;
 	publicKey: string;
+
+	requestState: CertificateRequestState;
+
     createdBy: string;
     createdDate: number;
+
     approved: boolean;
     approvedBy: string | null;
     approvedDate: number | null;
+
+	rejected: boolean;
+	rejectedBy: string | null;
+	rejectedDate: number | null;
+
     lastUpdated: number;
 }
 
