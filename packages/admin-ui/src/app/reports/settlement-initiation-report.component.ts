@@ -1,8 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { BehaviorSubject, Subscription } from "rxjs";
-import moment from "moment";
-
 import { MessageService } from "../_services_and_types/message.service";
 import { ReportService } from "../_services_and_types/report.service";
 import type { SettlementInfo } from "./dfsp-settlement-report.component";
@@ -57,9 +55,9 @@ export class SettlementInitiationReport implements OnInit {
 			.getAllSettlementInitiationReportsByMatrixId(matrixId)
 			.subscribe(
 				(result) => {
-					const formattedDate = moment(
+					const formattedDate = new Date(
 						result[0].settlementCreatedDate
-					).format("DD-MMM-YYYY hh:mm:ss A");
+					).toISOString();
 
 					this.settlementInfo = {
 						settlementId: result[0].matrixId,
