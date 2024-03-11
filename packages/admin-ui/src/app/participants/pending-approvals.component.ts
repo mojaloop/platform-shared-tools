@@ -457,60 +457,76 @@ export class PendingApprovalsComponent implements OnInit {
 	}
 
 	approveCertificates(): void {
-		const certificateIds = this.selectedCertificates.map(
-			(certificate) => certificate._id,
-		);
-		const participantIds = this.selectedCertificates.map(
-			(certificate) => certificate.participantId,
-		);
-		// find duplicates of participantIds
-		const uniqueParticipantIds = [...new Set(participantIds)];
-		if (uniqueParticipantIds.length !== participantIds.length) {
-			// Show error that only one certificate per participant can be approved at a time
-			this._messageService.addError(
-				"Multiple certificates for single participant cannot be approved.",
-				10000,
-			);
-			return;
-		}
+
+		// sorted by createdDate ascending order
+		// to overwrite from oldest to newest if single participant has multiple certificates
+		const certificateIds = this.selectedCertificates
+			.sort((a, b) => (new Date(a.createdDate)).getTime() - (new Date(b.createdDate)).getTime())
+			.map((certificate) => certificate._id);
 
 		this._certificatesService
 			.bulkApproveCertificates(certificateIds)
-			.subscribe({
-				next: () => {
+			.subscribe(
+				async (results: IBulkApprovalResult[]) => {
+					results.forEach((result) => {
+						if (result.status == "error") {
+							this._messageService.addError(
+								result.message,
+								10000,
+							);
+						} else {
+							this._messageService.addSuccess(
+								result.message,
+								10000,
+							);
+						}
+					});
+
+				},
+				(error) => {
+					this._messageService.addError(error);
+				},
+				() => {
+					// reset all selected options
 					this.getPendingCertificates(); // Refresh the list of pending certificates
 					this.selectedCertificates = [];
 					this.isCertificateSelectAll = false;
-					this._messageService.addSuccess(
-						"Certificates approved successfully.",
-						10000,
-					);
 				},
-				error: (error) => {
-					this._messageService.addError(error);
-				},
-			});
+			);
 	}
 
 	rejectCertificates(): void {
-		const certificateIds = this.selectedCertificates.map(
-			(certificate) => certificate._id,
-		);
+		const certificateIds = this.selectedCertificates
+			.map((certificate) => certificate._id);
+
 		this._certificatesService
 			.bulkRejectCertificates(certificateIds)
-			.subscribe({
-				next: () => {
+			.subscribe(
+				async (results: IBulkApprovalResult[]) => {
+					results.forEach((result) => {
+						if (result.status == "error") {
+							this._messageService.addError(
+								result.message,
+								10000,
+							);
+						} else {
+							this._messageService.addSuccess(
+								result.message,
+								10000,
+							);
+						}
+					});
+
+				},
+				(error) => {
+					this._messageService.addError(error);
+				},
+				() => {
+					// reset all selected options
 					this.getPendingCertificates(); // Refresh the list of pending certificates
 					this.selectedCertificates = [];
 					this.isCertificateSelectAll = false;
-					this._messageService.addSuccess(
-						"Certificates rejected and removed successfully.",
-						10000,
-					);
 				},
-				error: (error) => {
-					this._messageService.addError(error);
-				},
-			});
+			);
 	}
 }
