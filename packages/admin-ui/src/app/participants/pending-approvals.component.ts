@@ -488,9 +488,7 @@ export class PendingApprovalsComponent implements OnInit {
 				},
 				() => {
 					// reset all selected options
-					this.getPendingCertificates(); // Refresh the list of pending certificates
-					this.selectedCertificates = [];
-					this.isCertificateSelectAll = false;
+					this.refreshCertificates()
 				},
 			);
 	}
@@ -516,17 +514,19 @@ export class PendingApprovalsComponent implements OnInit {
 							);
 						}
 					});
+					this.refreshCertificates();
 
 				},
 				(error) => {
 					this._messageService.addError(error);
-				},
-				() => {
-					// reset all selected options
-					this.getPendingCertificates(); // Refresh the list of pending certificates
-					this.selectedCertificates = [];
-					this.isCertificateSelectAll = false;
-				},
+					this.refreshCertificates();
+				}
 			);
+	}
+
+	refreshCertificates(): void {
+		this.getPendingCertificates(); // Refresh the list of pending certificates
+		this.selectedCertificates = [];
+		this.isCertificateSelectAll = false;
 	}
 }
