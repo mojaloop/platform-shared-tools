@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { BehaviorSubject, Subscription } from "rxjs";
 import moment from "moment";
-import * as XLSX from "xlsx";
 import {
 	HUB_PARTICIPANT_ID,
 	IParticipant,
@@ -136,9 +135,9 @@ export class DFSPSettlementReport implements OnInit {
 			.subscribe(
 				(result) => {
 					if (result.length > 0) {
-						const formattedDate = moment(
+						const formattedDate = new Date(
 							result[0].settlementDate
-						).format("DD-MMM-YYYY hh:mm:ss A");
+						).toISOString();
 
 						this.settlementInfo = {
 							settlementId: result[0].matrixId,

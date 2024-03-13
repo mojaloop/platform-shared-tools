@@ -138,9 +138,9 @@ export class DFSPSettlementDetailReport implements OnInit {
 			.subscribe(
 				(result) => {
 					if (result.length > 0) {
-						const formattedDate = moment(
+						const formattedDate = new Date(
 							result[0].settlementDate
-						).format("DD-MMM-YYYY hh:mm:ss A");
+						).toISOString();
 						const chosenDfsp = this.participants.value.find(
 							(value) => value.id === this.chosenDfspId
 						);
@@ -157,9 +157,9 @@ export class DFSPSettlementDetailReport implements OnInit {
 
 					const detailReports = result.map((detailReport) => ({
 						...detailReport,
-						transactionDate: moment(
+						transactionDate: new Date(
 							detailReport.transactionDate
-						).format("DD-MMM-YYYY hh:mm:ss A"),
+						).toISOString(),
 						sentAmount:
 							this.chosenDfspId === detailReport.payerFspId
 								? formatNumber(detailReport.Amount)
