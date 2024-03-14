@@ -187,6 +187,7 @@
 						  (change)="selectAllCertificates($event)"
 						/>
 					  </th>
+					  <th scope="col">Request ID</th>
 					  <th scope="col">Participant ID</th>
 					  <th scope="col">Subject</th>
 					  <th scope="col">Issued By</th>
@@ -205,6 +206,7 @@
 							(change)="selectCertificate($event, certificate)"
 						/>
 					</td>
+					<td>{{ certificate._id }}</td>
 					<td>{{ certificate.participantId }}</td>
 					<td>{{ certificate.certInfo?.subject }}</td>
 					<td>{{ certificate.certInfo?.issuer }}</td>

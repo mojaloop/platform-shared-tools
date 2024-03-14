@@ -4,6 +4,7 @@ import { Observable } from "rxjs";
 import { AuthenticationService } from "src/app/_services_and_types/authentication.service";
 import { UnauthorizedError } from "src/app/_services_and_types/errors";
 import {Certificate, CertificateRequest} from "./certificate_types";
+import {IBulkApprovalResult} from "./participant_types";
 
 const SVC_BASEURL = "/_certificates";
 
@@ -26,8 +27,8 @@ export class CertificatesService {
             this.http.post<any>(`${SVC_BASEURL}/certs/file`, formData)
                 .subscribe({
                     next: (response) => {
-                      subscriber.next(response)
-                      subscriber.complete()
+                      subscriber.next(response);
+                      subscriber.complete();
                     },
                     error: (error) => this.handleError(error, subscriber)
                 });
@@ -39,8 +40,8 @@ export class CertificatesService {
 			this.http.get<any>(`${SVC_BASEURL}/certs/${participantId}`)
 				.subscribe({
 					next: (response) => {
-						subscriber.next(response)
-						subscriber.complete()
+						subscriber.next(response);
+						subscriber.complete();
 					},
 					error: (error) => this.handleError(error, subscriber)
 				});
@@ -93,21 +94,26 @@ export class CertificatesService {
         });
     }
 
-	bulkApproveCertificates(certificateIds: string[]): Observable<void> {
-		return new Observable<void>((subscriber) => {
+	bulkApproveCertificates(certificateIds: string[]): Observable<IBulkApprovalResult[]> {
+		return new Observable<IBulkApprovalResult[]>((subscriber) => {
 			this.http.post<void>(`${SVC_BASEURL}/certs/bulkapprove`, {certificateIds})
 				.subscribe({
-					next: () => subscriber.next(),
-					error: (error) => this.handleError(error, subscriber)
+					next: (result: any) => {
+						subscriber.next(result);
+						return subscriber.complete();
+					},
+					error: (error) => {
+						this.handleError(error, subscriber);
+					}
 				});
 		});
 	}
 
-	bulkRejectCertificates(certificateIds: string[]): Observable<void> {
-		return new Observable<void>((subscriber) => {
+	bulkRejectCertificates(certificateIds: string[]): Observable<IBulkApprovalResult[]> {
+		return new Observable<IBulkApprovalResult[]>((subscriber) => {
 			this.http.post<void>(`${SVC_BASEURL}/certs/bulkreject`, {certificateIds})
 				.subscribe({
-					next: () => subscriber.next(),
+					next: (result: any) => subscriber.next(result),
 					error: (error) => this.handleError(error, subscriber)
 				});
 		});
