@@ -138,9 +138,9 @@ export class DFSPSettlementDetailReport implements OnInit {
 			.subscribe(
 				(result) => {
 					if (result.length > 0) {
-						const formattedDate = moment(
+						const formattedDate = new Date(
 							result[0].settlementDate
-						).format("DD-MMM-YYYY hh:mm:ss A");
+						).toISOString();
 						const chosenDfsp = this.participants.value.find(
 							(value) => value.id === this.chosenDfspId
 						);
@@ -157,9 +157,9 @@ export class DFSPSettlementDetailReport implements OnInit {
 
 					const detailReports = result.map((detailReport) => ({
 						...detailReport,
-						transactionDate: moment(
+						transactionDate: new Date(
 							detailReport.transactionDate
-						).format("DD-MMM-YYYY hh:mm:ss A"),
+						).toISOString(),
 						sentAmount:
 							this.chosenDfspId === detailReport.payerFspId
 								? formatNumber(detailReport.Amount)
@@ -259,5 +259,32 @@ export class DFSPSettlementDetailReport implements OnInit {
 
 		// Save the workbook as an Excel file
 		XLSX.writeFile(wb, `detail-report-${this.chosenSettlementId}.xlsx`);
+	}
+
+	downloadDFSPSettlementDetailReport() {
+		const settlementId = this.settlementIdForm.controls.settlementId.value;
+		const dfspId = this.chosenDfspId;
+		this._reportSvc
+			.exportSettlementDetailReport(dfspId,settlementId)
+			.subscribe(
+				(data) => {
+					const formattedDate = moment(new Date()).format("DDMMMYYYY");
+					const url = URL.createObjectURL(data);
+					const link = document.createElement("a");
+					link.href = url;
+					link.setAttribute(
+						"download",
+						`DFSPSettlementDetailReport-${formattedDate}.xlsx`
+					);
+					document.body.appendChild(link);
+					link.click();
+					document.body.removeChild(link);
+					// Revoke the Object URL when it's no longer needed
+					URL.revokeObjectURL(url);
+				},
+				(error) => {
+					this._messageService.addError(error.message);
+				}
+			);
 	}
 }

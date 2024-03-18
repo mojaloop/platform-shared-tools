@@ -43,6 +43,7 @@ Cross-cutting concerns BCs group transversal features that are required by the s
   - **Logging** - [logging-bc](https://github.com/mojaloop/logging-bc)
   - **Auditing** - auditing-bc
   - **Platform Configuration** - platform-configuration-bc
+  - **Certificate Management** - [certificate-management-bc](https://github.com/mojaloop/cert-management-bc)
 
 Besides the business and cross-cutting concerns bounded contexts, Mojaloop vNext has other repositories to keep other general items, such as common libraries, user interfaces, scripts, tooling and documentation.
 

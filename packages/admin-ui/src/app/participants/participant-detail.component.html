@@ -815,7 +815,7 @@
 								{{ sourceIpChangeRequest.rejectedDate | date : "medium" }}
 							</span>
 						</td>
-					
+
 						<td>
 							<div class="btn-group btn-group-sm" role="group" aria-label="">
 								<button type="button" class="btn btn-success" *ngIf="sourceIpChangeRequest.requestState == 'CREATED'"
@@ -835,15 +835,209 @@
 	</li>
 	<!-- Source IPs -->
 
+	<!-- Certificates -->
 	<li ngbNavItem="certificates" [hidden]="(participant | async)?.type === 'HUB'">
-		<!-- Certificates -->
 		<a ngbNavLink>Certificates</a>
 		<ng-template ngbNavContent>
-			<h4 class="mt-3">Participant Certificates for secure communication</h4>
+			<h4 class="mt-3">Current Participant Certificate</h4>
+				<table class="table table-hover mt-3">
+					<thead class="thead-light">
+						<tr>
+							<th scope="col">Certificate ID</th>
+							<th scope="col">Subject</th>
+							<th scope="col">Issued By</th>
+							<th scope="col">Valid From</th>
+							<th scope="col">Valid To</th>
+							<th scope="col">Uploaded By</th>
+							<th scope="col">Status</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{{ approvedCertificate?._id }}</td>
+							<td>{{ approvedCertificate?.certInfo?.subject }}</td>
+							<td>{{ approvedCertificate?.certInfo?.issuer }}</td>
+							<td>{{ approvedCertificate?.certInfo?.validFrom | date : "medium" }}</td>
+							<td>{{ approvedCertificate?.certInfo?.validTo | date : "medium" }}</td>
+							<td>{{ approvedCertificate?.createdBy }}</td>
+							<td>
+								<span *ngIf="approvedCertificate?.requestState == 'CREATED'" class="text-danger">
+									(Pending)
+								</span>
+								<span *ngIf="approvedCertificate?.requestState == 'APPROVED'">
+									Approved by {{ approvedCertificate?.approvedBy }} on
+									{{ approvedCertificate?.approvedDate | date : "medium" }}
+								</span>
+								<span *ngIf="approvedCertificate?.requestState == 'REJECTED'">
+									Rejected by {{ approvedCertificate?.rejectedBy }} on
+									{{ approvedCertificate?.rejectedDate | date : "medium" }}
+								</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			<hr/>
+			 <!-- Add Certificate Section -->
+			<div class="mt-4">
+			  <p *ngIf="(participant | async)?.approved === false" class="text-danger">
+				Participant is not approved yet. You cannot upload a certificate.
+			  </p>
+			  <button data-toggle="modal" data-target="#certificateUploadModal" type="button"
+				  [disabled]="!(participant | async)?.approved"
+				  class="btn btn-secondary mt-2" id="certificateUploadButton">
+				Add Certificate
+			  </button>
+			</div>
+
+			<!-- Certificates Pending Approval -->
+			<div class="mt-5">
+				<h5>Certificates Approval Requests</h5>
+				<table class="table table-hover mt-3">
+					<thead class="thead-light">
+						<tr>
+							<th scope="col">Certificate ID</th>
+							<th scope="col">Subject</th>
+							<th scope="col">Issued By</th>
+							<th scope="col">Valid From</th>
+							<th scope="col">Valid To</th>
+							<th scope="col">Uploaded By</th>
+							<th scope="col">Status</th>
+							<th scope="col">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let certificate of pendingCertificates">
+							<td>{{ certificate._id }}</td>
+							<td>{{ certificate.certInfo?.subject }}</td>
+							<td>{{ certificate.certInfo?.issuer }}</td>
+							<td>{{ certificate.certInfo?.validFrom | date : "medium" }}</td>
+							<td>{{ certificate.certInfo?.validTo | date : "medium" }}</td>
+							<td>{{ certificate.createdBy }}</td>
+							<td>
+								<span *ngIf="certificate.requestState == 'CREATED'" class="text-danger">
+									(Pending)
+								</span>
+								<span *ngIf="certificate.requestState == 'APPROVED'">
+									Approved by {{ certificate.approvedBy }} on
+									{{ certificate.approvedDate | date : "medium" }}
+								</span>
+								<span *ngIf="certificate.requestState == 'REJECTED'">
+									Rejected by {{ certificate.rejectedBy }} on
+									{{ certificate.rejectedDate | date : "medium" }}
+								</span>
+							</td>
+							<td>
+								<div class="btn-group btn-group-sm" role="group" aria-label="">
+									<button class="btn-success btn-sm" *ngIf="certificate.requestState == 'CREATED'"
+										(click)="approveCertificate(certificate._id)" ngbTooltip="Approve">
+										<span class="bi bi-check-lg"></span>
+									</button>
+									<button class="btn-danger btn-sm" *ngIf="certificate.requestState == 'CREATED'"
+										(click)="rejectCertificate(certificate._id)" ngbTooltip="Reject">
+										<span class="bi bi-x-lg"></span>
+									</button>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</ng-template>
 	</li>
 	<!-- Certificates -->
 
+	<!-- Certificate Upload Modal -->
+	<aside class="modal fade" id="certificateUploadModal" tabindex="-1" role="dialog" aria-labelledby="certificateUploadModalLabel">
+	  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+		<div class="modal-content">
+		  <div class="modal-header bg-white shadow-sm">
+			<h5 class="modal-title font-weight-bolder text-dark" id="certificateUploadModalLabel">Upload Certificate</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+
+		  <div class="modal-body pb-0">
+			<p class="font-weight-normal text-lg">Upload a new public certificate (.cer, .crt, .pem file).</p>
+
+			<!-- Drag and Drop File Upload -->
+			<div appDropZone
+			  style="border-style: dashed !important; padding: 20px; text-align: center;"
+			  (dragOver)="onDragOver()"
+			  (dragLeave)="onDragLeave()"
+			  (fileDropped)="onCertificateFileDropped($event)"
+			  [attr.class]="dropZoneClass">
+
+			  <div style="position: relative; width: 5rem; height: 5rem; margin-bottom: 0.5rem;">
+				<i
+				  *ngIf="!certFileUploading && !selectedCertificateFile"
+				  class="bi bi-cloud-arrow-up absolute-center"
+				  style="font-size: 3rem;"
+				>
+				</i>
+
+				<i
+				  *ngIf="certFileUploading"
+				  class="bi bi-file-earmark-text absolute-center"
+				  style="font-size: 2rem;"
+				>
+				</i>
+
+				<i
+				  *ngIf="certificateFileUploadProgress.value === 100 && selectedCertificateFile"
+				  class="bi bi-file-earmark-check text-success absolute-center"
+				  style="font-size: 2rem;"
+				>
+				</i>
+
+				<div *ngIf="certFileUploading || selectedCertificateFile">
+				  <svg viewBox="0 0 80 80" style="transform: rotate(-90deg);">
+					<circle
+					  cx="40"
+					  cy="40"
+					  r="30"
+					  stroke="#DDE1E3"
+					  fill="none"
+					  style="stroke-width: 4px; stroke-dashoffset: 0; stroke-dasharray: 190; stroke-linecap: round;"
+					/>
+					<circle
+					  cx="40"
+					  cy="40"
+					  r="30"
+					  stroke="#45a557"
+					  fill="none"
+					  [attr.stroke-dashoffset]="strokeDashoffset"
+					  style="stroke-width: 4px; stroke-dasharray: 190; stroke-linecap: round;"
+					  [attr.class]="transitionClass"
+					/>
+				  </svg>
+				</div>
+			  </div>
+
+			  <ng-container *ngIf="!certFileUploading && !selectedCertificateFile">
+				  <p>Drag & Drop your certificate file here</p>
+				  <p>OR</p>
+				  <button class="btn btn-primary mb-2" (click)="openCertificateFileUpload()">Browse file</button>
+				  <input id="certificateFileUpload" type="file" class="sr-only" accept=".cer, .crt, .pem" (change)="onCertificateFileSelected($event)">
+			  </ng-container>
+
+			  <ng-container *ngIf="certFileUploading">
+				<p>Uploading file...</p>
+			  </ng-container>
+
+			  <ng-container *ngIf="certificateFileUploadProgress.value === 100 && selectedCertificateFile">
+				<p>Upload completed!</p>
+			  </ng-container>
+			</div>
+		  </div>
+
+		  <div class="modal-footer border-0 pt-0">
+			<button type="button" class="btn btn-primary" [disabled]="!selectedCertificateFile" (click)="uploadCertificate()">Upload</button>
+			<button type="button" class="btn btn-outline-primary" id="modal-btn-cancel" (click)="removeChosenCertificateFile()" data-dismiss="modal">Cancel</button>
+		  </div>
+		</div>
+	  </div>
+	</aside>
 	<li ngbNavItem="certificateAuthority" [hidden]="(participant | async)?.type !== 'HUB'">
 		<!-- Certificates -->
 		<a ngbNavLink>Certificate Authority</a>
