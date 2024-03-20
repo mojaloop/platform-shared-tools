@@ -42,6 +42,7 @@ export class ParticipantCreateComponent implements OnInit {
 			"id": new FormControl(this.activeParticipant?.id, Validators.required),
 			"name": new FormControl(this.activeParticipant?.name, Validators.required),
 			"description": new FormControl(this.activeParticipant?.description, Validators.required),
+			"type": new FormControl(this.activeParticipant?.type, Validators.required),
 			"createdDate": new FormControl(this.activeParticipant?.createdDate, Validators.required),
 
 			"isActive": new FormControl(this.activeParticipant?.isActive),
@@ -56,6 +57,7 @@ export class ParticipantCreateComponent implements OnInit {
 		this.form.controls["id"].setValue(this.activeParticipant.id);
 		this.form.controls["name"].setValue(this.activeParticipant.name);
 		this.form.controls["description"].setValue(this.activeParticipant.description);
+		this.form.controls["type"].setValue(this.activeParticipant.type);
 		this.form.controls["createdDate"].setValue(new Date(this.activeParticipant.createdDate).toISOString());
 		this.form.controls["isActive"].setValue(this.activeParticipant.isActive);
 		this.form.controls["createdBy"].setValue(this.activeParticipant.createdBy);

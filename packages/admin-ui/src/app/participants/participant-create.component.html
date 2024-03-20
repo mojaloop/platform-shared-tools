@@ -23,7 +23,7 @@
 		<select class="form-control" id="type" formControlName="type"
 			[ngClass]="{'is-valid': form.controls['type'].touched && form.controls['type'].valid,
 			'is-invalid': (submitted || form.controls['type'].touched) && form.controls['type'].invalid}">
-			<option value="{{item.key}}" *ngFor="let item of participantTypes | keyvalue">{{item.value}}</option>
+			<option [value]="item.key" *ngFor="let item of participantTypes | keyvalue">{{item.value}}</option>
 		</select>
 	</div>
 
