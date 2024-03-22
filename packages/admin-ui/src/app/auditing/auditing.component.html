@@ -68,7 +68,7 @@
     <th scope="col">BC</th>
     <th scope="col">App</th>
     <th scope="col">Action Type</th>
-<!--	<th scope="col">User</th>-->
+	<th scope="col">User</th>
     <th scope="col">Success</th>
 
   </tr>
@@ -79,7 +79,7 @@
     <td> {{item.sourceBcName}}</td>
     <td> {{item.sourceAppName}} <span class="badge badge-secondary">{{item.sourceAppVersion}}</span></td>
     <td> {{item.actionType}}</td>
-<!--	  <td> {{item.securityContext.userId}}</td>-->
+	<td> {{item.securityContext.userId}}</td>
     <td>
 		<span *ngIf="item.actionSuccessful" class="badge badge-success">Succeeded</span>
 		<span *ngIf="!item.actionSuccessful" class="badge badge-danger">Failed</span>
