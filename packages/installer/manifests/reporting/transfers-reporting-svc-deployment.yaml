@@ -5,14 +5,14 @@ metadata:
   creationTimestamp: null
   labels:
     mojaloop.service: transfers-reporting-svc
-    mojaloop.layer: reporting 
+    mojaloop.layer: reporting
   name: transfers-reporting-svc
 spec:
   replicas: 1
   selector:
     matchLabels:
       mojaloop.service: transfers-reporting-svc
-  strategy: 
+  strategy:
     type: Recreate
   template:
     metadata:
@@ -20,7 +20,7 @@ spec:
       creationTimestamp: null
       labels:
         mojaloop.service: transfers-reporting-svc
-        mojaloop.layer: reporting 
+        mojaloop.layer: reporting
     spec:
       containers:
         - env:
@@ -29,9 +29,9 @@ spec:
           - name: KAFKA_LOGS_TOPIC
             value: logs
           - name: KAFKA_URL
-            value: kafka:9092
+            value: 192.168.1.94:29092
           - name: MONGO_URL
-            value: mongodb://root:mongoDbPas42@mongodb:27017/
+            value: mongodb://root:mongoDbPas42@192.168.1.94:27017/
           image: mojaloop/reporting-bc-transfers-reporting-svc:0.3.4
           livenessProbe:
             exec:

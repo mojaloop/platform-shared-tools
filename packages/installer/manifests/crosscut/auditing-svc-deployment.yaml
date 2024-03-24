@@ -30,7 +30,7 @@ spec:
             - name: ELASTICSEARCH_PASSWORD
               value: elasticSearchPas42
             - name: ELASTICSEARCH_URL
-              value: http://infra-elasticsearch:9200
+              value: http://192.168.1.94:9200
             - name: ELASTICSEARCH_USERNAME
               value: elastic
             - name: KAFKA_AUDITS_TOPIC
@@ -38,7 +38,7 @@ spec:
             - name: KAFKA_LOGS_TOPIC
               value: logs
             - name: KAFKA_URL
-              value: kafka:9092
+              value: 192.168.1.94:29092
           image: mojaloop/auditing-bc-auditing-svc:0.5.1
           name: auditing-svc
           ports:

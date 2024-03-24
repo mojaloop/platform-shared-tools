@@ -8,7 +8,7 @@ metadata:
     #external-dns.alpha.kubernetes.io/hostname: vnextadmin.local
     #cert-manager.io/issuer: letsencrypt-staging
 spec:
-  ingressClassName: nginx-ext
+  ingressClassName: nginx
   #tls:
   #   - hosts:
   #       - vnextadmin.local

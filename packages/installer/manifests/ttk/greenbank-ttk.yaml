@@ -433,9 +433,9 @@ metadata:
     #external-dns.alpha.kubernetes.io/hostname: greenbank.local
     #cert-manager.io/issuer: letsencrypt-staging
 spec:
-  ingressClassName: nginx-ext
+  ingressClassName: nginx
   #tls:
-  # - hosts: 
+  # - hosts:
   #   - greenbank.local
   #   secretName: quickstart-example-tls
   rules:
@@ -481,9 +481,9 @@ metadata:
     #external-dns.alpha.kubernetes.io/hostname: greenbank.local
     #cert-manager.io/issuer: letsencrypt-staging
 spec:
-  ingressClassName: nginx-ext
+  ingressClassName: nginx
   #tls:
-  # - hosts: 
+  # - hosts:
   #   - greenbank.local
   #   secretName: quickstart-example-tls
   rules:

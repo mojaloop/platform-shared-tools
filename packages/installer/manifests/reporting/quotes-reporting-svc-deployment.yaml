@@ -29,9 +29,9 @@ spec:
         - name: KAFKA_LOGS_TOPIC
           value: logs
         - name: KAFKA_URL
-          value: kafka:9092
+          value: 192.168.1.94:29092
         - name: MONGO_URL
-          value: mongodb://root:mongoDbPas42@mongodb:27017/
+          value: mongodb://root:mongoDbPas42@192.168.1.94:27017/
         - name: PARTICIPANTS_SVC_URL
           value: http://participants-svc:3010
         image: mojaloop/reporting-bc-quotes-reporting-svc:0.3.6

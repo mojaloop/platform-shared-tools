@@ -267,6 +267,8 @@ services:
     volumes:
       - prometheus_etc_vol:/etc/prometheus
       - prometheus_data_vol:/prometheus
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   grafana:
     image: grafana/grafana
     ports:

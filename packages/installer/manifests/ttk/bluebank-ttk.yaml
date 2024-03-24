@@ -438,9 +438,9 @@ metadata:
     #external-dns.alpha.kubernetes.io/hostname: bluebank.local
     #cert-manager.io/issuer: letsencrypt-staging
 spec:
-  ingressClassName: nginx-ext
+  ingressClassName: nginx
   #tls:
-  # - hosts: 
+  # - hosts:
   #   - bluebank.local
   #   secretName: quickstart-example-tls
   rules:
@@ -482,13 +482,13 @@ metadata:
     instance: ttk
     mojaloop.service: bluebank
     mojaloop.layer: ttk
-  annotations: 
+  annotations:
     #external-dns.alpha.kubernetes.io/hostname: bluebank.local
     #cert-manager.io/issuer: letsencrypt-staging
 spec:
-  ingressClassName: nginx-ext
+  ingressClassName: nginx
   #tls:
-  # - hosts: 
+  # - hosts:
   #   - bluebank.local
   #   secretName: quickstart-example-tls
   rules:

@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
+    prometheus.io/scrape: "true"
   creationTimestamp: null
   labels:
     mojaloop.service: account-lookup-svc

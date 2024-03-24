@@ -39,13 +39,13 @@ spec:
         - name: KAFKA_LOGS_TOPIC
           value: logs
         - name: KAFKA_URL
-          value: kafka:9092
+          value: 192.168.1.94:29092
         - name: MONGO_URL
-          value: mongodb://root:mongoDbPas42@mongodb:27017/
+          value: mongodb://root:mongoDbPas42@192.168.1.94:27017/
         - name: PLATFORM_CONFIG_BASE_SVC_URL
           value: http://platform-configuration-svc:3100
         - name: REDIS_HOST
-          value: redis-master
+          value: 192.168.1.94
         - name: REDIS_PORT
           value: '6379'
         - name: TIGERBEETLE_CLUSTER_ID

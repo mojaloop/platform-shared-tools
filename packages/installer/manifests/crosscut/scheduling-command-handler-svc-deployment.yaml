@@ -29,9 +29,9 @@ spec:
             - name: KAFKA_LOGS_TOPIC
               value: logs
             - name: KAFKA_URL
-              value: kafka:9092
+              value: 192.168.1.94:29092
             - name: MONGO_URL
-              value: mongodb://root:mongoDbPas42@mongodb:27017/
+              value: mongodb://root:mongoDbPas42@192.168.1.94:27017/
             - name: AUTH_N_SVC_BASEURL
               value: http://authentication-svc:3201
             - name: AUTH_N_TOKEN_AUDIENCE
@@ -45,7 +45,7 @@ spec:
             - name: PLATFORM_CONFIG_BASE_SVC_URL
               value: http://platform-configuration-svc:3100
             - name: SCHEDULING_HOST_LOCKS
-              value: redis-master
+              value: 192.168.1.94
           image: mojaloop/scheduling-bc-command-handler-svc:0.5.1
           name: scheduling-command-handler-svc
           resources: {}

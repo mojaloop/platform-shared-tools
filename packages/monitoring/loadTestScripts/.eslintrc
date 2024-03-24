@@ -1,0 +1,53 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "rules": {
+        "brace-style": ["error", "1tbs"],
+        "semi": [ "error" ],
+        "quotes": ["error", "double", { "allowTemplateLiterals": false } ],
+        "@typescript-eslint/no-inferrable-types": "off",
+        "@typescript-eslint/naming-convention": [
+            "error",
+            {
+                "selector": "memberLike",
+                "modifiers": [
+                    "private",
+                    "protected"
+                ],
+                "format": [
+                    "camelCase"
+                ],
+                "leadingUnderscore": "require"
+            }
+        ],
+        "@typescript-eslint/no-unused-vars": ["warn"],
+        "@typescript-eslint/no-explicit-any": ["warn"]
+    },
+    "parserOptions": {
+        "sourceType": "module",
+        // Allows for the use of imports
+        "project": "./tsconfig.json"
+    },
+    "ignorePatterns": [
+        "**/*.d.ts",
+        "**/*.js",
+        "**/*.js.map"
+    ],
+    "overrides": [
+        {
+            // Disable some rules that we abuse in unit tests.
+            "files": [
+                "test/**/*.ts"
+            ],
+            "rules": {
+                "@typescript-eslint/explicit-function-return-type": "off"
+            }
+        }
+    ]
+}

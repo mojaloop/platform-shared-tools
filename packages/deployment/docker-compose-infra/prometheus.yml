@@ -39,3 +39,8 @@ scrape_configs:
   static_configs:
   - targets:
     - host.docker.internal:3030
+- job_name: local
+  static_configs:
+  - targets:
+    - host.docker.internal:5023
+    - host.docker.internal:5024

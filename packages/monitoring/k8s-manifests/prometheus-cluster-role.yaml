@@ -1,25 +1,17 @@
-kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
 metadata:
   name: discoverer
 rules:
-  - verbs:
-      - get
-      - list
-      - watch
-    apiGroups:
-      - ''
+  - apiGroups: [""]
     resources:
       - nodes
       - services
       - endpoints
       - pods
-  - verbs:
-      - get
-      - list
-      - watch
-    apiGroups:
+    verbs: ["get", "list", "watch"]
+  - apiGroups:
       - extensions
     resources:
       - ingresses
-
+    verbs: ["get", "list", "watch"]

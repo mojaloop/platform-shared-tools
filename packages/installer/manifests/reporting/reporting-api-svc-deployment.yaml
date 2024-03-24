@@ -34,11 +34,11 @@ spec:
           - name: KAFKA_LOGS_TOPIC
             value: logs
           - name: KAFKA_URL
-            value: kafka:9092
+            value: 192.168.1.94:29092
           - name: KAFKA_AUDITS_TOPIC
             value: audits
           - name: MONGO_URL
-            value: mongodb://root:mongoDbPas42@mongodb:27017/
+            value: mongodb://root:mongoDbPas42@192.168.1.94:27017/
           - name: PARTICIPANTS_SVC_URL
             value: http://participants-svc:3010
           - name: PLATFORM_CONFIG_BASE_SVC_URL

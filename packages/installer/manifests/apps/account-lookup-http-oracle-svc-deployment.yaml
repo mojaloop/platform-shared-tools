@@ -29,7 +29,7 @@ spec:
         - name: KAFKA_LOGS_TOPIC
           value: logs
         - name: KAFKA_URL
-          value: kafka:9092
+          value: 192.168.1.94:29092
         image: mojaloop/account-lookup-bc-http-oracle-svc:0.5.1
         livenessProbe:
           exec:
