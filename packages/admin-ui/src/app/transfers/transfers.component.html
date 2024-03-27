@@ -138,7 +138,7 @@
 			<th scope="col" class="text-center">Payee DFSP Name</th>
 			<th scope="col">Date Submitted</th>
 			<th scope="col">Bulk Transfer ID</th>
-			<th scope="col">Error Code</th>
+			<th scope="col">Error Reason</th>
 		</tr>
 		</thead>
 		<tbody>
@@ -158,8 +158,8 @@
 			<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
 			<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
 			<td>{{item.updatedAt | date: 'medium' }}</td>
-			<td><a routerLink="/bulk-transfers/{{item.bulkTransferId}}">{{item.bulkTransferId}}</a></td>
-			<td>{{item?.errorInformation?.errorCode || '-'}}</td>
+			<td><a routerLink="/bulk-transfers/{{item.bulkTransferId}}">{{item.bulkTransferId || '-'}}</a></td>
+			<td>{{item?.errorCode || '-'}}</td>
 		</tr>
 		</tbody>
 	</table>

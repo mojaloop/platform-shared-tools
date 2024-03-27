@@ -32,6 +32,7 @@
     "@mojaloop/platform-configuration-bc-public-types-lib": "~0.3.5",
     "@mojaloop/security-bc-public-types-lib": "~0.3.5",
     "@mojaloop/settlements-bc-public-types-lib": "~0.3.2",
+    "@mojaloop/transfers-bc-public-types-lib": "~0.5.2",
     "@ng-bootstrap/ng-bootstrap": "^10.0.0",
     "bootstrap": "^4.5.3",
     "buffer": "^6.0.3",
