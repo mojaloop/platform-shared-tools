@@ -7,6 +7,7 @@ import {MessageService} from "src/app/_services_and_types/message.service";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {HUB_PARTICIPANT_ID, IParticipant} from "@mojaloop/participant-bc-public-types-lib";
+import {TransferErrorCodes} from "@mojaloop/transfers-bc-public-types-lib";
 import {paginate, PaginateResult} from "../_utils";
 
 @Component({
@@ -148,6 +149,8 @@ export class TransfersComponent implements OnInit, OnDestroy {
 			pageSize,
 		).subscribe((result) => {
 			console.log("TransfersComponent search - got TransfersSearchResults");
+
+			result.items.map((transfer) => transfer.errorCode = TransferErrorCodes[transfer.errorCode as keyof typeof TransferErrorCodes])
 
 			this.transfers.next(result.items);
 
