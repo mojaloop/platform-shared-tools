@@ -66,8 +66,8 @@ export class SettlementInitiationReport implements OnInit {
 
 					const initiationReports = result.map((initiationReport) => {
 						const settlementTransfer = (
-							Number(initiationReport.participantCreditBalance) -
-							Number(initiationReport.participantDebitBalance)
+							Number(initiationReport.participantDebitBalance) -
+							Number(initiationReport.participantCreditBalance)
 						).toString();
 
 						return {
