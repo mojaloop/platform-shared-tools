@@ -340,7 +340,7 @@ export class SettlementsService {
 
 	getMatrix(matrixId: string): Observable<ISettlementMatrix | null> {
 		return new Observable<ISettlementMatrix | null>(subscriber => {
-			const url = `${SVC_BASEURL}/matrix/${matrixId}`;
+			const url = `${SVC_BASEURL}/matrices/${matrixId}`;
 			this._http.get<ISettlementMatrix>(url).subscribe(
 				(result: ISettlementMatrix) => {
 					console.log(`got response: ${result}`);
@@ -368,7 +368,7 @@ export class SettlementsService {
 
 	getMatrices(state?: string): Observable<MatrixSearchResults> {
 		return new Observable<MatrixSearchResults>(subscriber => {
-			let url = `${SVC_BASEURL}/matrix`;
+			let url = `${SVC_BASEURL}/matrices`;
 			if (state)
 				url += `?state=${state.toUpperCase()}`;
 
@@ -420,7 +420,7 @@ export class SettlementsService {
 			if (pageIndex) searchParams.append("pageIndex", pageIndex.toString());
 			if (pageSize) searchParams.append("pageSize", pageSize.toString());
 
-			const url = `${SVC_BASEURL}/matrix?${searchParams.toString()}`;
+			const url = `${SVC_BASEURL}/matrices?${searchParams.toString()}`;
 
 			this._http.get<MatrixSearchResults>(url).subscribe(
 				(result: MatrixSearchResults) => {
@@ -465,7 +465,7 @@ export class SettlementsService {
 				type: "DYNAMIC"
 			};
 
-			this._http.post<{ id: string }>(SVC_BASEURL + "/matrix/", createMatrixCmdPayload).subscribe(
+			this._http.post<{ id: string }>(SVC_BASEURL + "/matrices/", createMatrixCmdPayload).subscribe(
 				(resp: { id: string }) => {
 					console.log(`got response - matrixId: ${resp.id}`);
 
@@ -494,7 +494,7 @@ export class SettlementsService {
 				type: "STATIC"
 			};
 
-			this._http.post<{ id: string }>(SVC_BASEURL + "/matrix/", createMatrixCmdPayload).subscribe(
+			this._http.post<{ id: string }>(SVC_BASEURL + "/matrices/", createMatrixCmdPayload).subscribe(
 				(resp: { id: string }) => {
 					console.log(`got response - matrixId: ${resp.id}`);
 
@@ -518,7 +518,7 @@ export class SettlementsService {
 	recalculateMatrix(matrixId: string): Observable<string> {
 		return new Observable<string>(subscriber => {
 
-			const url = `${SVC_BASEURL}/matrix/${matrixId}/recalculate`;
+			const url = `${SVC_BASEURL}/matrices/${matrixId}/recalculate`;
 
 			this._http.post<{ id: string }>(url, {}).subscribe(
 				(resp: { id: string }) => {
@@ -543,7 +543,7 @@ export class SettlementsService {
 
 	closeMatrix(matrixId: string): Observable<string> {
 		return new Observable<string>(subscriber => {
-			const url = `${SVC_BASEURL}/matrix/${matrixId}/close`;
+			const url = `${SVC_BASEURL}/matrices/${matrixId}/close`;
 
 			this._http.post<{ id: string }>(url, {}).subscribe(
 				(resp: { id: string }) => {
@@ -568,7 +568,7 @@ export class SettlementsService {
 
 	disputeMatrix(matrixId: string): Observable<string> {
 		return new Observable<string>(subscriber => {
-			const url = `${SVC_BASEURL}/matrix/${matrixId}/dispute`;
+			const url = `${SVC_BASEURL}/matrices/${matrixId}/dispute`;
 
 			this._http.post<{ id: string }>(url, {}).subscribe(
 				(resp: { id: string }) => {
@@ -593,7 +593,7 @@ export class SettlementsService {
 
 	lockMatrix(matrixId: string): Observable<string> {
 		return new Observable<string>(subscriber => {
-			const url = `${SVC_BASEURL}/matrix/${matrixId}/lock`;
+			const url = `${SVC_BASEURL}/matrices/${matrixId}/lock`;
 
 			this._http.post<{ id: string }>(url, {}).subscribe(
 				(resp: { id: string }) => {
@@ -618,7 +618,7 @@ export class SettlementsService {
 
 	unlockMatrix(matrixId: string): Observable<string> {
 		return new Observable<string>(subscriber => {
-			const url = `${SVC_BASEURL}/matrix/${matrixId}/unlock`;
+			const url = `${SVC_BASEURL}/matrices/${matrixId}/unlock`;
 
 			this._http.post<{ id: string }>(url, {}).subscribe(
 				(resp: { id: string }) => {
@@ -643,7 +643,7 @@ export class SettlementsService {
 
 	settleMatrix(matrixId: string): Observable<string> {
 		return new Observable<string>(subscriber => {
-			const url = `${SVC_BASEURL}/matrix/${matrixId}/settle`;
+			const url = `${SVC_BASEURL}/matrices/${matrixId}/settle`;
 
 			this._http.post<{ id: string }>(url, {}).subscribe(
 				(resp: { id: string }) => {
