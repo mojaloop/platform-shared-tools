@@ -1,7 +1,27 @@
 # Mojaloop vNext - Platform Shared Tools
 
-**EXPERIMENTAL** vNext Platform Shared Lib Bounded Context Mono Repository
+**EXPERIMENTAL** vNext Platform Shared Tools Bounded Context Mono Repository
 
+Platform-Shared-Tools is one of the repositories within the Mojaloop vNext ecosystem, designed to address various shared needs  beyond business functionalities and cross-cutting concerns such as common libraries, user interfaces, scripts, tooling and documentation.
+This repository includes  includes includes other common tooling and documentation.
+
+
+## Contents
+- [platform-shared-tools](#mojaloop-vnext---platform-shared-tools)
+  - [Contents](#contents)
+  - [Packages](#packages--libraries-included)
+  - [Deployment Tools](#deployment-tools)
+  - [Pre-build Request and Tester Tools](#pre-built-requests-and-tester-tools)
+
+
+## Packages
+- [admin-ui](./packages/admin-ui/README.md) - vNext admin UI.
+- [deployment](./packages/deployment/) - vNext Deployment Tools
+- [documentation](./packages/documentation/) - additional documentation for vNext 
+- [installer](./packages/installer/INSTALLER-README.md) - Installation utilities for deploying Mojaloop vNext
+- [k8s-operator](./packages/k8s-operator/README.md) - Mojaloop vNext Kubernetes Operator
+- [monitoring](./packages/monitoring/) - Monitoring utilities
+- [postman](./packages/postman/) - Postman Collections 
 
 ## Deployment Tools
 
