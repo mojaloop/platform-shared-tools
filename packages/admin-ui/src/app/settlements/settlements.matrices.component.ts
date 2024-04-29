@@ -29,7 +29,7 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 	matrixTypeList = ["STATIC", "DYNAMIC"]; //TODO
 	matrixStateList = ["IDLE", "BUSY", "FINALIZED", "OUT_OF_SYNC", "LOCKED"]; //TODO
 	matrixModelList = ["DEFAULT"]; //TODO
-	currencyCodeList = ["USD", "EUR"]; //TODO
+	currencyCodeList = ["USD", "EUR", "TZS", "MXN"]; //TODO
 
 	initialFilterValues = {
 		filterMatrixId: null,

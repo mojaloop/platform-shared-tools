@@ -27,7 +27,7 @@ export class TransferCreateComponent implements OnInit {
 	public activeTransfer: Transfer | null = null;
 	public selectedQuoteId: string | null = null;
 
-	currencyCodeList = ["EUR", "USD", "TZS"];
+	currencyCodeList = ["EUR", "USD", "TZS", "MXN"];
 
 	quotes: BehaviorSubject<Quote[]> = new BehaviorSubject<Quote[]>([]);
 	quotesSubs?: Subscription;
