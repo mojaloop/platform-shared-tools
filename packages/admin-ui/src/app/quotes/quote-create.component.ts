@@ -25,7 +25,7 @@ export class QuoteCreateComponent implements OnInit {
 	public activeQuote: Quote | null = null;
 	partyIdTypeList = ["MSISDN", "PERSONAL_ID", "BUSINESS", "DEVICE", "ACCOUNT_ID", "IBAN", "ALIAS"];
 	amountTypeList = ["SEND", "RECEIVE"];
-	currencyCodeList = ["EUR", "USD", "TZS"];
+	currencyCodeList = ["EUR", "USD", "TZS", "MXN"];
 	scenarioList = ["DEPOSIT", "WITHDRAWAL", "REFUND"];
 	initiatorList = ["PAYER", "PAYEE"];
 	initiatorTypeList = ["CONSUMER", "AGENT", "BUSINESS"];
