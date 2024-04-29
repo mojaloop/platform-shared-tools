@@ -105,7 +105,7 @@ services:
     restart: unless-stopped
 
   platform-configuration-svc:
-    image: mojaloop/platform-configuration-bc-configuration-svc:0.5.2
+    image: mojaloop/platform-configuration-bc-configuration-svc:0.5.5
     depends_on:
       authentication-svc:
         condition: service_healthy
