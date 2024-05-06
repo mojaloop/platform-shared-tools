@@ -18,10 +18,9 @@
 				<select class="form-control" id="criteriaCurrencyCode" [ngModel]="criteriaCurrencyCode"
 					[disabled]="isDisabled" [ngModelOptions]="{standalone: true}">
 					<option value="{{ALL_STR_ID}}">{{ALL_STR_ID}}</option>
-					<option value="USD">USD</option>
-					<option value="EUR">EUR</option>
-					<option value="TZS">TZS</option>
-					<option value="MXN">MXN</option>
+					<option *ngFor="let item of (currencyCodeList | async)" value="{{item.code}}">
+						{{item.code}}
+					</option>
 				</select>
 			</div>
 

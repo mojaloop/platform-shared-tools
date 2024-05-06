@@ -307,10 +307,12 @@
 					<td>
 						<select class="form-control" [(ngModel)]="newParticipantAccount.currencyCode"
 								value="{{ newParticipantAccount.currencyCode }}">
-							<option [selected]="newParticipantAccount.currencyCode === 'EUR'">EUR</option>
-							<option [selected]="newParticipantAccount.currencyCode === 'USD'">USD</option>
-							<option [selected]="newParticipantAccount.currencyCode === 'TZS'">TZS</option>
-							<option [selected]="newParticipantAccount.currencyCode === 'MXN'">MXN</option>
+								<option *ngFor="let currency of (currencyCodeList | async)"
+										[selected]="newParticipantAccount.currencyCode === '{{currency.code}}'"  
+										value="{{currency.code}}">{{currency.code}}</option>
+								<!--option [selected]="newParticipantAccount.currencyCode === 'EUR'">EUR</option>
+								<option [selected]="newParticipantAccount.currencyCode === 'USD'">USD</option>
+								<option [selected]="newParticipantAccount.currencyCode === 'TZS'">TZS</option-->
 						</select>
 					</td>
 					<td>{{ newParticipantAccount.balance }}</td>
@@ -515,10 +517,7 @@
 						</td>
 						<td>
 							<select class="form-control" id="ndcCurrency" value="EUR">
-								<option value="EUR">EUR</option>
-								<option value="USD">USD</option>
-								<option value="TZS">TZS</option>
-								<option value="MXN">MXN</option>
+								<option *ngFor="let currency of (currencyCodeList | async)"  value="{{currency.code}}">{{currency.code}}</option>
 							</select>
 						</td>
 
@@ -1305,10 +1304,10 @@
 			<div class="form-group">
 				<label class="" for="depositCurrencyCode">Currency</label>
 				<select class="form-control" id="depositCurrencyCode">
-					<option value="EUR">EUR</option>
+					<!--option value="EUR">EUR</option>
 					<option value="USD">USD</option>
-					<option value="TZS">TZS</option>
-					<option value="MXN">MXN</option>
+					<option value="TZS">TZS</option-->
+					<option *ngFor="let currency of (currencyCodeList | async)"  value="{{currency.code}}">{{currency.code}}</option>
 				</select>
 				<div class="invalid-feedback">
 					Please choose a currency for which a position account exists.

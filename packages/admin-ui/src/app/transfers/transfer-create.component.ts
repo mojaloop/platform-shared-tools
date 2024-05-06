@@ -13,6 +13,8 @@ import {ParticipantsService} from "../_services_and_types/participants.service";
 import * as uuid from "uuid";
 import {removeEmpty} from '../_utils';
 import {DEFAULT_TEST_CALL_REDIRECT_WAIT_MS} from "src/app/_services_and_types/settings.service";
+import {Currency} from "@mojaloop/platform-configuration-bc-public-types-lib";
+import { PlatformConfigService } from "../_services_and_types/platform-config.service";
 
 @Component({
 	selector: 'app-transfer-create',
@@ -27,15 +29,16 @@ export class TransferCreateComponent implements OnInit {
 	public activeTransfer: Transfer | null = null;
 	public selectedQuoteId: string | null = null;
 
-	currencyCodeList = ["EUR", "USD", "TZS", "MXN"];
 
 	quotes: BehaviorSubject<Quote[]> = new BehaviorSubject<Quote[]>([]);
 	quotesSubs?: Subscription;
 
 	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
+	currencyCodeList : BehaviorSubject<Currency[]> = new BehaviorSubject<Currency[]>([]);
 	participantsSubs?: Subscription;
+	platformConfigSubs ?: Subscription;
 
-	constructor(private _router: Router, private _route: ActivatedRoute, private _transfersSvc: TransfersService, private _interopSvc: InteropService, private _quotesSvc: QuotesService, private _participantsSvc: ParticipantsService, private _messageService: MessageService) {
+	constructor(private _router: Router, private _route: ActivatedRoute, private _transfersSvc: TransfersService, private _interopSvc: InteropService, private _quotesSvc: QuotesService, private _participantsSvc: ParticipantsService, private _messageService: MessageService, private _platformConfigSvc: PlatformConfigService) {
 	}
 
 	async ngOnInit(): Promise<void> {
@@ -67,6 +70,16 @@ export class TransferCreateComponent implements OnInit {
 				this.applyQuote(this.inputQuoteId);
 			}
 
+			this.platformConfigSubs = this._platformConfigSvc.getLatestGlobalConfig().subscribe((globalConfig) => {
+				console.log("TransferCreateComponent ngOnInit - got getLatestGlobalConfig", globalConfig);
+	
+				const currencies : Currency[] = globalConfig.parameters.find(param => param.name === "CURRENCIES")?.currentValue;
+				this.currencyCodeList.next(currencies);
+		
+			}, error => {
+					this._messageService.addError(error.message);
+			});
+
 		} catch (error: any) {
 			this._messageService.addError(error.message || error);
 		}
@@ -84,7 +97,7 @@ export class TransferCreateComponent implements OnInit {
 			"transferId": new FormControl(this.activeTransfer?.transferId, Validators.required),
 			"payeeFsp": new FormControl(this.activeTransfer?.payeeFsp),
 			"payerFsp": new FormControl(this.activeTransfer?.payerFsp),
-			"currency": new FormControl(this.currencyCodeList[0], Validators.required),
+			"currency": new FormControl(this.activeTransfer?.currency, Validators.required),
 			"amount": new FormControl(this.activeTransfer?.amount, Validators.required),
 			"ilpPacket": new FormControl(this.activeTransfer?.ilpPacket),
 			"condition": new FormControl(this.activeTransfer?.condition),

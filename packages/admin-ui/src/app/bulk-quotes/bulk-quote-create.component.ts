@@ -14,6 +14,8 @@ import {removeEmpty} from "../_utils";
 import { BulkQuote } from "../_services_and_types/bulk_quote_types";
 import { BulkQuotesService } from "../_services_and_types/bulk-quotes.service";
 import { debug } from "console";
+import {Currency} from "@mojaloop/platform-configuration-bc-public-types-lib";
+import { PlatformConfigService } from "../_services_and_types/platform-config.service";
 
 @Component({
 	selector: 'app-bulk-quote-create',
@@ -28,15 +30,16 @@ export class BulkQuoteCreateComponent implements OnInit {
 	public activeQuote: Quote | null = null;
 	partyIdTypeList = ["MSISDN", "PERSONAL_ID", "BUSINESS", "DEVICE", "ACCOUNT_ID", "IBAN", "ALIAS"];
 	amountTypeList = ["SEND", "RECEIVE"];
-	currencyCodeList = ["EUR", "USD", "TZS", "MXN"];
 	scenarioList = ["DEPOSIT", "WITHDRAWAL", "REFUND"];
 	initiatorList = ["PAYER", "PAYEE"];
 	initiatorTypeList = ["CONSUMER", "AGENT", "BUSINESS"];
 
 	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
+	currencyCodeList : BehaviorSubject<Currency[]> = new BehaviorSubject<Currency[]>([]);
 	participantsSubs?: Subscription;
+	platformConfigSubs ?: Subscription;
 
-	constructor(private _router: Router, private _route: ActivatedRoute, private _bulkQuotesSvc: BulkQuotesService, private _quotesSvc: QuotesService, private _interopSvc: InteropService, private _participantsSvc: ParticipantsService, private _messageService: MessageService) {
+	constructor(private _router: Router, private _route: ActivatedRoute, private _bulkQuotesSvc: BulkQuotesService, private _quotesSvc: QuotesService, private _interopSvc: InteropService, private _participantsSvc: ParticipantsService, private _messageService: MessageService, private _platformConfigSvc: PlatformConfigService) {
 	}
 
 	async ngOnInit(): Promise<void> {
@@ -54,6 +57,19 @@ export class BulkQuoteCreateComponent implements OnInit {
 				this._messageService.addError(error.message);
 			}
 		});
+
+		this.platformConfigSubs = this._platformConfigSvc.getLatestGlobalConfig().subscribe((globalConfig) => {
+			console.log("BulkQuoteCreateComponent ngOnInit - got getLatestGlobalConfig", globalConfig);
+
+			const currencies : Currency[] = globalConfig.parameters.find(param => param.name === "CURRENCIES")?.currentValue;
+			this.form.controls["currency"].setValue(currencies[0].code);
+			this.currencyCodeList.next(currencies);
+	
+		}, error => {
+			if (error && error instanceof UnauthorizedError) {
+				this._messageService.addError(error.message);
+			}
+		})
 
 		this._initForm();
 
@@ -82,7 +98,7 @@ export class BulkQuoteCreateComponent implements OnInit {
 			"payerPartySubIdOrType": new FormControl(this.activeQuote?.payerPartyIdentifier),
 			"payerFspId": new FormControl(this.activeQuote?.payerFspId),
 			"amountType": new FormControl(this.amountTypeList[0], Validators.required),
-			"currency": new FormControl(this.currencyCodeList[0], Validators.required),
+			"currency": new FormControl(this.activeQuote?.currency, Validators.required),
 			"amount": new FormControl(this.activeQuote?.amount, Validators.required),
 			"scenario": new FormControl(this.scenarioList[0], Validators.required),
 			"initiator": new FormControl(this.initiatorList[0], Validators.required),
