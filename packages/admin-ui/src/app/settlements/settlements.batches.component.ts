@@ -8,6 +8,9 @@ import * as uuid from "uuid";
 import {ActivatedRoute, Router} from "@angular/router";
 import {paginate, PaginateResult} from "../_utils";
 
+import {Currency} from "@mojaloop/platform-configuration-bc-public-types-lib";
+import { PlatformConfigService } from "../_services_and_types/platform-config.service";
+
 const DEFAULT_TIME_FILTER_HOURS = 8;
 
 @Component({
@@ -29,6 +32,9 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 	paginateResult: BehaviorSubject<PaginateResult | null> = new BehaviorSubject<PaginateResult | null>(null);
 	paginateTrfResult: BehaviorSubject<PaginateResult | null> = new BehaviorSubject<PaginateResult | null>(null);
 
+	currencyCodeList : BehaviorSubject<Currency[]> = new BehaviorSubject<Currency[]>([]);
+	platformConfigSubs ?: Subscription;
+
 	batchSelPrefix = "batchSel_";
 	selectedBatchIds: string[] = [];
 
@@ -39,7 +45,7 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 	public criteriaBatchId = "";
 	public criteriaIncludeSettled = false;
 
-	constructor(private _router: Router, private _settlementsService: SettlementsService, private _messageService: MessageService, private _route: ActivatedRoute) {
+	constructor(private _router: Router, private _settlementsService: SettlementsService, private _messageService: MessageService, private _route: ActivatedRoute, private _platformConfigSvc: PlatformConfigService) {
 		this.criteriaFromDate = new Date(Date.now() - DEFAULT_TIME_FILTER_HOURS * 60 * 60 * 1000).toISOString();
 		this.criteriaFromDate = this.criteriaFromDate.substring(0, this.criteriaFromDate.length - 8); // remove Z, ms and secs
 
@@ -62,6 +68,18 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 		setTimeout(() => {
 			this.applyCriteria();
 		}, 10);
+
+		this.platformConfigSubs = this._platformConfigSvc.getLatestGlobalConfig().subscribe((globalConfig) => {
+			console.log("SettlementsBatchesComponent ngOnInit - got getLatestGlobalConfig");
+
+			const currencies : Currency[] = globalConfig.parameters.find(param => param.name === "CURRENCIES")?.currentValue;
+			if(currencies){
+				this.currencyCodeList.next(currencies);
+			}
+			
+		}, error => {
+			console.log(error);
+		});
 	}
 
 	getBatcheById(batchId: string) {

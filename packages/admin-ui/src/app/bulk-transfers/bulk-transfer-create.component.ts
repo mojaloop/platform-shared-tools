@@ -16,6 +16,8 @@ import { BulkQuotesService } from "../_services_and_types/bulk-quotes.service";
 import { BulkTransfersService } from "../_services_and_types/bulk-transfers.service";
 import { BulkTransfer } from "../_services_and_types/bulk_transfer_types";
 import { debug } from "console";
+import {Currency} from "@mojaloop/platform-configuration-bc-public-types-lib";
+import { PlatformConfigService } from "../_services_and_types/platform-config.service";
 
 @Component({
 	selector: 'app-bulk-transfer-create',
@@ -31,15 +33,15 @@ export class BulkTransferCreateComponent implements OnInit {
 	public activeTransfer: Transfer | null = null;
 	public selectedQuoteId: string | null = null;
 
-	currencyCodeList = ["EUR", "USD", "TZS"];
-
 	quotes: BehaviorSubject<Quote[]> = new BehaviorSubject<Quote[]>([]);
 	quotesSubs?: Subscription;
 
 	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
+	currencyCodeList : BehaviorSubject<Currency[]> = new BehaviorSubject<Currency[]>([]);
 	participantsSubs?: Subscription;
+	platformConfigSubs ?: Subscription;
 
-	constructor(private _router: Router, private _route: ActivatedRoute, private _bulkTransfersSvc: BulkTransfersService, private _transfersSvc: TransfersService, private _interopSvc: InteropService, private _bulkQuotesSvc: BulkQuotesService, private _quotesSvc: QuotesService, private _participantsSvc: ParticipantsService, private _messageService: MessageService) {
+	constructor(private _router: Router, private _route: ActivatedRoute, private _bulkTransfersSvc: BulkTransfersService, private _transfersSvc: TransfersService, private _interopSvc: InteropService, private _bulkQuotesSvc: BulkQuotesService, private _quotesSvc: QuotesService, private _participantsSvc: ParticipantsService, private _messageService: MessageService, private _platformConfigSvc: PlatformConfigService) {
 	}
 
 	async ngOnInit(): Promise<void> {
@@ -71,6 +73,16 @@ export class BulkTransferCreateComponent implements OnInit {
 				this.applyQuote(this.inputQuoteId);
 			}
 
+			this.platformConfigSubs = this._platformConfigSvc.getLatestGlobalConfig().subscribe((globalConfig) => {
+				console.log("BulkTransferCreateComponent ngOnInit - got getLatestGlobalConfig", globalConfig);
+	
+				const currencies : Currency[] = globalConfig.parameters.find(param => param.name === "CURRENCIES")?.currentValue;
+				this.currencyCodeList.next(currencies);
+		
+			}, error => {
+					this._messageService.addError(error.message);
+			})
+
 		} catch (error: any) {
 			this._messageService.addError(error.message || error);
 		}
@@ -90,7 +102,7 @@ export class BulkTransferCreateComponent implements OnInit {
 			"transferId": new FormControl(this.activeTransfer?.transferId, Validators.required),
 			"payeeFsp": new FormControl(this.activeTransfer?.payeeFsp),
 			"payerFsp": new FormControl(this.activeTransfer?.payerFsp),
-			"currency": new FormControl(this.currencyCodeList[0], Validators.required),
+			"currency": new FormControl(this.activeTransfer?.currency, Validators.required),
 			"amount": new FormControl(this.activeTransfer?.amount, Validators.required),
 			"ilpPacket": new FormControl(this.activeTransfer?.ilpPacket),
 			"condition": new FormControl(this.activeTransfer?.condition),

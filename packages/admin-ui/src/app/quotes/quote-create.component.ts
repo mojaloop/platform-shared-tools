@@ -9,9 +9,11 @@ import {BehaviorSubject, Subscription} from "rxjs";
 import {UnauthorizedError} from "../_services_and_types/errors";
 import {IParticipant} from "@mojaloop/participant-bc-public-types-lib";
 import {ParticipantsService} from "../_services_and_types/participants.service";
+import {PlatformConfigService} from "../_services_and_types/platform-config.service";
 import * as uuid from "uuid";
 import {removeEmpty} from "../_utils";
 import {DEFAULT_TEST_CALL_REDIRECT_WAIT_MS} from "src/app/_services_and_types/settings.service";
+import {Currency} from "@mojaloop/platform-configuration-bc-public-types-lib";
 
 @Component({
 	selector: 'app-quote-create',
@@ -25,23 +27,24 @@ export class QuoteCreateComponent implements OnInit {
 	public activeQuote: Quote | null = null;
 	partyIdTypeList = ["MSISDN", "PERSONAL_ID", "BUSINESS", "DEVICE", "ACCOUNT_ID", "IBAN", "ALIAS"];
 	amountTypeList = ["SEND", "RECEIVE"];
-	currencyCodeList = ["EUR", "USD", "TZS"];
 	scenarioList = ["DEPOSIT", "WITHDRAWAL", "REFUND"];
 	initiatorList = ["PAYER", "PAYEE"];
 	initiatorTypeList = ["CONSUMER", "AGENT", "BUSINESS"];
 
 	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
+	currencyCodeList : BehaviorSubject<Currency[]> = new BehaviorSubject<Currency[]>([]);
 	participantsSubs?: Subscription;
+	platformConfigSubs ?: Subscription;
 
-	constructor(private _router: Router, private _route: ActivatedRoute, private _quotesSvc: QuotesService, private _interopSvc: InteropService, private _participantsSvc: ParticipantsService, private _messageService: MessageService) {
+	constructor(private _router: Router, private _route: ActivatedRoute, private _quotesSvc: QuotesService, private _interopSvc: InteropService, private _participantsSvc: ParticipantsService, private _messageService: MessageService, private _platformConfigSvc : PlatformConfigService) {
 	}
 
 	async ngOnInit(): Promise<void> {
 		this.participantsSubs = this._participantsSvc.getAllParticipants().subscribe((list) => {
-			console.log("TransferCreateComponent ngOnInit - got getAllParticipants");
+			console.log("QuoteCreateComponent ngOnInit - got getAllParticipants");
 
 			const onlyDfsps = list.items.filter(value => value.id !== "hub");
-
+			
 			this.form.controls["payeeFspId"].setValue(onlyDfsps[0].id);
 			this.form.controls["payerFspId"].setValue(onlyDfsps[0].id);
 
@@ -52,6 +55,18 @@ export class QuoteCreateComponent implements OnInit {
 			}
 		});
 
+		this.platformConfigSubs = this._platformConfigSvc.getLatestGlobalConfig().subscribe((globalConfig) => {
+			console.log("QuoteCreateComponent ngOnInit - got getLatestGlobalConfig", globalConfig);
+
+			const currencies : Currency[] = globalConfig.parameters.find(param => param.name === "CURRENCIES")?.currentValue;
+			this.currencyCodeList.next(currencies);
+	
+		}, error => {
+			if (error && error instanceof UnauthorizedError) {
+				this._messageService.addError(error.message);
+			}
+		});
+		
 		this._initForm();
 
 		this.isNewQuote = true;
@@ -78,7 +93,7 @@ export class QuoteCreateComponent implements OnInit {
 			"payerPartySubIdOrType": new FormControl(this.activeQuote?.payerPartyIdentifier),
 			"payerFspId": new FormControl(this.activeQuote?.payerFspId),
 			"amountType": new FormControl(this.amountTypeList[0], Validators.required),
-			"currency": new FormControl(this.currencyCodeList[0], Validators.required),
+			"currency": new FormControl(this.activeQuote?.currency, Validators.required),
 			"amount": new FormControl(this.activeQuote?.amount, Validators.required),
 			"scenario": new FormControl(this.scenarioList[0], Validators.required),
 			"initiator": new FormControl(this.initiatorList[0], Validators.required),
