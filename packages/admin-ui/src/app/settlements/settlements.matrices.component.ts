@@ -11,7 +11,8 @@ import {
 import { ActivatedRoute } from "@angular/router";
 import { paginate, PaginateResult } from "../_utils";
 import { FormBuilder, FormGroup } from '@angular/forms';
-
+import {Currency} from "@mojaloop/platform-configuration-bc-public-types-lib";
+import { PlatformConfigService } from "../_services_and_types/platform-config.service";
 
 @Component({
 	selector: 'app-settlements',
@@ -29,7 +30,9 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 	matrixTypeList = ["STATIC", "DYNAMIC"]; //TODO
 	matrixStateList = ["IDLE", "BUSY", "FINALIZED", "OUT_OF_SYNC", "LOCKED"]; //TODO
 	matrixModelList = ["DEFAULT"]; //TODO
-	currencyCodeList = ["USD", "EUR"]; //TODO
+
+	currencyCodeList : BehaviorSubject<Currency[]> = new BehaviorSubject<Currency[]>([]);
+	platformConfigSubs ?: Subscription;
 
 	initialFilterValues = {
 		filterMatrixId: null,
@@ -42,7 +45,7 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 		//add initial values for other form controls (filters)
 	}
 
-	constructor(private _settlementsService: SettlementsService, private formBuilder: FormBuilder, private _messageService: MessageService) {
+	constructor(private _settlementsService: SettlementsService, private formBuilder: FormBuilder, private _messageService: MessageService, private _platformConfigSvc: PlatformConfigService) {
 		this.filterForm = this.formBuilder.group(this.initialFilterValues);
 	}
 
@@ -50,6 +53,18 @@ export class SettlementsMatricesComponent implements OnInit, OnDestroy {
 		console.log("SettlementsMatricesComponent ngOnInit");
 
 		this.search(0, 10);
+
+		this.platformConfigSubs = this._platformConfigSvc.getLatestGlobalConfig().subscribe((globalConfig) => {
+			console.log("SettlementsMatricesComponent ngOnInit - got getLatestGlobalConfig");
+
+			const currencies : Currency[] = globalConfig.parameters.find(param => param.name === "CURRENCIES")?.currentValue;
+			if(currencies){
+				this.currencyCodeList.next(currencies);
+			}		
+			
+		}, error => {
+			console.log(error);
+		});
 	}
 
 	clearFilters() {

@@ -33,6 +33,8 @@ import {
 	CertificateRequest,
 } from "../_services_and_types/certificate_types";
 import { HttpErrorResponse } from "@angular/common/http";
+import {Currency} from "@mojaloop/platform-configuration-bc-public-types-lib";
+import { PlatformConfigService } from "../_services_and_types/platform-config.service";
 
 @Component({
 	selector: "app-participant-detail",
@@ -94,12 +96,15 @@ export class ParticipantDetailComponent implements OnInit {
 	fundsMovementModalRef?: NgbModalRef;
 	fundsMovementModalMode!: ParticipantFundsMovementDirections;
 
+	currencyCodeList : BehaviorSubject<Currency[]> = new BehaviorSubject<Currency[]>([]);
+
 	constructor(
 		private _route: ActivatedRoute,
 		private _participantsSvc: ParticipantsService,
 		private _messageService: MessageService,
 		private _certificatesService: CertificatesService,
 		private _modalService: NgbModal,
+		private _platformConfigSvc: PlatformConfigService,
 	) {}
 
 	async ngOnInit(): Promise<void> {
@@ -124,6 +129,16 @@ export class ParticipantDetailComponent implements OnInit {
 			// skip transition when progress's changed from 100 to 0
 			this.transitionClass = progress > 0 ? "circular-transition" : "";
 		});
+
+		this._platformConfigSvc.getLatestGlobalConfig().subscribe((globalConfig) => {
+			console.log("QuoteCreateComponent ngOnInit - got getLatestGlobalConfig", globalConfig);
+
+			const currencies : Currency[] = globalConfig.parameters.find(param => param.name === "CURRENCIES")?.currentValue;
+			this.currencyCodeList.next(currencies);
+	
+		}, error => {
+				this._messageService.addError(error.message);
+		})
 
 		await this._fetchParticipant();
 		await this.getApprovedCertificate();
