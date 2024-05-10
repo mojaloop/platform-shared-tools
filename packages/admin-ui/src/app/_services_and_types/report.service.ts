@@ -8,6 +8,7 @@ import type {
 	MatrixId,
 	Report,
 	SettlementInitiationReport,
+	StatementReport,
 } from "./report_types";
 
 const SVC_BASEURL = "/_reporting";
@@ -183,6 +184,55 @@ export class ReportService {
 		const url =
 			SVC_BASEURL +
 			`/dfspSettlementDetail?participantId=${participantId}&matrixId=${matrixId}&format=excel`;
+		const headers = new HttpHeaders();
+
+		return this._http.get(url, {
+			responseType: "blob",
+			headers,
+		});
+	}
+
+	getAllSettlementStatementReports(
+		participantId: string,
+		startDate: number,
+		endDate: number,
+		currencyCode: string
+	): Observable<StatementReport[]> {
+		return new Observable<StatementReport[]>((subscriber) => {
+			this._http
+				.get<StatementReport[]>(
+					SVC_BASEURL +
+						`/dfspSettlementStatement?participantId=${participantId}&startDate=${startDate}&endDate=${endDate}&currencyCode=${currencyCode}`
+				)
+				.subscribe(
+					(result: StatementReport[]) => {
+						subscriber.next(result);
+						return subscriber.complete();
+					},
+					(error) => {
+						if (error && error.status === 403) {
+							console.warn(
+								"UnauthorizedError received on getAllParticipants"
+							);
+							subscriber.error(
+								new UnauthorizedError(error.error?.msg)
+							);
+						} else {
+							console.error(error);
+							console.log("checking error value",error);
+							subscriber.error(error.error?.msg);
+						}
+
+						return subscriber.complete();
+					}
+				);
+		});
+	}
+
+	exportSettlementStatementReport(participantId: string, startDate:number, endDate:number, currencyCode: string): Observable<Blob> {
+		const url =
+			SVC_BASEURL +
+			`/dfspSettlementStatement?participantId=${participantId}&startDate=${startDate}&endDate=${endDate}&currencyCode=${currencyCode}&format=excel`;
 		const headers = new HttpHeaders();
 
 		return this._http.get(url, {
