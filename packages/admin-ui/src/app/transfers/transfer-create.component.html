@@ -69,7 +69,7 @@
 		<div class="form-group col-md-2">
 			<label for="currency">Currency:</label>
 			<select id="currency" class="form-control" formControlName="currency">
-				<option *ngFor="let currency of currencyCodeList" value="{{currency}}">{{currency}}</option>
+				<option *ngFor="let currency of (currencyCodeList | async)" value="{{currency.code}}">{{currency.code}}</option>
 			</select>
 		</div>
 		<div class="form-group col-md-2">

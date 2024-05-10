@@ -75,6 +75,28 @@ export class PlatformConfigService {
 		});
 	}
 
+	getLatestGlobalConfig(): Observable<GlobalConfigurationSet> {
+		return new Observable<GlobalConfigurationSet>(subscriber => {
+			this._http.get<GlobalConfigurationSet[]>(`${SVC_BASEURL}/${GLOBALCONFIGSET_URL_RESOURCE_NAME}/?latest=true`).subscribe(
+				(result: GlobalConfigurationSet[]) => {
+					console.log(`got getLatestGlobalConfigs response: ${result}`);
+					subscriber.next(result[0]);
+					return subscriber.complete();
+				},
+				error => {
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on getLatestGlobalConfig");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+					return subscriber.complete();
+				}
+			);
+		});
+	}
+
 	getLatestSchemaVersion(list: ConfigurationSet[]): string | null {
 		if (!list || list.length <= 0) {
 			return null;

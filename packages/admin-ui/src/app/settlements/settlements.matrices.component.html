@@ -43,8 +43,8 @@
 					<label for="filterCurrency">Currency</label>
 					<select formControlName="filterCurrency" id="filterCurrency" class="form-control">
 						<option value="{{ALL_STR_ID}}">{{ALL_STR_ID}}</option>
-						<option *ngFor="let item of currencyCodeList" value="{{item}}">
-							{{item}}
+						<option *ngFor="let item of (currencyCodeList | async)" value="{{item.code}}">
+							{{item.code}}
 						</option>
 					</select>
 				</div>
