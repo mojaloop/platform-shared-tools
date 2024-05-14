@@ -13,6 +13,8 @@ import { ParticipantsService } from "../_services_and_types/participants.service
 import { ReportService } from "../_services_and_types/report.service";
 import { formatNumber } from "../_utils";
 import { ParticipantFundsMovementTypes } from "@mojaloop/participant-bc-public-types-lib";
+import { PlatformConfigService } from "../_services_and_types/platform-config.service";
+import {Currency} from "@mojaloop/platform-configuration-bc-public-types-lib";
 
 interface ModifiedStatementReport {
 	dfspId: string;
@@ -51,12 +53,13 @@ export class DFSPSettlementStatementReport implements OnInit {
 	chosenDfspId: string = "";
 	chosenSettlementId: string = "";
 	settlementStatementInfo: SettlementStatementInfo | null = null;
-	currencyCodeList = ["ALL", "EUR", "USD", "TZS"];
+	currencyCodeList : BehaviorSubject<Currency[]> = new BehaviorSubject<Currency[]>([]);
 
 	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<
 		IParticipant[]
 	>([]);
 	participantsSubs?: Subscription;
+	platformConfigSubs ?: Subscription;
 
 	statementReports: BehaviorSubject<ModifiedStatementReport[]> =
 		new BehaviorSubject<ModifiedStatementReport[]>([]);
@@ -65,12 +68,14 @@ export class DFSPSettlementStatementReport implements OnInit {
 	constructor(
 		private _participantsSvc: ParticipantsService,
 		private _reportSvc: ReportService,
-		private _messageService: MessageService
+		private _messageService: MessageService,
+		private _platformConfigSvc: PlatformConfigService
 	) {}
 
 	async ngOnInit(): Promise<void> {
 		this._initForms();
 		this.getParticipants();
+		this.getCurrencyList();
 	}
 
 	ngOnDestroy() {
@@ -108,6 +113,20 @@ export class DFSPSettlementStatementReport implements OnInit {
 					}
 				}
 			);
+	}
+
+	getCurrencyList(){
+		this.platformConfigSubs = this._platformConfigSvc.getLatestGlobalConfig().subscribe((globalConfig) => {
+			
+			const currencies : Currency[] = globalConfig.parameters.find(param => param.name === "CURRENCIES")?.currentValue;
+			
+			this.currencyCodeList.next(currencies);
+	
+		}, error => {
+			if (error && error instanceof UnauthorizedError) {
+				this._messageService.addError(error.message);
+			}
+		})
 	}
 
 	formatDatetoISOString(value : any){

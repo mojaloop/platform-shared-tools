@@ -59,16 +59,16 @@
 				<label for="currency">Currency:</label>
 				<select id="currency" class="form-control" formControlName="currencyCode">
 				  <option value="" selected disabled>Choose Currency</option>
-				  <option *ngFor="let currency of currencyCodeList"  value="{{currency}}">{{currency}}</option>
+				  <option value="ALL">All</option>
+				  <option *ngFor="let currency of (currencyCodeList | async)"  value="{{currency.code}}">{{currency.code}}</option>
 				</select>
 			</div>
 
 			<div class="form-group" style="margin-top: 32px;">
 				<button
 					type="submit"
-					class="form-control btn btn-primary d-flex align-items-center px-3"
-				>
-					Search<i class="bi bi-search ml-2" style="font-size: 14px"></i>
+					class="form-control btn btn-primary d-flex align-items-center px-3">
+					Run
 				</button>
 			</div>
 
@@ -127,12 +127,12 @@
 	>
 		<thead class="thead-light">
 			<tr>
-				<th scope="col" style="min-width: 250px">Transfer Id</th>
+				<th scope="col" style="min-width: 180px">Transfer Id</th>
 				<th scope="col" style="min-width: 180px">Date Time</th>
 				<th scope="col" style="min-width: 450px;">Process Description</th>
-				<th scope="col" style="min-width: 120px">Funds In</th>
-				<th scope="col" style="min-width: 120px">Funds Out</th>
-				<th scope="col" style="min-width: 120px">Balance</th>
+				<th scope="col" style="min-width: 160px">Funds In</th>
+				<th scope="col" style="min-width: 160px">Funds Out</th>
+				<th scope="col" style="min-width: 160px">Balance</th>
 				<th scope="col" style="min-width: 120px">Currency</th>
 				<th scope="col" style="min-width: 180px">Account Number</th>
 			</tr>
@@ -145,14 +145,14 @@
 		<tbody>
 			<tr *ngFor="let statementReport of statementReports | async; let i = index">
 			
-				<td style="min-width: 250px">{{ statementReport.transferId }}</td>
+				<td style="min-width: 180px">{{ statementReport.transferId }}</td>
 				<td style="min-width: 180px">
 					{{ statementReport.transactionDate }}
 				</td>
 				<td style="min-width: 450px">{{ statementReport.processDescription }}</td>
-				<td style="min-width: 120px; text-align: right;">{{ statementReport.fundsInAmount }}</td>
-				<td style="min-width: 120px; text-align: right;"> {{ statementReport.fundsOutAmount }}</td>
-				<td style="min-width: 120px; text-align: right;">{{ statementReport.balance }}</td>
+				<td style="min-width: 160px; text-align: right;">{{ statementReport.fundsInAmount }}</td>
+				<td style="min-width: 160px; text-align: right;"> {{ statementReport.fundsOutAmount }}</td>
+				<td style="min-width: 160px; text-align: right;">{{ statementReport.balance }}</td>
 				<td style="min-width: 120px">
 					{{ statementReport.statementCurrencyCode }}
 				</td>
