@@ -219,7 +219,6 @@ export class ReportService {
 							);
 						} else {
 							console.error(error);
-							console.log("checking error value",error);
 							subscriber.error(error.error?.msg);
 						}
 
