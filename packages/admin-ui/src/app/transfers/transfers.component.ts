@@ -9,6 +9,8 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {HUB_PARTICIPANT_ID, IParticipant} from "@mojaloop/participant-bc-public-types-lib";
 import {TransferErrorCodes} from "@mojaloop/transfers-bc-public-types-lib";
 import {paginate, PaginateResult} from "../_utils";
+import { PlatformConfigService } from "../_services_and_types/platform-config.service";
+import {Currency} from "@mojaloop/platform-configuration-bc-public-types-lib";
 
 @Component({
 	selector: 'app-transfers',
@@ -24,11 +26,12 @@ export class TransfersComponent implements OnInit, OnDestroy {
 
 	transfersSubs?: Subscription;
 	participantsSubs?: Subscription;
+	platformConfigSubs?: Subscription;
 	filterForm: FormGroup;
 
 	//Filters
 	keywordState: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
-	keywordCurrency: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+	keywordCurrency: BehaviorSubject<Currency[]> = new BehaviorSubject<Currency[]>([]);
 	keywordSourceAppName: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordTransferType: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordPayerIdType: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
@@ -55,7 +58,7 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		//add initial values for other form controls (filters)
 	};
 
-	constructor(private _participantsSvc: ParticipantsService, private formBuilder: FormBuilder, private _transfersSvc: TransfersService, private _messageService: MessageService,) {
+	constructor(private _participantsSvc: ParticipantsService, private formBuilder: FormBuilder, private _transfersSvc: TransfersService, private _messageService: MessageService, private _platformConfigSvc: PlatformConfigService) {
 		this.filterForm = this.formBuilder.group(this.initialFilterValues);
 		this.criteriaFromDate = this.criteriaFromDate.substring(0, this.criteriaFromDate.length - 8);
 		this.criteriaFromDate = this.criteriaFromDate.substring(0, this.criteriaFromDate.length - 8); // remove Z, ms and secs
@@ -67,6 +70,23 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		console.log("TransfersComponent ngOnInit");
 
 		await this.getSearchKeywords();
+
+		// Get currencies from global config
+		this.platformConfigSubs = this._platformConfigSvc.getLatestGlobalConfig().subscribe((globalConfig) => {
+			console.log("TransfersComponent ngOnInit - got getLatestGlobalConfig");
+
+			const currencies : Currency[] = globalConfig.parameters.find(param => param.name === "CURRENCIES")?.currentValue;
+			if(currencies){
+				this.keywordCurrency.next(currencies);
+			}
+			
+		}, error => {
+			console.log(error);
+
+			if (error && error instanceof UnauthorizedError) {
+				this._messageService.addError(error.message);
+			}
+		});
 
 		this.participantsSubs = this._participantsSvc
 			.getAllParticipants()
@@ -172,7 +192,6 @@ export class TransfersComponent implements OnInit, OnDestroy {
 
 			keywords.forEach(value => {
 				if (value.fieldName == "state") this.keywordState.next(value.distinctTerms);
-				if (value.fieldName == "currency") this.keywordCurrency.next(value.distinctTerms);
 				if (value.fieldName == "id") this.keywordSourceAppName.next(value.distinctTerms);
 				if (value.fieldName == "transferType") this.keywordTransferType.next(value.distinctTerms);
 				if (value.fieldName == "payerIdType") this.keywordPayerIdType.next(value.distinctTerms);
@@ -192,6 +211,8 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		if (this.transfersSubs) {
 			this.transfersSubs.unsubscribe();
 		}
-
+		if (this.platformConfigSubs) {
+			this.platformConfigSubs.unsubscribe();
+		}
 	}
 }
