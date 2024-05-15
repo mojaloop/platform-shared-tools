@@ -28,7 +28,7 @@
     "@angular/router": "~12.2.6",
     "@mojaloop/auditing-bc-public-types-lib": "~0.3.1",
     "@mojaloop/logging-bc-public-types-lib": "~0.1.22",
-    "@mojaloop/participant-bc-public-types-lib": "^0.5.4",
+    "@mojaloop/participant-bc-public-types-lib": "^0.5.5",
     "@mojaloop/platform-configuration-bc-public-types-lib": "~0.3.5",
     "@mojaloop/security-bc-public-types-lib": "~0.3.5",
     "@mojaloop/settlements-bc-public-types-lib": "~0.3.2",
