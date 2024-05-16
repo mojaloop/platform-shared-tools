@@ -22,6 +22,7 @@ import {
 	IParticipantContactInfoChangeRequest,
 	IParticipantStatusChangeRequest,
 	ApprovalRequestState,
+	ParticipantFundsMovementTypes,
 } from "@mojaloop/participant-bc-public-types-lib";
 import { ParticipantsService } from "src/app/_services_and_types/participants.service";
 import { BehaviorSubject, Observable } from "rxjs";
@@ -94,7 +95,7 @@ export class ParticipantDetailComponent implements OnInit {
 	@ViewChild("fundsMovementModal") // Get a reference to the depositModal
 	fundsMovementModal!: NgbModal;
 	fundsMovementModalRef?: NgbModalRef;
-	fundsMovementModalMode!: ParticipantFundsMovementDirections;
+	fundsMovementModalMode!: ParticipantFundsMovementTypes;
 
 	currencyCodeList : BehaviorSubject<Currency[]> = new BehaviorSubject<Currency[]>([]);
 
@@ -981,7 +982,7 @@ export class ParticipantDetailComponent implements OnInit {
 			currencyCode: currency,
 			createdBy: "",
 			createdDate: Date.now(),
-			direction: this.fundsMovementModalMode,
+			type: this.fundsMovementModalMode,
 			note: depositNoteElem.value,
 			extReference: depositExtRefElem.value,
 			rejectedBy: null,
@@ -1173,7 +1174,7 @@ export class ParticipantDetailComponent implements OnInit {
 
 	showDeposit() {
 		this.fundsMovementModalMode =
-			ParticipantFundsMovementDirections.FUNDS_DEPOSIT;
+			ParticipantFundsMovementTypes.OPERATOR_FUNDS_DEPOSIT;
 		this.fundsMovementModalRef = this._modalService.open(
 			this.fundsMovementModal,
 			{ centered: true },
@@ -1182,7 +1183,7 @@ export class ParticipantDetailComponent implements OnInit {
 
 	showWithdrawal() {
 		this.fundsMovementModalMode =
-			ParticipantFundsMovementDirections.FUNDS_WITHDRAWAL;
+		ParticipantFundsMovementTypes.OPERATOR_FUNDS_WITHDRAWAL;
 		this.fundsMovementModalRef = this._modalService.open(
 			this.fundsMovementModal,
 			{ centered: true },
