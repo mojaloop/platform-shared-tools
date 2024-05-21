@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/platform-shared-tools",
-  "version": "0.0.1",
+  "version": "0.0.5-snapshot",
   "description": "mojaloop platform shared tools",
   "license": "Apache-2.0",
   "homepage": "https://github.com/mojaloop/platform-shared-tools",
