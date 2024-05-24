@@ -75,7 +75,7 @@
             <td>{{ item.amount }}</td>
             <td>{{ item.currencyCode }}</td>
             <td>{{ item.createdBy }}</td>
-            <td>{{ item.createdDate | date : "short" }}</td>
+            <td>{{ item.createdDate | date : "yyyy-MM-ddTHH:mm:ssZ" }}</td>
           </tr>
         </tbody>
       </table>
@@ -145,7 +145,7 @@
             <td>{{ item.fixedValue }}</td>
             <td>{{ item.percentage ?? "-" }}</td>
             <td>{{ item.currencyCode }}</td>
-            <td>{{ item.createdDate | date : "short" }}</td>
+            <td>{{ item.createdDate | date : "yyyy-MM-ddTHH:mm:ssZ" }}</td>
           </tr>
         </tbody>
       </table>
@@ -211,12 +211,10 @@
 					<td>{{ certificate.certInfo?.subject }}</td>
 					<td>{{ certificate.certInfo?.issuer }}</td>
 					<td>
-						{{ certificate.certInfo?.validFrom | date :
-						"medium" }}
+						{{ certificate.certInfo?.validFrom | date : "yyyy-MM-ddTHH:mm:ssZ" }}
 					</td>
 					<td>
-						{{ certificate.certInfo?.validTo | date : "medium"
-						}}
+						{{ certificate.certInfo?.validTo | date : "yyyy-MM-ddTHH:mm:ssZ" }}
 					</td>
 					<td>{{ certificate.createdBy }}</td>
 				</tr>

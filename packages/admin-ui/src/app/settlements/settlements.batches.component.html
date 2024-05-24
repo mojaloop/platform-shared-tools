@@ -69,7 +69,7 @@
 			</div>
 			<div class="form-group col-md-2 ">
 				<label for="filterBtn">&nbsp;</label>
-					<button type="submit" class="form-control btn btn-primary" id="filterBtn" 
+					<button type="submit" class="form-control btn btn-primary" id="filterBtn"
 						(click)="applyCriteria(0)">Search&nbsp;&nbsp;<i class="bi bi-search"></i></button>
 			</div>
 
@@ -129,7 +129,7 @@
 			<td><a (click)="selectBatch(0, undefined, item.id);" class="link">{{item.id}}</a></td>
 			<td>{{item.settlementModel}}</td>
 			<td>{{item.currencyCode}}</td>
-			<td>{{item.timestamp | date: 'medium'}}</td>
+			<td>{{item.timestamp | date: 'yyyy-MM-ddTHH:mm:ssZ'}}</td>
 			<td>{{item.batchSequence}}</td>
 			<td>{{item.batchName}}</td>
 			<td>{{item.state}}</td>
