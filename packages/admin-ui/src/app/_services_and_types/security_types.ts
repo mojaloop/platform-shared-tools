@@ -100,5 +100,5 @@ export interface IBuiltinIamApplicationCreate extends IBuiltinIamApplication{
 export type PrivilegeWithOwnerAppInfo = Privilege & {
 	boundedContextName: string;     // bounded context it belongs to
 	applicationName: string;        // application it belongs to
-	applicationVersion: string;     // semver
+	privilegeSetVersion: string;     // semver
 }

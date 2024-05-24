@@ -82,7 +82,6 @@ export class PlatformRoleDetailComponent implements OnInit {
 		let excluded:PrivilegeWithOwnerAppInfo[] = [];
 
 		const boundedContexts:string[] = [];
-		const applications:string[] = [];
 
 		this.privs.forEach(priv => {
 			if(role.privileges.includes(priv.id)){
@@ -92,7 +91,6 @@ export class PlatformRoleDetailComponent implements OnInit {
 			}
 
 			if(!boundedContexts.includes(priv.boundedContextName)) boundedContexts.push(priv.boundedContextName);
-			if(!applications.includes(priv.applicationName)) applications.push(priv.applicationName);
 		});
 
 		// filter out included
@@ -117,23 +115,19 @@ export class PlatformRoleDetailComponent implements OnInit {
 		// Sort alphabetically
 		included.sort((a,b)=>
 			a.boundedContextName.localeCompare(b.boundedContextName) ||
-			a.applicationName.localeCompare(b.applicationName) ||
 			a.id.localeCompare(b.id)
 		);
 
 		excluded.sort((a,b)=>
 			a.boundedContextName.localeCompare(b.boundedContextName) ||
-			a.applicationName.localeCompare(b.applicationName) ||
 			a.id.localeCompare(b.id)
 		);
 
 		boundedContexts.sort((a,b)=>a.localeCompare(b));
-		applications.sort((a,b)=>a.localeCompare(b));
 
 		this.includedPrivileges.next(included);
 		this.excludedPrivileges.next(excluded);
 		this.boundedContextNames.next(boundedContexts);
-		this.applicationNames.next(applications);
 	}
 
 	async copyIdToClipboard() {

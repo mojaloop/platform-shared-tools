@@ -4,7 +4,7 @@
 	<tr>
 		<th scope="col">Label</th>
 		<th scope="col">BC</th>
-		<th scope="col">App</th>
+		<th scope="col">Privilege Set Version</th>
 		<th scope="col">Description</th>
 	</tr>
 	</thead>
@@ -12,7 +12,7 @@
 	<tr *ngFor="let item of (privileges | async)">
 		<th scope="row">{{item.labelName}}</th>
 		<td> {{item.boundedContextName}}</td>
-		<td> {{item.applicationName}} <span class="badge badge-secondary">{{item.applicationVersion}}</span></td>
+		<td> {{item.boundedContextName}} <span class="badge badge-secondary">{{item.privilegeSetVersion}}</span></td>
     	<td> {{item.description}}</td>
 	</tr>
 	</tbody>
