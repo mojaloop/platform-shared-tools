@@ -16,7 +16,7 @@ import semver from "semver";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
 
 const SVC_BASEURL = "/_platform-configuration-svc";
-
+import { CurrencyUpdatePayload } from "./config_types"
 
 @Injectable({
 	providedIn: "root",
@@ -107,6 +107,29 @@ export class PlatformConfigService {
 		// sort by decreasing schemaVersion order (latest version first)
 		newList.sort((a: GlobalConfigurationSet, b: GlobalConfigurationSet) => semver.compare(b.schemaVersion, a.schemaVersion));
 		return newList[0].schemaVersion;
+	}
+
+	updateGlobalConfig(item : CurrencyUpdatePayload ): Observable<string | null> {
+		return new Observable<string>((subscriber) => {
+			this._http.post<void>(SVC_BASEURL + "/globalConfigSets/", item).subscribe(
+				() => {
+					console.log(`got response - update globalConfigSets successful`);
+
+					subscriber.next();
+					return subscriber.complete();
+				},
+				(error) => {
+					if (error && error.status === 403) {
+						console.warn("Access forbidden received on updateGlobalConfigSet");
+						subscriber.error(new UnauthorizedError(error.error?.msg));
+					} else {
+						console.error(error);
+						subscriber.error(error.error?.msg);
+					}
+					return subscriber.complete();
+				}
+			);
+		});
 	}
 
 }

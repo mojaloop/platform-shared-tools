@@ -57,26 +57,41 @@
       <td>{{param.name}}</td>
       <td>{{param.type}}</td>
 
-		<td *ngIf="param.type==='LIST' || param.type==='OBJECT'">(list or object not shown)</td>
+	  	<td *ngIf="param.name === 'CURRENCIES'" > 
+			<a href="#" (click)="getConfigItem($event)">
+				<span *ngFor="let currency of param.defaultValue"> {{ currency.code }}, </span>
+			</a>
+		</td>
+		<td *ngIf="param.name !== 'CURRENCIES' && (param.type==='LIST' || param.type==='OBJECT')">
+			(list or object not shown)
+		</td>
 		<td *ngIf="param.type!=='LIST' && param.type!=='OBJECT'">{{param.defaultValue}}</td>
 
-		<td *ngIf="param.type==='LIST' || param.type==='OBJECT'">(list or object not shown)</td>
+		<td *ngIf="param.name === 'CURRENCIES'" > 
+			<a href="#" (click)="getConfigItem($event,false)"><span *ngFor="let currency of param.currentValue">
+				{{ currency.code }},
+			</span></a>
+		</td>
+		<td *ngIf="param.name !== 'CURRENCIES' && (param.type==='LIST' || param.type==='OBJECT')">
+			(list or object not shown)
+		</td>
 		<td *ngIf="param.type!=='LIST' && param.type!=='OBJECT'">{{param.currentValue}}</td>
 
       <td>{{param.description}}</td>
 
 		<td> <!--actions-->
-			<button class="btn btn-primary btn-block" [disabled]="editing" (click)="showEditConfigItemModal()">Deposit</button>
-			<div class="btn-group btn-group-sm" role="group" aria-label="">
+			<button class="btn btn-primary btn-block" [disabled]="editing" (click)="showEditConfigItemModal(param.name)">Add</button>
+			<button class="btn btn-primary btn-block" [disabled]="editing" (click)="showUpdateConfigItemModal(param.name)">Update</button>
+			<!--div class="btn-group btn-group-sm" role="group" aria-label="">
 
 				<button type="button" class="btn btn-danger" [hidden]="false"
 						ngbTooltip="Disable account">
 					<span class="bi bi-dash-circle"></span>
 				</button>
-			</div>
+			</div-->
 		</td>
     </tr>
-    </tbody>
+</tbody>
   </table>
 </div>
 
@@ -137,6 +152,56 @@
 
 
 
+<!-- Add Currency Config Modal -->
+<ng-template #addCurrencyConfigItemModal let-modal>
+	<div class="modal-header">
+		<h4>Add Currency</h4>
+		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<form class="">
+
+			<div class="form-group">
+				<label class="ml-2 mr-2" for="currency-code">Code</label>
+				<input type="text" 
+				pattern="[A-Z]{3}" 
+				class="form-control" 
+				id="currency-code" 
+				minlength=3 
+				maxlength=3
+				required>
+			</div>
+
+			<div class="form-group">
+				<label class="ml-2 mr-2" for="currency-num">Num</label>
+				<input type="text"  
+				pattern="\d{3}" 
+				title="Please enter exactly 3 Numeric Code"
+				class="form-control" 
+				id="currency-num" 
+				minlength=3 
+				maxlength=3
+				required>
+			</div>
+
+			<div class="form-group">
+				<label class="ml-2 mr-2" for="currency-decimals">Decimal</label>
+				<input type="number"  
+				class="form-control" 
+				id="currency-decimals" maxlength="1" minlength="1"
+				required>
+			</div>
+
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-success" (click)="saveCurrency($event)">Save</button>
+		<button type="button" class="btn btn-danger" (click)="modal.dismiss()">Cancel</button>
+	</div>
+</ng-template>
+
 <!-- Edit Config Modal -->
 <ng-template #editConfigItemModal let-modal>
 	<div class="modal-header">
@@ -193,3 +258,239 @@
 	</div>
 </ng-template>
 
+
+<!-- Show Currency Config Modal -->
+<ng-template #showDefaultConfigItemModal let-modal>
+	<div class="modal-header">
+		<h4 id="currency-title">Default Currency Value</h4>
+		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<table class="table">
+			<thead class="thead-light">
+			<tr>
+				<th>Code</th>
+				<th>Num</th>
+				<th>Decimals</th>
+			</tr>
+		</thead>
+			<ng-container *ngIf="(params | async) as paramList">
+				<ng-container *ngFor="let param of paramList">
+					<ng-container *ngIf="param.name === 'CURRENCIES'">
+						<tr *ngFor="let currency of param.defaultValue">
+							<td>{{ currency.code }}</td>
+							<td>{{ currency.num }}</td>
+							<td>{{ currency.decimals }}</td>
+						</tr>
+					</ng-container>
+				</ng-container>
+			</ng-container>
+		</table>
+	</div>
+</ng-template>
+
+<ng-template #showCurrentConfigItemModal let-modal>
+	<div class="modal-header">
+		<h4 id="currency-title">Current Currency Value</h4>
+		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<table class="table">
+			<thead class="thead-light">
+			<tr>
+				<th>Code</th>
+				<th>Num</th>
+				<th>Decimals</th>
+				<th class="edit">Action</th>
+			</tr>
+		</thead>
+			<ng-container *ngIf="(params | async) as paramList">
+				<ng-container *ngFor="let param of paramList">
+					<ng-container id="currency-list" *ngIf="param.name === 'CURRENCIES'">
+						<tr *ngFor="let currency of param.currentValue">
+							<td>
+								<ng-container *ngIf="!currency.editing; else editField">
+									{{ currency.code }}
+								</ng-container>
+								<ng-template #editField>
+									<input type="text" [(ngModel)]="currency.code" class="form-control" >
+								</ng-template>
+							</td>
+							<td>
+								<ng-container *ngIf="!currency.editing; else editField2">
+									{{ currency.num }}
+								</ng-container>
+								<ng-template #editField2>
+									<input type="text" [(ngModel)]="currency.num" class="form-control" >
+								</ng-template>
+							</td>
+							<td>
+								<ng-container *ngIf="!currency.editing; else editField3">
+									{{ currency.decimals }}
+								</ng-container>
+								<ng-template #editField3>
+									<input type="text" [(ngModel)]="currency.decimals" class="form-control" >
+								</ng-template>
+							</td>
+							<td>
+								<ng-container *ngIf="!currency.editing">
+									<div class="btn-group btn-group-sm" role="group" aria-label="">
+									<button type="button" class="btn btn-primary" (click)="toggleEdit(currency)"><span class="bi bi-pencil"></span></button>
+								</div>
+								</ng-container>
+								<div class="btn-group btn-group-sm" role="group" aria-label="">
+								<ng-container *ngIf="currency.editing">
+									<button type="button" class="btn btn-success" (click)="confirmEdit(currency)"><span class="bi bi-check-lg"></span></button>
+									<button type="button" class="btn btn-danger"(click)="rejectEdit(currency)"><span class="bi bi-x-lg"></span></button>
+								</ng-container>
+							</div>
+							</td>
+						</tr>
+					</ng-container>
+
+				</ng-container>
+			</ng-container>
+		</table>
+	</div>
+</ng-template>
+
+<!--Update Currency Config Modal -->
+<ng-template #updateCurrencyConfigItemModal let-modal>
+	<div class="modal-header">
+		<h4 id="currency-title">Update Currency</h4>
+		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<form>
+		<div class="form-group">
+			<label class="" for="depositCurrencyCode">Choose the currency you want to update.</label>
+			<ng-container *ngIf="(params | async) as paramList">
+				<ng-container *ngFor="let param of paramList">
+						<select class="form-control" id="updateCurrencyCode" *ngIf="param.name === 'CURRENCIES'">
+							<option *ngFor="let currency of param.currentValue" id={{currency.code}} value="{{currency.code}}">{{currency.code}}</option>
+						</select>
+				</ng-container>
+			</ng-container>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-success" (click)="selectUpdateCurrency($event)">Confirm</button>
+		<button type="button" class="btn btn-danger" (click)="modal.dismiss()">Cancel</button>
+	</div>
+</ng-template>
+
+
+
+
+<!-- Add Currency Config Modal -->
+<ng-template #addCurrencyConfigItemModal let-modal>
+	<div class="modal-header">
+
+		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<form class="">
+
+			<div class="form-group">
+				<label class="ml-2 mr-2" for="currency-code">Code</label>
+				<input type="text" 
+				pattern="[A-Z]{3}" 
+				class="form-control" 
+				id="currency-code" 
+				minlength=3 
+				maxlength=3
+				required>
+			</div>
+
+			<div class="form-group">
+				<label class="ml-2 mr-2" for="currency-num">Num</label>
+				<input type="text"  
+				pattern="\d{3}" 
+				title="Please enter exactly 3 Numeric Code"
+				class="form-control" 
+				id="currency-num" 
+				minlength=3 
+				maxlength=3
+				required>
+			</div>
+
+			<div class="form-group">
+				<label class="ml-2 mr-2" for="currency-decimals">Decimal</label>
+				<input type="number"  
+				class="form-control" 
+				id="currency-decimals" maxlength="1" minlength="1"
+				required>
+			</div>
+
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-success" (click)="saveCurrency($event)">Save</button>
+		<button type="button" class="btn btn-danger" (click)="modal.dismiss()">Cancel</button>
+	</div>
+</ng-template>
+
+<!-- Edit Config Modal -->
+<ng-template #editCurrencySelectModal let-modal>
+	<div class="modal-header">
+
+		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<form class="">
+
+			<div class="form-group">
+				<label class="ml-2 mr-2" for="depositAmount">Amount</label>
+				<input type="number" class="form-control" id="depositAmount" min="0" required>
+				<div class="invalid-feedback">
+					Invalid amount
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="" for="depositCurrencyCode">Currency</label>
+				<select class="form-control" id="depositCurrencyCode">
+					<option value="EUR">EUR</option>
+					<option value="USD">USD</option>
+					<option value="TZS">TZS</option>
+					<option value="MXN">MXN</option>
+				</select>
+				<div class="invalid-feedback">
+					Please choose a currency for which a position account exists.
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="ml-2 mr-2" for="depositExtRef">External Reference</label>
+				<input type="text" class="form-control" id="depositExtRef">
+				<div class="invalid-feedback">
+					Invalid external reference
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="ml-2 mr-2" for="depositNote">Note</label>
+				<textarea class="form-control" id="depositNote"></textarea>
+				<div class="invalid-feedback">
+					Invalid note
+				</div>
+			</div>
+
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-success" (click)="saveConfigItem($event)">Save</button>
+		<button type="button" class="btn btn-danger" (click)="modal.dismiss()">Cancel</button>
+	</div>
+</ng-template>
