@@ -107,8 +107,8 @@
 				<tr *ngFor="let item of (privs | async)">
 					<th>{{item.labelName}} <span class="badge badge-secondary">{{item.fromRoleLabel}}</span></th>
 					<td> {{item.description}}</td>
-					<td> {{item.boundedContextName}} / {{item.applicationName}} <span
-						class="badge badge-secondary">{{item.applicationVersion}}</span></td>
+					<td> {{item.boundedContextName}} <span
+						class="badge badge-secondary">{{item.privilegeSetVersion}}</span></td>
 				</tr>
 				</tbody>
 			</table>

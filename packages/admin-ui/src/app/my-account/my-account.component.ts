@@ -87,7 +87,7 @@ export class MyAccountComponent implements OnInit, OnDestroy {
 								description: foundAppPriv.description,
 								ownerBc: foundAppPriv.boundedContextName,
 								ownerApp: foundAppPriv.applicationName,
-								ownerAppVersion: foundAppPriv.applicationVersion
+								ownerAppVersion: foundAppPriv.privilegeSetVersion
 							});
 						}
 					});
