@@ -227,7 +227,7 @@
 		</ng-container>
 		<tr *ngFor="let item of (batchTransfers | async)">
 			<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
-			<td>{{item.transferTimestamp | date: 'medium'}}</td>
+			<td>{{item.transferTimestamp | date: 'yyyy-MM-ddTHH:mm:ssZ'}}</td>
 			<td>{{item.payerFspId}}</td>
 			<td>{{item.payeeFspId}}</td>
 			<td>{{item.amount}}</td>

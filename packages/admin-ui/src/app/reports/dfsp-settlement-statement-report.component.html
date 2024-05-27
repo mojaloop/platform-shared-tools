@@ -6,7 +6,7 @@
 		(ngSubmit)="searchReports()"
 		class="d-flex justify-content-between align-items-end mx-3"
 	>
-	
+
 	<div class="flex-column">
 		<div class="d-flex" style="gap: 30px">
 			<div class="form-group" style="width: 250px">
@@ -73,7 +73,7 @@
 			</div>
 
 		</div>
-	</div>	
+	</div>
 	</form>
 
 </div>
@@ -102,12 +102,12 @@
 
 		<div class="d-flex">
 			<p style="min-width: 250px">From Date</p>
-			<p>{{ settlementStatementInfo?.startDate || "-" }}</p>
+			<p>{{ settlementStatementInfo?.startDate | date: "yyyy-MM-ddTHH:mm:ssZ" || "-" }}</p>
 		</div>
 
 		<div class="d-flex">
 			<p style="min-width: 250px">To Date</p>
-			<p>{{ settlementStatementInfo?.endDate || "-" }}</p>
+			<p>{{ settlementStatementInfo?.endDate | date: "yyyy-MM-ddTHH:mm:ssZ" || "-" }}</p>
 		</div>
 
 		<div class="d-flex">
@@ -144,10 +144,10 @@
 
 		<tbody>
 			<tr *ngFor="let statementReport of statementReports | async; let i = index">
-			
+
 				<td style="min-width: 180px">{{ statementReport.transferId }}</td>
 				<td style="min-width: 180px">
-					{{ statementReport.transactionDate }}
+					{{ statementReport.transactionDate | date: "yyyy-MM-ddTHH:mm:ssZ" }}
 				</td>
 				<td style="min-width: 450px">{{ statementReport.processDescription }}</td>
 				<td style="min-width: 160px; text-align: right;">{{ statementReport.fundsInAmount }}</td>

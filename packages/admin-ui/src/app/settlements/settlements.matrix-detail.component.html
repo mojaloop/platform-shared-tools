@@ -58,13 +58,13 @@
 			<div class="col-4">
 				<div class="mb-2">
 					<label class="col-form-label text-secondary">Start Date</label>
-					<div>{{(matrix | async)?.dateFrom | date: 'medium'}}</div>
+					<div>{{(matrix | async)?.dateFrom | date: 'yyyy-MM-ddTHH:mm:ssZ'}}
 				</div>
 			</div>
 			<div class="col-4">
 				<div class="mb-2">
 					<label class="col-form-label text-secondary">End Date</label>
-					<div>{{(matrix | async)?.dateTo | date: 'medium'}}</div>
+					<div>{{(matrix | async)?.dateTo | date: 'yyyy-MM-ddTHH:mm:ssZ'}}
 				</div>
 			</div>
 
@@ -75,7 +75,7 @@
 			<div class="col-4">
 				<div class="mb-2">
 					<label class="col-form-label text-secondary">Last Updated</label>
-					<div>{{((matrix | async)?.updatedAt) | date: 'medium'}}</div>
+					<div>{{((matrix | async)?.updatedAt) | date: 'yyyy-MM-ddTHH:mm:ssZ'}}</div>
 				</div>
 			</div>
 
@@ -277,7 +277,7 @@
 					<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
 					<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
 					<td>{{item.amount}} ({{item.currencyCode}})</td>
-					<td>{{item.transferTimestamp | date:'medium'}}</td>
+					<td>{{item.transferTimestamp | date: 'yyyy-MM-ddTHH:mm:ssZ'}}</td>
 					<td>{{item.batchId}}</td>
 				</tr>
 				</tbody>

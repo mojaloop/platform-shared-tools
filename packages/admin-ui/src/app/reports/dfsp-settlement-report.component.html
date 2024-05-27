@@ -114,7 +114,7 @@
 
 		<div class="d-flex">
 			<p style="min-width: 250px">Settlement Created Date</p>
-			<p>{{ settlementInfo?.settlementCreatedDate || "-" }}</p>
+			<p>{{ settlementInfo?.settlementCreatedDate | date: "yyyy-MM-ddTHH:mm:ssZ" || "-" }}</p>
 		</div>
 
 		<div class="d-flex">
@@ -208,7 +208,7 @@
 						{{ netPosition.value }}
 					</td>
 				</tr>
-			</tbody>	
+			</tbody>
 		</table>
 	</div>
 </div>
