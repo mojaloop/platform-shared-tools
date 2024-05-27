@@ -54,6 +54,7 @@ import { PendingApprovalsComponent } from "./participants/pending-approvals.comp
 import {SettlementInitiationReport} from "./reports/settlement-initiation-report.component";
 import {DFSPSettlementReport} from "./reports/dfsp-settlement-report.component";
 import {DFSPSettlementDetailReport} from "./reports/dfsp-settlement-detail-report.component";
+import {DFSPSettlementStatementReport} from "./reports/dfsp-settlement-statement-report.component";
 
 
 const routes: Routes = [
@@ -155,6 +156,7 @@ const routes: Routes = [
 	{path: "report/settlement-initiation-report", component: SettlementInitiationReport, canActivate: [CanLoadIsLoggedIn]},
 	{path: "report/dfsp-settlement-report", component: DFSPSettlementReport, canActivate: [CanLoadIsLoggedIn]},
 	{path: "report/dfsp-settlement-detail-report", component: DFSPSettlementDetailReport, canActivate: [CanLoadIsLoggedIn]},
+	{path: "report/dfsp-settlement-statement-report", component: DFSPSettlementStatementReport, canActivate: [CanLoadIsLoggedIn]},
 ];
 
 

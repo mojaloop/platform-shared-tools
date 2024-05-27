@@ -44,3 +44,21 @@ export interface DetailReport {
 	Amount: string;
 	Currency: string;
 }
+
+export interface StatementReport {
+	dfspId: string;
+	dfspName: string;
+	fromDate: string;
+	toDate: string;
+	currencyCode: string;
+	transferId: string;
+	transactionDate: string;
+	processDescription: string;
+	fundsInAmount: string;
+	fundsOutAmount: string;
+	openingAmount :string;
+	balance: string;
+	statementCurrencyCode: string;
+	accountNumber: string;
+	amount: number;
+}

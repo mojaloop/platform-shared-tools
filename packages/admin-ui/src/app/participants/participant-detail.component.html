@@ -423,7 +423,7 @@
 				<tbody>
 				<tr *ngFor="let fundsMov of (participant | async)?.fundsMovements">
 					<ng-container>
-						<td>{{ fundsMov.direction }}</td>
+						<td>{{ fundsMov.type }}</td>
 						<td>{{ fundsMov.amount }}</td>
 						<td>{{ fundsMov.currencyCode }}</td>
 						<td>{{ fundsMov.transferId }}</td>
@@ -1282,10 +1282,10 @@
 <!-- Deposit/Withdrawal Modal -->
 <ng-template #fundsMovementModal let-modal>
 	<div class="modal-header">
-		<h4 *ngIf="fundsMovementModalMode === 'FUNDS_DEPOSIT'" class="modal-title">
+		<h4 *ngIf="fundsMovementModalMode === 'OPERATOR_FUNDS_DEPOSIT'" class="modal-title">
 			Deposit Funds
 		</h4>
-		<h4 *ngIf="fundsMovementModalMode === 'FUNDS_WITHDRAWAL'" class="modal-title">
+		<h4 *ngIf="fundsMovementModalMode === 'OPERATOR_FUNDS_WITHDRAWAL'" class="modal-title">
 			Withdrawal Funds
 		</h4>
 

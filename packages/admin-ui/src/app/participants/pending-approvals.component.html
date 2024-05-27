@@ -67,11 +67,11 @@
             </td>
             <td>{{ item.id }}</td>
             <td>
-              <a routerLink="/participants/{{ item.id }}">{{
+              <a routerLink="/participants/{{ item.participantId }}">{{
                 item.participantName
               }}</a>
             </td>
-            <td>{{ item.direction }}</td>
+            <td>{{ item.type }}</td>
             <td>{{ item.amount }}</td>
             <td>{{ item.currencyCode }}</td>
             <td>{{ item.createdBy }}</td>
@@ -137,7 +137,7 @@
             </td>
             <td>{{ item.id }}</td>
             <td>
-              <a routerLink="/participants/{{ item.id }}">{{
+              <a routerLink="/participants/{{ item.participantId }}">{{
                 item.participantName
               }}</a>
             </td>
