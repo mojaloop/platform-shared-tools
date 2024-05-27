@@ -51,12 +51,12 @@
 
 		<div class="d-flex">
 			<p style="min-width: 250px">Settlement Created Date</p>
-			<p>{{ settlementInfo?.settlementCreatedDate | date: "yyyy-MM-ddTHH:mm:ssZ" || "-" }}</p>
+			<p>{{ (settlementInfo?.settlementCreatedDate | momentDate) || "-" }}</p>
 		</div>
 
 		<div class="d-flex">
 			<p style="min-width: 250px">Time Zone OffSet</p>
-			<p>UTC±00:00</p>
+			<p>{{ '' | timezoneOffset }}</p>
 		</div>
 	</div>
 

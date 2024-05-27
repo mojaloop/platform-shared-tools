@@ -102,12 +102,12 @@
 
 		<div class="d-flex">
 			<p style="min-width: 250px">From Date</p>
-			<p>{{ settlementStatementInfo?.startDate | date: "yyyy-MM-ddTHH:mm:ssZ" || "-" }}</p>
+			<p>{{ (settlementStatementInfo?.startDate | momentDate) || "-" }}</p>
 		</div>
 
 		<div class="d-flex">
 			<p style="min-width: 250px">To Date</p>
-			<p>{{ settlementStatementInfo?.endDate | date: "yyyy-MM-ddTHH:mm:ssZ" || "-" }}</p>
+			<p>{{ (settlementStatementInfo?.endDate | momentDate) || "-" }}</p>
 		</div>
 
 		<div class="d-flex">
@@ -117,7 +117,7 @@
 
 		<div class="d-flex">
 			<p style="min-width: 250px">TimeZoneOffSet</p>
-			<p>UTC±00:00</p>
+			<p>{{ '' | timezoneOffset }}</p>
 		</div>
 	</div>
 
@@ -147,7 +147,7 @@
 
 				<td style="min-width: 180px">{{ statementReport.transferId }}</td>
 				<td style="min-width: 180px">
-					{{ statementReport.transactionDate | date: "yyyy-MM-ddTHH:mm:ssZ" }}
+					{{ statementReport.transactionDate | momentDate }}
 				</td>
 				<td style="min-width: 450px">{{ statementReport.processDescription }}</td>
 				<td style="min-width: 160px; text-align: right;">{{ statementReport.fundsInAmount }}</td>

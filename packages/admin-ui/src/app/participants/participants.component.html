@@ -267,12 +267,12 @@
         <td>{{ item.participantAccounts.length }}</td>
         <td class="text-secondary">
           By <span class="text-dark">{{ item.createdBy }}</span> at
-          <span class="text-dark">{{ item.createdDate | date : "yyyy-MM-ddTHH:mm:ssZ" }}</span>
+          <span class="text-dark">{{ item.createdDate | momentDate }}</span>
         </td>
         <td class="text-secondary">
           <span class="text-dark">{{ item.changeLog[0].changeType }}</span> at
           <span class="text-dark">{{
-            item.changeLog[0].timestamp | date : "yyyy-MM-ddTHH:mm:ssZ"
+            item.changeLog[0].timestamp | momentDate
           }}</span>
         </td>
       </tr>

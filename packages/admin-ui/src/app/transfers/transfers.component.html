@@ -157,7 +157,7 @@
 			<td>{{item.amount}}</td>
 			<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
 			<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
-			<td>{{item.updatedAt | date: 'yyyy-MM-ddTHH:mm:ssZ'}}</td>
+			<td>{{item.updatedAt | momentDate}}</td>
 			<td><a routerLink="/bulk-transfers/{{item.bulkTransferId}}">{{item.bulkTransferId || '-'}}</a></td>
 			<td>{{item?.errorCode || '-'}}</td>
 		</tr>

@@ -112,8 +112,8 @@
 				<td>{{item.currencyCodes ? item.currencyCodes.join(", ") : "(All)"}}</td>
 
 				<td>{{item.batches.length}}</td>
-				<td>{{item.createdAt | date: 'yyyy-MM-ddTHH:mm:ssZ'}}</td>
-				<td>{{item.updatedAt | date: 'yyyy-MM-ddTHH:mm:ssZ'}}</td>
+				<td>{{item.createdAt | momentDate}}</td>
+				<td>{{item.updatedAt | momentDate}}</td>
 
 			</tr>
 		</tbody>

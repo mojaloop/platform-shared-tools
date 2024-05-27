@@ -36,13 +36,13 @@
 
 			<div class="mb-2">
 				<label class="col-form-label text-secondary">Last update</label>
-					<div class="text-break">{{item.updatedAt | date: 'yyyy-MM-ddTHH:mm:ssZ'}}</div>
+					<div class="text-break">{{item.updatedAt | momentDate}}</div>
 			</div>
 
 			<div class="mb-2">
 				<label class="col-form-label text-secondary">Fulfilment Date</label>
 				<div class="text-break" *ngIf="!item?.completedTimestamp">-</div>
-				<div class="text-break" *ngIf="item?.completedTimestamp">{{item.completedTimestamp | date:'yyyy-MM-ddTHH:mm:ssZ'}}</div>
+				<div class="text-break" *ngIf="item?.completedTimestamp">{{item.completedTimestamp | momentDate}}</div>
 			</div>
 
 

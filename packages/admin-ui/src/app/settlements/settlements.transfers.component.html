@@ -24,7 +24,7 @@
 			<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
 			<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
 			<td>{{item.amount}} ({{item.currencyCode}})</td>
-			<td>{{item.transferTimestamp | date: 'yyyy-MM-ddTHH:mm:ssZ' }}</td>
+			<td>{{item.transferTimestamp | momentDate }}</td>
 			<td><a routerLink="/settlements/batches" [queryParams]="{batchId: item.batchId, currencyCode: item.currencyCode}">{{item.batchId}}</a></td>
 
 			<td *ngIf="item.matrixId"><a routerLink="/settlements/matrix/{{item.matrixId}}">Matrix</a></td>
