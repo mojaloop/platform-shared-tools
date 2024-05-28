@@ -30,7 +30,7 @@
 			<label class="col-form-label text-secondary">Creation</label>
 			<div>
 				Created by {{ (participant | async)?.createdBy }} at
-				{{ (participant | async)?.createdDate | date : "medium" }}
+				{{ (participant | async)?.createdDate | momentDate }}
 			</div>
 		</div>
 
@@ -38,7 +38,7 @@
 			<label class="col-form-label text-secondary">Approval</label>
 			<div *ngIf="(participant | async)?.approved">
 				Approved by {{ (participant | async)?.approvedBy }} at
-				{{ (participant | async)?.approvedDate | date : "medium" }}
+				{{ (participant | async)?.approvedDate | momentDate }}
 			</div>
 			<div *ngIf="!(participant | async)?.approved" class="text-danger">
 				Not yet approved
@@ -104,7 +104,7 @@
 				<tr *ngFor="let item of (participant | async)?.changeLog">
 					<td>{{ item.changeType }}</td>
 					<td>{{ item.user }}</td>
-					<td>{{ item.timestamp | date : "medium" }}</td>
+					<td>{{ item.timestamp | momentDate }}</td>
 					<td>{{ item.notes }}</td>
 				</tr>
 				</tbody>
@@ -308,7 +308,7 @@
 						<select class="form-control" [(ngModel)]="newParticipantAccount.currencyCode"
 								value="{{ newParticipantAccount.currencyCode }}">
 								<option *ngFor="let currency of (currencyCodeList | async)"
-										[selected]="newParticipantAccount.currencyCode === '{{currency.code}}'"  
+										[selected]="newParticipantAccount.currencyCode === '{{currency.code}}'"
 										value="{{currency.code}}">{{currency.code}}</option>
 								<!--option [selected]="newParticipantAccount.currencyCode === 'EUR'">EUR</option>
 								<option [selected]="newParticipantAccount.currencyCode === 'USD'">USD</option>
@@ -366,7 +366,7 @@
 					<td>{{ accChangeReq.currencyCode }}</td>
 					<td>
 						{{ accChangeReq.createdBy }} on
-						{{ accChangeReq.createdDate | date : "medium" }}
+						{{ accChangeReq.createdDate | momentDate }}
 					</td>
 					<td>
 						<span *ngIf="accChangeReq.requestState == 'CREATED'" class="text-danger">
@@ -374,11 +374,11 @@
 						</span>
 						<span *ngIf="accChangeReq.requestState == 'APPROVED'">
 							Approved by {{ accChangeReq.approvedBy }} on
-							{{ accChangeReq.approvedDate | date : "medium" }}
+								{{ accChangeReq.approvedDate | momentDate }}
 						</span>
 						<span *ngIf="accChangeReq.requestState == 'REJECTED'">
 							Rejected by {{ accChangeReq.rejectedBy }} on
-							{{ accChangeReq.rejectedDate | date : "medium" }}
+							{{ accChangeReq.rejectedDate | momentDate }}
 						</span>
 					</td>
 
@@ -431,7 +431,7 @@
 						<td>{{ fundsMov.note }}</td>
 						<td>
 							{{ fundsMov.createdBy }} on
-							{{ fundsMov.createdDate | date : "medium" }}
+							{{ fundsMov.createdDate | momentDate }}
 						</td>
 						<td>
 							<span *ngIf="fundsMov.requestState == 'CREATED'" class="text-danger">
@@ -439,11 +439,11 @@
 							</span>
 							<span *ngIf="fundsMov.requestState == 'APPROVED'">
 								Approved by {{ fundsMov.approvedBy }} on
-								{{ fundsMov.approvedDate | date : "medium" }}
+								{{ fundsMov.approvedDate | momentDate }}
 							</span>
 							<span *ngIf="fundsMov.requestState == 'REJECTED'">
 								Rejected by {{ fundsMov.rejectedBy }} on
-								{{ fundsMov.rejectedDate | date : "medium" }}
+								{{ fundsMov.rejectedDate | momentDate }}
 							</span>
 						</td>
 						<td>
@@ -573,7 +573,7 @@
 					<td>{{ ndcReq.currencyCode }}</td>
 					<td>
 						{{ ndcReq.createdBy }} on
-						{{ ndcReq.createdDate | date : "medium" }}
+						{{ ndcReq.createdDate | momentDate }}
 					</td>
 					<td>
 						<span *ngIf="ndcReq.requestState == 'CREATED'" class="text-danger">
@@ -581,11 +581,11 @@
 						</span>
 						<span *ngIf="ndcReq.requestState == 'APPROVED'">
 							Approved by {{ ndcReq.approvedBy }} on
-							{{ ndcReq.approvedDate | date : "medium" }}
+								{{ ndcReq.approvedDate | momentDate }}
 						</span>
 						<span *ngIf="ndcReq.requestState == 'REJECTED'">
 							Rejected by {{ ndcReq.rejectedBy }} on
-							{{ ndcReq.rejectedDate | date : "medium" }}
+							{{ ndcReq.rejectedDate | momentDate }}
 						</span>
 					<td>
 						<div class="btn-group btn-group-sm" role="group" aria-label="">
@@ -801,7 +801,7 @@
 						</td>
 						<td>
 							{{ sourceIpChangeRequest.createdBy }} on
-							{{ sourceIpChangeRequest.createdDate | date : "medium" }}
+							{{ sourceIpChangeRequest.createdDate | momentDate }}
 						</td>
 						<td>
 							<span *ngIf="sourceIpChangeRequest.requestState == 'CREATED'" class="text-danger">
@@ -809,11 +809,11 @@
 							</span>
 							<span *ngIf="sourceIpChangeRequest.requestState == 'APPROVED'">
 								Approved by {{ sourceIpChangeRequest.approvedBy }} on
-								{{ sourceIpChangeRequest.approvedDate | date : "medium" }}
+								{{ sourceIpChangeRequest.approvedDate | momentDate }}
 							</span>
 							<span *ngIf="sourceIpChangeRequest.requestState == 'REJECTED'">
 								Rejected by {{ sourceIpChangeRequest.rejectedBy }} on
-								{{ sourceIpChangeRequest.rejectedDate | date : "medium" }}
+								{{ sourceIpChangeRequest.rejectedDate | momentDate }}
 							</span>
 						</td>
 
@@ -858,8 +858,8 @@
 							<td>{{ approvedCertificate?._id }}</td>
 							<td>{{ approvedCertificate?.certInfo?.subject }}</td>
 							<td>{{ approvedCertificate?.certInfo?.issuer }}</td>
-							<td>{{ approvedCertificate?.certInfo?.validFrom | date : "medium" }}</td>
-							<td>{{ approvedCertificate?.certInfo?.validTo | date : "medium" }}</td>
+							<td>{{ approvedCertificate?.certInfo?.validFrom | momentDate }}</td>
+							<td>{{ approvedCertificate?.certInfo?.validTo | momentDate }}</td>
 							<td>{{ approvedCertificate?.createdBy }}</td>
 							<td>
 								<span *ngIf="approvedCertificate?.requestState == 'CREATED'" class="text-danger">
@@ -867,11 +867,11 @@
 								</span>
 								<span *ngIf="approvedCertificate?.requestState == 'APPROVED'">
 									Approved by {{ approvedCertificate?.approvedBy }} on
-									{{ approvedCertificate?.approvedDate | date : "medium" }}
+									{{ approvedCertificate?.approvedDate | momentDate }}
 								</span>
 								<span *ngIf="approvedCertificate?.requestState == 'REJECTED'">
 									Rejected by {{ approvedCertificate?.rejectedBy }} on
-									{{ approvedCertificate?.rejectedDate | date : "medium" }}
+									{{ approvedCertificate?.rejectedDate | momentDate }}
 								</span>
 							</td>
 						</tr>
@@ -911,8 +911,8 @@
 							<td>{{ certificate._id }}</td>
 							<td>{{ certificate.certInfo?.subject }}</td>
 							<td>{{ certificate.certInfo?.issuer }}</td>
-							<td>{{ certificate.certInfo?.validFrom | date : "medium" }}</td>
-							<td>{{ certificate.certInfo?.validTo | date : "medium" }}</td>
+							<td>{{ certificate.certInfo?.validFrom | momentDate }}</td>
+							<td>{{ certificate.certInfo?.validTo | momentDate }}</td>
 							<td>{{ certificate.createdBy }}</td>
 							<td>
 								<span *ngIf="certificate.requestState == 'CREATED'" class="text-danger">
@@ -920,11 +920,11 @@
 								</span>
 								<span *ngIf="certificate.requestState == 'APPROVED'">
 									Approved by {{ certificate.approvedBy }} on
-									{{ certificate.approvedDate | date : "medium" }}
+									{{ certificate.approvedDate | momentDate }}
 								</span>
 								<span *ngIf="certificate.requestState == 'REJECTED'">
 									Rejected by {{ certificate.rejectedBy }} on
-									{{ certificate.rejectedDate | date : "medium" }}
+									{{ certificate.rejectedDate | momentDate }}
 								</span>
 							</td>
 							<td>
@@ -1183,7 +1183,7 @@
 					<td>{{ contactInfoChangeRequest.role }}</td>
 					<td>
 						{{ contactInfoChangeRequest.createdBy }} on
-						{{ contactInfoChangeRequest.createdDate | date : "medium" }}
+						{{ contactInfoChangeRequest.createdDate | momentDate }}
 					</td>
 					<td>
 						<span *ngIf="contactInfoChangeRequest.requestState == 'CREATED'" class="text-danger">
@@ -1191,11 +1191,11 @@
 						</span>
 						<span *ngIf="contactInfoChangeRequest.requestState == 'APPROVED'">
 							Approved by {{ contactInfoChangeRequest.approvedBy }} on
-							{{ contactInfoChangeRequest.approvedDate | date : "medium" }}
+							{{ contactInfoChangeRequest.approvedDate | momentDate }}
 						</span>
 						<span *ngIf="contactInfoChangeRequest.requestState == 'REJECTED'">
 							Rejected by {{ contactInfoChangeRequest.rejectedBy }} on
-							{{ contactInfoChangeRequest.rejectedDate | date : "medium" }}
+							{{ contactInfoChangeRequest.rejectedDate | momentDate }}
 						</span>
 					</td>
 
@@ -1240,7 +1240,7 @@
 					<td>{{ statusChangeRequest.isActive ? "Enable" : "Disable" }}</td>
 					<td>
 						{{ statusChangeRequest.createdBy }} on
-						{{ statusChangeRequest.createdDate | date : "medium" }}
+						{{ statusChangeRequest.createdDate | momentDate }}
 					</td>
 					<td>
 						<span *ngIf="statusChangeRequest.requestState == 'CREATED'" class="text-danger">
@@ -1248,11 +1248,11 @@
 						</span>
 						<span *ngIf="statusChangeRequest.requestState == 'APPROVED'">
 							Approved by {{ statusChangeRequest.approvedBy }} on
-							{{ statusChangeRequest.approvedDate | date : "medium" }}
+							{{ statusChangeRequest.approvedDate | momentDate }}
 						</span>
 						<span *ngIf="statusChangeRequest.requestState == 'REJECTED'">
 							Rejected by {{ statusChangeRequest.rejectedBy }} on
-							{{ statusChangeRequest.rejectedDate | date : "medium" }}
+							{{ statusChangeRequest.rejectedDate | momentDate }}
 						</span>
 					</td>
 

@@ -24,7 +24,7 @@
 			<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
 			<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
 			<td>{{item.amount}} ({{item.currencyCode}})</td>
-			<td>{{item.transferTimestamp | date:'medium'}}</td>
+			<td>{{item.transferTimestamp | momentDate }}</td>
 			<td><a routerLink="/settlements/batches" [queryParams]="{batchId: item.batchId, currencyCode: item.currencyCode}">{{item.batchId}}</a></td>
 
 			<td *ngIf="item.matrixId"><a routerLink="/settlements/matrix/{{item.matrixId}}">Matrix</a></td>
@@ -47,20 +47,20 @@
             <option value="100" [selected]="paginateObj.pageSize == 100">100</option>
           </select>
         </li>
-    
+
         <li class="gotopage d-flex align-items-center">
           <span >Go to page</span>
           <select (change)="_fetchTransfers()" class="rows-selector form-control ml-2" id="pageIndex">
             <option *ngFor="let item of [].constructor(paginateObj.totalPages); let i = index" [value]="i"
                 [selected]="paginateObj.current == i+1">{{i+1}}</option>
           </select>
-    
+
         </li>
-    
+
         <li class="d-flex align-items-center">
           <span>Page {{paginateObj.current}} of {{paginateObj.totalPages}}</span>
         </li>
-    
+
         <!-- first-->
         <li [ngClass]="{'disabled' : paginateObj.prev == null}">
           <a class="page-link" aria-label="Previous" (click)="_fetchTransfers(0)">
@@ -68,7 +68,7 @@
             <span class="sr-only">First</span>
           </a>
         </li>
-    
+
         <!-- previous-->
         <li [ngClass]="{'disabled' : paginateObj.prev == null}">
           <a class="page-link" aria-label="Previous" (click)="_fetchTransfers(paginateObj.prev ? paginateObj.prev-1 : 0)">
@@ -76,7 +76,7 @@
             <span class="sr-only">Previous</span>
           </a>
         </li>
-    
+
         <!-- next-->
         <li [ngClass]="{'disabled' : paginateObj.next == null}">
           <a class="page-link" aria-label="Next" (click)="_fetchTransfers(paginateObj.next ? paginateObj.next-1 : 0)">
@@ -84,7 +84,7 @@
             <span class="sr-only">Next</span>
           </a>
         </li>
-    
+
         <!-- last-->
         <li [ngClass]="{'disabled' : paginateObj.next == null}">
           <a class="page-link" aria-label="Next" (click)="_fetchTransfers(paginateObj.totalPages-1)">

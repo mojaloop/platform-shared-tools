@@ -66,6 +66,8 @@ import {DFSPSettlementReport} from "./reports/dfsp-settlement-report.component";
 import {DFSPSettlementDetailReport} from "./reports/dfsp-settlement-detail-report.component";
 import {DFSPSettlementStatementReport} from "./reports/dfsp-settlement-statement-report.component";
 import {DropZoneDirective} from "./_pipes_and_guards/drop-zone.directive";
+import { MomentDatePipe } from "./_pipes_and_guards/moment-date";
+import { TimezoneOffsetPipe } from "./_pipes_and_guards/timezone-offset";
 
 @NgModule({
 	declarations: [
@@ -121,6 +123,8 @@ import {DropZoneDirective} from "./_pipes_and_guards/drop-zone.directive";
 		DFSPSettlementStatementReport,
 		DropZoneDirective,
 		PendingApprovalsComponent,
+		MomentDatePipe,
+		TimezoneOffsetPipe,
 	],
 	imports: [
 		BrowserModule,

@@ -114,7 +114,7 @@
 
 		<div class="d-flex">
 			<p style="min-width: 250px">Settlement Created Date</p>
-			<p>{{ settlementInfo?.settlementCreatedDate || "-" }}</p>
+			<p>{{ (settlementInfo?.settlementCreatedDate | momentDate) || "-" }}</p>
 		</div>
 
 		<div class="d-flex">
@@ -129,7 +129,7 @@
 
 		<div class="d-flex">
 			<p style="min-width: 250px">Time Zone OffSet</p>
-			<p>UTC±00:00</p>
+			<p>{{ '' | timezoneOffset }}</p>
 		</div>
 	</div>
 
@@ -176,7 +176,7 @@
 					{{ detailReport.transactionType }}
 				</td>
 				<td style="min-width: 160px">
-					{{ detailReport.transactionDate }}
+					{{ detailReport.transactionDate | momentDate}}
 				</td>
 				<td style="min-width: 160px">{{ detailReport.payerIdType }}</td>
 				<td style="min-width: 160px">

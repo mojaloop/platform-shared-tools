@@ -1,3 +1,4 @@
+import * as moment from 'moment-timezone';
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { BehaviorSubject, Subscription } from "rxjs";
@@ -48,6 +49,11 @@ export class SettlementInitiationReport implements OnInit {
 		this.settlementIdForm = new FormGroup({
 			settlementId: new FormControl("", [Validators.required]),
 		});
+	}
+
+	getTimezoneOffset(): string {
+		const offset = moment().format('Z'); // e.g., +05:30 or -04:00
+		return `UTC${offset}`;
 	}
 
 	getInitiationReports(matrixId: string) {

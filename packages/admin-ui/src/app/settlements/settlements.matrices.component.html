@@ -112,8 +112,8 @@
 				<td>{{item.currencyCodes ? item.currencyCodes.join(", ") : "(All)"}}</td>
 
 				<td>{{item.batches.length}}</td>
-				<td>{{item.createdAt | date: 'medium'}}</td>
-				<td>{{item.updatedAt | date: 'medium'}}</td>
+				<td>{{item.createdAt | momentDate}}</td>
+				<td>{{item.updatedAt | momentDate}}</td>
 
 			</tr>
 		</tbody>
@@ -138,20 +138,20 @@
 				<option value="100" [selected]="paginateObj.pageSize == 100">100</option>
 			  </select>
 			</li>
-		
+
 			<li class="gotopage d-flex align-items-center">
 			  <span >Go to page</span>
 			  <select (change)="search()" class="rows-selector form-control ml-2" id="pageIndex">
 				<option *ngFor="let item of [].constructor(paginateObj.totalPages); let i = index" [value]="i"
 					[selected]="paginateObj.current == i+1">{{i+1}}</option>
 			  </select>
-		
+
 			</li>
-		
+
 			<li class="d-flex align-items-center">
 			  <span>Page {{paginateObj.current}} of {{paginateObj.totalPages}}</span>
 			</li>
-		
+
 			<!-- first-->
 			<li [ngClass]="{'disabled' : paginateObj.prev == null}">
 			  <a class="page-link" aria-label="Previous" (click)="search(0)">
@@ -159,7 +159,7 @@
 				<span class="sr-only">First</span>
 			  </a>
 			</li>
-		
+
 			<!-- previous-->
 			<li [ngClass]="{'disabled' : paginateObj.prev == null}">
 			  <a class="page-link" aria-label="Previous" (click)="search(paginateObj.prev ? paginateObj.prev-1 : 0)">
@@ -167,7 +167,7 @@
 				<span class="sr-only">Previous</span>
 			  </a>
 			</li>
-		
+
 			<!-- next-->
 			<li [ngClass]="{'disabled' : paginateObj.next == null}">
 			  <a class="page-link" aria-label="Next" (click)="search(paginateObj.next ? paginateObj.next-1 : 0)">
@@ -175,7 +175,7 @@
 				<span class="sr-only">Next</span>
 			  </a>
 			</li>
-		
+
 			<!-- last-->
 			<li [ngClass]="{'disabled' : paginateObj.next == null}">
 			  <a class="page-link" aria-label="Next" (click)="search(paginateObj.totalPages-1)">
