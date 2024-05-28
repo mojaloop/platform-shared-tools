@@ -75,7 +75,7 @@
   </thead>
   <tbody>
   <tr *ngFor="let item of (entries | async)">
-    <td> {{item.actionTimestamp  | date:"medium"}}</td>
+	<td> {{item.actionTimestamp  | momentDate }}</td>
     <td> {{item.sourceBcName}}</td>
     <td> {{item.sourceAppName}} <span class="badge badge-secondary">{{item.sourceAppVersion}}</span></td>
     <td> {{item.actionType}}</td>
