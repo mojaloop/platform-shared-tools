@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import {SettlementsService} from "../_services_and_types/settlements.service";
 import {ISettlementConfig} from "@mojaloop/settlements-bc-public-types-lib";
+import {UnauthorizedError} from "src/app/_services_and_types/errors";
 
 @Component({
 	selector: 'app-settlements',
@@ -57,7 +58,9 @@ export class SettlementsModelsCreateComponent implements OnInit {
 			this._messageService.addSuccess("Settlement Model Created");
 			history.back();
 		}, error => {
-			throw new Error("error creating model");
+			if (error && error instanceof UnauthorizedError) {
+				this._messageService.addError(error.message);
+			}
 		});
 	}
 
