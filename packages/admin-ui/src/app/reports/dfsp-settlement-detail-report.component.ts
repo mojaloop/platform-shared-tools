@@ -181,6 +181,8 @@ export class DFSPSettlementDetailReport implements OnInit {
 	}
 
 	searchSettlementIds() {
+		this.resetReportOnSettlementChange(false);
+
 		if (!this.dfspFilterForm.valid) {
 			this._messageService.addError("Fill all the required fields!");
 			return;
@@ -195,6 +197,23 @@ export class DFSPSettlementDetailReport implements OnInit {
 		this.getMatrixIds(dfspId, startDateTimestamp, endDateTimestamp);
 		this.showSettlementIdForm = true;
 		this.chosenDfspId = dfspId;
+	}
+
+	resetReportOnSettlementChange(isSelectedSettmentIdChange: boolean){
+		this.settlementInfo = null;
+		this.detailReports.next([]);
+		this.showResults = false;
+		if(!isSelectedSettmentIdChange){
+			this.showSettlementIdForm = false;
+			this.matrixIds.next([]);
+			this.settlementIdForm = new FormGroup({
+				settlementId: new FormControl(""),
+			});
+		}
+	}
+
+	onSettlementIdChange(){
+		this.resetReportOnSettlementChange(true);
 	}
 
 	searchReports() {
