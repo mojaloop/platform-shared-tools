@@ -81,7 +81,7 @@
 
 		<td> <!--actions-->
 			<button class="btn btn-primary btn-block" [disabled]="editing" (click)="showEditConfigItemModal(param.name)">Add</button>
-			<button class="btn btn-primary btn-block" [disabled]="editing" (click)="showUpdateConfigItemModal(param.name)">Update</button>
+			<button class="btn btn-primary btn-block" [disabled]="editing" (click)="getConfigItem($event,false)">Update</button>
 			<!--div class="btn-group btn-group-sm" role="group" aria-label="">
 
 				<button type="button" class="btn btn-danger" [hidden]="false"
@@ -357,37 +357,6 @@
 		</table>
 	</div>
 </ng-template>
-
-<!--Update Currency Config Modal -->
-<ng-template #updateCurrencyConfigItemModal let-modal>
-	<div class="modal-header">
-		<h4 id="currency-title">Update Currency</h4>
-		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
-	<div class="modal-body">
-		<form>
-		<div class="form-group">
-			<label class="" for="depositCurrencyCode">Choose the currency you want to update.</label>
-			<ng-container *ngIf="(params | async) as paramList">
-				<ng-container *ngFor="let param of paramList">
-						<select class="form-control" id="updateCurrencyCode" *ngIf="param.name === 'CURRENCIES'">
-							<option *ngFor="let currency of param.currentValue" id={{currency.code}} value="{{currency.code}}">{{currency.code}}</option>
-						</select>
-				</ng-container>
-			</ng-container>
-			</div>
-		</form>
-	</div>
-	<div class="modal-footer">
-		<button type="button" class="btn btn-success" (click)="selectUpdateCurrency($event)">Confirm</button>
-		<button type="button" class="btn btn-danger" (click)="modal.dismiss()">Cancel</button>
-	</div>
-</ng-template>
-
-
-
 
 <!-- Add Currency Config Modal -->
 <ng-template #addCurrencyConfigItemModal let-modal>

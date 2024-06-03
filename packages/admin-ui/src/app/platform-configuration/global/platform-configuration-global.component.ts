@@ -67,10 +67,6 @@ export class PlatformConfigurationGlobalComponent implements OnInit, OnDestroy {
 	showCurrentConfigItemModal!:NgbModal;
 	showCurrentConfigItemModalRef?: NgbModalRef;
 
-	@ViewChild("updateCurrencyConfigItemModal")
-	updateCurrencyConfigItemModal!:NgbModal;
-	showUpdateConfigItemModalRef?: NgbModalRef;
-
 	private _editing: boolean = false;
 
 	constructor(private _platformConfigsSvc: PlatformConfigService, private _modalService: NgbModal, private _messageService: MessageService) {
@@ -170,15 +166,6 @@ export class PlatformConfigurationGlobalComponent implements OnInit, OnDestroy {
 		
 		if(paramName == "CURRENCIES"){
 			this.editConfigItemModalRef = this._modalService.open(this.addCurrencyConfigItemModal, {centered: true});
-		}else{
-			this.editConfigItemModalRef = this._modalService.open(this.editConfigItemModal, {centered: true});
-		}
-	}
-
-	showUpdateConfigItemModal(paramName : string) {
-		
-		if(paramName == "CURRENCIES"){
-			this.showUpdateConfigItemModalRef = this._modalService.open(this.updateCurrencyConfigItemModal , {centered : true} );
 		}else{
 			this.editConfigItemModalRef = this._modalService.open(this.editConfigItemModal, {centered: true});
 		}
@@ -324,25 +311,6 @@ export class PlatformConfigurationGlobalComponent implements OnInit, OnDestroy {
 
 	}
 	
-	selectUpdateCurrency(e : Event){
-		const updateCurrencyCodeElem: HTMLSelectElement = document.getElementById("updateCurrencyCode") as HTMLSelectElement;
-		
-		const c = updateCurrencyCodeElem.value;
-
-		this.showUpdateConfigItemModalRef?.close();
-		this.showCurrentConfigItemModalRef = this._modalService.open(this.showCurrentConfigItemModal, {centered: true});
-		
-		const paramList = this.params.getValue(); 	
-
-		const currenciesParam = paramList.find(param => param.name === 'CURRENCIES');
-
-		if (currenciesParam) {
-			const editC = currenciesParam.currentValue.find((currency : Currency) => currency.code === c);
-			this.toggleEdit(editC);
-			this.params.next(paramList);
-		}
-		
-	}
 
 
 	updateCurrency(currency: Currency) {
@@ -399,7 +367,7 @@ export class PlatformConfigurationGlobalComponent implements OnInit, OnDestroy {
 					error => {
 						console.error("Currency update failed:", error);
 						this._messageService.addError(`Currency update failed: ${error}`);
-						return false; // Return false on update failure
+						return false; 
 					}
 				);
 				return true;
@@ -409,6 +377,4 @@ export class PlatformConfigurationGlobalComponent implements OnInit, OnDestroy {
 	
 		return true;
 	}
-
-	
 }	
