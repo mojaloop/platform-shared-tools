@@ -1,4 +1,5 @@
 import * as IlpPacket from "ilp-packet";
+import 	{ Currency } from "@mojaloop/platform-configuration-bc-public-types-lib";
 
 /**
  * Remove empty value of an object
@@ -117,4 +118,32 @@ export function formatNumber(number: string | number) {
 	// TODO: take this format from use profile OR use default from browser, we can't assume everyone wants "en-US"
 	const numberFormatter = new Intl.NumberFormat(undefined, { minimumFractionDigits: 2 });
 	return numberFormatter.format(Number(number));
+}
+
+
+export function validateCurrency(currency: Currency) {
+    const codeRegex = /^[A-Z]{3}$/;
+    const numRegex = /^[0-9]{3}$/;
+
+    // Validate currency input fields
+    let valid = true;
+
+    // Currency Code to be 3 Characters
+    if (!codeRegex.test(currency.code)) {
+        console.log("Currency Code validation failed:", currency.code);
+        valid = false;
+    }
+
+    // Currency Num to be 3 Numeric Digits
+    if (!numRegex.test(currency.num)) {
+        console.log("Currency Num validation failed:", currency.num);
+        valid = false;
+    }
+
+    // Decimals should be between 0 and 4
+    if (currency.decimals < 0 || currency.decimals > 4) {
+        console.log("Currency Decimals validation failed:", currency.decimals);
+        valid = false;
+    }
+    return valid;
 }
