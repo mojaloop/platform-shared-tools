@@ -6,6 +6,7 @@
     "license": "Apache-2.0",
     "homepage": "https://github.com/mojaloop/platform-shared-tools",
     "main": "./dist/index.js",
+    "private": true,
     "mojaloop": {
         "publish_to_dockerhub": true
     },
