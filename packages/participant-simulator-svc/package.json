@@ -1,0 +1,32 @@
+{
+    "name": "@mojaloop/vnext-participant-simulator-svc",
+    "version": "0.1.2",
+    "description": "",
+    "author": "pedrosousabarreto@gmail.com",
+    "license": "Apache-2.0",
+    "homepage": "https://github.com/mojaloop/platform-shared-tools",
+    "main": "./dist/index.js",
+    "mojaloop": {
+        "publish_to_dockerhub": true
+    },
+    "scripts": {
+        "build": "tsc",
+        "start": "node dist/index.js"
+    },
+    "dependencies": {
+        "fastify": "~4.27.0",
+        "fastify-metrics": "~11.0.0",
+        "fastify-plugin": "~4.5.1",
+        "@mojaloop/platform-shared-lib-observability-client-lib": "~0.5.7",
+        "@mojaloop/platform-shared-lib-observability-types-lib": "~0.5.5",
+        "@mojaloop/logging-bc-public-types-lib": "~0.5.4"
+    },
+    "devDependencies": {
+        "@types/node": "^20.12.12",
+        "typescript": "^5.4.5",
+        "tslib": "~2.6.2"
+    },
+    "engines": {
+        "node": ">=20.10.0"
+    }
+}

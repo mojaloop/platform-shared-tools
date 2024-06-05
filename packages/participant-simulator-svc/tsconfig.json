@@ -1,0 +1,53 @@
+{
+    "include": [
+        "./src"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts",
+        "test",
+        "lib",
+        "coverage"
+    ],
+    "compilerOptions": {
+        "rootDir": "./src",
+        "outDir": "./dist",
+        // prevents this tsconfig from compiling any files
+        "target": "ES2022",
+        "module": "commonjs",
+        "types": [
+            "node",
+        ],
+        "lib": [
+            "ES2022"
+        ],
+        "importHelpers": true,
+        "declaration": true,
+        "sourceMap": true,
+        "skipLibCheck": true,
+        "strict": true,
+        // this includes all string enforcing rules ?
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictPropertyInitialization": false,
+        "noImplicitThis": true,
+        "alwaysStrict": true,
+        "resolveJsonModule": true,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        // Needed for CommonJS modules
+        "allowSyntheticDefaultImports": true,
+        "moduleResolution": "node",
+        "baseUrl": "./",
+        "paths": {
+            "*": [
+                "src/*",
+                "node_modules/*"
+            ]
+        },
+        "esModuleInterop": true
+    }
+}
