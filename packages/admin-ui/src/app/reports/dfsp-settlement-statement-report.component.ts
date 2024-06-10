@@ -64,6 +64,7 @@ export class DFSPSettlementStatementReport implements OnInit {
 	statementReports: BehaviorSubject<ModifiedStatementReport[]> =
 		new BehaviorSubject<ModifiedStatementReport[]>([]);
 	statementReportsSub?: Subscription;
+	currentLocalTimeZoneOffset: string = "";
 
 	constructor(
 		private _participantsSvc: ParticipantsService,
@@ -189,9 +190,14 @@ export class DFSPSettlementStatementReport implements OnInit {
 		const startDateTimestamp = new Date(startDate).getTime();
 		const endDateTimestamp = new Date(endDate).getTime();
 		const currencyCode = this.dfspFilterForm.controls.currencyCode.value;
-
+		this.currentLocalTimeZoneOffset = this.getTimezoneOffset();
 		this.getSettlementStatementReports(this.chosenDfspId, startDateTimestamp, endDateTimestamp, currencyCode);
 		this.showResults = true;
+	}
+
+	getTimezoneOffset(): string {
+		const offset = moment().format('Z'); // e.g., +05:30 or -04:00
+		return `UTC${offset}`;
 	}
 
 	downloadDFSPSettlementStatementReport() {
@@ -201,9 +207,10 @@ export class DFSPSettlementStatementReport implements OnInit {
 		const startDateTimestamp = new Date(startDate).getTime();
 		const endDateTimestamp = new Date(endDate).getTime();
 		const currencyCode = this.dfspFilterForm.controls.currencyCode.value;
+		const offset = this.currentLocalTimeZoneOffset;
 
 		this._reportSvc
-			.exportSettlementStatementReport(dfspId, startDateTimestamp, endDateTimestamp, currencyCode)
+			.exportSettlementStatementReport(dfspId, startDateTimestamp, endDateTimestamp, currencyCode, offset)
 			.subscribe(
 				(data) => {
 					const formattedDate = moment(new Date()).format("DDMMMYYYY");

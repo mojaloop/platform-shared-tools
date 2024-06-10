@@ -29,6 +29,7 @@ export class SettlementInitiationReport implements OnInit {
 	initiationReports: BehaviorSubject<ModifiedInitiationReport[]> =
 		new BehaviorSubject<ModifiedInitiationReport[]>([]);
 	initiationReportsSubs?: Subscription;
+	currentLocalTimeZoneOffset: string = "";
 
 	constructor(
 		private _reportSvc: ReportService,
@@ -105,14 +106,14 @@ export class SettlementInitiationReport implements OnInit {
 		}
 
 		const settlementId = this.settlementIdForm.controls.settlementId.value;
-
 		this.getInitiationReports(settlementId);
 		this.chosenSettlementId = settlementId;
+		this.currentLocalTimeZoneOffset = this.getTimezoneOffset();
 	}
 
 	downloadInitiationReport() {
 		this._reportSvc
-			.exportSettlementInitiationByMatrixId(this.chosenSettlementId)
+			.exportSettlementInitiationByMatrixId(this.chosenSettlementId, this.currentLocalTimeZoneOffset)
 			.subscribe(
 				(data) => {
 					const url = URL.createObjectURL(data);
