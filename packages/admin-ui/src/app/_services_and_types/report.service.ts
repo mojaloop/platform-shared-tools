@@ -19,10 +19,10 @@ const SVC_BASEURL = "/_reporting";
 export class ReportService {
 	constructor(private _http: HttpClient) {}
 
-	exportSettlementInitiationByMatrixId(matrixId: string): Observable<Blob> {
+	exportSettlementInitiationByMatrixId(matrixId: string, timeZoneOffset: string): Observable<Blob> {
 		const url =
 			SVC_BASEURL +
-			`/settlementInitiationByMatrixId/${matrixId}?format=excel`;
+			`/settlementInitiationByMatrixId/${matrixId}?timeZoneOffset=${encodeURIComponent(timeZoneOffset)}&format=excel`;
 		const headers = new HttpHeaders();
 
 		return this._http.get(url, {
@@ -133,10 +133,10 @@ export class ReportService {
 	}
 
 	exportSettlementReport(participantId: string,
-		matrixId: string): Observable<Blob> {
+		matrixId: string, timeZoneOffset: string): Observable<Blob> {
 		const url =
 			SVC_BASEURL +
-			`/dfspSettlement?participantId=${participantId}&matrixId=${matrixId}&format=excel`;
+			`/dfspSettlement?participantId=${participantId}&matrixId=${matrixId}&timeZoneOffset=${encodeURIComponent(timeZoneOffset)}&format=excel`;
 		const headers = new HttpHeaders();
 
 		return this._http.get(url, {
@@ -180,10 +180,10 @@ export class ReportService {
 	}
 
 	exportSettlementDetailReport(participantId: string,
-		matrixId: string): Observable<Blob> {
+		matrixId: string, timeZoneOffset: string): Observable<Blob> {
 		const url =
 			SVC_BASEURL +
-			`/dfspSettlementDetail?participantId=${participantId}&matrixId=${matrixId}&format=excel`;
+			`/dfspSettlementDetail?participantId=${participantId}&matrixId=${matrixId}&timeZoneOffset=${encodeURIComponent(timeZoneOffset)}&format=excel`;
 		const headers = new HttpHeaders();
 
 		return this._http.get(url, {
@@ -228,10 +228,10 @@ export class ReportService {
 		});
 	}
 
-	exportSettlementStatementReport(participantId: string, startDate:number, endDate:number, currencyCode: string): Observable<Blob> {
+	exportSettlementStatementReport(participantId: string, startDate:number, endDate:number, currencyCode: string, timeZoneOffset:string): Observable<Blob> {
 		const url =
 			SVC_BASEURL +
-			`/dfspSettlementStatement?participantId=${participantId}&startDate=${startDate}&endDate=${endDate}&currencyCode=${currencyCode}&format=excel`;
+			`/dfspSettlementStatement?participantId=${participantId}&startDate=${startDate}&endDate=${endDate}&currencyCode=${currencyCode}&timeZoneOffset=${encodeURIComponent(timeZoneOffset)}&format=excel`;
 		const headers = new HttpHeaders();
 
 		return this._http.get(url, {

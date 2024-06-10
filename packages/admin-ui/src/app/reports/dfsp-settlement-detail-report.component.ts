@@ -62,6 +62,7 @@ export class DFSPSettlementDetailReport implements OnInit {
 	detailReports: BehaviorSubject<ModifiedDetailReport[]> =
 		new BehaviorSubject<ModifiedDetailReport[]>([]);
 	detailReportsSubs?: Subscription;
+	currentLocalTimeZoneOffset: string = "";
 
 	constructor(
 		private _participantsSvc: ParticipantsService,
@@ -227,6 +228,12 @@ export class DFSPSettlementDetailReport implements OnInit {
 		this.getDetailReports(this.chosenDfspId, settlementId);
 		this.chosenSettlementId = settlementId;
 		this.showResults = true;
+		this.currentLocalTimeZoneOffset = this.getTimezoneOffset();
+	}
+
+	getTimezoneOffset(): string {
+		const offset = moment().format('Z'); // e.g., +05:30 or -04:00
+		return `UTC${offset}`;
 	}
 
 	downloadDetailReport() {
@@ -283,8 +290,9 @@ export class DFSPSettlementDetailReport implements OnInit {
 	downloadDFSPSettlementDetailReport() {
 		const settlementId = this.settlementIdForm.controls.settlementId.value;
 		const dfspId = this.chosenDfspId;
+		const offset = this.currentLocalTimeZoneOffset;
 		this._reportSvc
-			.exportSettlementDetailReport(dfspId,settlementId)
+			.exportSettlementDetailReport(dfspId,settlementId,offset)
 			.subscribe(
 				(data) => {
 					const formattedDate = moment(new Date()).format("DDMMMYYYY");
