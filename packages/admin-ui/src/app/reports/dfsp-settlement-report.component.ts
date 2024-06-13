@@ -12,7 +12,7 @@ import { MessageService } from "../_services_and_types/message.service";
 import { ParticipantsService } from "../_services_and_types/participants.service";
 import { ReportService } from "../_services_and_types/report.service";
 import type { MatrixId, Report } from "../_services_and_types/report_types";
-import { formatNumber } from "../_utils";
+import { formatCommaSeparator, getMaxDecimalPlaces } from "../_utils";
 
 interface ModifiedReport
 	extends Omit<Report, "totalAmountSent" | "totalAmountReceived"> {
@@ -157,17 +157,17 @@ export class DFSPSettlementReport implements OnInit {
 
 					const reports = result.map((report) => ({
 						...report,
-						totalAmountSent: formatNumber(report.totalAmountSent),
-						totalAmountReceived: formatNumber(
+						totalAmountSent: formatCommaSeparator(report.totalAmountSent),
+						totalAmountReceived: formatCommaSeparator(
 							report.totalAmountReceived
 						),
 						totalTransactionCount:
 							report.totalSentCount + report.totalReceivedCount,
-						totalAmount: formatNumber(
-							report.totalAmountSent + report.totalAmountReceived
+						totalAmount: formatCommaSeparator(
+							this.calculateTotalAmount(report.totalAmountSent , report.totalAmountReceived)
 						),
-						netPosition: this.formatNetPosition(
-							report.totalAmountReceived - report.totalAmountSent
+						netPosition: this.calculateNetPosition(
+							report.totalAmountReceived, report.totalAmountSent, true
 						),
 					}));
 
@@ -178,12 +178,11 @@ export class DFSPSettlementReport implements OnInit {
 							const receivedAmountWithoutCommas = dataRow.totalAmountReceived.replace(/,/g, '');
 							const sentAmountWithoutCommas = dataRow.totalAmountSent.replace(/,/g, '');
 						
-							const netPositionValue = parseFloat(receivedAmountWithoutCommas) - parseFloat(sentAmountWithoutCommas);
-
+							const netPositionValue = Number(this.calculateNetPosition(Number(receivedAmountWithoutCommas),Number(sentAmountWithoutCommas), false));	
 							if (index === -1) {
 								accumulator.push({ currencyCode: currency, value: netPositionValue });
 							} else {
-								accumulator[index].value += netPositionValue;
+								accumulator[index].value = Number(this.calculateTotalAmount(accumulator[index].value, netPositionValue));
 							}
 							return accumulator;
 					}, [] as { currencyCode: string; value: number }[]);
@@ -191,7 +190,7 @@ export class DFSPSettlementReport implements OnInit {
 					this.aggregatedNetPositions =  aggregatedNetAmountByCurrency.map(item => {
 						return {
 							currencyCode: item.currencyCode,
-							value: formatNumber(item.value)
+							value: formatCommaSeparator(item.value)
 						};
 					});					
 					this.reports.next(reports);
@@ -204,11 +203,24 @@ export class DFSPSettlementReport implements OnInit {
 			);
 	}
 
+	calculateTotalAmount(amount1: number,amount2: number):string {
+		const totalAmount = amount1 + amount2;
+		const decimalForSettlment = getMaxDecimalPlaces(amount1, amount2);
+		return totalAmount.toFixed(decimalForSettlment);
+	}
+
+	calculateNetPosition(totalAmountReceived: number, totalAmountSent: number, isFormat:boolean):string {
+		const netPosition = totalAmountReceived - totalAmountSent;
+		const decimalForSettlment = getMaxDecimalPlaces(totalAmountReceived, totalAmountSent);
+		if(isFormat) return this.formatNetPosition(netPosition.toFixed(decimalForSettlment));
+		return netPosition.toFixed(decimalForSettlment);
+	}
+
 	// to format net postion in UI
-	formatNetPosition(netPosition: number) {
-		return netPosition < 0
-			? `(${formatNumber(netPosition.toString().replace("-", ""))})`
-			: formatNumber(netPosition);
+	formatNetPosition(netPosition: number| string) {
+		return Number(netPosition) < 0
+			? `(${formatCommaSeparator(netPosition.toString().replace("-", ""))})`
+			: formatCommaSeparator(netPosition);
 	}
 
 	searchSettlementIds() {

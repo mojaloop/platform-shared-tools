@@ -118,3 +118,18 @@ export function formatNumber(number: string | number) {
 	const numberFormatter = new Intl.NumberFormat(undefined, { minimumFractionDigits: 2 });
 	return numberFormatter.format(Number(number));
 }
+
+export function formatCommaSeparator(number: string | number) {
+	return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function getDecimalPlaces(value: string | number): number {
+    const parts = value.toString().split(".");
+    return parts.length > 1 ? parts[1].length : 0;
+}
+
+export function getMaxDecimalPlaces(val1: string | number, val2: string | number): number {
+    const decimalPlaces1 = getDecimalPlaces(val1);
+    const decimalPlaces2 = getDecimalPlaces(val2);
+    return Math.max(decimalPlaces1, decimalPlaces2);
+}

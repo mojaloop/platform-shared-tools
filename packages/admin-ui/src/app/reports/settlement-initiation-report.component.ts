@@ -5,8 +5,7 @@ import { BehaviorSubject, Subscription } from "rxjs";
 import { MessageService } from "../_services_and_types/message.service";
 import { ReportService } from "../_services_and_types/report.service";
 import type { SettlementInfo } from "./dfsp-settlement-report.component";
-import { formatNumber } from "../_utils";
-
+import { formatCommaSeparator, getMaxDecimalPlaces } from "../_utils";
 interface ModifiedInitiationReport {
 	participantId: string;
 	participantBankIdentifier: string;
@@ -72,11 +71,12 @@ export class SettlementInitiationReport implements OnInit {
 					};
 
 					const initiationReports = result.map((initiationReport) => {
-						const settlementTransfer = (
-							Number(initiationReport.participantDebitBalance) -
+					
+						const settlementTransfer = this.calculateSettlementTransfer(
+							Number(initiationReport.participantDebitBalance),
 							Number(initiationReport.participantCreditBalance)
-						).toString();
-
+						);
+						
 						return {
 							participantId: initiationReport.participantId,
 							participantBankIdentifier:
@@ -84,7 +84,7 @@ export class SettlementInitiationReport implements OnInit {
 								initiationReport.externalBankAccountId,
 							balance: "",
 							settlementTransfer:
-								formatNumber(settlementTransfer),
+								formatCommaSeparator(settlementTransfer),
 							currency: initiationReport.participantCurrencyCode,
 						};
 					});
@@ -97,6 +97,12 @@ export class SettlementInitiationReport implements OnInit {
 					this.showResults = false;
 				}
 			);
+	}
+
+	calculateSettlementTransfer(participantDebitBalance: number,participantCreditBalance:number):string {
+		const transfer = participantDebitBalance - participantCreditBalance;
+		const decimalForSettlment = getMaxDecimalPlaces(participantDebitBalance, participantCreditBalance);
+		return transfer.toFixed(decimalForSettlment);
 	}
 
 	searchReports() {
