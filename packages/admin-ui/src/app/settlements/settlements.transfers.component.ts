@@ -7,7 +7,7 @@ import {
 	ISettlementBatchTransfer,
 } from "@mojaloop/settlements-bc-public-types-lib";
 import {ActivatedRoute} from "@angular/router";
-import {paginate, PaginateResult} from "../_utils";
+import {paginate, PaginateResult, formatCommaSeparator} from "../_utils";
 
 
 @Component({
@@ -21,6 +21,8 @@ export class SettlementsTransfersComponent implements OnInit, OnDestroy {
 	transferId: string | null = null;
 
 	paginateResult: BehaviorSubject<PaginateResult | null> = new BehaviorSubject<PaginateResult | null>(null);
+
+	formatCommaSeparator = formatCommaSeparator;
 
 	constructor(private _route: ActivatedRoute, private _settlementsService: SettlementsService, private _messageService: MessageService) {
 

@@ -7,12 +7,13 @@ import {
 	IParticipantPendingApproval,
 } from "../_services_and_types/participant_types";
 import { UnauthorizedError } from "@mojaloop/security-bc-public-types-lib";
-import { ApprovalRequestState } from "@mojaloop/participant-bc-public-types-lib";
+import { ApprovalRequestState, ParticipantNetDebitCapTypes } from "@mojaloop/participant-bc-public-types-lib";
 import {
 	Certificate,
 	CertificateRequest,
 } from "../_services_and_types/certificate_types";
 import { CertificatesService } from "../_services_and_types/certificate.service";
+import { formatCommaSeparator } from "../_utils";
 
 @Component({
 	selector: "app-participants",
@@ -42,6 +43,8 @@ export class PendingApprovalsComponent implements OnInit {
 	pendingCertificates: Certificate[] = [];
 	selectedCertificates: Certificate[] = [];
 	isCertificateSelectAll: boolean = false;
+
+	formatCommaSeparator = formatCommaSeparator;
 
 	constructor(
 		private _participantsSvc: ParticipantsService,

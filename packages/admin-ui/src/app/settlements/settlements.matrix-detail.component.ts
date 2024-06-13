@@ -9,6 +9,7 @@ import {
 	ISettlementMatrix
 } from "@mojaloop/settlements-bc-public-types-lib";
 import {ActivatedRoute} from "@angular/router";
+import { formatCommaSeparator } from "../_utils";
 
 
 @Component({
@@ -35,6 +36,8 @@ export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 
 	transfers: BehaviorSubject<ISettlementBatchTransfer[]> = new BehaviorSubject<ISettlementBatchTransfer[]>([]);
 	excelFileUrl: any;
+
+	formatCommaSeparator = formatCommaSeparator;
 
 	constructor(private _route: ActivatedRoute, private _settlementsService: SettlementsService, private _messageService: MessageService) {
 

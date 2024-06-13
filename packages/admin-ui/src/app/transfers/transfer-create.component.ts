@@ -120,10 +120,8 @@ export class TransferCreateComponent implements OnInit {
 		this.activeTransfer.transferId = this.form.controls["transferId"].value;
 		this.activeTransfer.payeeFsp = this.form.controls["payeeFsp"].value;
 		this.activeTransfer.payerFsp = this.form.controls["payerFsp"].value;
-		this.activeTransfer.amount = {
-			"currency": this.form.controls["currency"].value,
-			"amount": this.form.controls["amount"].value,
-		};
+		this.activeTransfer.amount = this.form.controls["amount"].value;
+		this.activeTransfer.currencyCode = this.form.controls["currency"].value;
 		this.activeTransfer.ilpPacket = this.form.controls["ilpPacket"].value;
 		this.activeTransfer.condition = this.form.controls["condition"].value;
 		this.activeTransfer.expiration = this.form.controls["expiration"].value;

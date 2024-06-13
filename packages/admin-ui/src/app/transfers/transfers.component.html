@@ -154,7 +154,7 @@
 			<td *ngIf="item.transferState!=='RESERVED' && item.transferState!=='COMMITTED'" class="text-danger">
 				{{item.transferState}}</td>
 			<td>{{item.currencyCode}}</td>
-			<td>{{item.amount}}</td>
+			<td style="text-align: right;">{{ formatCommaSeparator(item.amount) }}</td>
 			<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
 			<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
 			<td>{{item.updatedAt | momentDate}}</td>

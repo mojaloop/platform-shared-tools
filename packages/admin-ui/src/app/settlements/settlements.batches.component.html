@@ -230,7 +230,7 @@
 			<td>{{item.transferTimestamp | momentDate}}</td>
 			<td>{{item.payerFspId}}</td>
 			<td>{{item.payeeFspId}}</td>
-			<td>{{item.amount}}</td>
+			<td style="text-align: right;">{{ formatCommaSeparator(item.amount) }}</td>
 			<td>{{item.currencyCode}}</td>
 
 		</tr>

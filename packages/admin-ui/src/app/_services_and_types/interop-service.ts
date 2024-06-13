@@ -210,7 +210,13 @@ export class InteropService {
 			.set("fspiop-date", new Date().toISOString());
 
 		return new Observable<any>(subscriber => {
-			const body = {...transfer};
+			const body = {
+				...transfer,
+				amount: {
+					currency: transfer.currencyCode,
+					amount: transfer.amount,
+				}
+			};
 
 			this._http.post<any>(URL, body, {headers}).subscribe(
 				(result: any) => {

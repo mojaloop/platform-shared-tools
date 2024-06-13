@@ -170,8 +170,8 @@
 				</ng-container>
 				<tr *ngFor="let item of (matrix | async)?.batches">
 					<td>{{item.id}}</td>
-					<td>{{item.batchDebitBalance}}</td>
-					<td>{{item.batchCreditBalance}}</td>
+					<td style="text-align: right;">{{ formatCommaSeparator(item.batchDebitBalance) }}</td>
+					<td style="text-align: right;">{{ formatCommaSeparator(item.batchCreditBalance) }}</td>
 <!--					<td>{{item.batchAccounts?.length}}</td>-->
 					<td>{{item.state}}</td>
 				</tr>
@@ -199,8 +199,8 @@
 					<td><a routerLink="/participants/{{item.participantId}}">{{item.participantId}}</a></td>
 					<td>{{item.state}}</td>
 					<td>{{item.currencyCode}}</td>
-					<td>{{item.creditBalance}}</td>
-					<td>{{item.debitBalance}}</td>
+					<td style="text-align: right;">{{ formatCommaSeparator(item.creditBalance) }}</td>
+					<td style="text-align: right;">{{ formatCommaSeparator(item.debitBalance) }}</td>
 				</tr>
 				</tbody>
 			</table>
@@ -224,8 +224,8 @@
 				<tr *ngFor="let item of (matrix | async)?.balancesByStateAndCurrency">
 					<td>{{item.state}}</td>
 					<td>{{item.currencyCode}}</td>
-					<td>{{item.creditBalance}}</td>
-					<td>{{item.debitBalance}}</td>
+					<td style="text-align: right;">{{ formatCommaSeparator(item.creditBalance) }}</td>
+					<td style="text-align: right;">{{ formatCommaSeparator(item.debitBalance) }}</td>
 				</tr>
 				</tbody>
 			</table>
@@ -247,8 +247,8 @@
 				<tbody>
 				<tr *ngFor="let item of (matrix | async)?.balancesByCurrency">
 					<td>{{item.currencyCode}}</td>
-					<td>{{item.creditBalance}}</td>
-					<td>{{item.debitBalance}}</td>
+					<td style="text-align: right;">{{ formatCommaSeparator(item.creditBalance) }}</td>
+					<td style="text-align: right;">{{ formatCommaSeparator(item.debitBalance) }}</td>
 				</tr>
 				</tbody>
 			</table>
@@ -276,7 +276,7 @@
 					<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
 					<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
 					<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
-					<td>{{item.amount}} ({{item.currencyCode}})</td>
+					<td style="text-align: right;">{{ formatCommaSeparator(item.amount) }} ({{item.currencyCode}})</td>
 					<td>{{item.transferTimestamp | momentDate}}</td>
 					<td>{{item.batchId}}</td>
 				</tr>
