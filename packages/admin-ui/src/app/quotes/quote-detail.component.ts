@@ -5,7 +5,7 @@ import {Quote} from "src/app/_services_and_types/quote_types";
 import {QuotesService} from "src/app/_services_and_types/quotes.service";
 import {BehaviorSubject} from "rxjs";
 import {NgbModal, NgbNav} from "@ng-bootstrap/ng-bootstrap";
-import {deserializeIlpPacket} from '../_utils';
+import { deserializeIlpPacket, formatCommaSeparator } from '../_utils';
 
 
 @Component({
@@ -20,6 +20,8 @@ export class QuoteDetailComponent implements OnInit {
 	public quote: BehaviorSubject<Quote | null> = new BehaviorSubject<Quote | null>(null);
 
 	private _reloadCount = 0;
+
+	formatCommaSeparator = formatCommaSeparator;
 
 	@ViewChild("nav") // Get a reference to the ngbNav
 	navBar!: NgbNav;

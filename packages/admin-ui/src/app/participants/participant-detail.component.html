@@ -238,7 +238,7 @@
 						<td>
 							{{item.currencyCode}}
 						</td>
-						<td>{{ item.balance }}</td>
+						<td class="amount-td">{{ formatCommaSeparator(item.balance) }}</td>
 						<td>
 							<div class="btn-group btn-group-sm" role="group" aria-label="">
 								<button type="button" class="btn btn-success" (click)="saveEditAccount(item)">
@@ -256,7 +256,7 @@
 						<td>{{ item.externalBankAccountId }}</td>
 						<td>{{ item.externalBankAccountName }}</td>
 						<td>{{ item.currencyCode }}</td>
-						<td>{{ item.balance }}</td>
+						<td class="amount-td">{{ formatCommaSeparator(item.balance) }}</td>
 						<td>
 							<div class="btn-group btn-group-sm" role="group" aria-label="">
 								<button *ngIf="item.type === 'SETTLEMENT'" type="button" class="btn btn-primary"
@@ -424,7 +424,7 @@
 				<tr *ngFor="let fundsMov of (participant | async)?.fundsMovements">
 					<ng-container>
 						<td>{{ fundsMov.type }}</td>
-						<td>{{ fundsMov.amount }}</td>
+						<td class="amount-td">{{ formatCommaSeparator(fundsMov.amount) }}</td>
 						<td>{{ fundsMov.currencyCode }}</td>
 						<td>{{ fundsMov.transferId }}</td>
 						<td>{{ fundsMov.extReference }}</td>
@@ -487,7 +487,7 @@
 				<tr *ngFor="let netDebitCaps of (participant | async)?.netDebitCaps">
 					<ng-container>
 						<td>{{ netDebitCaps.type }}</td>
-						<td>{{ netDebitCaps.currentValue }}</td>
+						<td class="amount-td">{{ formatCommaSeparator(netDebitCaps.currentValue) }}</td>
 						<td>
 							{{
 							netDebitCaps.percentage ? netDebitCaps.percentage + "%" : "-"
@@ -568,7 +568,7 @@
               let ndcReq of (participant | async)?.netDebitCapChangeRequests
             ">
 					<td>{{ ndcReq.type }}</td>
-					<td>{{ ndcReq.fixedValue }}</td>
+					<td class="amount-td">{{ formatCommaSeparator(ndcReq.fixedValue) }}</td>
 					<td>{{ ndcReq.percentage ? ndcReq.percentage + "%" : "-" }}</td>
 					<td>{{ ndcReq.currencyCode }}</td>
 					<td>

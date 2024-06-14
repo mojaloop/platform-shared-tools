@@ -51,7 +51,7 @@
 
 		<div class="mb-2">
 			<label class="col-form-label text-secondary">Amount</label>
-			<div>{{(quote | async)?.amount?.amount}} {{(quote | async)?.amount?.currency}}</div>
+			<div>{{ formatCommaSeparator((quote | async)?.amount?.amount) }} {{(quote | async)?.amount?.currency}}</div>
 		</div>
 
 		<div class="mb-2">

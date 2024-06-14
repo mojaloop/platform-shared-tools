@@ -18,3 +18,7 @@
 .dragging-over > * {
 	pointer-events: none;
 }
+
+.amount-td {
+	text-align: right;
+}

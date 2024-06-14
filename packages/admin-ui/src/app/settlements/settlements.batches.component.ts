@@ -6,7 +6,7 @@ import {SettlementsService} from "src/app/_services_and_types/settlements.servic
 import {ISettlementBatch, ISettlementBatchTransfer} from "@mojaloop/settlements-bc-public-types-lib";
 import * as uuid from "uuid";
 import {ActivatedRoute, Router} from "@angular/router";
-import {paginate, PaginateResult} from "../_utils";
+import {paginate, PaginateResult, formatCommaSeparator} from "../_utils";
 
 import {Currency} from "@mojaloop/platform-configuration-bc-public-types-lib";
 import { PlatformConfigService } from "../_services_and_types/platform-config.service";
@@ -44,6 +44,8 @@ export class SettlementsBatchesComponent implements OnInit, OnDestroy {
 	public criteriaToDate = "";
 	public criteriaBatchId = "";
 	public criteriaIncludeSettled = false;
+
+	formatCommaSeparator = formatCommaSeparator;
 
 	constructor(private _router: Router, private _settlementsService: SettlementsService, private _messageService: MessageService, private _route: ActivatedRoute, private _platformConfigSvc: PlatformConfigService) {
 		this.criteriaFromDate = new Date(Date.now() - DEFAULT_TIME_FILTER_HOURS * 60 * 60 * 1000).toISOString();
