@@ -8,7 +8,7 @@ import {UnauthorizedError} from "src/app/_services_and_types/errors";
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {HUB_PARTICIPANT_ID, IParticipant} from "@mojaloop/participant-bc-public-types-lib";
 import {TransferErrorCodes} from "@mojaloop/transfers-bc-public-types-lib";
-import {paginate, PaginateResult} from "../_utils";
+import {paginate, PaginateResult, formatCommaSeparator} from "../_utils";
 import { PlatformConfigService } from "../_services_and_types/platform-config.service";
 import {Currency} from "@mojaloop/platform-configuration-bc-public-types-lib";
 
@@ -57,6 +57,8 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		filterId: null,
 		//add initial values for other form controls (filters)
 	};
+
+	formatCommaSeparator = formatCommaSeparator;
 
 	constructor(private _participantsSvc: ParticipantsService, private formBuilder: FormBuilder, private _transfersSvc: TransfersService, private _messageService: MessageService, private _platformConfigSvc: PlatformConfigService) {
 		this.filterForm = this.formBuilder.group(this.initialFilterValues);

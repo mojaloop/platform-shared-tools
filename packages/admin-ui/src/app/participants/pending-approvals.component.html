@@ -72,7 +72,7 @@
               }}</a>
             </td>
             <td>{{ item.type }}</td>
-            <td>{{ item.amount }}</td>
+            <td style="text-align: right;">{{ formatCommaSeparator(item.amount) }}</td>
             <td>{{ item.currencyCode }}</td>
             <td>{{ item.createdBy }}</td>
             <td>{{ item.createdDate | momentDate }}</td>
@@ -142,7 +142,7 @@
               }}</a>
             </td>
             <td>{{ item.type }}</td>
-            <td>{{ item.fixedValue }}</td>
+            <td style="text-align: right;">{{ formatCommaSeparator(item.fixedValue) }}</td>
             <td>{{ item.percentage ?? "-" }}</td>
             <td>{{ item.currencyCode }}</td>
             <td>{{ item.createdDate | momentDate }}</td>

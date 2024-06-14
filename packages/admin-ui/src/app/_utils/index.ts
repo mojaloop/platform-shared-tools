@@ -118,3 +118,15 @@ export function formatNumber(number: string | number) {
 	const numberFormatter = new Intl.NumberFormat(undefined, { minimumFractionDigits: 2 });
 	return numberFormatter.format(Number(number));
 }
+
+export function formatCommaSeparator(number: string | number | null | undefined): string {
+	if (number == null) return "";
+
+	number = `${number}`;
+	const numParts = number.split(".");
+
+	let formatted: string = numParts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	formatted = formatted + (numParts[1] ? `.${numParts[1]}` : "");
+
+	return formatted;
+}

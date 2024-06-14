@@ -23,7 +23,7 @@
 			<td><a routerLink="/transfers/{{item.transferId}}">{{item.transferId}}</a></td>
 			<td><a routerLink="/participants/{{item.payerFspId}}">{{item.payerFspId}}</a></td>
 			<td><a routerLink="/participants/{{item.payeeFspId}}">{{item.payeeFspId}}</a></td>
-			<td>{{item.amount}} ({{item.currencyCode}})</td>
+			<td style="text-align: right;">{{ formatCommaSeparator(item.amount) }} ({{item.currencyCode}})</td>
 			<td>{{item.transferTimestamp | momentDate }}</td>
 			<td><a routerLink="/settlements/batches" [queryParams]="{batchId: item.batchId, currencyCode: item.currencyCode}">{{item.batchId}}</a></td>
 

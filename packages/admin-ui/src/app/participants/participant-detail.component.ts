@@ -5,12 +5,10 @@ import { CertificatesService } from "src/app/_services_and_types/certificate.ser
 import * as uuid from "uuid";
 
 import {
-	ParticipantTypes,
 	IParticipantNetDebitCapChangeRequest,
 	IParticipant,
 	IParticipantAccount,
 	IParticipantAllowedSourceIp,
-	ParticipantFundsMovementDirections,
 	ParticipantEndpointTypes,
 	ParticipantEndpointProtocols,
 	IParticipantAccountChangeRequest,
@@ -27,13 +25,11 @@ import {
 import { ParticipantsService } from "src/app/_services_and_types/participants.service";
 import { BehaviorSubject, Observable } from "rxjs";
 import { NgbModal, NgbModalRef, NgbNav } from "@ng-bootstrap/ng-bootstrap";
-import { validateCIDR, validatePortRange, validatePorts } from "../_utils";
-import { ValueConverter } from "@angular/compiler/src/render3/view/template";
+import { validateCIDR, validatePortRange, validatePorts, formatCommaSeparator } from "../_utils";
 import {
 	Certificate,
 	CertificateRequest,
 } from "../_services_and_types/certificate_types";
-import { HttpErrorResponse } from "@angular/common/http";
 import {Currency} from "@mojaloop/platform-configuration-bc-public-types-lib";
 import { PlatformConfigService } from "../_services_and_types/platform-config.service";
 
@@ -98,6 +94,8 @@ export class ParticipantDetailComponent implements OnInit {
 	fundsMovementModalMode!: ParticipantFundsMovementTypes;
 
 	currencyCodeList : BehaviorSubject<Currency[]> = new BehaviorSubject<Currency[]>([]);
+
+	formatCommaSeparator = formatCommaSeparator;
 
 	constructor(
 		private _route: ActivatedRoute,

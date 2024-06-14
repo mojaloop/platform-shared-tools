@@ -38,10 +38,7 @@ export declare type Transfer = {
 	transferId: string;
 	payeeFsp: string;
 	payerFsp: string;
-	amount: {
-		currency: string;
-		amount: string;
-	};
+	amount: string;
 	ilpPacket: string;
 	condition: string;
 	expiration: number;
@@ -55,7 +52,7 @@ export declare type Transfer = {
 	currency: string;
 	payeeFspId?: string;
 	payerFspId?: string;
-	currencyCode?: string;
+	currencyCode: string;
 	completedTimestamp?: string;
 	errorCode?: string | null;
 }

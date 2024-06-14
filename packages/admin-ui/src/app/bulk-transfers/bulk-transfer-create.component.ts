@@ -128,10 +128,8 @@ export class BulkTransferCreateComponent implements OnInit {
 		this.activeTransfer.transferId = this.form.controls["transferId"].value;
 		this.activeTransfer.payeeFsp = this.form.controls["payeeFsp"].value;
 		this.activeTransfer.payerFsp = this.form.controls["payerFsp"].value;
-		this.activeTransfer.amount = {
-			"currency": this.form.controls["currency"].value,
-			"amount": this.form.controls["amount"].value,
-		};
+		this.activeTransfer.amount = this.form.controls["amount"].value;
+		this.activeTransfer.currencyCode = this.form.controls["currency"].value;
 		this.activeTransfer.ilpPacket = this.form.controls["ilpPacket"].value;
 		this.activeTransfer.condition = this.form.controls["condition"].value;
 		this.activeTransfer.expiration = this.form.controls["expiration"].value;
@@ -151,8 +149,8 @@ export class BulkTransferCreateComponent implements OnInit {
 			individualTransfers.push({
 				"transferId": i >= 10 ? i + transfer.transferId.slice(2) : i + transfer.transferId.slice(1),
 				"transferAmount": {
-					"currency": this.activeTransfer.amount.currency,
-					"amount": this.activeTransfer.amount.amount
+					"currency": this.activeTransfer.currencyCode,
+					"amount": this.activeTransfer.amount
 				},
 				"ilpPacket": this.activeTransfer.ilpPacket,
 				"condition": this.activeTransfer.condition

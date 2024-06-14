@@ -8,7 +8,7 @@ import {SettlementsService} from "src/app/_services_and_types/settlements.servic
 import {MessageService} from "src/app/_services_and_types/message.service";
 import {ParticipantsService} from "../_services_and_types/participants.service";
 import {IParticipant} from "@mojaloop/participant-bc-public-types-lib";
-import {deserializeIlpPacket} from '../_utils';
+import {deserializeIlpPacket, formatCommaSeparator} from '../_utils';
 
 
 @Component({
@@ -28,6 +28,8 @@ export class TransferDetailComponent implements OnInit {
 	public decodedIlpPacket: any;
 
 	private _reloadCount = 0;
+
+	formatCommaSeparator = formatCommaSeparator;
 
 	constructor(
 		private _route: ActivatedRoute,
