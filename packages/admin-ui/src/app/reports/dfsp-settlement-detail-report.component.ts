@@ -14,7 +14,7 @@ import { ParticipantsService } from "../_services_and_types/participants.service
 import { ReportService } from "../_services_and_types/report.service";
 import type { MatrixId } from "../_services_and_types/report_types";
 import type { SettlementInfo } from "./dfsp-settlement-report.component";
-import { formatNumber } from "../_utils";
+import { formatCommaSeparator } from "../_utils";
 
 interface ModifiedDetailReport {
 	matrixId: string;
@@ -163,12 +163,12 @@ export class DFSPSettlementDetailReport implements OnInit {
 						).toISOString(),
 						sentAmount:
 							this.chosenDfspId === detailReport.payerFspId
-								? formatNumber(detailReport.Amount)
-								: "-",
+								? formatCommaSeparator(detailReport.Amount)
+								: "0",
 						receivedAmount:
 							this.chosenDfspId === detailReport.payeeFspId
-								? formatNumber(detailReport.Amount)
-								: "-",
+								? formatCommaSeparator(detailReport.Amount)
+								: "0",
 						currency: detailReport.Currency,
 					}));
 					this.detailReports.next(detailReports);

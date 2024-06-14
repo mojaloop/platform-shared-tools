@@ -11,7 +11,7 @@ import { UnauthorizedError } from "../_services_and_types/errors";
 import { MessageService } from "../_services_and_types/message.service";
 import { ParticipantsService } from "../_services_and_types/participants.service";
 import { ReportService } from "../_services_and_types/report.service";
-import { formatNumber } from "../_utils";
+import { formatCommaSeparator } from "../_utils";
 import { ParticipantFundsMovementTypes } from "@mojaloop/participant-bc-public-types-lib";
 import { PlatformConfigService } from "../_services_and_types/platform-config.service";
 import {Currency} from "@mojaloop/platform-configuration-bc-public-types-lib";
@@ -158,10 +158,10 @@ export class DFSPSettlementStatementReport implements OnInit {
 					const statementReports = result.map((detailReport) => ({
 						...detailReport,
 						transactionDate: this.formatDatetoISOString(detailReport.transactionDate),
-						fundsInAmount: detailReport.fundsInAmount ? formatNumber(detailReport.fundsInAmount) : "0.00",
-						fundsOutAmount: detailReport.fundsOutAmount ? formatNumber(detailReport.fundsOutAmount) : "0.00",
+						fundsInAmount: detailReport.fundsInAmount ? formatCommaSeparator(detailReport.fundsInAmount) : "0",
+						fundsOutAmount: detailReport.fundsOutAmount ? formatCommaSeparator(detailReport.fundsOutAmount) : "0",
 						currencyCode: detailReport.currencyCode,
-						balance :detailReport.balance ? formatNumber(detailReport.balance) : "0.00"
+						balance :detailReport.balance ? formatCommaSeparator(detailReport.balance) : "0.00"
 					}));
 					this.statementReports.next(statementReports);
 				},

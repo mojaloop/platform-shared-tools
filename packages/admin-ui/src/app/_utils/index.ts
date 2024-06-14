@@ -119,6 +119,17 @@ export function formatNumber(number: string | number) {
 	return numberFormatter.format(Number(number));
 }
 
+function getDecimalPlaces(value: string | number): number {
+    const parts = value.toString().split(".");
+    return parts.length > 1 ? parts[1].length : 0;
+}
+
+export function getMaxDecimalPlaces(val1: string | number, val2: string | number): number {
+    const decimalPlaces1 = getDecimalPlaces(val1);
+    const decimalPlaces2 = getDecimalPlaces(val2);
+    return Math.max(decimalPlaces1, decimalPlaces2);
+}
+
 export function formatCommaSeparator(number: string | number | null | undefined): string {
 	if (number == null) return "";
 
