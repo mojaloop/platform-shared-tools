@@ -47,6 +47,7 @@ export class QuotesService {
 			payer: null,
 			transactionType: null,
 			ilpPacket: "",
+			errorInformation: null,
 			extensionList: null
 		};
 	}
@@ -180,6 +181,9 @@ export class QuotesService {
 		quoteId?: string,
 		transactionId?: string,
 		bulkQuoteId?: string,
+		payerId?: string,
+		payeeId?: string,
+		status?: string,
 		pageIndex: number = DEFAULT_PAGE_INDEX,
 		pageSize: number = DEFAULT_PAGE_SIZE,
 	): Observable<QuotingSearchResults> {
@@ -189,6 +193,9 @@ export class QuotesService {
 		if (quoteId) searchParams.append("quoteId", quoteId);
 		if (transactionId) searchParams.append("transactionId", transactionId);
 		if (bulkQuoteId) searchParams.append("bulkQuoteId", bulkQuoteId);
+		if (payerId) searchParams.append("payerId", payerId);
+		if (payeeId) searchParams.append("payeeId", payeeId);
+		if (status) searchParams.append("status", status);
 
 		if (pageIndex) searchParams.append("pageIndex", pageIndex.toString());
 		if (pageSize) searchParams.append("pageSize", pageSize.toString());

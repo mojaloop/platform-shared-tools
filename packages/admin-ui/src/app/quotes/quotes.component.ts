@@ -5,6 +5,8 @@ import {Quote} from "src/app/_services_and_types/quote_types";
 import {MessageService} from "src/app/_services_and_types/message.service";
 import {UnauthorizedError} from "src/app/_services_and_types/errors";
 import {paginate, PaginateResult} from "../_utils";
+import {HUB_PARTICIPANT_ID, IParticipant} from "@mojaloop/participant-bc-public-types-lib";
+import {ParticipantsService} from "src/app/_services_and_types/participants.service";
 
 @Component({
 	selector: "app-quotes",
@@ -20,11 +22,16 @@ export class QuotesComponent implements OnInit, OnDestroy {
 	keywordQuoteTransactionType: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordQuoteId: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordTransactionId: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+	keywordStatus: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	keywordsSubs?: Subscription;
+
+	participants: BehaviorSubject<IParticipant[]> = new BehaviorSubject<IParticipant[]>([]);
+	participantsSubs?: Subscription;
 
 	paginateResult: BehaviorSubject<PaginateResult | null> = new BehaviorSubject<PaginateResult | null>(null);
 
 	constructor(
+		private _participantsSvc: ParticipantsService,
 		private _quotesSvc: QuotesService,
 		private _messageService: MessageService
 	) {
@@ -35,10 +42,25 @@ export class QuotesComponent implements OnInit, OnDestroy {
 
 		this.getSearchKeywords();
 
-		// wait for the page components to layout
-		setTimeout(() => {
-			this.search();
-		}, 50);
+		// Get participants for filters
+		this.participantsSubs = this._participantsSvc
+			.getAllParticipants()
+			.subscribe(
+				(result) => {
+					// remove the hub from the list
+					const onlyDfsps = result.items.filter(value => value.id !== HUB_PARTICIPANT_ID);
+					this.participants.next(onlyDfsps);
+
+					this.search();
+				},
+				(error) => {
+					if (error && error instanceof UnauthorizedError) {
+						this._messageService.addError(error.message);
+					}
+
+					this.search();
+				}
+			);
 	}
 
 	search(pageIndex?: number, pageSize?: number) {
@@ -57,6 +79,9 @@ export class QuotesComponent implements OnInit, OnDestroy {
 		const filterQuoteId = (document.getElementById("filterQuoteId") as HTMLSelectElement).value || undefined;
 		const filterTransactionId = (document.getElementById("filterTransactionId") as HTMLSelectElement).value || undefined;
 		const filterBulkQuoteId = (document.getElementById("filterBulkQuoteId") as HTMLSelectElement).value || undefined;
+		const filterPayerId = (document.getElementById("filterPayerId") as HTMLSelectElement).value || undefined;
+		const filterPayeeId = (document.getElementById("filterPayeeId") as HTMLSelectElement).value || undefined;
+		const filterStatus = (document.getElementById("filterStatus") as HTMLSelectElement).value || undefined;
 
 		this.quotesSubs = this._quotesSvc.search(
 			(filterQuoteAmountType === this.ALL_STR_ID ? undefined : filterQuoteAmountType),
@@ -64,6 +89,9 @@ export class QuotesComponent implements OnInit, OnDestroy {
 			(filterQuoteId === this.ALL_STR_ID ? undefined : filterQuoteId),
 			(filterTransactionId === this.ALL_STR_ID ? undefined : filterTransactionId),
 			(filterBulkQuoteId === this.ALL_STR_ID ? undefined : filterBulkQuoteId),
+			(filterPayerId === this.ALL_STR_ID ? undefined : filterPayerId),
+			(filterPayeeId === this.ALL_STR_ID ? undefined : filterPayeeId),
+			(filterStatus === this.ALL_STR_ID ? undefined : filterStatus),
 			pageIndex,
 			pageSize,
 		).subscribe((result) => {
@@ -93,6 +121,7 @@ export class QuotesComponent implements OnInit, OnDestroy {
 				if (value.fieldName == "transactionType") this.keywordQuoteTransactionType.next(value.distinctTerms);
 				if (value.fieldName == "quoteId") this.keywordQuoteId.next(value.distinctTerms);
 				if (value.fieldName == "transactionId") this.keywordTransactionId.next(value.distinctTerms);
+				if (value.fieldName == "status") this.keywordStatus.next(value.distinctTerms);
 			});
 		}, error => {
 			if (error && error instanceof UnauthorizedError) {

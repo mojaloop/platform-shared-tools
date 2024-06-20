@@ -42,6 +42,34 @@
           <input class="form-control" type="text" id="filterBulkQuoteId" />
         </div>
 
+        <div class="form-group col-md-3">
+					<label for="filterPayerId">Payer DFSP Name:</label>
+					<select formControlName="filterPayerId" id="filterPayerId" class="form-control">
+						<option value={{ALL_STR_ID}}>(All)</option>
+						<option *ngFor="let item of participants | async" value="{{item.id}}">
+							{{item.name}}
+						</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-3">
+					<label for="filterPayeeId">Payee DFSP Name:</label>
+					<select formControlName="filterPayeeId" id="filterPayeeId" class="form-control">
+						<option value={{ALL_STR_ID}}>(All)</option>
+						<option *ngFor="let item of participants | async" value="{{item.id}}">
+							{{item.name}}
+						</option>
+					</select>
+				</div>
+
+        <div class="form-group col-md-2">
+          <label for="filterStatus">Status</label>
+          <select class="form-control" id="filterStatus">
+            <option value="{{ALL_STR_ID}}">(All)</option>
+            <option value="{{item}}" *ngFor="let item of (keywordStatus | async)">{{item}}</option>
+          </select>
+        </div>
+
         <div class="form-group col-md-2">
           <label for="filterBtn">&nbsp;</label>
           <button
@@ -74,6 +102,10 @@
           <th scope="col">Transaction ID</th>
           <th scope="col">Amount Type</th>
           <th scope="col">Transaction Type</th>
+          <th scope="col">Payer DFSP Name</th>
+          <th scope="col">Payee DFSP Name</th>
+          <th scope="col">Status</th>
+          <th scope="col">Error Reason</th>
         </tr>
       </thead>
       <tbody>
@@ -85,6 +117,10 @@
           <td>{{ item.transactionId }}</td>
           <td>{{ item.amountType }}</td>
           <td>{{ item.transactionType?.scenario }}</td>
+          <td><a routerLink="/participants/{{item.payer?.partyIdInfo?.fspId}}">{{ item.payer?.partyIdInfo?.fspId }}</a></td>
+          <td><a routerLink="/participants/{{item.payee?.partyIdInfo?.fspId}}">{{ item.payee?.partyIdInfo?.fspId }}</a></td>
+          <td>{{ item.status }}</td>
+          <td>{{ item.errorInformation ?? "-" }}</td>
         </tr>
       </tbody>
     </table>

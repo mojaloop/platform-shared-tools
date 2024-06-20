@@ -134,6 +134,7 @@ export declare type Quote = {
 	initiator: string;
 	initiatorType: string;
 	ilpPacket: string;
+	errorInformation: string | null;
 	createdAt?: number;
 	updatedAt?: number;
 }
