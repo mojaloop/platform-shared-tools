@@ -988,7 +988,7 @@ export class ParticipantDetailComponent implements OnInit {
 			approvedBy: null,
 			approvedDate: null,
 			requestState: ApprovalRequestState.CREATED,
-			transferId: null,
+			journalEntryId: null,
 		};
 
 		this._participantsSvc
