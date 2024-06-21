@@ -13,7 +13,7 @@
 <div class="list-page-filterbox">
   <form>
     <table class="table">
-      <tr class="form-row justify-content-end">
+      <tr class="form-row justify-content-start">
         <div class="form-group col-md-2">
           <label for="filterQuoteAmountType">Amount Type</label>
           <select class="form-control" id="filterQuoteAmountType">
@@ -42,9 +42,9 @@
           <input class="form-control" type="text" id="filterBulkQuoteId" />
         </div>
 
-        <div class="form-group col-md-3">
+        <div class="form-group col-md-2">
 					<label for="filterPayerId">Payer DFSP Name:</label>
-					<select formControlName="filterPayerId" id="filterPayerId" class="form-control">
+					<select id="filterPayerId" class="form-control">
 						<option value={{ALL_STR_ID}}>(All)</option>
 						<option *ngFor="let item of participants | async" value="{{item.id}}">
 							{{item.name}}
@@ -52,9 +52,9 @@
 					</select>
 				</div>
 
-				<div class="form-group col-md-3">
+				<div class="form-group col-md-2">
 					<label for="filterPayeeId">Payee DFSP Name:</label>
-					<select formControlName="filterPayeeId" id="filterPayeeId" class="form-control">
+					<select id="filterPayeeId" class="form-control">
 						<option value={{ALL_STR_ID}}>(All)</option>
 						<option *ngFor="let item of participants | async" value="{{item.id}}">
 							{{item.name}}
@@ -69,15 +69,20 @@
             <option value="{{item}}" *ngFor="let item of (keywordStatus | async)">{{item}}</option>
           </select>
         </div>
+      </tr>
 
+      <tr class="form-row">
+        <div class="col-md-10">&nbsp;</div>
+        
         <div class="form-group col-md-2">
           <label for="filterBtn">&nbsp;</label>
+
           <button
             type="submit"
             class="form-control btn btn-primary"
             id="filterBtn"
             (click)="search(0)">
-        Search&nbsp;&nbsp;<i class="bi bi-search"></i>
+            Search&nbsp;&nbsp;<i class="bi bi-search"></i>
           </button>
         </div>
       </tr>
