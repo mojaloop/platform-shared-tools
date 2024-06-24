@@ -127,7 +127,7 @@
 	>
 		<thead class="thead-light">
 			<tr>
-				<th scope="col" style="min-width: 180px">Transfer Id</th>
+				<th scope="col" style="min-width: 180px">Journal Entry Id</th>
 				<th scope="col" style="min-width: 180px">Date Time</th>
 				<th scope="col" style="min-width: 450px;">Process Description</th>
 				<th scope="col" style="min-width: 160px">Funds In</th>
@@ -145,7 +145,7 @@
 		<tbody>
 			<tr *ngFor="let statementReport of statementReports | async; let i = index">
 
-				<td style="min-width: 180px">{{ statementReport.transferId }}</td>
+				<td style="min-width: 180px">{{ statementReport.journalEntryId }}</td>
 				<td style="min-width: 180px">
 					{{ statementReport.transactionDate | momentDate }}
 				</td>

@@ -22,7 +22,7 @@ interface ModifiedStatementReport {
 	fromDate: string;
 	toDate: string;
 	currencyCode: string;
-	transferId: string;
+	journalEntryId: string;
 	transactionDate: string;
 	processDescription: string;
 	fundsInAmount: string;
