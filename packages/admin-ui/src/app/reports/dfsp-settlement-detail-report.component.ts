@@ -23,7 +23,7 @@ interface ModifiedDetailReport {
 	payerParticipantName: string;
 	payeeFspId: string;
 	payeeParticipantName: string;
-	journalEntryId: string;
+	transferId: string;
 	transactionType: string;
 	transactionDate: string;
 	payerIdType: string;
@@ -262,7 +262,7 @@ export class DFSPSettlementDetailReport implements OnInit {
 				detailReport.payerParticipantName,
 				detailReport.payeeFspId,
 				detailReport.payeeParticipantName,
-				detailReport.journalEntryId,
+				detailReport.transferId,
 				detailReport.transactionType,
 				detailReport.transactionDate,
 				detailReport.payerIdType,

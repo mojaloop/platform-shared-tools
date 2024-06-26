@@ -34,7 +34,7 @@ export interface DetailReport {
 	payerParticipantName: string;
 	payeeFspId: string;
 	payeeParticipantName: string;
-	journalEntryId: string;
+	transferId: string;
 	transactionType: string;
 	transactionDate: number;
 	payerIdType: string;
