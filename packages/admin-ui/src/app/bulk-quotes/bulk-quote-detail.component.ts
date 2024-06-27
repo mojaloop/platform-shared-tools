@@ -96,6 +96,9 @@ export class BulkQuoteDetailComponent implements OnInit {
 				undefined,
 				bulkQuoteId,
 				undefined,
+				undefined,
+				undefined,
+				undefined,
 				100
 			).subscribe(quotesSearchResult => {
 				this.allQuotes.next(quotesSearchResult.items);
@@ -121,6 +124,9 @@ export class BulkQuoteDetailComponent implements OnInit {
 				undefined,
 				undefined,
 				this._bulkQuoteId!,
+				undefined,
+				undefined,
+				undefined,
 				undefined,
 				pageIndex
 			).subscribe(quotesSearchResult => {
