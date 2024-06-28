@@ -666,8 +666,8 @@ export class SettlementsService {
 		});
 	}
 
-	exportSettlementMatrix(matrixId: string): Observable<Blob> {
-		const url = REPORT_BASEURL + `/settlementInitiationByMatrixId/${matrixId}?format=excel`;
+	exportSettlementMatrix(matrixId: string, timeZoneOffset: string): Observable<Blob> {
+		const url = REPORT_BASEURL + `/settlementInitiationByMatrixId/${matrixId}?timeZoneOffset=${encodeURIComponent(timeZoneOffset)}&format=excel`;
 		const headers = new HttpHeaders();
 
 		return this._http.get(url, {

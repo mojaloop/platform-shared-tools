@@ -10,7 +10,7 @@ import {
 } from "@mojaloop/settlements-bc-public-types-lib";
 import {ActivatedRoute} from "@angular/router";
 import { formatCommaSeparator } from "../_utils";
-
+import moment from "moment";
 
 @Component({
 	selector: 'app-settlements',
@@ -38,6 +38,7 @@ export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 	excelFileUrl: any;
 
 	formatCommaSeparator = formatCommaSeparator;
+	currentLocalTimeZoneOffset: string = "";
 
 	constructor(private _route: ActivatedRoute, private _settlementsService: SettlementsService, private _messageService: MessageService) {
 
@@ -54,6 +55,12 @@ export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 		}
 
 		this._fetchMatrix(this._matrixId);
+		this.currentLocalTimeZoneOffset = this.getTimezoneOffset();
+	}
+
+	getTimezoneOffset(): string {
+		const offset = moment().format('Z'); // e.g., +05:30 or -04:00
+		return `UTC${offset}`;
 	}
 
 	private async _fetchMatrix(id: string): Promise<void> {
@@ -136,7 +143,7 @@ export class SettlementsMatrixDetailComponent implements OnInit, OnDestroy {
 	}
 
 	export() {
-		this._settlementsService.exportSettlementMatrix(this._matrixId!).subscribe(
+		this._settlementsService.exportSettlementMatrix(this._matrixId!, this.currentLocalTimeZoneOffset).subscribe(
 			(data) => {
 				const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 				this.excelFileUrl = window.URL.createObjectURL(blob);
