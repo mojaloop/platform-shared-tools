@@ -54,6 +54,7 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		filterBulkTransferId: null,
 		filterStartDate: null,
 		filterEndDate: null,
+		filterAmount: this.ALL_STR_ID,
 		filterId: null,
 		//add initial values for other form controls (filters)
 	};
@@ -140,7 +141,8 @@ export class TransfersComponent implements OnInit, OnDestroy {
 			filterTransferType,
 			filterPayerId,
 			filterPayeeId,
-			filterBulkTransferId
+			filterBulkTransferId,
+			filterAmount,
 		} = this.filterForm.value;
 
 		const startDate = filterStartDate ? new Date(filterStartDate).valueOf() : undefined;
@@ -154,6 +156,7 @@ export class TransfersComponent implements OnInit, OnDestroy {
 		const payerId = filterPayerId === this.ALL_STR_ID ? undefined : filterPayerId; 
 		const payeeId = filterPayeeId === this.ALL_STR_ID ? undefined : filterPayeeId; 
 		const bulkTransferId = filterBulkTransferId || undefined;
+		const amount = filterAmount === this.ALL_STR_ID ? undefined : filterAmount;
 
 		this.transfersSubs = this._transfersSvc.search(
 			transferState,
@@ -167,6 +170,7 @@ export class TransfersComponent implements OnInit, OnDestroy {
 			payeeId,
 			transferType,
 			bulkTransferId, // TODO: add bulk filter box
+			amount,
 			pageIndex,
 			pageSize,
 		).subscribe((result) => {
