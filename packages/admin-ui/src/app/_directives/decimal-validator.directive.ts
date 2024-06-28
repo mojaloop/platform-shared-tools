@@ -1,4 +1,3 @@
-// src/app/directives/decimal-validator.directive.ts
 import { Directive, ElementRef, HostListener } from '@angular/core';
 import { NgControl } from '@angular/forms';
 
