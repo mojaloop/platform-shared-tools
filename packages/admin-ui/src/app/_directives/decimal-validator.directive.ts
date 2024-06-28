@@ -53,8 +53,8 @@ export class DecimalValidatorDirective {
 
 	@HostListener('paste', ['$event'])
 	blockPaste(event: ClipboardEvent) {
-		let clipboardData = event.clipboardData || (window as any).clipboardData;
-		let pastedText = clipboardData.getData('text');
+		const clipboardData = event.clipboardData || (window as any).clipboardData;
+		const pastedText = clipboardData.getData('text');
 		if (pastedText && !String(pastedText).match(this.regex)) {
 			event.preventDefault();
 		}
