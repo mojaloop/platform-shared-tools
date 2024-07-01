@@ -68,6 +68,7 @@ import {DFSPSettlementStatementReport} from "./reports/dfsp-settlement-statement
 import {DropZoneDirective} from "./_pipes_and_guards/drop-zone.directive";
 import { MomentDatePipe } from "./_pipes_and_guards/moment-date";
 import { TimezoneOffsetPipe } from "./_pipes_and_guards/timezone-offset";
+import { DecimalValidatorDirective } from "./_directives/decimal-validator.directive";
 
 @NgModule({
 	declarations: [
@@ -125,6 +126,7 @@ import { TimezoneOffsetPipe } from "./_pipes_and_guards/timezone-offset";
 		PendingApprovalsComponent,
 		MomentDatePipe,
 		TimezoneOffsetPipe,
+		DecimalValidatorDirective,
 	],
 	imports: [
 		BrowserModule,
@@ -135,6 +137,9 @@ import { TimezoneOffsetPipe } from "./_pipes_and_guards/timezone-offset";
 		ReactiveFormsModule,
 		BrowserAnimationsModule,
 		NoopAnimationsModule
+	],
+	exports: [
+		DecimalValidatorDirective,
 	],
 	providers: [
 		CanLoadIsLoggedIn,

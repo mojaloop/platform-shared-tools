@@ -100,6 +100,7 @@ export class TransfersService {
 		payeeId?: string,
 		transferType?:string,
 		bulkTransferId?: string,
+		amount?: string,
 		pageIndex: number = DEFAULT_PAGE_INDEX,
 		pageSize: number = DEFAULT_PAGE_SIZE,
 	): Observable<TransfersSearchResults> {
@@ -117,6 +118,7 @@ export class TransfersService {
 		if (bulkTransferId) searchParams.append("bulkTransferId", bulkTransferId);
 		if (pageIndex) searchParams.append("pageIndex", (pageIndex).toString());
 		if (pageSize) searchParams.append("pageSize", pageSize.toString());
+		if (amount) searchParams.append("amount", amount.toString());
 
 		const url = `${SVC_BASEURL}/transfers?${searchParams.toString()}`;
 
