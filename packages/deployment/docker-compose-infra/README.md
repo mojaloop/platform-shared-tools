@@ -25,9 +25,10 @@ cd exec
 * `grafana_data`
 * `prometheus_data`
 * `prometheus_etc`
+* `otel_data`
 
 ```shell
-mkdir {certs,esdata01,kibanadata,logs,tigerbeetle_data,mongodb_data,grafana_data,prometheus_data,prometheus_etc}
+mkdir {certs,esdata01,kibanadata,logs,tigerbeetle_data,mongodb_data,grafana_data,prometheus_data,prometheus_etc,otel_data}
 ```
 
 Note: For Mac users you might have to grant full access to these directories, to do that execute in the exec directory:
@@ -40,10 +41,11 @@ sudo chmod -R 777 .
 cp ../.env.sample ./.env
 ```
 
-3. Copy Prometheus and Grafana's files to the correspondent data directories:
+3. Copy Prometheus, Grafana and OpenTelemetry's files to the correspondent data directories:
 ```shell
 cp ../prometheus.yml ./prometheus_etc/prometheus.yml
 cp ../grafana_datasources.yml ./grafana_data/datasource.yml
+cp ../otel-collector-config.yaml ./otel_data/config.yaml
 ```
 
 
@@ -97,12 +99,12 @@ docker-compose -f ../docker-compose-infra.yml --env-file ./.env stop
 
 ---
 
-# Viewing the dashboards
+# Accessing the management and monitoring tools
 
 Once started, the services will available via localhost.
 Use the credentials set in the .env file.
 
-### ElasticSearch and Kibana
+### ElasticSearch and Kibana for logs and auditing
 - ElasticSearch API - https://localhost:9200/
 - Kibana - http://localhost:5601
 
@@ -114,6 +116,11 @@ Use the credentials set in the .env file.
 ### Mongo and Mongo Express Console
 - MongoDB - mongodb://localhost:27017
 - Mongo Express Console - http://localhost:8081
+
+### Observability Dashboards (Metrics and tracing)
+- Prometheus (metrics collector) - http://localhost:9090
+- Grafana (metrics dashboards) - http://localhost:3000
+- Jeager (tracing analysis) - http://localhost:16686
 
 &nbsp;
 

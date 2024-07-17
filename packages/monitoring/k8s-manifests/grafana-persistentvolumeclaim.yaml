@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: monitoring
+  labels:
+    app: grafana
+  name: grafana-etc-vol-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+#  storageClassName: local-path
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: monitoring
+  labels:
+    app: grafana
+  name: grafana-lib-vol-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+#  storageClassName: local-path
+  storageClassName: standard-rwo
+  resources:
+    requests:
+      storage: 200Mi
+---

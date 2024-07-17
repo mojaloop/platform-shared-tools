@@ -277,6 +277,23 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
     volumes:
       - grafana_data_vol:/etc/grafana/provisioning/datasources
+  jaeger:
+    image: jaegertracing/all-in-one:1.35
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - 16686:16686   # UI port
+  otel-collector:
+    image: otel/opentelemetry-collector
+    volumes:
+      - otel_collector_etc_vol:/etc/otelcol
+    ports:
+      - 8888:8888 # Prometheus metrics exposed by the Collector
+      - 8889:8889 # Prometheus exporter metrics
+      - 13133:13133 # health_check extension
+      - 4317:4317 # OTLP gRPC receiver
+      - 4318:4318 # OTLP http receiver
+      - 55679:55679 # zpages extension
 
 #  tigerbeetle-setup:
 #    image: ghcr.io/tigerbeetle/tigerbeetle
@@ -356,3 +373,9 @@ volumes:
       o: bind
       type: none
       device: ${ROOT_VOLUME_DEVICE_PATH}/grafana_data
+  otel_collector_etc_vol:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${ROOT_VOLUME_DEVICE_PATH}/otel_data/
