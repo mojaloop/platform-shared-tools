@@ -46,9 +46,12 @@ export class QuotesService {
 			payee: null,
 			payer: null,
 			transactionType: null,
-			ilpPacket: "",
+			extensionList: null,
 			errorInformation: null,
-			extensionList: null
+			fspiopOpaqueState: {
+				ilpPacket: "",
+				condition: "",
+			}
 		};
 	}
 

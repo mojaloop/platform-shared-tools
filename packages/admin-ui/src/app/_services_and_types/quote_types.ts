@@ -113,7 +113,6 @@ export declare type Quote = {
 		}[]
 	} | null;
 	status?: string;
-	condition?: string;
 	payeeFspCommission?: {
 		currency: string;
 		amount: string;
@@ -133,10 +132,10 @@ export declare type Quote = {
 	scenario: string;
 	initiator: string;
 	initiatorType: string;
-	ilpPacket: string;
 	errorInformation: string | null;
 	createdAt?: number;
 	updatedAt?: number;
+	fspiopOpaqueState: any;
 }
 
 export declare type QuotingSearchResults = {

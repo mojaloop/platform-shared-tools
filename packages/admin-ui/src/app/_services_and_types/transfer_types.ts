@@ -55,6 +55,7 @@ export declare type Transfer = {
 	currencyCode: string;
 	completedTimestamp?: string;
 	errorCode?: string | null;
+	fspiopOpaqueState: any;
 }
 
 export declare type TransfersSearchResults = {

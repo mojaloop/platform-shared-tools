@@ -99,8 +99,8 @@ export class TransferCreateComponent implements OnInit {
 			"payerFsp": new FormControl(this.activeTransfer?.payerFsp),
 			"currency": new FormControl(this.activeTransfer?.currency, Validators.required),
 			"amount": new FormControl(this.activeTransfer?.amount, Validators.required),
-			"ilpPacket": new FormControl(this.activeTransfer?.ilpPacket),
-			"condition": new FormControl(this.activeTransfer?.condition),
+			"ilpPacket": new FormControl(this.activeTransfer?.fspiopOpaqueState.ilpPacket),
+			"condition": new FormControl(this.activeTransfer?.fspiopOpaqueState.condition),
 			"expiration": new FormControl(this.activeTransfer?.expiration, Validators.required),
 		});
 	}
@@ -161,8 +161,8 @@ export class TransferCreateComponent implements OnInit {
 		this.form.controls["payerFsp"].setValue(selectedQuote?.payer?.partyIdInfo.fspId);
 		this.form.controls["amount"].setValue(selectedQuote?.amount?.amount);
 		this.form.controls["currency"].setValue(selectedQuote?.amount?.currency);
-		this.form.controls["ilpPacket"].setValue(selectedQuote?.ilpPacket);
-		this.form.controls["condition"].setValue(selectedQuote?.condition);
+		this.form.controls["ilpPacket"].setValue(selectedQuote?.fspiopOpaqueState.ilpPacket);
+		this.form.controls["condition"].setValue(selectedQuote?.fspiopOpaqueState.condition);
 		this.form.controls["expiration"].setValue(selectedQuote?.expiration);
 	}
 

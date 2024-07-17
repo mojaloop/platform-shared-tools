@@ -104,8 +104,8 @@ export class BulkTransferCreateComponent implements OnInit {
 			"payerFsp": new FormControl(this.activeTransfer?.payerFsp),
 			"currency": new FormControl(this.activeTransfer?.currency, Validators.required),
 			"amount": new FormControl(this.activeTransfer?.amount, Validators.required),
-			"ilpPacket": new FormControl(this.activeTransfer?.ilpPacket),
-			"condition": new FormControl(this.activeTransfer?.condition),
+			"ilpPacket": new FormControl(this.activeTransfer?.fspiopOpaqueState.ilpPacket),
+			"condition": new FormControl(this.activeTransfer?.fspiopOpaqueState.condition),
 			"expiration": new FormControl(this.activeTransfer?.expiration, Validators.required),
 		});
 	}
@@ -130,8 +130,8 @@ export class BulkTransferCreateComponent implements OnInit {
 		this.activeTransfer.payerFsp = this.form.controls["payerFsp"].value;
 		this.activeTransfer.amount = this.form.controls["amount"].value;
 		this.activeTransfer.currencyCode = this.form.controls["currency"].value;
-		this.activeTransfer.ilpPacket = this.form.controls["ilpPacket"].value;
-		this.activeTransfer.condition = this.form.controls["condition"].value;
+		this.activeTransfer.fspiopOpaqueState.ilpPacket = this.form.controls["ilpPacket"].value;
+		this.activeTransfer.fspiopOpaqueState.condition = this.form.controls["condition"].value;
 		this.activeTransfer.expiration = this.form.controls["expiration"].value;
 
 		const existing = await this._transfersSvc.getTransfer(this.activeTransfer.transferId).toPromise();
@@ -152,8 +152,8 @@ export class BulkTransferCreateComponent implements OnInit {
 					"currency": this.activeTransfer.currencyCode,
 					"amount": this.activeTransfer.amount
 				},
-				"ilpPacket": this.activeTransfer.ilpPacket,
-				"condition": this.activeTransfer.condition
+				"ilpPacket": this.activeTransfer.fspiopOpaqueState.ilpPacket,
+				"condition": this.activeTransfer.fspiopOpaqueState.condition
 			});
 		}
 
@@ -197,8 +197,8 @@ export class BulkTransferCreateComponent implements OnInit {
 		this.form.controls["payerFsp"].setValue(selectedQuote?.payer?.partyIdInfo.fspId);
 		this.form.controls["amount"].setValue(selectedQuote?.amount?.amount);
 		this.form.controls["currency"].setValue(selectedQuote?.amount?.currency);
-		this.form.controls["ilpPacket"].setValue(selectedQuote?.ilpPacket);
-		this.form.controls["condition"].setValue(selectedQuote?.condition);
+		this.form.controls["ilpPacket"].setValue(selectedQuote?.fspiopOpaqueState.ilpPacket);
+		this.form.controls["condition"].setValue(selectedQuote?.fspiopOpaqueState.condition);
 		this.form.controls["expiration"].setValue(new Date(Date.now() + 3600 * 1000).toISOString());
 	}
 

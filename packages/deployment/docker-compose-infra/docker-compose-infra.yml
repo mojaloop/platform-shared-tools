@@ -189,11 +189,13 @@ services:
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic OperatorBcErrors
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic QuotingBcEvents
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic QuotingBcRequests
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic QuotingBcCommands
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic QuotingBcErrors
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic SettlementsBcEvents
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic SettlementsBcCommands
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic TransfersBcEvents
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic TransfersBcRequests
+      kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic TransfersBcCommands
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic TransfersBcErrors
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic TransfersBcTimeouts
       kafka-topics --bootstrap-server kafka:19092 --create --if-not-exists --topic PlatformConfigurationBcEvents

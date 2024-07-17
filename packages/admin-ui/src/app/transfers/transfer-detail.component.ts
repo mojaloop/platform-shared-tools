@@ -76,9 +76,9 @@ export class TransferDetailComponent implements OnInit {
 
 			if (!transfer || !transfer.payerFspId || !transfer.payeeFspId) return;
 
-			if (transfer.ilpPacket) {
-				this.decodedIlpPacket = deserializeIlpPacket(transfer.ilpPacket);
-				transfer.ilpPacket = this.decodedIlpPacket;
+			if (transfer.fspiopOpaqueState.ilpPacket) {
+				this.decodedIlpPacket = deserializeIlpPacket(transfer.fspiopOpaqueState.ilpPacket);
+				transfer.fspiopOpaqueState.ilpPacket = this.decodedIlpPacket;
 			}
 
 			let payer = this.payer.getValue();
