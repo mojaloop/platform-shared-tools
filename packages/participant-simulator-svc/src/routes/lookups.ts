@@ -34,7 +34,7 @@ import {BaseRoute} from "./base_route";
 import {IMetrics} from "@mojaloop/platform-shared-lib-observability-types-lib";
 import {
     FSPIOP_HOST,
-    FSPIOP_PORT,
+    FSPIOP_PORT, MY_FSPID,
     TRACING_REQ_START_TS_HEADER_NANE, TRACING_RESP_START_TS_HEADER_NANE
 } from "../index";
 import { ILogger } from "@mojaloop/logging-bc-public-types-lib";
@@ -53,8 +53,9 @@ export class LookupsSimulatorRoutes extends BaseRoute{
     }
 
     private async handlePut(request:FastifyRequest, reply:FastifyReply): Promise<void> {
-        const now = Date.now();
+        this._checkRequestDestinationOrRespondError(request, reply);
 
+        const now = Date.now();
         const reOriginalTimestamp = request.headers[TRACING_REQ_START_TS_HEADER_NANE] as string || "0";
         const totalDurationMs = now - parseInt(reOriginalTimestamp);
         this._histogram.observe({leg:"total", success: "true"}, totalDurationMs/1000);
@@ -69,6 +70,8 @@ export class LookupsSimulatorRoutes extends BaseRoute{
     }
 
     private async _handleGet(request:FastifyRequest, reply:FastifyReply): Promise<void> {
+        this._checkRequestDestinationOrRespondError(request, reply);
+
         const reOriginalTimestamp:string = request.headers[TRACING_REQ_START_TS_HEADER_NANE] as string || "0";
         const durationMs = Date.now() - parseInt(reOriginalTimestamp);
         this._histogram.observe({leg:"request", success: "true"}, durationMs/1000);
