@@ -62,7 +62,7 @@
 
 			<div class="mb-2">
 				<label class="col-form-label text-secondary">Condition</label>
-				<div class="text-break">{{item.condition}}</div>
+				<div class="text-break">{{item.fspiopOpaqueState.condition}}</div>
 			</div>
 
 			<!--<div class="mb-2">
@@ -132,7 +132,7 @@
 				<div class="col-12">
 					<div class="mb-2">
 						<label class="col-form-label text-secondary">Condition</label>
-						<div style="font-family: monospace;">{{(transfer | async)?.condition}}</div>
+						<div style="font-family: monospace;">{{(transfer | async)?.fspiopOpaqueState.condition}}</div>
 					</div>
 				</div>
 			</div>
@@ -143,7 +143,7 @@
 			</div>
 			<div class="row">
 				<div class="col-12">
-					<pre><p style="font-family: monospace;">{{((transfer | async)?.ilpPacket | json)}}</p></pre>
+					<pre><p style="font-family: monospace;">{{((transfer | async)?.fspiopOpaqueState.ilpPacket | json)}}</p></pre>
 				</div>
 			</div>
 
