@@ -31,6 +31,7 @@ import {IHistogram, IMetrics} from "@mojaloop/platform-shared-lib-observability-
 import {FastifyReply, FastifyRequest} from "fastify";
 import * as http from "http";
 import {ILogger} from "@mojaloop/logging-bc-public-types-lib";
+import {MY_FSPID} from "../index";
 
 export abstract class BaseRoute {
     protected readonly _metrics: IMetrics;
@@ -53,6 +54,14 @@ export abstract class BaseRoute {
             if (key.toUpperCase().startsWith("TEST-") || key.toUpperCase().startsWith("TRACING-")) {
                 callbackRequest.setHeader(key, request.headers[key] as string);
             }
+        }
+    }
+
+    protected _checkRequestDestinationOrRespondError(request:FastifyRequest, reply:FastifyReply):void{
+        if(request.headers["fspiop-destination"] !== MY_FSPID) {
+            this._loggger.warn(`Got request wrong FSPIOP destination: "${request.headers["fspiop-destination"]}", I'm: ${MY_FSPID}  - request method: ${request.method} - path: ${request.routerPath}`);
+            reply.status(400).send({error: "Wrong FSPIOP destination"});
+            return;
         }
     }
 }
