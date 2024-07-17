@@ -55,7 +55,7 @@ export class TransferSimulatorRoutes extends BaseRoute{
 
     private async handlePutOrPatch(request:FastifyRequest, reply:FastifyReply): Promise<void> {
         // we only care about this when we are the destination
-        if(request.headers["fspiop-destination"] !== MY_FSPID) return;
+        this._checkRequestDestinationOrRespondError(request, reply);
         const now = Date.now();
 
         const reOriginalTimestamp = request.headers[TRACING_REQ_START_TS_HEADER_NANE] as string || "0";
@@ -72,6 +72,8 @@ export class TransferSimulatorRoutes extends BaseRoute{
     }
 
     private async _handlePostTransfer(request:FastifyRequest, reply:FastifyReply): Promise<void> {
+        this._checkRequestDestinationOrRespondError(request, reply);
+
         const reOriginalTimestamp:string = request.headers[TRACING_REQ_START_TS_HEADER_NANE] as string || "0";
         const durationMs = Date.now() - parseInt(reOriginalTimestamp);
         this._histogram.observe({leg:"prepare", success: "true"}, durationMs/1000);
