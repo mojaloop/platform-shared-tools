@@ -32,6 +32,10 @@ export class SettlementsModelsComponent implements OnInit {
 			this._settlementsService.getAllModels().subscribe(matrix => {
 				this.models.next(matrix);
 				resolve();
+			}, error => {
+				if (error && error instanceof UnauthorizedError) {
+					this._messageService.addError(error.message);
+				}
 			});
 		});
 
