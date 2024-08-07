@@ -56,6 +56,10 @@ export class SettlementsTransfersComponent implements OnInit, OnDestroy {
 				this.paginateResult.next(paginateResult);
 				
 				resolve();
+			}, error => {
+				if (error && error instanceof UnauthorizedError) {
+					this._messageService.addError(error.message);
+				}
 			});
 		});
 	}
