@@ -134,14 +134,12 @@ export class ParticipantDetailComponent implements OnInit {
 
 			const currencies : Currency[] = globalConfig.parameters.find(param => param.name === "CURRENCIES")?.currentValue;
 			this.currencyCodeList.next(currencies);
-	
+
 		}, error => {
 				this._messageService.addError(error.message);
 		})
 
 		await this._fetchParticipant();
-		await this.getApprovedCertificate();
-		await this.getCertificatesRequests();
 		this.updateAccounts();
 	}
 
