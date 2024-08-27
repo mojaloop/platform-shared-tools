@@ -84,7 +84,7 @@
    bankBalance: number
    settledTransferAmount: string
    currencyCode: string
-   type: string
+   direction: string
    updateAmount: string
    settlementAccountId: string
    isDuplicate: boolean
