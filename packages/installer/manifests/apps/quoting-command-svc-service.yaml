@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    mojaloop.layer: apps
+    mojaloop.service: quoting-command-handler-svc
+  name: quoting-command-handler-svc
+  namespace: default
+spec:
+  ports:
+    - name: "3035"
+      port: 3035
+      protocol: TCP
+      targetPort: 3035
+  selector:
+    mojaloop.service: quoting-command-handler-svc

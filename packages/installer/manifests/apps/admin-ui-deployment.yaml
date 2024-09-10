@@ -1,8 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-  creationTimestamp:
   labels:
     mojaloop.service: admin-ui
     mojaloop.layer: apps
@@ -15,17 +13,14 @@ spec:
   strategy: {}
   template:
     metadata:
-      annotations:
-      creationTimestamp:
       labels:
         mojaloop.service: admin-ui
         mojaloop.layer: apps
     spec:
       containers:
-      - image: mojaloop/vnext-admin-ui-svc:0.5.1
+      - image: mojaloop/vnext-admin-ui-svc:0.5.40
         name: admin-ui
         ports:
         - containerPort: 4200
         resources: {}
       restartPolicy: Always
-status: {}

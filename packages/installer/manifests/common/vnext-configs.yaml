@@ -1,0 +1,34 @@
+#
+# TODO: Move secrets to a secret
+#
+apiVersion: v1
+data:
+  AUTH_N_DEFAULT_AUDIENCE: mojaloop.vnext.dev.default_audience
+  AUTH_N_ISSUER_NAME: mojaloop.vnext.dev.default_issuer
+  AUTH_N_SVC_BASEURL: http://authentication-svc:3201
+  AUTH_Z_SVC_BASEURL: http://authorization-svc:3202
+  AUTH_N_TOKEN_LIFE_SECS: "604800"
+  BUILTIN_IAM_BASE_URL: http://identity-svc:3203
+  ELASTICSEARCH_URL: http://es01:9200
+  ELASTICSEARCH_USERNAME: elastic
+  ELASTICSEARCH_PASSWORD: elasticSearchPas42
+  KAFKA_URL: kafka:9092
+  KAFKA_AUTH_ENABLED: "false"
+  KAFKA_AUTH_MECHANISM: PLAIN
+  KAFKA_AUTH_PASSWORD: password
+  KAFKA_AUTH_PROTOCOL: SASL_PLAINTEXT
+  KAFKA_AUTH_USERNAME: kafka
+  MONGO_URL: mongodb://admin:password@mongo/
+  REDIS_HOST: redis
+  SCHEDULING_HOST_LOCKS: redis
+  PARTICIPANTS_SVC_URL: http://participants-svc:3010
+  PLATFORM_CONFIG_BASE_SVC_URL: http://platform-configuration-svc:3100
+  ACCOUNTS_BALANCES_COA_SVC_URL: accounts-and-balances-coa-grpc-svc:3300
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-svc:4317
+  PARTICIPANTS_CACHE_TIMEOUT_MS: 15000
+  #TRACING_SAMPLE_NONE: "true"
+  #TRACING_SAMPLE_ALL: "true"
+kind: ConfigMap
+metadata:
+  name: vnext-configs
+  namespace: default

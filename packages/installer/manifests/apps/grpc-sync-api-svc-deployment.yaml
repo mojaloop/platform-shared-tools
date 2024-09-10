@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    mojaloop.service: grpc-sync-api-svc
+    mojaloop.layer: apps
+  name: grpc-sync-api-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      mojaloop.service: grpc-sync-api-svc
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        mojaloop.service: grpc-sync-api-svc
+        mojaloop.layer: apps
+    spec:
+      containers:
+      - env:
+          - name: UV_THREADPOOL_SIZE
+            value: "32"
+          - name: LOG_LEVEL
+            value: debug
+        envFrom:
+          - configMapRef:
+              name: vnext-configs
+        image: us-west1-docker.pkg.dev/test-rafiki1/pch/grpc-sync-api-svc:0.6.5
+        livenessProbe:
+          exec:
+            command: [ "true" ]
+          initialDelaySeconds: 10
+        readinessProbe:
+          exec:
+            command: [ "true" ]
+          initialDelaySeconds: 10
+        name: grpc-sync-api-svc
+        ports:
+        - containerPort: 5500
+        resources: {}
+      restartPolicy: Always
+

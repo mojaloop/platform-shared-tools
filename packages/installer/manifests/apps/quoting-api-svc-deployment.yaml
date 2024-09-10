@@ -1,43 +1,41 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-  creationTimestamp: null
   labels:
-    mojaloop.service: quotes-reporting-svc
-    mojaloop.layer: reporting
-  name: quotes-reporting-svc
+    mojaloop.service: quoting-api-svc
+    mojaloop.layer: apps
+  name: quoting-api-svc
 spec:
   replicas: 1
   selector:
     matchLabels:
-      mojaloop.service: quotes-reporting-svc
+      mojaloop.service: quoting-api-svc
   strategy:
     type: Recreate
   template:
     metadata:
-      annotations:
-      creationTimestamp: null
       labels:
-        mojaloop.service: quotes-reporting-svc
-        mojaloop.layer: reporting
+        mojaloop.service: quoting-api-svc
+        mojaloop.layer: apps
     spec:
       containers:
       - envFrom:
         - configMapRef:
            name: vnext-configs
-        image: mojaloop/reporting-bc-quotes-reporting-svc:0.3.16
+        image: mojaloop/quoting-bc-api-svc:0.6.5
         livenessProbe:
           exec:
             command:
-              - nc -z localhost 5003 || exit -1
+              - sh
+              - -c
+              - nc -z localhost 3033
           failureThreshold: 10
           initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 10
-        name: quotes-reporting-svc
+        name: quoting-api-svc
         ports:
-          - containerPort: 5003
+        - containerPort: 3033
         resources: {}
       restartPolicy: Always
-status: {}
+

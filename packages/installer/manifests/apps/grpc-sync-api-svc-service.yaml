@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  #  annotations:
+  #    cloud.google.com/app-protocols: '{"grpc-port":"HTTP2"}'
+  labels:
+    mojaloop.layer: apps
+    mojaloop.service: grpc-sync-api-svc
+  name: grpc-sync-api-svc
+  namespace: default
+spec:
+  #  clusterIP: None # headless
+  ports:
+    - name: "grpc-port"
+      port: 5500
+      protocol: TCP
+      targetPort: 5500
+  selector:
+    mojaloop.service: grpc-sync-api-svc

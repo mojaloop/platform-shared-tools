@@ -1,8 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-  creationTimestamp: null
   labels:
     mojaloop.service: platform-configuration-svc
     mojaloop.layer: crosscut
@@ -17,42 +15,33 @@ spec:
   template:
     metadata:
       annotations:
-      creationTimestamp: null
       labels:
         mojaloop.service: platform-configuration-svc
         mojaloop.layer: crosscut
     spec:
+      restartPolicy: Always
       containers:
         - env:
-            - name: KAFKA_AUDITS_TOPIC
-              value: audits
-            - name: KAFKA_LOGS_TOPIC
-              value: logs
-            - name: KAFKA_URL
-              value: kafka:9092
-            - name: AUTH_Z_SVC_BASEURL
-              value: http://authorization-svc:3202
-            - name: AUTH_N_SVC_BASEURL
-              value: http://authentication-svc:3201
-          image: mojaloop/platform-configuration-bc-configuration-svc:0.5.2
+            - name: CONFIG_SET_TYPE
+              value: "MONGODB_CONFIG_SET"
+          envFrom:
+            - configMapRef:
+                name: vnext-configs
+          image: mojaloop/platform-configuration-bc-configuration-svc:0.6.3
           livenessProbe:
             exec:
               command:
-                - nc -z localhost 3100 || exit -1
-            failureThreshold: 10
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 10
+                - sh
+                - -c
+                - nc -z localhost 3100
           name: platform-configuration-svc
           ports:
             - containerPort: 3100
           resources: {}
-          volumeMounts:
-            - mountPath: /app/data
-              name: platform-configuration-svc-data
-      restartPolicy: Always
-      volumes:
-        - name: platform-configuration-svc-data
-          persistentVolumeClaim:
-            claimName: platform-configuration-svc-data
-status: {}
+#          volumeMounts:
+#            - mountPath: /app/data
+#              name: platform-configuration-svc-data
+#      volumes:
+#        - name: platform-configuration-svc-data
+#          persistentVolumeClaim:
+#            claimName: platform-configuration-svc-data

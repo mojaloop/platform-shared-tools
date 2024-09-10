@@ -1,8 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-  creationTimestamp: null
   labels:
     mojaloop.service: settlements-reporting-svc
     mojaloop.layer: reporting
@@ -16,25 +14,18 @@ spec:
     type: Recreate
   template:
     metadata:
-      annotations:
-      creationTimestamp: null
       labels:
         mojaloop.service: settlements-reporting-svc
         mojaloop.layer: reporting
     spec:
       containers:
         - env:
-          - name: AUTH_N_SVC_BASEURL
-            value: http://authentication-svc:3201
-          - name: KAFKA_LOGS_TOPIC
-            value: logs
-          - name: KAFKA_URL
-            value: kafka:9092
-          - name: MONGO_URL
-            value: mongodb://root:mongoDbPas42@mongodb:27017/
           - name: SETTLEMENTS_SVC_URL
             value: http://settlements-api-svc:3600
-          image: mojaloop/reporting-bc-settlements-reporting-svc:0.3.6
+          envFrom:
+            - configMapRef:
+                name: vnext-configs
+          image: mojaloop/reporting-bc-settlements-reporting-svc:0.3.18
           livenessProbe:
             exec:
               command:
@@ -48,4 +39,3 @@ spec:
             - containerPort: 5004
           resources: {}
       restartPolicy: Always
-status: {}

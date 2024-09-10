@@ -1,18 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-  creationTimestamp: null
   labels:
-    mojaloop.service: quoting-svc
+    mojaloop.service: quoting-api-svc
     mojaloop.layer: apps
-  name: quoting-svc
+  name: quoting-api-svc
 spec:
   ports:
     - name: "3033"
       port: 3033
       targetPort: 3033
   selector:
-    mojaloop.service: quoting-svc
-status:
-  loadBalancer: {}
+    mojaloop.service: quoting-api-svc

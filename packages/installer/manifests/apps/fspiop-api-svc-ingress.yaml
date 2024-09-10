@@ -2,19 +2,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: fspiop-api-svc
-  annotations:
-    ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    #external-dns.alpha.kubernetes.io/hostname: fspiop.local
-    #cert-manager.io/issuer: letsencrypt-staging
 spec:
   ingressClassName: nginx-ext
-  #tls:
-  # - hosts: 
-  #   - fspiop.local 
-  #   secretName: quickstart-example-tls
   rules:
-  - host: fspiop.local
+  - host: fspiop.vnext
     http:
       paths:
       - path: "/"

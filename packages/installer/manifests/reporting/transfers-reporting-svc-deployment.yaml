@@ -1,38 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-  creationTimestamp: null
   labels:
     mojaloop.service: transfers-reporting-svc
-    mojaloop.layer: reporting 
+    mojaloop.layer: reporting
   name: transfers-reporting-svc
 spec:
   replicas: 1
   selector:
     matchLabels:
       mojaloop.service: transfers-reporting-svc
-  strategy: 
+  strategy:
     type: Recreate
   template:
     metadata:
-      annotations:
-      creationTimestamp: null
       labels:
         mojaloop.service: transfers-reporting-svc
-        mojaloop.layer: reporting 
+        mojaloop.layer: reporting
     spec:
       containers:
-        - env:
-          - name: AUTH_N_SVC_BASEURL
-            value: http://authentication-svc:3201
-          - name: KAFKA_LOGS_TOPIC
-            value: logs
-          - name: KAFKA_URL
-            value: kafka:9092
-          - name: MONGO_URL
-            value: mongodb://root:mongoDbPas42@mongodb:27017/
-          image: mojaloop/reporting-bc-transfers-reporting-svc:0.3.4
+        - envFrom:
+            - configMapRef:
+                name: vnext-configs
+          image: mojaloop/reporting-bc-transfers-reporting-svc:0.3.12
           livenessProbe:
             exec:
               command:
@@ -46,4 +36,3 @@ spec:
             - containerPort: 5001
           resources: {}
       restartPolicy: Always
-status: {}
