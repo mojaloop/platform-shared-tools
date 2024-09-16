@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/vnext-admin-ui-svc",
-  "version": "0.5.42",
+  "version": "0.5.43",
   "scripts": {
     "ng": "NODE_OPTIONS=--openssl-legacy-provider ng",
     "start": "NODE_OPTIONS=--openssl-legacy-provider ng serve --proxy-config proxy.conf.json --no-live-reload",
