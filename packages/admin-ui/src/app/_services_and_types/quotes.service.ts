@@ -48,9 +48,11 @@ export class QuotesService {
 			transactionType: null,
 			extensionList: null,
 			errorInformation: null,
-			fspiopOpaqueState: {
-				ilpPacket: "",
-				condition: "",
+			inboundProtocolOpaqueState: { 
+				fspiopOpaqueState: {
+					ilpPacket: "",
+					condition: "",
+				}
 			}
 		};
 	}

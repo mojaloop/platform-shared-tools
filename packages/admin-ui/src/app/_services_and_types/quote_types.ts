@@ -135,7 +135,7 @@ export declare type Quote = {
 	errorInformation: string | null;
 	createdAt?: number;
 	updatedAt?: number;
-	fspiopOpaqueState: any;
+	inboundProtocolOpaqueState: any;
 }
 
 export declare type QuotingSearchResults = {

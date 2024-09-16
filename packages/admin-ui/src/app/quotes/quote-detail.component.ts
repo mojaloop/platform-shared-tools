@@ -56,9 +56,9 @@ export class QuoteDetailComponent implements OnInit {
 			this.quote.next(quote);
 
 			// Decode ILP packet
-			if (quote?.fspiopOpaqueState.ilpPacket) {
-				const decodedIlpPacket = deserializeIlpPacket(quote.fspiopOpaqueState.ilpPacket);
-				quote.fspiopOpaqueState.ilpPacket = decodedIlpPacket;
+			if (quote?.inboundProtocolOpaqueState.fspiopOpaqueState.ilpPacket) {
+				const decodedIlpPacket = deserializeIlpPacket(quote.inboundProtocolOpaqueState.fspiopOpaqueState.ilpPacket);
+				quote.inboundProtocolOpaqueState.fspiopOpaqueState.ilpPacket = decodedIlpPacket;
 			}
 
 		});
@@ -69,9 +69,9 @@ export class QuoteDetailComponent implements OnInit {
 			this.quote.next(quote);
 
 			// Decode ILP packet
-			if (quote?.fspiopOpaqueState.ilpPacket) {
-				const decodedIlpPacket = deserializeIlpPacket(quote.fspiopOpaqueState.ilpPacket);
-				quote.fspiopOpaqueState.ilpPacket = decodedIlpPacket;
+			if (quote?.inboundProtocolOpaqueState.fspiopOpaqueState.ilpPacket) {
+				const decodedIlpPacket = deserializeIlpPacket(quote.inboundProtocolOpaqueState.fspiopOpaqueState.ilpPacket);
+				quote.inboundProtocolOpaqueState.fspiopOpaqueState.ilpPacket = decodedIlpPacket;
 			}
 
 			if (this._live && !quote || !(quote?.status === "REJECTED" || quote?.status === "ACCEPTED")) {
